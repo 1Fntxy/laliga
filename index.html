@@ -17,7 +17,6 @@
             --laliga-red-hover: #D0141A;
             --border-color: #E2E8F0;
             --accent-green: #10B981;
-            --accent-green-hover: #059669;
             --accent-gold: #F59E0B;
             --accent-discord: #5865F2;
             --accent-tiktok: #FE2C55;
@@ -106,9 +105,15 @@
             transition: all 0.2s ease;
         }
 
-        button:hover, a.btn-social:hover, .btn-div:hover, .tab-btn:hover, .action-btn:hover {
+        button:hover:not(:disabled), a.btn-social:hover, .btn-div:hover, .tab-btn:hover, .action-btn:hover:not(:disabled) {
             transform: translateY(-1px);
             filter: brightness(1.1);
+        }
+
+        button:disabled, .action-btn:disabled, input:disabled, select:disabled {
+            opacity: 0.6;
+            cursor: not-allowed !important;
+            transform: none !important;
         }
 
         .btn-div {
@@ -402,7 +407,7 @@
         .action-btn {
             background: var(--laliga-red); color: #FFF; padding: 10px 18px; border-radius: 10px; font-weight: 800; font-size: 0.9rem;
         }
-        .action-btn:hover { background: var(--laliga-red-hover); }
+        .action-btn:hover:not(:disabled) { background: var(--laliga-red-hover); }
         
         .btn-export { background: #8B5CF6; color: #FFF; }
         .btn-export:hover { background: #7C3AED; }
@@ -414,7 +419,7 @@
             box-shadow: 0 10px 25px rgba(238, 29, 35, 0.4); z-index: 999; display: flex; align-items: center; gap: 10px;
             cursor: pointer; border: none; transition: all 0.3s ease;
         }
-        .floating-save-btn:hover { background: var(--laliga-red-hover); transform: scale(1.05); }
+        .floating-save-btn:hover:not(:disabled) { background: var(--laliga-red-hover); transform: scale(1.05); }
 
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -443,11 +448,11 @@
 
 <div class="top-bar">
     <div class="brand-container">
-        <div class="league-emblem" onclick="triggerLeagueLogoUpload()" title="Cambiar logo">
+        <div class="league-emblem" id="league-emblem-btn" onclick="triggerLeagueLogoUpload()" title="Cambiar logo">
             <div id="league-logo-container">
                 <img src="https://media.discordapp.net/attachments/1353118715406716981/1562489656396873828/2853f42f6c8278a03fdb93880813f8b5.png" alt="Logo">
             </div>
-            <input type="file" id="league-logo-input" accept="image/*" onchange="uploadLeagueLogo(this)">
+            <input type="file" id="league-logo-input" accept="image/*" onchange="uploadLeagueLogo(this)" disabled>
         </div>
         <div class="brand-title">
             <h1>LA LIGA ILEGAL SOCCER</h1>
@@ -466,7 +471,7 @@
             <svg viewBox="0 0 448 512"><path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.3V178.4A162.55,162.55,0,1,1,185,15.88V145.28a65,65,0,1,0,35.24,57.7v-205h46.23a163,163,0,0,0,91.3,77.58,160.84,160.84,0,0,0,90.2,8.85Z"/></svg>
             TikTok
         </a>
-        <button id="btn-admin-toggle" class="btn-div btn-admin" onclick="toggleAdminMode()">🔑 Admin</button>
+        <button id="btn-admin-toggle" class="btn-div btn-admin" onclick="toggleAdminMode()">🔑 Admin: Bloqueado</button>
         <button class="btn-div btn-reset" onclick="resetCurrentDivision()">🔄 Reset</button>
     </div>
 </div>
@@ -518,7 +523,7 @@
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; flex-wrap:wrap; gap:12px;">
                 <h3>Calendario de Partidos</h3>
-                <button class="action-btn" onclick="manualSaveCloud()">💾 Guardar Datos</button>
+                <button class="action-btn save-action-btn" onclick="manualSaveCloud()" disabled>💾 Guardar Datos</button>
             </div>
             
             <div class="matchday-nav">
@@ -594,7 +599,7 @@
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
                 <h3>Cuadro de Eliminación Directa</h3>
-                <button class="action-btn" onclick="saveBracket()">💾 Guardar Datos</button>
+                <button class="action-btn save-action-btn" onclick="saveBracket()" disabled>💾 Guardar Datos</button>
             </div>
             <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">Selecciona a los clasificados para Cuartos de Final y define marcadores.</p>
 
@@ -602,48 +607,48 @@
                 <div class="bracket-column">
                     <h4>Cuartos de Final</h4>
                     <div class="bracket-match">
-                        <select id="q1-t1" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
-                        <div class="bracket-score-row"><span id="label-q1-t1">Eq 1</span><input type="number" id="score-q1-t1" class="score-input" value="0"></div>
-                        <div class="bracket-score-row"><span id="label-q1-t2">Eq 2</span><input type="number" id="score-q1-t2" class="score-input" value="0"></div>
-                        <select id="q1-t2" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
+                        <select id="q1-t1" class="bracket-team-select" onchange="updateBracketDisplay()" disabled></select>
+                        <div class="bracket-score-row"><span id="label-q1-t1">Eq 1</span><input type="number" id="score-q1-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row"><span id="label-q1-t2">Eq 2</span><input type="number" id="score-q1-t2" class="score-input" value="0" disabled></div>
+                        <select id="q1-t2" class="bracket-team-select" onchange="updateBracketDisplay()" disabled></select>
                     </div>
                     <div class="bracket-match">
-                        <select id="q2-t1" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
-                        <div class="bracket-score-row"><span id="label-q2-t1">Eq 3</span><input type="number" id="score-q2-t1" class="score-input" value="0"></div>
-                        <div class="bracket-score-row"><span id="label-q2-t2">Eq 4</span><input type="number" id="score-q2-t2" class="score-input" value="0"></div>
-                        <select id="q2-t2" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
+                        <select id="q2-t1" class="bracket-team-select" onchange="updateBracketDisplay()" disabled></select>
+                        <div class="bracket-score-row"><span id="label-q2-t1">Eq 3</span><input type="number" id="score-q2-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row"><span id="label-q2-t2">Eq 4</span><input type="number" id="score-q2-t2" class="score-input" value="0" disabled></div>
+                        <select id="q2-t2" class="bracket-team-select" onchange="updateBracketDisplay()" disabled></select>
                     </div>
                     <div class="bracket-match">
-                        <select id="q3-t1" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
-                        <div class="bracket-score-row"><span id="label-q3-t1">Eq 5</span><input type="number" id="score-q3-t1" class="score-input" value="0"></div>
-                        <div class="bracket-score-row"><span id="label-q3-t2">Eq 6</span><input type="number" id="score-q3-t2" class="score-input" value="0"></div>
-                        <select id="q3-t2" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
+                        <select id="q3-t1" class="bracket-team-select" onchange="updateBracketDisplay()" disabled></select>
+                        <div class="bracket-score-row"><span id="label-q3-t1">Eq 5</span><input type="number" id="score-q3-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row"><span id="label-q3-t2">Eq 6</span><input type="number" id="score-q3-t2" class="score-input" value="0" disabled></div>
+                        <select id="q3-t2" class="bracket-team-select" onchange="updateBracketDisplay()" disabled></select>
                     </div>
                     <div class="bracket-match">
-                        <select id="q4-t1" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
-                        <div class="bracket-score-row"><span id="label-q4-t1">Eq 7</span><input type="number" id="score-q4-t1" class="score-input" value="0"></div>
-                        <div class="bracket-score-row"><span id="label-q4-t2">Eq 8</span><input type="number" id="score-q4-t2" class="score-input" value="0"></div>
-                        <select id="q4-t2" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
+                        <select id="q4-t1" class="bracket-team-select" onchange="updateBracketDisplay()" disabled></select>
+                        <div class="bracket-score-row"><span id="label-q4-t1">Eq 7</span><input type="number" id="score-q4-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row"><span id="label-q4-t2">Eq 8</span><input type="number" id="score-q4-t2" class="score-input" value="0" disabled></div>
+                        <select id="q4-t2" class="bracket-team-select" onchange="updateBracketDisplay()" disabled></select>
                     </div>
                 </div>
 
                 <div class="bracket-column">
                     <h4>Semifinales</h4>
                     <div class="bracket-match">
-                        <div class="bracket-score-row"><span id="label-s1-t1">Ganador Q1</span><input type="number" id="score-s1-t1" class="score-input" value="0"></div>
-                        <div class="bracket-score-row"><span id="label-s1-t2">Ganador Q2</span><input type="number" id="score-s1-t2" class="score-input" value="0"></div>
+                        <div class="bracket-score-row"><span id="label-s1-t1">Ganador Q1</span><input type="number" id="score-s1-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row"><span id="label-s1-t2">Ganador Q2</span><input type="number" id="score-s1-t2" class="score-input" value="0" disabled></div>
                     </div>
                     <div class="bracket-match">
-                        <div class="bracket-score-row"><span id="label-s2-t1">Ganador Q3</span><input type="number" id="score-s2-t1" class="score-input" value="0"></div>
-                        <div class="bracket-score-row"><span id="label-s2-t2">Ganador Q4</span><input type="number" id="score-s2-t2" class="score-input" value="0"></div>
+                        <div class="bracket-score-row"><span id="label-s2-t1">Ganador Q3</span><input type="number" id="score-s2-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row"><span id="label-s2-t2">Ganador Q4</span><input type="number" id="score-s2-t2" class="score-input" value="0" disabled></div>
                     </div>
                 </div>
 
                 <div class="bracket-column">
                     <h4>Gran Final</h4>
                     <div class="bracket-match" style="border-color: var(--accent-gold);">
-                        <div class="bracket-score-row"><span id="label-f-t1">Finalista 1</span><input type="number" id="score-f-t1" class="score-input" value="0"></div>
-                        <div class="bracket-score-row"><span id="label-f-t2">Finalista 2</span><input type="number" id="score-f-t2" class="score-input" value="0"></div>
+                        <div class="bracket-score-row"><span id="label-f-t1">Finalista 1</span><input type="number" id="score-f-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row"><span id="label-f-t2">Finalista 2</span><input type="number" id="score-f-t2" class="score-input" value="0" disabled></div>
                     </div>
                     <div class="bracket-match" style="text-align: center; background: #FFF; border: 2px solid var(--accent-gold);">
                         <span style="font-size: 0.75rem; color: var(--accent-gold); font-weight: 800;">🏆 CAMPEÓN</span>
@@ -658,16 +663,16 @@
         <div class="card" style="margin-bottom: 24px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
                 <h3>Enlaces de Redes Sociales</h3>
-                <button class="action-btn" onclick="manualSaveCloud()">💾 Guardar Datos</button>
+                <button class="action-btn save-action-btn" onclick="manualSaveCloud()" disabled>💾 Guardar Datos</button>
             </div>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
                 <div class="input-group">
                     <label>Enlace de Discord:</label>
-                    <input type="text" id="admin-discord-url" placeholder="https://discord.gg/..." onchange="updateSocialLinksFromInput()">
+                    <input type="text" id="admin-discord-url" placeholder="https://discord.gg/..." onchange="updateSocialLinksFromInput()" disabled>
                 </div>
                 <div class="input-group">
                     <label>Enlace de TikTok:</label>
-                    <input type="text" id="admin-tiktok-url" placeholder="https://www.tiktok.com/@..." onchange="updateSocialLinksFromInput()">
+                    <input type="text" id="admin-tiktok-url" placeholder="https://www.tiktok.com/@..." onchange="updateSocialLinksFromInput()" disabled>
                 </div>
             </div>
         </div>
@@ -677,7 +682,7 @@
                 <h3>Configuración de Equipos</h3>
                 <div style="display:flex; gap:10px; flex-wrap:wrap;">
                     <button class="action-btn btn-export" onclick="exportDataJSON()">📥 Exportar JSON</button>
-                    <button class="action-btn" onclick="manualSaveCloud()">💾 Guardar Datos</button>
+                    <button class="action-btn save-action-btn" onclick="manualSaveCloud()" disabled>💾 Guardar Datos</button>
                 </div>
             </div>
             <div class="team-grid" id="teams-management-grid"></div>
@@ -685,8 +690,8 @@
     </div>
 </div>
 
-<!-- Botón Flotante Rojo (Se vuelve verde al guardar con éxito) -->
-<button id="floating-save-btn" class="floating-save-btn" onclick="manualSaveCloud()">
+<!-- Botón Flotante Bloqueado por defecto -->
+<button id="floating-save-btn" class="floating-save-btn save-action-btn" onclick="manualSaveCloud()" disabled>
     <span>💾 Guardar Datos</span>
 </button>
 
@@ -702,7 +707,7 @@
 
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
             <h4 style="font-weight: 700;">Plantilla y Estadísticas (⚽ Goles | 🎯 Asist. | 🧤 Paradas)</h4>
-            <button class="action-btn" style="font-size:0.8rem; padding:6px 12px;" onclick="addRosterPlayer()">+ Agregar Jugador</button>
+            <button class="action-btn" id="modal-add-player-btn" style="font-size:0.8rem; padding:6px 12px;" onclick="addRosterPlayer()">+ Agregar Jugador</button>
         </div>
 
         <div class="roster-list" id="modal-roster-list"></div>
@@ -731,7 +736,7 @@
     const db = getFirestore(app);
 
     const ADMIN_PIN = "021126";
-    let isAdmin = true;
+    let isAdmin = false; // Bloqueado por defecto
 
     const DEFAULT_TEAMS = [
         "Roblox United FC", "Illegal Strikers", "Bloxburg City", "Vip Nation",
@@ -830,6 +835,10 @@
     });
 
     async function saveStateToCloud() {
+        if (!isAdmin) {
+            alert('Acceso Denegado: Debes iniciar sesión como Administrador para guardar cambios.');
+            return false;
+        }
         try {
             await setDoc(doc(db, "liga", "general_data"), appData);
             return true;
@@ -840,6 +849,10 @@
     }
 
     window.manualSaveCloud = async function() {
+        if (!isAdmin) {
+            alert('Acceso Denegado: Activa el Modo Administrador primero.');
+            return;
+        }
         const btn = document.getElementById('floating-save-btn');
         const span = btn ? btn.querySelector('span') : null;
 
@@ -849,11 +862,9 @@
 
         if (btn && span) {
             if (ok) {
-                // Se pone verde con éxito
                 btn.style.backgroundColor = "#10B981";
                 span.innerText = "Guardado con éxito ✅";
                 setTimeout(() => {
-                    // Regresa a rojo original
                     btn.style.backgroundColor = "var(--laliga-red)";
                     span.innerText = "💾 Guardar Datos";
                 }, 2500);
@@ -879,20 +890,40 @@
     };
 
     window.toggleAdminMode = function() {
-        let pass = prompt('Ingresa el PIN de Administrador:');
-        if (pass === ADMIN_PIN) {
-            isAdmin = true;
-            alert('¡Modo Administrador Confirmado!');
-        } else if (pass !== null) {
-            alert('PIN Incorrecto.');
+        if (!isAdmin) {
+            let pass = prompt('Ingresa el PIN de Administrador:');
+            if (pass === ADMIN_PIN) {
+                isAdmin = true;
+                document.getElementById('btn-admin-toggle').innerText = "🔓 Admin: Activo";
+                document.getElementById('btn-admin-toggle').style.background = "#10B981";
+                document.getElementById('btn-admin-toggle').style.color = "#FFF";
+                alert('¡Modo Administrador Activado! Ya puedes editar y guardar.');
+                renderAll();
+            } else if (pass !== null) {
+                alert('PIN Incorrecto.');
+            }
+        } else {
+            if (confirm('¿Cerrar sesión de Administrador?')) {
+                isAdmin = false;
+                document.getElementById('btn-admin-toggle').innerText = "🔑 Admin: Bloqueado";
+                document.getElementById('btn-admin-toggle').style.background = "var(--accent-gold)";
+                document.getElementById('btn-admin-toggle').style.color = "#02040A";
+                alert('Modo Administrador Cerrado.');
+                renderAll();
+            }
         }
     };
 
     window.triggerLeagueLogoUpload = function() {
+        if (!isAdmin) {
+            alert('Acceso Denegado: Requiere Modo Administrador.');
+            return;
+        }
         document.getElementById('league-logo-input').click();
     };
 
     window.uploadLeagueLogo = function(input) {
+        if (!isAdmin) return;
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -913,6 +944,7 @@
     }
 
     window.updateSocialLinksFromInput = function() {
+        if (!isAdmin) return;
         appData.socialDiscord = document.getElementById('admin-discord-url').value;
         appData.socialTiktok = document.getElementById('admin-tiktok-url').value;
         renderSocialLinks();
@@ -921,8 +953,14 @@
     function renderSocialLinks() {
         const discordInput = document.getElementById('admin-discord-url');
         const tiktokInput = document.getElementById('admin-tiktok-url');
-        if (discordInput) discordInput.value = appData.socialDiscord || "";
-        if (tiktokInput) tiktokInput.value = appData.socialTiktok || "";
+        if (discordInput) {
+            discordInput.value = appData.socialDiscord || "";
+            discordInput.disabled = !isAdmin;
+        }
+        if (tiktokInput) {
+            tiktokInput.value = appData.socialTiktok || "";
+            tiktokInput.disabled = !isAdmin;
+        }
 
         const discordBtn = document.getElementById('link-discord');
         const tiktokBtn = document.getElementById('link-tiktok');
@@ -967,6 +1005,11 @@
         renderTeamManagement();
         renderBracketSelectors();
         loadBracketData();
+        
+        // Control general de bloqueo de botones y campos
+        document.querySelectorAll('.save-action-btn, #league-logo-input').forEach(el => {
+            el.disabled = !isAdmin;
+        });
     }
 
     function renderStandings() {
@@ -1153,9 +1196,9 @@
                         <span>${home.name}</span>
                     </div>
                     <div class="score-inputs">
-                        <input type="number" class="score-input" value="${m.homeScore !== null ? m.homeScore : ''}" onchange="updateScore(${m.id}, 'home', this.value)">
+                        <input type="number" class="score-input" value="${m.homeScore !== null ? m.homeScore : ''}" ${!isAdmin ? 'disabled' : ''} onchange="updateScore(${m.id}, 'home', this.value)">
                         <span style="color:var(--text-muted); font-weight:800;">-</span>
-                        <input type="number" class="score-input" value="${m.awayScore !== null ? m.awayScore : ''}" onchange="updateScore(${m.id}, 'away', this.value)">
+                        <input type="number" class="score-input" value="${m.awayScore !== null ? m.awayScore : ''}" ${!isAdmin ? 'disabled' : ''} onchange="updateScore(${m.id}, 'away', this.value)">
                     </div>
                     <div class="match-team away">
                         <span>${away.name}</span>
@@ -1167,6 +1210,7 @@
     }
 
     window.updateScore = function(matchId, type, val) {
+        if (!isAdmin) return;
         const divData = appData[currentDiv];
         const match = divData.matches.find(m => m.id === matchId);
         if (match) match[type + 'Score'] = val === '' ? null : parseInt(val);
@@ -1188,23 +1232,25 @@
                 </div>
                 <div class="input-group">
                     <label>Nombre del Equipo</label>
-                    <input type="text" value="${t.name}" onchange="updateTeamName(${t.id}, this.value)">
+                    <input type="text" value="${t.name}" ${!isAdmin ? 'disabled' : ''} onchange="updateTeamName(${t.id}, this.value)">
                 </div>
                 <div class="input-group">
                     <label>Escudo / Logo</label>
-                    <input type="file" accept="image/*" onchange="uploadTeamLogo(${t.id}, this)">
+                    <input type="file" accept="image/*" ${!isAdmin ? 'disabled' : ''} onchange="uploadTeamLogo(${t.id}, this)">
                 </div>
             </div>
         `).join('');
     }
 
     window.updateTeamName = function(id, val) {
+        if (!isAdmin) return;
         const divData = appData[currentDiv];
         const team = divData.teams.find(t => t.id === id);
         if (team) team.name = val;
     };
 
     window.uploadTeamLogo = function(id, input) {
+        if (!isAdmin) return;
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -1235,14 +1281,21 @@
             </div>
         `;
 
-        document.getElementById('modal-dt-input').value = team.manager || '';
+        const dtInput = document.getElementById('modal-dt-input');
+        dtInput.value = team.manager || '';
+        dtInput.disabled = !isAdmin;
+
+        document.getElementById('modal-add-player-btn').style.display = isAdmin ? 'inline-block' : 'none';
+
         renderRosterList(team);
         document.getElementById('team-modal').classList.add('active');
     };
 
     window.closeTeamModal = function() {
         document.getElementById('team-modal').classList.remove('active');
-        saveStateToCloud();
+        if (isAdmin) {
+            saveStateToCloud();
+        }
         renderTops();
     };
 
@@ -1250,34 +1303,36 @@
         const container = document.getElementById('modal-roster-list');
         container.innerHTML = team.roster.map((player, idx) => `
             <div class="roster-item">
-                <input type="number" class="num-input" value="${player.num}" placeholder="#" onchange="updatePlayer(${idx}, 'num', this.value)">
-                <input type="text" style="flex:1; min-width:110px;" value="${player.name}" placeholder="Roblox Username" onchange="updatePlayer(${idx}, 'name', this.value)">
-                <select onchange="updatePlayer(${idx}, 'pos', this.value)">
+                <input type="number" class="num-input" value="${player.num}" placeholder="#" ${!isAdmin ? 'disabled' : ''} onchange="updatePlayer(${idx}, 'num', this.value)">
+                <input type="text" style="flex:1; min-width:110px;" value="${player.name}" placeholder="Roblox Username" ${!isAdmin ? 'disabled' : ''} onchange="updatePlayer(${idx}, 'name', this.value)">
+                <select ${!isAdmin ? 'disabled' : ''} onchange="updatePlayer(${idx}, 'pos', this.value)">
                     <option value="POR" ${player.pos==='POR'?'selected':''}>POR</option>
                     <option value="DEF" ${player.pos==='DEF'?'selected':''}>DEF</option>
                     <option value="MED" ${player.pos==='MED'?'selected':''}>MED</option>
                     <option value="DEL" ${player.pos==='DEL'?'selected':''}>DEL</option>
                 </select>
                 <div style="display:flex; align-items:center; gap:4px;" title="Goles">
-                    <span>⚽</span><input type="number" class="stat-input" value="${player.goals || 0}" onchange="updatePlayer(${idx}, 'goals', this.value)">
+                    <span>⚽</span><input type="number" class="stat-input" value="${player.goals || 0}" ${!isAdmin ? 'disabled' : ''} onchange="updatePlayer(${idx}, 'goals', this.value)">
                 </div>
                 <div style="display:flex; align-items:center; gap:4px;" title="Asistencias">
-                    <span>🎯</span><input type="number" class="stat-input" value="${player.assists || 0}" onchange="updatePlayer(${idx}, 'assists', this.value)">
+                    <span>🎯</span><input type="number" class="stat-input" value="${player.assists || 0}" ${!isAdmin ? 'disabled' : ''} onchange="updatePlayer(${idx}, 'assists', this.value)">
                 </div>
                 <div style="display:flex; align-items:center; gap:4px;" title="Paradas">
-                    <span>🧤</span><input type="number" class="stat-input" value="${player.saves || 0}" onchange="updatePlayer(${idx}, 'saves', this.value)">
+                    <span>🧤</span><input type="number" class="stat-input" value="${player.saves || 0}" ${!isAdmin ? 'disabled' : ''} onchange="updatePlayer(${idx}, 'saves', this.value)">
                 </div>
-                <button style="background:transparent; border:none; color:var(--laliga-red); cursor:pointer; font-size:1.2rem; padding:0 4px;" onclick="deletePlayer(${idx})">&times;</button>
+                ${isAdmin ? `<button style="background:transparent; border:none; color:var(--laliga-red); cursor:pointer; font-size:1.2rem; padding:0 4px;" onclick="deletePlayer(${idx})">&times;</button>` : ``}
             </div>
         `).join('');
     }
 
     window.updateModalTeamInfo = function() {
+        if (!isAdmin) return;
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
         if (team) team.manager = document.getElementById('modal-dt-input').value;
     };
 
     window.addRosterPlayer = function() {
+        if (!isAdmin) return;
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
         if (team) {
             if (!team.roster) team.roster = [];
@@ -1287,6 +1342,7 @@
     };
 
     window.updatePlayer = function(idx, field, value) {
+        if (!isAdmin) return;
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
         if (team && team.roster[idx]) {
             if (field === 'name' || field === 'pos') {
@@ -1298,6 +1354,7 @@
     };
 
     window.deletePlayer = function(idx) {
+        if (!isAdmin) return;
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
         if (team && team.roster[idx]) {
             team.roster.splice(idx, 1);
@@ -1306,6 +1363,10 @@
     };
 
     window.resetCurrentDivision = function() {
+        if (!isAdmin) {
+            alert('Acceso Denegado: Requiere Modo Administrador.');
+            return;
+        }
         if (confirm(`¿Restablecer datos de la ${currentDiv}ª División?`)) {
             const initial = getInitialData();
             appData[currentDiv] = initial[currentDiv];
@@ -1320,9 +1381,16 @@
             divData.teams.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
 
         for (let i = 1; i <= 4; i++) {
-            document.getElementById(`q${i}-t1`).innerHTML = optionsHTML;
-            document.getElementById(`q${i}-t2`).innerHTML = optionsHTML;
+            let s1 = document.getElementById(`q${i}-t1`);
+            let s2 = document.getElementById(`q${i}-t2`);
+            if (s1) { s1.innerHTML = optionsHTML; s1.disabled = !isAdmin; }
+            if (s2) { s2.innerHTML = optionsHTML; s2.disabled = !isAdmin; }
         }
+
+        // Bloquear inputs de la liguilla si no es admin
+        document.querySelectorAll('#tab-bracket input').forEach(inp => {
+            inp.disabled = !isAdmin;
+        });
     }
 
     window.updateBracketDisplay = function() {
@@ -1367,48 +1435,4 @@
         let s1 = parseInt(document.getElementById(score1Id).value) || 0;
         let s2 = parseInt(document.getElementById(score2Id).value) || 0;
 
-        let t1 = divData.teams.find(x => x.id == id1);
-        let t2 = divData.teams.find(x => x.id == id2);
-
-        if (!t1 || !t2) return 'Por Definir';
-        if (s1 > s2) return t1.name;
-        if (s2 > s1) return t2.name;
-        return `${t1.name} (Empate)`;
-    }
-
-    function getWinnerFromLabels(lbl1Id, lbl2Id, score1Id, score2Id) {
-        let name1 = document.getElementById(lbl1Id).innerText;
-        let name2 = document.getElementById(lbl2Id).innerText;
-        let s1 = parseInt(document.getElementById(score1Id).value) || 0;
-        let s2 = parseInt(document.getElementById(score2Id).value) || 0;
-
-        if (name1 === 'Por Definir' || name2 === 'Por Definir') return 'Por Definir';
-        if (s1 > s2) return name1;
-        if (s2 > s1) return name2;
-        return `${name1} (Empate)`;
-    }
-
-    window.saveBracket = async function() {
-        let bracketData = {};
-        let inputs = document.querySelectorAll('#tab-bracket input, #tab-bracket select');
-        inputs.forEach(input => { bracketData[input.id] = input.value; });
-        appData[currentDiv].bracket = bracketData;
-        await manualSaveCloud();
-    };
-
-    function loadBracketData() {
-        let bracketData = (appData[currentDiv] && appData[currentDiv].bracket) ? appData[currentDiv].bracket : {};
-        Object.keys(bracketData).forEach(id => {
-            let el = document.getElementById(id);
-            if (el) el.value = bracketData[id];
-        });
-        updateBracketDisplay();
-    }
-
-    document.querySelectorAll('#tab-bracket input').forEach(inp => {
-        inp.addEventListener('input', updateBracketDisplay);
-    });
-</script>
-
-</body>
-</html>
+        let t1 = divData.teams
