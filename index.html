@@ -359,12 +359,34 @@
             gap: 12px;
         }
 
-        .matchday-title {
+        /* Estilo Neón para el Selector Unificado de Jornadas */
+        .matchday-select-styled {
             font-family: 'Outfit', sans-serif;
             font-size: 1.25rem;
             font-weight: 800;
             color: var(--accent-cyan);
-            text-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+            background: rgba(2, 4, 10, 0.8);
+            border: 1px solid var(--border-neon);
+            border-radius: 12px;
+            padding: 8px 18px;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+            cursor: pointer;
+            outline: none;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+            transition: all 0.25s ease;
+        }
+
+        .matchday-select-styled:hover, .matchday-select-styled:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+        }
+
+        .matchday-select-styled option {
+            background-color: #0B0F19;
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
         }
 
         .matches-grid {
@@ -682,12 +704,11 @@
 <body>
 
 <div class="container">
-    <!-- Banner Principal con logo interactivo respaldado en la nube -->
+    <!-- Banner Principal -->
     <div class="hero-banner">
         <div class="brand-info">
             <div class="league-emblem" onclick="triggerLeagueLogoUpload()" title="Haz clic para cambiar el logo (Modo Admin)">
                 <div id="league-logo-container">
-                    <!-- Imagen inicial integrada por defecto -->
                     <img src="https://media.discordapp.net/attachments/1353118715406716981/1562489656396873828/2853f42f6c8278a03fdb93880813f8b5.png" alt="Logo de La Liga">
                 </div>
                 <input type="file" id="league-logo-input" accept="image/*" onchange="uploadLeagueLogo(this)">
@@ -753,9 +774,9 @@
             
             <div class="matchday-nav">
                 <button class="action-btn" onclick="changeMatchday(-1)">◀ Anterior</button>
-                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-                    <span class="matchday-title" id="matchday-label">Jornada 1</span>
-                    <select id="matchday-select" onchange="jumpToMatchday(this.value)" style="padding:6px 12px;"></select>
+                <div style="display:flex; align-items:center; justify-content:center;">
+                    <!-- Selector único neón desplegable -->
+                    <select id="matchday-select" class="matchday-select-styled" onchange="jumpToMatchday(this.value)"></select>
                 </div>
                 <button class="action-btn" onclick="changeMatchday(1)">Siguiente ▶</button>
             </div>
@@ -1160,7 +1181,6 @@
             options += `<option value="${i}" ${i === currentMatchday ? 'selected' : ''}>Jornada ${i}</option>`;
         }
         select.innerHTML = options;
-        document.getElementById('matchday-label').innerText = `Jornada ${currentMatchday}`;
     }
 
     window.changeMatchday = function(delta) {
@@ -1175,7 +1195,6 @@
 
     window.jumpToMatchday = function(val) {
         currentMatchday = parseInt(val);
-        document.getElementById('matchday-label').innerText = `Jornada ${currentMatchday}`;
         renderMatches();
     };
 
