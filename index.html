@@ -51,6 +51,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            margin: 0 auto; /* Centrar el bloque principal */
         }
 
         .league-emblem {
@@ -90,7 +91,7 @@
             font-weight: 700;
         }
 
-        .header-controls {
+        .header-controls-left, .header-controls-right {
             display: flex;
             gap: 10px;
             align-items: center;
@@ -484,16 +485,24 @@
         .num-input { width: 45px; text-align: center; }
         .stat-input { width: 50px; text-align: center; }
 
-        @media (max-width: 768px) {
-            .top-bar { flex-direction: column; text-align: center; }
-            .brand-container { flex-direction: column; }
-            .matchday-nav { flex-direction: column; text-align: center; }
+        @media (max-width: 900px) {
+            .top-bar { flex-direction: column; text-align: center; justify-content: center; }
+            .brand-container { margin: 10px 0; }
+            .header-controls-left, .header-controls-right { justify-content: center; }
         }
     </style>
 </head>
 <body>
 
 <div class="top-bar">
+    <!-- Controles Izquierda: Divisiones -->
+    <div class="header-controls-left">
+        <button class="btn-div active" onclick="switchDivision(1)">🏆 1ª DIV</button>
+        <button class="btn-div" onclick="switchDivision(2)">🥇 2ª DIV</button>
+        <button class="btn-div" onclick="switchDivision(3)">🥈 3ª DIV</button>
+    </div>
+
+    <!-- Centro: Logo y Título -->
     <div class="brand-container">
         <div class="league-emblem" onclick="triggerLeagueLogoUpload()" title="Cambiar logo">
             <div id="league-logo-container">
@@ -506,10 +515,9 @@
             <p>TORNEO OFICIAL ROBLOX • NUBE SINCRONIZADA ☁️</p>
         </div>
     </div>
-    <div class="header-controls">
-        <button class="btn-div active" onclick="switchDivision(1)">🏆 1ª DIV</button>
-        <button class="btn-div" onclick="switchDivision(2)">🥇 2ª DIV</button>
-        <button class="btn-div" onclick="switchDivision(3)">🥈 3ª DIV</button>
+
+    <!-- Controles Derecha: Redes, Admin y Reset -->
+    <div class="header-controls-right">
         <a id="link-discord" href="#" target="_blank" class="btn-social btn-discord">
             <svg viewBox="0 0 127.14 96.36"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1,105.25,105.25,0,0,0,32.19-16.15c2.63-27.52-4.52-51.68-19.45-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5.18-12.72,11.45-12.72S53.9,46,53.88,53,48.71,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5.18-12.72,11.45-12.72S96.14,46,96.12,53,91,65.69,84.69,65.69Z"/></svg>
             Discord
@@ -523,7 +531,7 @@
     </div>
 </div>
 
-<!-- Línea negra con los 16 escudos distribuidos y tooltip con el nombre -->
+<!-- Línea negra con los 16 escudos distribuidos y nombre al pasar el ratón -->
 <div class="clubs-ticker-bar">
     <div class="ticker-items" id="ticker-clubs-container"></div>
 </div>
@@ -995,7 +1003,6 @@
         container.innerHTML = `<img src="${logoUrl}" alt="Logo">`;
     }
 
-    // Renderizar la barra superior con los 16 escudos distribuidos y nombre al pasar el ratón (title)
     function renderClubsTicker() {
         const divData = appData[currentDiv];
         if (!divData || !divData.teams) return;
@@ -1030,8 +1037,8 @@
     window.switchDivision = function(div) {
         currentDiv = div;
         currentMatchday = 1;
-        document.querySelectorAll('.header-controls .btn-div').forEach((btn, idx) => {
-            if(idx < 3) btn.classList.toggle('active', idx + 1 === div);
+        document.querySelectorAll('.header-controls-left .btn-div').forEach((btn, idx) => {
+            btn.classList.toggle('active', idx + 1 === div);
         });
         document.getElementById('hero-title').innerText = `Temporada Oficial • ${div}ª División`;
         document.getElementById('div-title').innerText = `${div}ª División • Tabla de Posiciones`;
@@ -1466,7 +1473,7 @@
         document.getElementById(`label-s2-t2`).innerText = s2_2;
 
         let f1 = getWinnerFromLabels('label-s1-t1', 'label-s1-t2', 'score-s1-t1', 'score-s1-t2');
-        let f2 = getWinnerFromLabels('label-s2-t1', 'label-s2-t2', 'score-s2-t1', 'score-s2-t2');
+        let f2 = getWinnerFromLabels('label-s2-t1', 'label-s2-t2', 'score-s1-t2', 'score-s2-t2');
 
         document.getElementById(`label-f-t1`).innerText = f1;
         document.getElementById(`label-f-t2`).innerText = f2;
