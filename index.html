@@ -824,59 +824,28 @@
         </div>
     </div>
 
-    <!-- Sección Estadísticas y Tops Individuales (Top 5 Horizontal) -->
+    <!-- Sección Estadísticas y Tops Individuales (Top 5 en Tarjetas Horizontales Lado a Lado) -->
     <div id="tab-estadisticas" class="content-section">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px;">
+            
+            <!-- Pichichis (Goleadores) -->
             <div class="card" style="margin-bottom:0;">
-                <h2 style="margin-bottom: 16px; color: var(--accent-gold);">⚽ Pichichis (Goleadores)</h2>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Jugador</th>
-                                <th>Equipo</th>
-                                <th>Goles</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tops-goles-body"></tbody>
-                    </table>
-                </div>
+                <h2 style="margin-bottom: 20px; color: var(--accent-gold);">⚽ Pichichis (Goleadores)</h2>
+                <div style="display: flex; flex-direction: column; gap: 12px;" id="tops-goles-body"></div>
             </div>
 
+            <!-- Máximos Asistidores -->
             <div class="card" style="margin-bottom:0;">
-                <h2 style="margin-bottom: 16px; color: var(--accent-cyan);">🎯 Máximos Asistidores</h2>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Jugador</th>
-                                <th>Equipo</th>
-                                <th>Asist.</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tops-asist-body"></tbody>
-                    </table>
-                </div>
+                <h2 style="margin-bottom: 20px; color: var(--accent-cyan);">🎯 Máximos Asistidores</h2>
+                <div style="display: flex; flex-direction: column; gap: 12px;" id="tops-asist-body"></div>
             </div>
 
+            <!-- Mejores Atajadas -->
             <div class="card" style="margin-bottom:0;">
-                <h2 style="margin-bottom: 16px; color: var(--accent-green);">🧤 Mejores Atajadas</h2>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Portero</th>
-                                <th>Equipo</th>
-                                <th>Atajadas</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tops-atajadas-body"></tbody>
-                    </table>
-                </div>
+                <h2 style="margin-bottom: 20px; color: var(--accent-green);">🧤 Mejores Atajadas</h2>
+                <div style="display: flex; flex-direction: column; gap: 12px;" id="tops-atajadas-body"></div>
             </div>
+
         </div>
     </div>
 
@@ -1374,38 +1343,56 @@
             }
         });
 
-        // Top 5 Goleadores
+        // Top 5 Goleadores (Diseño Horizontal Limpio)
         let topGoals = [...allPlayers].sort((a, b) => b.goals - a.goals).slice(0, 5);
         document.getElementById('tops-goles-body').innerHTML = topGoals.map((p, i) => `
-            <tr>
-                <td><strong style="color:var(--accent-gold);">#${i+1}</strong></td>
-                <td>${p.name}</td>
-                <td style="color:var(--text-muted);">${p.teamName}</td>
-                <td><strong style="color:var(--accent-cyan);">${p.goals}</strong></td>
-            </tr>
-        `).join('') || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin registros</td></tr>`;
+            <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); padding: 10px 14px; border-radius: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <strong style="color:var(--accent-gold); width:20px;">#${i+1}</strong>
+                    <div>
+                        <div style="font-weight: 700; font-size: 0.95rem; color: #FFF;">${p.name}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">${p.teamName}</div>
+                    </div>
+                </div>
+                <div style="background: rgba(245, 158, 11, 0.15); color: var(--accent-gold); padding: 4px 12px; border-radius: 8px; font-weight: 800; font-size: 0.95rem;">
+                    ⚽ ${p.goals}
+                </div>
+            </div>
+        `).join('') || `<div style="text-align:center; color:var(--text-muted); padding:10px;">Sin registros</div>`;
 
-        // Top 5 Asistencias
+        // Top 5 Asistencias (Diseño Horizontal Limpio)
         let topAssists = [...allPlayers].sort((a, b) => b.assists - a.assists).slice(0, 5);
         document.getElementById('tops-asist-body').innerHTML = topAssists.map((p, i) => `
-            <tr>
-                <td><strong style="color:var(--accent-cyan);">#${i+1}</strong></td>
-                <td>${p.name}</td>
-                <td style="color:var(--text-muted);">${p.teamName}</td>
-                <td><strong style="color:var(--accent-green);">${p.assists}</strong></td>
-            </tr>
-        `).join('') || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin registros</td></tr>`;
+            <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); padding: 10px 14px; border-radius: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <strong style="color:var(--accent-cyan); width:20px;">#${i+1}</strong>
+                    <div>
+                        <div style="font-weight: 700; font-size: 0.95rem; color: #FFF;">${p.name}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">${p.teamName}</div>
+                    </div>
+                </div>
+                <div style="background: rgba(0, 240, 255, 0.15); color: var(--accent-cyan); padding: 4px 12px; border-radius: 8px; font-weight: 800; font-size: 0.95rem;">
+                    🎯 ${p.assists}
+                </div>
+            </div>
+        `).join('') || `<div style="text-align:center; color:var(--text-muted); padding:10px;">Sin registros</div>`;
 
-        // Top 5 Atajadas
+        // Top 5 Atajadas (Diseño Horizontal Limpio)
         let topSaves = [...allPlayers].sort((a, b) => b.saves - a.saves).slice(0, 5);
         document.getElementById('tops-atajadas-body').innerHTML = topSaves.map((p, i) => `
-            <tr>
-                <td><strong style="color:var(--accent-green);">#${i+1}</strong></td>
-                <td>${p.name}</td>
-                <td style="color:var(--text-muted);">${p.teamName}</td>
-                <td><strong style="color:var(--accent-gold);">${p.saves}</strong></td>
-            </tr>
-        `).join('') || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin registros</td></tr>`;
+            <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); padding: 10px 14px; border-radius: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <strong style="color:var(--accent-green); width:20px;">#${i+1}</strong>
+                    <div>
+                        <div style="font-weight: 700; font-size: 0.95rem; color: #FFF;">${p.name}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">${p.teamName}</div>
+                    </div>
+                </div>
+                <div style="background: rgba(16, 185, 129, 0.15); color: var(--accent-green); padding: 4px 12px; border-radius: 8px; font-weight: 800; font-size: 0.95rem;">
+                    🧤 ${p.saves}
+                </div>
+            </div>
+        `).join('') || `<div style="text-align:center; color:var(--text-muted); padding:10px;">Sin registros</div>`;
     }
 
     function getMaxMatchdays() {
