@@ -4,132 +4,157 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Liga Ilegal Soccer - Roblox</title>
+    <!-- Fuente Moderna de Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-main: #0B0F19;
-            --bg-card: #111827;
-            --bg-hover: #1F2937;
-            --border-color: #374151;
+            --bg-main: #07090E;
+            --bg-card: rgba(18, 24, 38, 0.75);
+            --bg-card-hover: rgba(30, 41, 59, 0.85);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(6, 182, 212, 0.3);
             --accent-cyan: #06B6D4;
+            --accent-cyan-glow: rgba(6, 182, 212, 0.4);
             --accent-green: #10B981;
             --accent-gold: #F59E0B;
-            --text-main: #F9FAFB;
-            --text-muted: #9CA3AF;
+            --accent-red: #EF4444;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         body {
             background-color: var(--bg-main);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%);
+            background-attachment: fixed;
             color: var(--text-main);
-            padding: 20px;
+            padding: 24px;
             display: flex;
             justify-content: center;
-            padding-bottom: 80px;
+            padding-bottom: 90px;
+            min-height: 100vh;
         }
 
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1240px;
         }
 
+        /* Navbar Esfera / Glassmorphism */
         .navbar {
             background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px 24px;
+            border-radius: 20px;
+            padding: 18px 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
             flex-wrap: wrap;
             gap: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
         .brand-info {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 18px;
         }
 
         .brand-logo {
-            width: 48px;
-            height: 48px;
-            background: radial-gradient(circle, #1E293B 0%, #0F172A 100%);
-            border: 2px solid var(--accent-cyan);
-            border-radius: 8px;
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
+            border: 1.5px solid var(--accent-cyan);
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 26px;
+            box-shadow: 0 0 20px var(--accent-cyan-glow);
         }
 
         .brand-title h1 {
-            font-size: 1.5rem;
+            font-size: 1.55rem;
             font-weight: 800;
-            letter-spacing: 1px;
+            letter-spacing: -0.5px;
             color: #FFF;
         }
 
         .brand-title h1 span {
-            color: var(--accent-cyan);
-            font-style: italic;
+            background: linear-gradient(90deg, #06B6D4, #38BDF8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-style: normal;
         }
 
         .brand-title p {
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             color: var(--text-muted);
+            font-weight: 500;
         }
 
         .controls-header {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: center;
             flex-wrap: wrap;
         }
 
-        /* Estilo base y animación para TODOS los botones */
+        /* Efectos globales para Botones */
         button, .btn-div, .tab-btn, .action-btn {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            outline: none;
         }
 
         button:hover, .btn-div:hover, .tab-btn:hover, .action-btn:hover {
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.25);
+            transform: translateY(-2px) scale(1.02);
         }
 
         button:active, .btn-div:active, .tab-btn:active, .action-btn:active {
-            transform: scale(0.95) !important;
+            transform: translateY(1px) scale(0.97) !important;
         }
 
         .btn-div {
-            background: var(--bg-hover);
+            background: rgba(255, 255, 255, 0.04);
             color: var(--text-muted);
             border: 1px solid var(--border-color);
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 9px 18px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
+            font-size: 0.9rem;
         }
 
         .btn-div.active {
-            background: var(--accent-cyan);
+            background: linear-gradient(135deg, var(--accent-cyan) 0%, #0891B2 100%);
             color: #000;
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
+            font-weight: 700;
+            border-color: transparent;
+            box-shadow: 0 4px 20px var(--accent-cyan-glow);
         }
 
+        /* Pestañas estilo Nav-Pills */
         .tabs {
             display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
+            gap: 10px;
+            margin-bottom: 28px;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 6px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
             overflow-x: auto;
         }
 
@@ -137,17 +162,19 @@
             background: transparent;
             border: none;
             color: var(--text-muted);
-            padding: 8px 16px;
-            font-size: 1rem;
+            padding: 10px 20px;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
-            border-radius: 6px;
+            border-radius: 12px;
             white-space: nowrap;
         }
 
         .tab-btn.active {
-            color: var(--accent-cyan);
-            background: var(--bg-card);
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .content-section {
@@ -158,76 +185,101 @@
             display: block;
         }
 
+        /* Tarjetas de Contenido */
         .card {
             background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: 24px;
             margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
+        /* Tablas de Posiciones Modernas */
         .table-responsive {
             overflow-x: auto;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0 8px;
             text-align: left;
         }
 
-        th, td {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
         th {
-            background: #1E293B;
+            padding: 12px 18px;
             color: var(--text-muted);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
+            font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 0.8px;
+            border: none;
         }
 
         td {
+            padding: 14px 18px;
             font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td:first-child {
+            border-left: 1px solid var(--border-color);
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+
+        td:last-child {
+            border-right: 1px solid var(--border-color);
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .team-cell {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             font-weight: 600;
         }
 
         .team-logo {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             object-fit: cover;
-            background: var(--bg-hover);
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
             flex-shrink: 0;
+            font-weight: 700;
         }
 
         .team-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 18px;
         }
 
         .team-card {
-            background: var(--bg-card);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 16px;
+            border-radius: 16px;
+            padding: 18px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
 
         .input-group {
@@ -239,15 +291,22 @@
         .input-group label {
             font-size: 0.8rem;
             color: var(--text-muted);
+            font-weight: 600;
         }
 
-        input[type="text"], select {
-            background: var(--bg-main);
+        input[type="text"], input[type="number"], select {
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 8px 12px;
-            border-radius: 6px;
+            padding: 10px 14px;
+            border-radius: 10px;
             font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus, select:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 10px var(--accent-cyan-glow);
         }
 
         input[type="file"] {
@@ -259,32 +318,32 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: var(--bg-main);
-            padding: 12px 20px;
-            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 14px 22px;
+            border-radius: 14px;
             border: 1px solid var(--border-color);
-            margin-bottom: 20px;
+            margin-bottom: 22px;
             flex-wrap: wrap;
             gap: 12px;
         }
 
         .matchday-title {
-            font-size: 1.1rem;
-            font-weight: 700;
+            font-size: 1.15rem;
+            font-weight: 800;
             color: var(--accent-cyan);
         }
 
         .matches-grid {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
 
         .match-card {
-            background: var(--bg-card);
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px 20px;
+            border-radius: 14px;
+            padding: 14px 22px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -295,9 +354,10 @@
         .match-team {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             flex: 1;
             min-width: 140px;
+            font-weight: 600;
         }
 
         .match-team.away {
@@ -308,17 +368,19 @@
         .score-inputs {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .score-input {
-            width: 45px;
+            width: 50px;
             text-align: center;
-            font-size: 1.1rem;
-            font-weight: 700;
-            padding: 4px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            padding: 6px;
+            border-radius: 8px;
         }
 
+        /* Bracket Liguilla */
         .bracket-container {
             display: flex;
             justify-content: space-between;
@@ -329,11 +391,11 @@
 
         .bracket-column {
             flex: 1;
-            min-width: 240px;
+            min-width: 250px;
             display: flex;
             flex-direction: column;
             justify-content: space-around;
-            gap: 16px;
+            gap: 18px;
         }
 
         .bracket-column h3 {
@@ -342,25 +404,26 @@
             color: var(--accent-cyan);
             margin-bottom: 12px;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 6px;
+            padding-bottom: 8px;
+            font-weight: 700;
         }
 
         .bracket-match {
-            background: var(--bg-card);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
+            border-radius: 14px;
+            padding: 14px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
 
         .bracket-team-select {
-            background: var(--bg-main);
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 6px;
-            border-radius: 4px;
+            padding: 8px;
+            border-radius: 8px;
             width: 100%;
             font-size: 0.85rem;
         }
@@ -384,51 +447,52 @@
             background: var(--accent-cyan);
             color: #000;
             border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
+            padding: 9px 18px;
+            border-radius: 10px;
             font-weight: 700;
             cursor: pointer;
+            box-shadow: 0 4px 14px var(--accent-cyan-glow);
         }
 
         .btn-save-main {
-            background: var(--accent-green);
-            color: #000;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: #FFF;
             font-weight: 800;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
         }
 
-        /* Botón Flotante y Animaciones */
+        /* Botón Flotante Neón */
         .floating-save-btn {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: var(--accent-green);
-            color: #000;
+            bottom: 28px;
+            right: 28px;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: #FFF;
             border: none;
-            padding: 14px 24px;
+            padding: 16px 28px;
             border-radius: 50px;
             font-weight: 800;
-            font-size: 1rem;
+            font-size: 1.05rem;
             cursor: pointer;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
             z-index: 999;
             display: none;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .floating-save-btn.saving {
-            background: var(--accent-cyan);
+            background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
             color: #000;
             pointer-events: none;
             animation: pulse-save 1s infinite alternate;
         }
 
         .floating-save-btn.success {
-            background: #10B981;
+            background: linear-gradient(135deg, #10B981 0%, #047857 100%);
             color: #FFF;
             transform: scale(1.08) !important;
-            box-shadow: 0 0 25px rgba(16, 185, 129, 0.8);
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.8);
         }
 
         @keyframes pulse-save {
@@ -441,21 +505,30 @@
         }
 
         .btn-reset {
+            background: rgba(239, 68, 68, 0.15);
+            color: #FCA5A5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-reset:hover {
             background: #EF4444;
             color: #FFF;
         }
 
         .btn-admin {
-            background: #F59E0B;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
             color: #000;
             font-weight: 700;
+            border: none;
         }
 
+        /* Modal Flotante de Plantillas */
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -467,46 +540,47 @@
         }
 
         .modal-content {
-            background: var(--bg-card);
+            background: #0F172A;
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 20px;
             width: 100%;
-            max-width: 600px;
+            max-width: 620px;
             max-height: 90vh;
             overflow-y: auto;
-            padding: 24px;
+            padding: 28px;
             position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
         }
 
         .modal-close {
             position: absolute;
-            top: 16px; right: 16px;
+            top: 20px; right: 20px;
             background: transparent;
             border: none;
             color: var(--text-muted);
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             cursor: pointer;
         }
 
         .roster-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            margin-top: 12px;
+            gap: 10px;
+            margin-top: 14px;
         }
 
         .roster-item {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: center;
-            background: var(--bg-main);
-            padding: 8px 12px;
-            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 10px 14px;
+            border-radius: 10px;
             border: 1px solid var(--border-color);
         }
 
         .num-input {
-            width: 45px;
+            width: 50px;
             text-align: center;
         }
 
@@ -552,7 +626,7 @@
             }
             .match-card {
                 flex-direction: column;
-                gap: 8px;
+                gap: 10px;
                 align-items: stretch;
             }
             .match-team, .match-team.away {
@@ -596,7 +670,7 @@
 
     <div id="tab-clasificacion" class="content-section active">
         <div class="card">
-            <h2 id="div-title" style="margin-bottom: 16px;">1ª División • Tabla de Posiciones</h2>
+            <h2 id="div-title" style="margin-bottom: 20px; font-weight: 800; font-size: 1.3rem;">1ª División • Tabla de Posiciones</h2>
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -623,8 +697,8 @@
 
     <div id="tab-calendario" class="content-section">
         <div class="card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
-                <h2>Calendario de Partidos por Jornada</h2>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; flex-wrap:wrap; gap:12px;">
+                <h2 style="font-weight: 800; font-size: 1.3rem;">Calendario de Partidos por Jornada</h2>
                 <button class="action-btn btn-save-main admin-only" onclick="manualSaveCloud()">💾 Guardar Partidos</button>
             </div>
             
@@ -632,7 +706,7 @@
                 <button class="action-btn" onclick="changeMatchday(-1)">◀ Anterior</button>
                 <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                     <span class="matchday-title" id="matchday-label">Jornada 1</span>
-                    <select id="matchday-select" onchange="jumpToMatchday(this.value)" style="padding:4px 8px;"></select>
+                    <select id="matchday-select" onchange="jumpToMatchday(this.value)" style="padding:6px 12px;"></select>
                 </div>
                 <button class="action-btn" onclick="changeMatchday(1)">Siguiente ▶</button>
             </div>
@@ -645,10 +719,10 @@
     <div id="tab-bracket" class="content-section">
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
-                <h2>Cuadro de Eliminación Directa (Liguilla)</h2>
+                <h2 style="font-weight: 800; font-size: 1.3rem;">Cuadro de Eliminación Directa (Liguilla)</h2>
                 <button class="action-btn btn-save-main admin-only" onclick="saveBracket()">💾 Guardar Bracket</button>
             </div>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">
                 Selecciona a los 8 equipos clasificados para Cuartos de Final y define sus resultados.
             </p>
 
@@ -701,7 +775,7 @@
                     </div>
                     <div class="bracket-match" style="text-align: center; background: radial-gradient(circle, #1E293B 0%, #0F172A 100%); border: 2px solid var(--accent-gold);">
                         <span style="font-size: 0.8rem; color: var(--accent-gold); font-weight: 800;">🏆 CAMPEÓN OFICIAL</span>
-                        <h2 id="champion-name" style="color: #FFF; font-size: 1.2rem; margin-top: 4px;">- Por Definir -</h2>
+                        <h2 id="champion-name" style="color: #FFF; font-size: 1.25rem; margin-top: 6px; font-weight: 800;">- Por Definir -</h2>
                     </div>
                 </div>
             </div>
@@ -710,8 +784,8 @@
 
     <div id="tab-gestion" class="content-section">
         <div class="card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
-                <h2>Configuración de Equipos</h2>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; flex-wrap:wrap; gap:12px;">
+                <h2 style="font-weight: 800; font-size: 1.3rem;">Configuración de Equipos</h2>
                 <button class="action-btn btn-save-main admin-only" onclick="manualSaveCloud()">💾 Guardar Equipos</button>
             </div>
             <div class="team-grid" id="teams-management-grid">
@@ -727,23 +801,23 @@
 <div id="team-modal" class="modal-overlay">
     <div class="modal-content">
         <button class="modal-close" onclick="closeTeamModal()">&times;</button>
-        <div style="display:flex; align-items:center; gap:16px; margin-bottom:16px;" id="modal-header">
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;" id="modal-header">
         </div>
 
-        <div class="input-group" style="margin-bottom:16px;">
+        <div class="input-group" style="margin-bottom:20px;">
             <label>Director Técnico / Capitán (Roblox Username):</label>
             <input type="text" id="modal-dt-input" placeholder="Ej. RobloxPro123" onchange="updateModalTeamInfo()">
         </div>
 
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
-            <h3>Plantilla de Jugadores</h3>
-            <button class="action-btn admin-only" style="font-size:0.8rem; padding:4px 8px;" onclick="addRosterPlayer()">+ Agregar Jugador</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+            <h3 style="font-weight: 700;">Plantilla de Jugadores</h3>
+            <button class="action-btn admin-only" style="font-size:0.8rem; padding:6px 12px;" onclick="addRosterPlayer()">+ Agregar Jugador</button>
         </div>
 
         <div class="roster-list" id="modal-roster-list">
         </div>
 
-        <div style="margin-top:20px; text-align:right;">
+        <div style="margin-top:24px; text-align:right;">
             <button class="action-btn btn-save-main admin-only" onclick="closeTeamModal()">💾 Guardar y Cerrar</button>
         </div>
     </div>
@@ -968,7 +1042,7 @@
         const tbody = document.getElementById('standings-body');
         tbody.innerHTML = stats.map((t, idx) => `
             <tr>
-                <td><strong>${idx + 1}</strong></td>
+                <td><strong style="color:var(--accent-cyan);">${idx + 1}</strong></td>
                 <td>
                     <div class="team-cell">
                         ${t.logo ? `<img src="${t.logo}" class="team-logo">` : `<div class="team-logo">${t.name.substring(0, 2).toUpperCase()}</div>`}
@@ -982,8 +1056,8 @@
                 <td>${t.gf}</td>
                 <td>${t.gc}</td>
                 <td>${t.dg > 0 ? '+' + t.dg : t.dg}</td>
-                <td><strong style="color: var(--accent-cyan);">${t.pts}</strong></td>
-                <td><button class="action-btn" style="font-size:0.75rem; padding:4px 8px;" onclick="openTeamModal(${t.id})">📋 Plantilla</button></td>
+                <td><strong style="color: var(--accent-green); font-weight:800;">${t.pts}</strong></td>
+                <td><button class="action-btn" style="font-size:0.75rem; padding:5px 10px;" onclick="openTeamModal(${t.id})">📋 Plantilla</button></td>
             </tr>
         `).join('');
     }
@@ -1046,7 +1120,7 @@
                     <div class="score-inputs">
                         <input type="number" class="score-input" value="${m.homeScore !== null ? m.homeScore : ''}" 
                             onchange="updateScore(${m.id}, 'home', this.value)">
-                        <span>-</span>
+                        <span style="color:var(--text-muted); font-weight:700;">-</span>
                         <input type="number" class="score-input" value="${m.awayScore !== null ? m.awayScore : ''}" 
                             onchange="updateScore(${m.id}, 'away', this.value)">
                     </div>
@@ -1080,7 +1154,7 @@
                         ${t.logo ? `<img src="${t.logo}" class="team-logo">` : `<div class="team-logo">${t.name.substring(0,2).toUpperCase()}</div>`}
                         <strong style="color:var(--accent-cyan);">Equipo ${index + 1}</strong>
                     </div>
-                    <button class="action-btn" style="font-size:0.75rem; padding:4px 8px;" onclick="openTeamModal(${t.id})">📋 Plantilla</button>
+                    <button class="action-btn" style="font-size:0.75rem; padding:5px 10px;" onclick="openTeamModal(${t.id})">📋 Plantilla</button>
                 </div>
                 <div class="input-group">
                     <label>Nombre del Equipo</label>
@@ -1128,9 +1202,9 @@
         if (!team.roster) team.roster = [];
 
         document.getElementById('modal-header').innerHTML = `
-            ${team.logo ? `<img src="${team.logo}" style="width:48px; height:48px; border-radius:50%; object-fit:cover;">` : `<div class="team-logo" style="width:48px; height:48px; font-size:1.2rem;">${team.name.substring(0,2).toUpperCase()}</div>`}
+            ${team.logo ? `<img src="${team.logo}" style="width:52px; height:52px; border-radius:50%; object-fit:cover;">` : `<div class="team-logo" style="width:52px; height:52px; font-size:1.3rem;">${team.name.substring(0,2).toUpperCase()}</div>`}
             <div>
-                <h2>${team.name}</h2>
+                <h2 style="font-weight:800; font-size:1.25rem;">${team.name}</h2>
                 <span style="color:var(--text-muted); font-size:0.85rem;">División ${currentDiv}</span>
             </div>
         `;
@@ -1158,7 +1232,7 @@
                     <option value="MED" ${player.pos==='MED'?'selected':''}>MED</option>
                     <option value="DEL" ${player.pos==='DEL'?'selected':''}>DEL</option>
                 </select>
-                ${isAdmin ? `<button style="background:transparent; border:none; color:#EF4444; cursor:pointer;" onclick="deletePlayer(${idx})">&times;</button>` : ''}
+                ${isAdmin ? `<button style="background:transparent; border:none; color:var(--accent-red); cursor:pointer; font-size:1.2rem; padding:0 4px;" onclick="deletePlayer(${idx})">&times;</button>` : ''}
             </div>
         `).join('');
     }
