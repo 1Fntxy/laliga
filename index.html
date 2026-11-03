@@ -3,26 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Liga Ilegal Soccer - Roblox</title>
-    <!-- Fuentes de Google: Plus Jakarta Sans & Outfit para títulos -->
+    <title>La Liga Ilegal Soccer - Oficial</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-main: #02040A;
-            --bg-card: rgba(11, 15, 25, 0.9);
-            --border-neon: rgba(6, 182, 212, 0.25);
+            --bg-body: #F4F5F7;
+            --bg-card: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --laliga-red: #EE1D23;
+            --laliga-red-hover: #D0141A;
+            --border-color: #E2E8F0;
             --accent-cyan: #00F0FF;
             --accent-green: #10B981;
             --accent-gold: #F59E0B;
-            --accent-red: #EF4444;
-            --accent-gray: #64748B;
             --accent-discord: #5865F2;
             --accent-tiktok: #FE2C55;
-            --neon-glow: 0 0 25px rgba(0, 240, 255, 0.2);
-            --text-main: #F8FAFC;
-            --text-muted: #94A3B8;
         }
 
         * {
@@ -33,68 +31,42 @@
         }
 
         body {
-            background-color: var(--bg-main);
-            background-image: 
-                radial-gradient(circle at 15% 10%, rgba(0, 240, 255, 0.08) 0%, transparent 45%),
-                radial-gradient(circle at 85% 90%, rgba(16, 185, 129, 0.06) 0%, transparent 45%);
-            background-attachment: fixed;
+            background-color: var(--bg-body);
             color: var(--text-main);
-            padding: 24px;
-            display: flex;
-            justify-content: center;
-            padding-bottom: 100px;
-            min-height: 100vh;
+            padding-bottom: 120px;
         }
 
-        .container {
-            width: 100%;
-            max-width: 1240px;
-        }
-
-        /* Banner Principal / Header Estilo eSports */
-        .hero-banner {
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(3, 7, 18, 0.98) 100%);
-            border: 1px solid var(--border-neon);
-            border-radius: 24px;
-            padding: 28px 36px;
+        /* Barra superior tipo web oficial */
+        .top-bar {
+            background-color: #0B0F19;
+            color: #FFF;
+            padding: 12px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            border-bottom: 3px solid var(--laliga-red);
             flex-wrap: wrap;
-            gap: 20px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), var(--neon-glow);
-            position: relative;
-            overflow: hidden;
+            gap: 15px;
         }
 
-        .hero-banner::after {
-            content: '';
-            position: absolute;
-            top: 0; right: 0; width: 300px; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.03));
-            pointer-events: none;
-        }
-
-        .brand-info {
+        .brand-container {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
         }
 
         .league-emblem {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, #00F0FF 0%, #047857 100%);
-            border-radius: 16px;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--laliga-red), #990000);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
-            border: 2px solid rgba(255, 255, 255, 0.2);
             overflow: hidden;
             cursor: pointer;
-            position: relative;
+            box-shadow: 0 4px 12px rgba(238, 29, 35, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
         .league-emblem img {
@@ -103,681 +75,437 @@
             object-fit: cover;
         }
 
-        #league-logo-input {
-            display: none;
-        }
+        #league-logo-input { display: none; }
 
         .brand-title h1 {
             font-family: 'Outfit', sans-serif;
-            font-size: 2rem;
+            font-size: 1.4rem;
             font-weight: 900;
+            text-transform: uppercase;
             letter-spacing: 0.5px;
             color: #FFF;
-            text-transform: uppercase;
-            line-height: 1.1;
-        }
-
-        .brand-title h1 span {
-            background: linear-gradient(90deg, #00F0FF, #34D399);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
         }
 
         .brand-title p {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
-            font-weight: 600;
-            margin-top: 4px;
-            letter-spacing: 0.5px;
+            font-weight: 700;
         }
 
-        .controls-header {
+        .header-controls {
             display: flex;
             gap: 10px;
             align-items: center;
             flex-wrap: wrap;
         }
 
+        /* Botones generales de control */
         button, a.btn-social, .btn-div, .tab-btn, .action-btn {
             cursor: pointer;
             border: none;
             outline: none;
             text-decoration: none;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
         }
 
         button:hover, a.btn-social:hover, .btn-div:hover, .tab-btn:hover, .action-btn:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.15);
-        }
-
-        button:active, a.btn-social:active, .btn-div:active, .tab-btn:active, .action-btn:active {
-            transform: translateY(1px) scale(0.97);
+            transform: translateY(-1px);
+            filter: brightness(1.1);
         }
 
         .btn-div {
-            background: rgba(255, 255, 255, 0.04);
-            color: var(--text-muted);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 10px 18px;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #CBD5E1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 14px;
+            border-radius: 8px;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .btn-div.active {
-            background: linear-gradient(135deg, #00F0FF 0%, #0891B2 100%);
-            color: #02040A;
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            background: var(--laliga-red);
+            color: #FFF;
+            border-color: var(--laliga-red);
+            box-shadow: 0 0 15px rgba(238, 29, 35, 0.5);
         }
 
         .btn-social {
-            padding: 10px 16px;
-            border-radius: 12px;
+            padding: 8px 14px;
+            border-radius: 8px;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             color: #FFF;
         }
 
-        .btn-social svg {
-            width: 18px;
-            height: 18px;
-            fill: currentColor;
-        }
+        .btn-social svg { width: 16px; height: 16px; fill: currentColor; }
+        .btn-discord { background: var(--accent-discord); }
+        .btn-tiktok { background: var(--accent-tiktok); }
+        .btn-admin { background: var(--accent-gold); color: #02040A; font-weight: 800; }
+        .btn-reset { background: rgba(239, 68, 68, 0.2); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.4); }
 
-        .btn-discord {
-            background: rgba(88, 101, 242, 0.2);
-            border: 1px solid rgba(88, 101, 242, 0.5);
-            color: #8EA1FF;
-            box-shadow: 0 0 12px rgba(88, 101, 242, 0.2);
-        }
-        .btn-discord:hover {
-            background: var(--accent-discord);
+        /* Banner de sección rojo estilo LaLiga */
+        .laliga-hero {
+            background: linear-gradient(135deg, var(--laliga-red) 0%, #B91C1C 100%);
             color: #FFF;
-            box-shadow: 0 0 18px rgba(88, 101, 242, 0.5);
-        }
-
-        .btn-tiktok {
-            background: rgba(254, 44, 85, 0.2);
-            border: 1px solid rgba(254, 44, 85, 0.5);
-            color: #FF8CA3;
-            box-shadow: 0 0 12px rgba(254, 44, 85, 0.2);
-        }
-        .btn-tiktok:hover {
-            background: var(--accent-tiktok);
-            color: #FFF;
-            box-shadow: 0 0 18px rgba(254, 44, 85, 0.5);
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
+            padding: 32px 24px;
+            box-shadow: 0 10px 25px rgba(238, 29, 35, 0.3);
             margin-bottom: 24px;
-            background: rgba(11, 15, 25, 0.7);
-            padding: 8px;
-            border-radius: 16px;
-            border: 1px solid var(--border-neon);
+        }
+
+        .laliga-hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .laliga-hero h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .laliga-hero p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        /* Contenedor Principal */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Pestañas de Navegación principales */
+        .main-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            background: #FFF;
+            padding: 6px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             overflow-x: auto;
-            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
         }
 
         .tab-btn {
             background: transparent;
             color: var(--text-muted);
-            padding: 12px 22px;
-            font-size: 0.95rem;
+            padding: 10px 20px;
+            font-size: 0.9rem;
             font-weight: 700;
-            border-radius: 12px;
+            border-radius: 10px;
             white-space: nowrap;
         }
 
         .tab-btn.active {
             color: #FFF;
-            background: rgba(0, 240, 255, 0.12);
-            border: 1px solid var(--accent-cyan);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+            background: var(--laliga-red);
+            box-shadow: 0 4px 12px rgba(238, 29, 35, 0.3);
         }
 
         .content-section {
             display: none;
-            animation: slideUp 0.35s ease-out;
+            animation: fadeIn 0.3s ease-out;
         }
 
-        .content-section.active {
-            display: block;
-        }
+        .content-section.active { display: block; }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(12px); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Tarjetas Estilo Componentes */
         .card {
             background: var(--bg-card);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--border-neon);
-            border-radius: 20px;
-            padding: 28px;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
         }
 
-        .card h2 {
+        .card h3 {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.35rem;
+            font-size: 1.25rem;
             font-weight: 800;
-            letter-spacing: 0.5px;
-            color: #FFF;
+            color: var(--text-main);
+            margin-bottom: 16px;
         }
 
-        .table-responsive {
+        /* Píldoras de Estadísticas secundarias (Goleadores, Asistencias, Paradas) */
+        .stats-pills {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
             overflow-x: auto;
+            padding-bottom: 4px;
         }
+
+        .pill-btn {
+            background: #FFF;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .pill-btn.active {
+            background: var(--text-main);
+            color: #FFF;
+            border-color: var(--text-main);
+        }
+
+        /* Tablas */
+        .table-responsive { overflow-x: auto; }
 
         table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 8px;
+            border-collapse: collapse;
             text-align: left;
         }
 
         th {
-            padding: 14px 18px;
-            color: var(--accent-cyan);
+            padding: 12px 16px;
+            color: var(--text-muted);
             font-size: 0.75rem;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
-            background: rgba(0, 240, 255, 0.04);
-            border-top: 1px solid var(--border-neon);
-            border-bottom: 1px solid var(--border-neon);
+            letter-spacing: 0.8px;
+            border-bottom: 2px solid var(--border-color);
+            background: #FAFAFA;
         }
-
-        th:first-child { border-left: 1px solid var(--border-neon); border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
-        th:last-child { border-right: 1px solid var(--border-neon); border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
 
         td {
-            padding: 14px 18px;
-            font-size: 0.95rem;
-            background: rgba(255, 255, 255, 0.02);
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 14px 16px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--text-main);
         }
 
-        td:first-child { border-left: 1px solid rgba(255, 255, 255, 0.04); border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
-        td:last-child { border-right: 1px solid rgba(255, 255, 255, 0.04); border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
-
-        tr:hover td {
-            background: rgba(0, 240, 255, 0.05);
-            border-color: rgba(0, 240, 255, 0.15);
-        }
+        tr:hover td { background-color: #F8FAFC; }
 
         .team-cell {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             font-weight: 700;
         }
 
         .team-logo {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             object-fit: cover;
-            background: rgba(0, 240, 255, 0.05);
-            border: 1px solid var(--border-neon);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            color: var(--accent-cyan);
-            font-weight: 800;
-            flex-shrink: 0;
-            box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
-        }
-
-        .form-streak {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-
-        .form-dot {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
+            background: #F1F5F9;
+            border: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 0.75rem;
-            font-weight: 900;
-            color: #FFF;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        }
-
-        .form-dot.win { background-color: var(--accent-green); box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
-        .form-dot.loss { background-color: var(--accent-red); box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
-        .form-dot.draw { background-color: var(--accent-gray); box-shadow: 0 0 10px rgba(100, 116, 139, 0.4); }
-
-        .team-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-            gap: 18px;
-        }
-
-        .team-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-neon);
-            border-radius: 16px;
-            padding: 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .input-group label {
-            font-size: 0.8rem;
             color: var(--text-muted);
-            font-weight: 700;
+            font-weight: 800;
+            flex-shrink: 0;
         }
 
-        input[type="text"], input[type="number"], select {
-            background: rgba(2, 4, 10, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-main);
-            padding: 10px 14px;
-            border-radius: 10px;
-            font-size: 0.9rem;
+        /* Puntos de racha */
+        .form-streak { display: flex; gap: 5px; align-items: center; }
+        .form-dot {
+            width: 22px; height: 22px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; font-weight: 900; color: #FFF;
         }
+        .form-dot.win { background-color: var(--accent-green); }
+        .form-dot.loss { background-color: var(--laliga-red); }
+        .form-dot.draw { background-color: #94A3B8; }
 
-        input[type="text"]:focus, input[type="number"]:focus, select:focus {
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
-        }
-
-        input[type="file"] {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
+        /* Calendario y Partidos */
         .matchday-nav {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 16px 24px;
-            border-radius: 14px;
-            border: 1px solid var(--border-neon);
-            margin-bottom: 24px;
+            background: #FAFAFA;
+            padding: 14px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 10px;
         }
 
         .matchday-select-styled {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             font-weight: 800;
-            color: var(--accent-cyan);
-            background: rgba(2, 4, 10, 0.8);
-            border: 1px solid var(--border-neon);
-            border-radius: 12px;
-            padding: 8px 18px;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+            color: var(--text-main);
+            background: #FFF;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 6px 16px;
             cursor: pointer;
             outline: none;
-            text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
-            transition: all 0.25s ease;
         }
 
-        .matchday-select-styled option {
-            background-color: #0B0F19;
-            color: var(--text-main);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-        }
-
-        .matches-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
+        .matches-grid { display: flex; flex-direction: column; gap: 12px; }
 
         .match-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-neon);
-            border-radius: 14px;
-            padding: 16px 24px;
+            background: #FFF;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
+            gap: 15px;
             flex-wrap: wrap;
         }
 
         .match-team {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            flex: 1;
-            min-width: 140px;
-            font-weight: 700;
+            display: flex; align-items: center; gap: 12px; flex: 1; min-width: 140px; font-weight: 700;
         }
+        .match-team.away { justify-content: flex-end; text-align: right; }
 
-        .match-team.away {
-            justify-content: flex-end;
-            text-align: right;
-        }
-
-        .score-inputs {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
+        .score-inputs { display: flex; align-items: center; gap: 8px; }
         .score-input {
-            width: 52px;
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: 800;
-            padding: 6px;
-            border-radius: 8px;
-            background: rgba(0,0,0,0.7);
-            color: var(--accent-cyan);
-            border: 1px solid var(--border-neon);
+            width: 48px; text-align: center; font-size: 1.1rem; font-weight: 800;
+            padding: 6px; border-radius: 8px; background: #F8FAFC; color: var(--text-main);
+            border: 1px solid var(--border-color);
         }
 
-        .bracket-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            overflow-x: auto;
-            padding: 20px 0;
+        /* Bracket y Gestión */
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+        .team-card {
+            background: #FAFAFA; border: 1px solid var(--border-color); border-radius: 14px; padding: 16px;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-group label { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; }
+        input[type="text"], input[type="number"], select {
+            background: #FFF; border: 1px solid var(--border-color); color: var(--text-main);
+            padding: 9px 12px; border-radius: 8px; font-size: 0.9rem;
         }
 
-        .bracket-column {
-            flex: 1;
-            min-width: 250px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-            gap: 18px;
+        .bracket-container { display: flex; justify-content: space-between; gap: 16px; overflow-x: auto; padding: 10px 0; }
+        .bracket-column { flex: 1; min-width: 240px; display: flex; flex-direction: column; justify-content: space-around; gap: 16px; }
+        .bracket-column h4 {
+            font-family: 'Outfit', sans-serif; text-align: center; font-size: 0.95rem; color: var(--laliga-red);
+            border-bottom: 2px solid var(--border-color); padding-bottom: 6px; font-weight: 800; text-transform: uppercase;
         }
+        .bracket-match { background: #FAFAFA; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+        .bracket-team-select { background: #FFF; border: 1px solid var(--border-color); color: var(--text-main); padding: 6px; border-radius: 6px; font-size: 0.8rem; width: 100%; }
+        .bracket-score-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700; }
 
-        .bracket-column h3 {
-            font-family: 'Outfit', sans-serif;
-            text-align: center;
-            font-size: 1.05rem;
-            color: var(--accent-cyan);
-            margin-bottom: 12px;
-            border-bottom: 2px solid var(--border-neon);
-            padding-bottom: 8px;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        .bracket-match {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-neon);
-            border-radius: 14px;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .bracket-team-select {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid var(--border-neon);
-            color: var(--text-main);
-            padding: 8px;
-            border-radius: 8px;
-            width: 100%;
-            font-size: 0.85rem;
-        }
-
-        .bracket-score-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .bracket-score-row span {
-            font-size: 0.9rem;
-            font-weight: 700;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 140px;
-        }
-
+        /* Botones de acción */
         .action-btn {
-            background: linear-gradient(135deg, #00F0FF 0%, #0891B2 100%);
-            color: #02040A;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: 800;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            background: var(--laliga-red); color: #FFF; padding: 10px 18px; border-radius: 10px; font-weight: 800; font-size: 0.9rem;
         }
-
-        .btn-save-main {
-            background: linear-gradient(135deg, #10B981 0%, #047857 100%);
-            color: #FFF;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
-        }
-
-        .btn-export {
-            background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
-            color: #FFF;
-            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
-        }
+        .btn-save-main { background: var(--accent-green); color: #FFF; }
+        .btn-export { background: #8B5CF6; color: #FFF; }
 
         .floating-save-btn {
-            position: fixed;
-            bottom: 28px;
-            right: 28px;
-            background: linear-gradient(135deg, #10B981 0%, #047857 100%);
-            color: #FFF;
-            padding: 16px 30px;
-            border-radius: 50px;
-            font-weight: 800;
-            font-size: 1.05rem;
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.6);
-            z-index: 999;
-            display: none;
-            align-items: center;
-            gap: 10px;
+            position: fixed; bottom: 24px; right: 24px; background: var(--accent-green); color: #FFF;
+            padding: 14px 26px; border-radius: 40px; font-weight: 800; font-size: 1rem;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4); z-index: 999; display: none; align-items: center; gap: 8px;
         }
 
-        .floating-save-btn.saving {
-            background: linear-gradient(135deg, #00F0FF 0%, #0891B2 100%);
-            color: #02040A;
-            pointer-events: none;
-            animation: neon-pulse 1s infinite alternate;
-        }
-
-        .floating-save-btn.success {
-            background: linear-gradient(135deg, #059669 0%, #065F46 100%);
-            color: #FFF;
-            transform: scale(1.08) !important;
-            box-shadow: 0 0 35px rgba(16, 185, 129, 0.9);
-        }
-
-        @keyframes neon-pulse {
-            0% { transform: scale(1); box-shadow: 0 0 10px rgba(0, 240, 255, 0.4); }
-            100% { transform: scale(1.05); box-shadow: 0 0 25px rgba(0, 240, 255, 0.8); }
-        }
-
-        body.is-admin .floating-save-btn {
-            display: flex !important;
-        }
-
-        .btn-reset {
-            background: rgba(239, 68, 68, 0.15);
-            color: #FCA5A5;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-
-        .btn-admin {
-            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-            color: #02040A;
-            font-weight: 800;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
-        }
-
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(2, 4, 10, 0.85);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: #0B0F19;
-            border: 1px solid var(--border-neon);
-            border-radius: 20px;
-            width: 100%;
-            max-width: 680px;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 28px;
-            position: relative;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), var(--neon-glow);
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 20px; right: 20px;
-            background: transparent;
-            color: var(--text-muted);
-            font-size: 1.8rem;
-            cursor: pointer;
-        }
-
-        .roster-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 14px;
-        }
-
-        .roster-item {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.02);
-            padding: 10px 14px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            flex-wrap: wrap;
-        }
-
-        .num-input { width: 45px; text-align: center; }
-        .stat-input { width: 55px; text-align: center; }
-
+        body.is-admin .floating-save-btn { display: flex !important; }
         .admin-only { display: none !important; }
         body.is-admin .admin-only { display: inline-flex !important; }
         body.is-admin div.admin-only { display: flex !important; }
 
-        body:not(.is-admin) input,
-        body:not(.is-admin) select {
-            pointer-events: none;
-            opacity: 0.8;
-            border-color: transparent;
+        /* Modal de Plantillas */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); z-index: 1000;
+            justify-content: center; align-items: center; padding: 20px;
         }
-
-        body:not(.is-admin) .matchday-nav button,
-        body:not(.is-admin) .matchday-nav select,
-        body:not(.is-admin) .tab-btn,
-        body:not(.is-admin) .btn-div,
-        body:not(.is-admin) a.btn-social {
-            pointer-events: auto !important;
-            opacity: 1 !important;
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background: #FFF; border-radius: 16px; width: 100%; max-width: 650px; max-height: 90vh;
+            overflow-y: auto; padding: 24px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
+        .modal-close { position: absolute; top: 16px; right: 16px; background: transparent; color: var(--text-muted); font-size: 1.6rem; cursor: pointer; }
+        .roster-list { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+        .roster-item { display: flex; gap: 8px; align-items: center; background: #F8FAFC; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); flex-wrap: wrap; }
+        .num-input { width: 45px; text-align: center; }
+        .stat-input { width: 50px; text-align: center; }
 
         @media (max-width: 768px) {
-            .hero-banner { padding: 20px; text-align: center; justify-content: center; }
-            .brand-info { flex-direction: column; }
-            .matchday-nav { flex-direction: column; gap: 12px; text-align: center; }
+            .top-bar { flex-direction: column; text-align: center; }
+            .brand-container { flex-direction: column; }
+            .matchday-nav { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <!-- Banner Principal -->
-    <div class="hero-banner">
-        <div class="brand-info">
-            <div class="league-emblem" onclick="triggerLeagueLogoUpload()" title="Haz clic para cambiar el logo (Modo Admin)">
-                <div id="league-logo-container">
-                    <img src="https://media.discordapp.net/attachments/1353118715406716981/1562489656396873828/2853f42f6c8278a03fdb93880813f8b5.png" alt="Logo de La Liga">
-                </div>
-                <input type="file" id="league-logo-input" accept="image/*" onchange="uploadLeagueLogo(this)">
+<!-- Barra Superior Oficial -->
+<div class="top-bar">
+    <div class="brand-container">
+        <div class="league-emblem" onclick="triggerLeagueLogoUpload()" title="Cambiar logo (Modo Admin)">
+            <div id="league-logo-container">
+                <img src="https://media.discordapp.net/attachments/1353118715406716981/1562489656396873828/2853f42f6c8278a03fdb93880813f8b5.png" alt="Logo">
             </div>
-            <div class="brand-title">
-                <h1>LA LIGA <span>ILEGAL SOCCER</span></h1>
-                <p>TORNEO OFICIAL ROBLOX • NUBE SINCRONIZADA ☁️</p>
-            </div>
+            <input type="file" id="league-logo-input" accept="image/*" onchange="uploadLeagueLogo(this)">
         </div>
-
-        <div class="controls-header">
-            <button class="btn-div active" onclick="switchDivision(1)">🏆 1ª DIV</button>
-            <button class="btn-div" onclick="switchDivision(2)">🥇 2ª DIV</button>
-            <button class="btn-div" onclick="switchDivision(3)">🥈 3ª DIV</button>
-            
-            <a id="link-discord" href="#" target="_blank" class="btn-social btn-discord">
-                <svg viewBox="0 0 127.14 96.36">
-                    <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1,105.25,105.25,0,0,0,32.19-16.15c2.63-27.52-4.52-51.68-19.45-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5.18-12.72,11.45-12.72S53.9,46,53.88,53,48.71,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5.18-12.72,11.45-12.72S96.14,46,96.12,53,91,65.69,84.69,65.69Z"/>
-                </svg>
-                Discord
-            </a>
-
-            <a id="link-tiktok" href="#" target="_blank" class="btn-social btn-tiktok">
-                <svg viewBox="0 0 448 512">
-                    <path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.3V178.4A162.55,162.55,0,1,1,185,15.88V145.28a65,65,0,1,0,35.24,57.7v-205h46.23a163,163,0,0,0,91.3,77.58,160.84,160.84,0,0,0,90.2,8.85Z"/>
-                </svg>
-                TikTok
-            </a>
-
-            <button id="btn-admin-toggle" class="btn-div btn-admin" onclick="toggleAdminMode()">🔑 Admin</button>
-            <button class="btn-div btn-reset admin-only" onclick="resetCurrentDivision()">🔄 Reset</button>
+        <div class="brand-title">
+            <h1>LA LIGA ILEGAL SOCCER</h1>
+            <p>TORNEO OFICIAL ROBLOX • NUBE SINCRONIZADA ☁️</p>
         </div>
     </div>
+    <div class="header-controls">
+        <button class="btn-div active" onclick="switchDivision(1)">🏆 1ª DIV</button>
+        <button class="btn-div" onclick="switchDivision(2)">🥇 2ª DIV</button>
+        <button class="btn-div" onclick="switchDivision(3)">🥈 3ª DIV</button>
+        <a id="link-discord" href="#" target="_blank" class="btn-social btn-discord">
+            <svg viewBox="0 0 127.14 96.36"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1,105.25,105.25,0,0,0,32.19-16.15c2.63-27.52-4.52-51.68-19.45-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5.18-12.72,11.45-12.72S53.9,46,53.88,53,48.71,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5.18-12.72,11.45-12.72S96.14,46,96.12,53,91,65.69,84.69,65.69Z"/></svg>
+            Discord
+        </a>
+        <a id="link-tiktok" href="#" target="_blank" class="btn-social btn-tiktok">
+            <svg viewBox="0 0 448 512"><path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.3V178.4A162.55,162.55,0,1,1,185,15.88V145.28a65,65,0,1,0,35.24,57.7v-205h46.23a163,163,0,0,0,91.3,77.58,160.84,160.84,0,0,0,90.2,8.85Z"/></svg>
+            TikTok
+        </a>
+        <button id="btn-admin-toggle" class="btn-div btn-admin" onclick="toggleAdminMode()">🔑 Admin</button>
+        <button class="btn-div btn-reset admin-only" onclick="resetCurrentDivision()">🔄 Reset</button>
+    </div>
+</div>
 
+<!-- Hero Banner Estilo LaLiga -->
+<div class="laliga-hero">
+    <div class="laliga-hero-content">
+        <h2 id="hero-title">Temporada Oficial • 1ª División</h2>
+        <p>Estadísticas en tiempo real, clasificación y calendario sincronizados</p>
+    </div>
+</div>
+
+<div class="container">
     <!-- Pestañas de Navegación -->
-    <div class="tabs">
+    <div class="main-tabs">
         <button class="tab-btn active" onclick="switchTab('clasificacion', event)">📊 Clasificación</button>
-        <button class="tab-btn" onclick="switchTab('calendario', event)">📅 Calendario / Partidos</button>
+        <button class="tab-btn" onclick="switchTab('calendario', event)">📅 Calendario</button>
         <button class="tab-btn" onclick="switchTab('estadisticas', event)">⚡ Estadísticas / Tops</button>
-        <button class="tab-btn" onclick="switchTab('bracket', event)">🏆 Bracket / Liguilla</button>
-        <button class="tab-btn admin-only" onclick="switchTab('gestion', event)">🛡️ Gestión de Equipos</button>
+        <button class="tab-btn" onclick="switchTab('bracket', event)">🏆 Liguilla</button>
+        <button class="tab-btn admin-only" onclick="switchTab('gestion', event)">🛡️ Gestión</button>
     </div>
 
     <!-- Sección Clasificación -->
     <div id="tab-clasificacion" class="content-section active">
         <div class="card">
-            <h2 id="div-title" style="margin-bottom: 20px;">1ª División • Tabla de Posiciones</h2>
+            <h3 id="div-title">Tabla de Posiciones</h3>
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -796,8 +524,7 @@
                             <th>Plantilla</th>
                         </tr>
                     </thead>
-                    <tbody id="standings-body">
-                    </tbody>
+                    <tbody id="standings-body"></tbody>
                 </table>
             </div>
         </div>
@@ -807,45 +534,80 @@
     <div id="tab-calendario" class="content-section">
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; flex-wrap:wrap; gap:12px;">
-                <h2>Calendario de Partidos por Jornada</h2>
+                <h3>Calendario de Partidos</h3>
                 <button class="action-btn btn-save-main admin-only" onclick="manualSaveCloud()">💾 Guardar Partidos</button>
             </div>
             
             <div class="matchday-nav">
                 <button class="action-btn" onclick="changeMatchday(-1)">◀ Anterior</button>
-                <div style="display:flex; align-items:center; justify-content:center;">
-                    <select id="matchday-select" class="matchday-select-styled" onchange="jumpToMatchday(this.value)"></select>
-                </div>
+                <select id="matchday-select" class="matchday-select-styled" onchange="jumpToMatchday(this.value)"></select>
                 <button class="action-btn" onclick="changeMatchday(1)">Siguiente ▶</button>
             </div>
 
-            <div class="matches-grid" id="matches-container">
-            </div>
+            <div class="matches-grid" id="matches-container"></div>
         </div>
     </div>
 
-    <!-- Sección Estadísticas y Tops Individuales (Top 5 en Tarjetas Horizontales Lado a Lado) -->
+    <!-- Sección Estadísticas / Tops (Estilo la captura con píldoras) -->
     <div id="tab-estadisticas" class="content-section">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px;">
-            
-            <!-- Pichichis (Goleadores) -->
-            <div class="card" style="margin-bottom:0;">
-                <h2 style="margin-bottom: 20px; color: var(--accent-gold);">⚽ Pichichis (Goleadores)</h2>
-                <div style="display: flex; flex-direction: column; gap: 12px;" id="tops-goles-body"></div>
-            </div>
+        <div class="stats-pills">
+            <button class="pill-btn active" onclick="switchStatSubtab('goles', event)">⚽ Goleadores</button>
+            <button class="pill-btn" onclick="switchStatSubtab('asistencias', event)">🎯 Asistencias</button>
+            <button class="pill-btn" onclick="switchStatSubtab('paradas', event)">🧤 Paradas / Atajadas</button>
+        </div>
 
-            <!-- Máximos Asistidores -->
-            <div class="card" style="margin-bottom:0;">
-                <h2 style="margin-bottom: 20px; color: var(--accent-cyan);">🎯 Máximos Asistidores</h2>
-                <div style="display: flex; flex-direction: column; gap: 12px;" id="tops-asist-body"></div>
+        <!-- Subtab Goleadores -->
+        <div id="stat-subtab-goles" class="stat-subcontent card">
+            <h3>Top 5 Pichichis (Goleadores)</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Jugador</th>
+                            <th>Equipo</th>
+                            <th>Goles Totales</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tops-goles-body"></tbody>
+                </table>
             </div>
+        </div>
 
-            <!-- Mejores Atajadas -->
-            <div class="card" style="margin-bottom:0;">
-                <h2 style="margin-bottom: 20px; color: var(--accent-green);">🧤 Mejores Atajadas</h2>
-                <div style="display: flex; flex-direction: column; gap: 12px;" id="tops-atajadas-body"></div>
+        <!-- Subtab Asistencias -->
+        <div id="stat-subtab-asistencias" class="stat-subcontent card" style="display:none;">
+            <h3>Top 5 Máximos Asistidores</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Jugador</th>
+                            <th>Equipo</th>
+                            <th>Asistencias</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tops-asist-body"></tbody>
+                </table>
             </div>
+        </div>
 
+        <!-- Subtab Paradas -->
+        <div id="stat-subtab-paradas" class="stat-subcontent card" style="display:none;">
+            <h3>Top 5 Mejores Paradas (Porteros)</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Portero</th>
+                            <th>Equipo</th>
+                            <th>Paradas Totales</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tops-atajadas-body"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -853,44 +615,42 @@
     <div id="tab-bracket" class="content-section">
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
-                <h2>Cuadro de Eliminación Directa (Liguilla)</h2>
-                <button class="action-btn btn-save-main admin-only" onclick="saveBracket()">💾 Guardar Bracket</button>
+                <h3>Cuadro de Eliminación Directa</h3>
+                <button class="action-btn btn-save-main admin-only" onclick="saveBracket()">💾 Guardar Liguilla</button>
             </div>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">
-                Selecciona a los 8 equipos clasificados para Cuartos de Final y define sus marcadores.
-            </p>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">Selecciona a los clasificados para Cuartos de Final y define marcadores.</p>
 
             <div class="bracket-container">
                 <div class="bracket-column">
-                    <h3>Cuartos de Final</h3>
+                    <h4>Cuartos de Final</h4>
                     <div class="bracket-match">
                         <select id="q1-t1" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
-                        <div class="bracket-score-row"><span id="label-q1-t1">Equipo 1</span><input type="number" id="score-q1-t1" class="score-input" value="0"></div>
-                        <div class="bracket-score-row"><span id="label-q1-t2">Equipo 2</span><input type="number" id="score-q1-t2" class="score-input" value="0"></div>
+                        <div class="bracket-score-row"><span id="label-q1-t1">Eq 1</span><input type="number" id="score-q1-t1" class="score-input" value="0"></div>
+                        <div class="bracket-score-row"><span id="label-q1-t2">Eq 2</span><input type="number" id="score-q1-t2" class="score-input" value="0"></div>
                         <select id="q1-t2" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
                     </div>
                     <div class="bracket-match">
                         <select id="q2-t1" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
-                        <div class="bracket-score-row"><span id="label-q2-t1">Equipo 3</span><input type="number" id="score-q2-t1" class="score-input" value="0"></div>
-                        <div class="bracket-score-row"><span id="label-q2-t2">Equipo 4</span><input type="number" id="score-q2-t2" class="score-input" value="0"></div>
+                        <div class="bracket-score-row"><span id="label-q2-t1">Eq 3</span><input type="number" id="score-q2-t1" class="score-input" value="0"></div>
+                        <div class="bracket-score-row"><span id="label-q2-t2">Eq 4</span><input type="number" id="score-q2-t2" class="score-input" value="0"></div>
                         <select id="q2-t2" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
                     </div>
                     <div class="bracket-match">
                         <select id="q3-t1" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
-                        <div class="bracket-score-row"><span id="label-q3-t1">Equipo 5</span><input type="number" id="score-q3-t1" class="score-input" value="0"></div>
-                        <div class="bracket-score-row"><span id="label-q3-t2">Equipo 6</span><input type="number" id="score-q3-t2" class="score-input" value="0"></div>
+                        <div class="bracket-score-row"><span id="label-q3-t1">Eq 5</span><input type="number" id="score-q3-t1" class="score-input" value="0"></div>
+                        <div class="bracket-score-row"><span id="label-q3-t2">Eq 6</span><input type="number" id="score-q3-t2" class="score-input" value="0"></div>
                         <select id="q3-t2" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
                     </div>
                     <div class="bracket-match">
                         <select id="q4-t1" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
-                        <div class="bracket-score-row"><span id="label-q4-t1">Equipo 7</span><input type="number" id="score-q4-t1" class="score-input" value="0"></div>
-                        <div class="bracket-score-row"><span id="label-q4-t2">Equipo 8</span><input type="number" id="score-q4-t2" class="score-input" value="0"></div>
+                        <div class="bracket-score-row"><span id="label-q4-t1">Eq 7</span><input type="number" id="score-q4-t1" class="score-input" value="0"></div>
+                        <div class="bracket-score-row"><span id="label-q4-t2">Eq 8</span><input type="number" id="score-q4-t2" class="score-input" value="0"></div>
                         <select id="q4-t2" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
                     </div>
                 </div>
 
                 <div class="bracket-column">
-                    <h3>Semifinales</h3>
+                    <h4>Semifinales</h4>
                     <div class="bracket-match">
                         <div class="bracket-score-row"><span id="label-s1-t1">Ganador Q1</span><input type="number" id="score-s1-t1" class="score-input" value="0"></div>
                         <div class="bracket-score-row"><span id="label-s1-t2">Ganador Q2</span><input type="number" id="score-s1-t2" class="score-input" value="0"></div>
@@ -902,14 +662,14 @@
                 </div>
 
                 <div class="bracket-column">
-                    <h3>Gran Final</h3>
+                    <h4>Gran Final</h4>
                     <div class="bracket-match" style="border-color: var(--accent-gold);">
                         <div class="bracket-score-row"><span id="label-f-t1">Finalista 1</span><input type="number" id="score-f-t1" class="score-input" value="0"></div>
                         <div class="bracket-score-row"><span id="label-f-t2">Finalista 2</span><input type="number" id="score-f-t2" class="score-input" value="0"></div>
                     </div>
-                    <div class="bracket-match" style="text-align: center; background: radial-gradient(circle, #1E293B 0%, #030712 100%); border: 2px solid var(--accent-gold); box-shadow: 0 0 20px rgba(245,158,11,0.2);">
-                        <span style="font-size: 0.8rem; color: var(--accent-gold); font-weight: 800;">🏆 CAMPEÓN OFICIAL</span>
-                        <h2 id="champion-name" style="color: #FFF; font-size: 1.25rem; margin-top: 6px; font-weight: 800;">- Por Definir -</h2>
+                    <div class="bracket-match" style="text-align: center; background: #FFF; border: 2px solid var(--accent-gold);">
+                        <span style="font-size: 0.75rem; color: var(--accent-gold); font-weight: 800;">🏆 CAMPEÓN</span>
+                        <h4 id="champion-name" style="color: var(--text-main); font-size: 1.1rem; margin-top: 4px; border:none;">- Por Definir -</h4>
                     </div>
                 </div>
             </div>
@@ -920,62 +680,59 @@
     <div id="tab-gestion" class="content-section">
         <div class="card" style="margin-bottom: 24px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
-                <h2>Enlaces de Redes Sociales</h2>
+                <h3>Enlaces de Redes Sociales</h3>
                 <button class="action-btn btn-save-main admin-only" onclick="manualSaveCloud()">💾 Guardar Enlaces</button>
             </div>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
                 <div class="input-group">
-                    <label>Enlace del Servidor de Discord:</label>
-                    <input type="text" id="admin-discord-url" placeholder="https://discord.gg/tu-invitacion" onchange="updateSocialLinksFromInput()">
+                    <label>Enlace de Discord:</label>
+                    <input type="text" id="admin-discord-url" placeholder="https://discord.gg/..." onchange="updateSocialLinksFromInput()">
                 </div>
                 <div class="input-group">
-                    <label>Enlace del Perfil de TikTok:</label>
-                    <input type="text" id="admin-tiktok-url" placeholder="https://www.tiktok.com/@tu-usuario" onchange="updateSocialLinksFromInput()">
+                    <label>Enlace de TikTok:</label>
+                    <input type="text" id="admin-tiktok-url" placeholder="https://www.tiktok.com/@..." onchange="updateSocialLinksFromInput()">
                 </div>
             </div>
         </div>
 
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; flex-wrap:wrap; gap:12px;">
-                <h2>Configuración de Equipos</h2>
+                <h3>Configuración de Equipos</h3>
                 <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <button class="action-btn btn-export admin-only" onclick="exportDataJSON()">📥 Exportar Datos (JSON)</button>
+                    <button class="action-btn btn-export admin-only" onclick="exportDataJSON()">📥 Exportar JSON</button>
                     <button class="action-btn btn-save-main admin-only" onclick="manualSaveCloud()">💾 Guardar Equipos</button>
                 </div>
             </div>
-            <div class="team-grid" id="teams-management-grid">
-            </div>
+            <div class="team-grid" id="teams-management-grid"></div>
         </div>
     </div>
 </div>
 
-<!-- Botón Flotante Neón de Guardado -->
+<!-- Botón Flotante Guardado -->
 <button id="floating-save-btn" class="floating-save-btn admin-only" onclick="manualSaveCloud()">
-    <span>💾 Guardar en la Nube</span>
+    <span>💾 Guardar Cambios</span>
 </button>
 
-<!-- Modal de Plantilla con Estadísticas -->
+<!-- Modal Plantillas -->
 <div id="team-modal" class="modal-overlay">
     <div class="modal-content">
         <button class="modal-close" onclick="closeTeamModal()">&times;</button>
-        <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;" id="modal-header">
-        </div>
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;" id="modal-header"></div>
 
         <div class="input-group" style="margin-bottom:20px;">
             <label>Director Técnico / Capitán (Roblox Username):</label>
-            <input type="text" id="modal-dt-input" placeholder="Ej. RobloxPro123" onchange="updateModalTeamInfo()">
+            <input type="text" id="modal-dt-input" placeholder="Ej. ProPlayer" onchange="updateModalTeamInfo()">
         </div>
 
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
-            <h3 style="font-weight: 700;">Plantilla y Estadísticas (⚽ Goles | 🎯 Asist. | 🧤 Atajadas)</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h4 style="font-weight: 700;">Plantilla y Estadísticas (⚽ Goles | 🎯 Asist. | 🧤 Paradas)</h4>
             <button class="action-btn admin-only" style="font-size:0.8rem; padding:6px 12px;" onclick="addRosterPlayer()">+ Agregar Jugador</button>
         </div>
 
-        <div class="roster-list" id="modal-roster-list">
-        </div>
+        <div class="roster-list" id="modal-roster-list"></div>
 
         <div style="margin-top:24px; text-align:right;">
-            <button class="action-btn btn-save-main admin-only" onclick="closeTeamModal()">💾 Guardar y Cerrar</button>
+            <button class="action-btn btn-save-main admin-only" onclick="closeTeamModal()">Guardar y Cerrar</button>
         </div>
     </div>
 </div>
@@ -1112,7 +869,6 @@
         const span = btn ? btn.querySelector('span') : null;
 
         if (btn && span) {
-            btn.classList.remove('success');
             btn.classList.add('saving');
             span.innerText = "⏳ Guardando...";
         }
@@ -1120,17 +876,12 @@
         const ok = await saveStateToCloud();
 
         if (btn && span) {
-            btn.classList.remove('saving');
             if (ok) {
-                btn.classList.add('success');
                 span.innerText = "¡Guardado con éxito! ✅";
-                setTimeout(() => {
-                    btn.classList.remove('success');
-                    span.innerText = "💾 Guardar en la Nube";
-                }, 3000);
+                setTimeout(() => { span.innerText = "💾 Guardar Cambios"; }, 2500);
             } else {
-                span.innerText = "❌ Error al Guardar";
-                setTimeout(() => { span.innerText = "💾 Guardar en la Nube"; }, 3000);
+                span.innerText = "❌ Error al guardar";
+                setTimeout(() => { span.innerText = "💾 Guardar Cambios"; }, 2500);
             }
         }
     };
@@ -1140,7 +891,7 @@
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
         const downloadAnchor = document.createElement('a');
         downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", `respaldo_la_liga_div${currentDiv}.json`);
+        downloadAnchor.setAttribute("download", `respaldo_laliga_div${currentDiv}.json`);
         document.body.appendChild(downloadAnchor);
         downloadAnchor.click();
         downloadAnchor.remove();
@@ -1167,7 +918,7 @@
 
     window.triggerLeagueLogoUpload = function() {
         if (!isAdmin) {
-            alert('Debes activar el Modo Administrador (🔑 Admin) para cambiar el logo de la liga.');
+            alert('Activa el Modo Administrador (🔑 Admin) para cambiar el logo.');
             return;
         }
         document.getElementById('league-logo-input').click();
@@ -1191,7 +942,7 @@
         const divData = appData[currentDiv] || {};
         const container = document.getElementById('league-logo-container');
         const logoUrl = divData.leagueLogo || "https://media.discordapp.net/attachments/1353118715406716981/1562489656396873828/2853f42f6c8278a03fdb93880813f8b5.png";
-        container.innerHTML = `<img src="${logoUrl}" alt="Logo Liga">`;
+        container.innerHTML = `<img src="${logoUrl}" alt="Logo">`;
     }
 
     window.updateSocialLinksFromInput = function() {
@@ -1216,19 +967,28 @@
     window.switchDivision = function(div) {
         currentDiv = div;
         currentMatchday = 1;
-        document.querySelectorAll('.btn-div').forEach((btn, idx) => {
+        document.querySelectorAll('.header-controls .btn-div').forEach((btn, idx) => {
             if(idx < 3) btn.classList.toggle('active', idx + 1 === div);
         });
+        document.getElementById('hero-title').innerText = `Temporada Oficial • ${div}ª División`;
         document.getElementById('div-title').innerText = `${div}ª División • Tabla de Posiciones`;
         renderAll();
     };
 
     window.switchTab = function(tabName, evt) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.main-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
         
         if (evt && evt.target) evt.target.classList.add('active');
         document.getElementById(`tab-${tabName}`).classList.add('active');
+    };
+
+    window.switchStatSubtab = function(subtabName, evt) {
+        document.querySelectorAll('.stats-pills .pill-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.stat-subcontent').forEach(sub => sub.style.display = 'none');
+
+        if (evt && evt.target) evt.target.classList.add('active');
+        document.getElementById(`stat-subtab-${subtabName}`).style.display = 'block';
     };
 
     function renderAll() {
@@ -1290,19 +1050,19 @@
         tbody.innerHTML = stats.map((t, idx) => {
             let formHTML = '<div class="form-streak">';
             if (t.last5.length === 0) {
-                formHTML += '<span style="color:var(--text-muted); font-size:0.8rem;">Sin partidos</span>';
+                formHTML += '<span style="color:var(--text-muted); font-size:0.75rem;">Sin partidos</span>';
             } else {
                 t.last5.forEach(res => {
-                    if (res === 'W') formHTML += `<div class="form-dot win" title="Victoria">✓</div>`;
-                    else if (res === 'L') formHTML += `<div class="form-dot loss" title="Derrota">✕</div>`;
-                    else formHTML += `<div class="form-dot draw" title="Empate">-</div>`;
+                    if (res === 'W') formHTML += `<div class="form-dot win">V</div>`;
+                    else if (res === 'L') formHTML += `<div class="form-dot loss">D</div>`;
+                    else formHTML += `<div class="form-dot draw">E</div>`;
                 });
             }
             formHTML += '</div>';
 
             return `
                 <tr>
-                    <td><strong style="color:var(--accent-cyan);">${idx + 1}</strong></td>
+                    <td><strong>${idx + 1}</strong></td>
                     <td>
                         <div class="team-cell">
                             ${t.logo ? `<img src="${t.logo}" class="team-logo">` : `<div class="team-logo">${t.name.substring(0, 2).toUpperCase()}</div>`}
@@ -1316,7 +1076,7 @@
                     <td>${t.gf}</td>
                     <td>${t.gc}</td>
                     <td>${t.dg > 0 ? '+' + t.dg : t.dg}</td>
-                    <td><strong style="color: var(--accent-green); font-weight:800;">${t.pts}</strong></td>
+                    <td><strong style="color: var(--laliga-red);">${t.pts}</strong></td>
                     <td>${formHTML}</td>
                     <td><button class="action-btn" style="font-size:0.75rem; padding:6px 12px;" onclick="openTeamModal(${t.id})">📋 Plantilla</button></td>
                 </tr>
@@ -1343,56 +1103,38 @@
             }
         });
 
-        // Top 5 Goleadores (Diseño Horizontal Limpio)
+        // Goleadores Top 5
         let topGoals = [...allPlayers].sort((a, b) => b.goals - a.goals).slice(0, 5);
         document.getElementById('tops-goles-body').innerHTML = topGoals.map((p, i) => `
-            <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); padding: 10px 14px; border-radius: 12px;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <strong style="color:var(--accent-gold); width:20px;">#${i+1}</strong>
-                    <div>
-                        <div style="font-weight: 700; font-size: 0.95rem; color: #FFF;">${p.name}</div>
-                        <div style="font-size: 0.75rem; color: var(--text-muted);">${p.teamName}</div>
-                    </div>
-                </div>
-                <div style="background: rgba(245, 158, 11, 0.15); color: var(--accent-gold); padding: 4px 12px; border-radius: 8px; font-weight: 800; font-size: 0.95rem;">
-                    ⚽ ${p.goals}
-                </div>
-            </div>
-        `).join('') || `<div style="text-align:center; color:var(--text-muted); padding:10px;">Sin registros</div>`;
+            <tr>
+                <td><strong style="color:var(--laliga-red);">#${i+1}</strong></td>
+                <td>${p.name}</td>
+                <td style="color:var(--text-muted);">${p.teamName}</td>
+                <td><strong style="color:var(--text-main); font-size:1.05rem;">⚽ ${p.goals}</strong></td>
+            </tr>
+        `).join('') || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin registros</td></tr>`;
 
-        // Top 5 Asistencias (Diseño Horizontal Limpio)
+        // Asistencias Top 5
         let topAssists = [...allPlayers].sort((a, b) => b.assists - a.assists).slice(0, 5);
         document.getElementById('tops-asist-body').innerHTML = topAssists.map((p, i) => `
-            <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); padding: 10px 14px; border-radius: 12px;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <strong style="color:var(--accent-cyan); width:20px;">#${i+1}</strong>
-                    <div>
-                        <div style="font-weight: 700; font-size: 0.95rem; color: #FFF;">${p.name}</div>
-                        <div style="font-size: 0.75rem; color: var(--text-muted);">${p.teamName}</div>
-                    </div>
-                </div>
-                <div style="background: rgba(0, 240, 255, 0.15); color: var(--accent-cyan); padding: 4px 12px; border-radius: 8px; font-weight: 800; font-size: 0.95rem;">
-                    🎯 ${p.assists}
-                </div>
-            </div>
-        `).join('') || `<div style="text-align:center; color:var(--text-muted); padding:10px;">Sin registros</div>`;
+            <tr>
+                <td><strong style="color:var(--laliga-red);">#${i+1}</strong></td>
+                <td>${p.name}</td>
+                <td style="color:var(--text-muted);">${p.teamName}</td>
+                <td><strong style="color:var(--text-main); font-size:1.05rem;">🎯 ${p.assists}</strong></td>
+            </tr>
+        `).join('') || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin registros</td></tr>`;
 
-        // Top 5 Atajadas (Diseño Horizontal Limpio)
+        // Paradas Top 5
         let topSaves = [...allPlayers].sort((a, b) => b.saves - a.saves).slice(0, 5);
         document.getElementById('tops-atajadas-body').innerHTML = topSaves.map((p, i) => `
-            <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); padding: 10px 14px; border-radius: 12px;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <strong style="color:var(--accent-green); width:20px;">#${i+1}</strong>
-                    <div>
-                        <div style="font-weight: 700; font-size: 0.95rem; color: #FFF;">${p.name}</div>
-                        <div style="font-size: 0.75rem; color: var(--text-muted);">${p.teamName}</div>
-                    </div>
-                </div>
-                <div style="background: rgba(16, 185, 129, 0.15); color: var(--accent-green); padding: 4px 12px; border-radius: 8px; font-weight: 800; font-size: 0.95rem;">
-                    🧤 ${p.saves}
-                </div>
-            </div>
-        `).join('') || `<div style="text-align:center; color:var(--text-muted); padding:10px;">Sin registros</div>`;
+            <tr>
+                <td><strong style="color:var(--laliga-red);">#${i+1}</strong></td>
+                <td>${p.name}</td>
+                <td style="color:var(--text-muted);">${p.teamName}</td>
+                <td><strong style="color:var(--text-main); font-size:1.05rem;">🧤 ${p.saves}</strong></td>
+            </tr>
+        `).join('') || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin registros</td></tr>`;
     }
 
     function getMaxMatchdays() {
@@ -1433,7 +1175,7 @@
         const currentMatches = divData.matches.filter(m => m.matchday === currentMatchday);
         
         if (currentMatches.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">No hay partidos programados para esta jornada.</div>`;
+            container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">No hay partidos para esta jornada.</div>`;
             return;
         }
 
@@ -1448,11 +1190,9 @@
                         <span>${home.name}</span>
                     </div>
                     <div class="score-inputs">
-                        <input type="number" class="score-input" value="${m.homeScore !== null ? m.homeScore : ''}" 
-                            onchange="updateScore(${m.id}, 'home', this.value)">
+                        <input type="number" class="score-input" value="${m.homeScore !== null ? m.homeScore : ''}" onchange="updateScore(${m.id}, 'home', this.value)">
                         <span style="color:var(--text-muted); font-weight:800;">-</span>
-                        <input type="number" class="score-input" value="${m.awayScore !== null ? m.awayScore : ''}" 
-                            onchange="updateScore(${m.id}, 'away', this.value)">
+                        <input type="number" class="score-input" value="${m.awayScore !== null ? m.awayScore : ''}" onchange="updateScore(${m.id}, 'away', this.value)">
                     </div>
                     <div class="match-team away">
                         <span>${away.name}</span>
@@ -1467,9 +1207,7 @@
         if (!isAdmin) return;
         const divData = appData[currentDiv];
         const match = divData.matches.find(m => m.id === matchId);
-        if (match) {
-            match[type + 'Score'] = val === '' ? null : parseInt(val);
-        }
+        if (match) match[type + 'Score'] = val === '' ? null : parseInt(val);
     };
 
     function renderTeamManagement() {
@@ -1480,18 +1218,18 @@
         grid.innerHTML = divData.teams.map((t, index) => `
             <div class="team-card">
                 <div style="display:flex; align-items:center; justify-content:space-between;">
-                    <div style="display:flex; align-items:center; gap:12px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
                         ${t.logo ? `<img src="${t.logo}" class="team-logo">` : `<div class="team-logo">${t.name.substring(0,2).toUpperCase()}</div>`}
-                        <strong style="color:var(--accent-cyan);">Equipo ${index + 1}</strong>
+                        <strong>Equipo ${index + 1}</strong>
                     </div>
-                    <button class="action-btn" style="font-size:0.75rem; padding:6px 12px;" onclick="openTeamModal(${t.id})">📋 Plantilla</button>
+                    <button class="action-btn" style="font-size:0.75rem; padding:6px 10px;" onclick="openTeamModal(${t.id})">Plantilla</button>
                 </div>
                 <div class="input-group">
                     <label>Nombre del Equipo</label>
                     <input type="text" value="${t.name}" onchange="updateTeamName(${t.id}, this.value)">
                 </div>
                 <div class="input-group">
-                    <label>Logo / Escudo</label>
+                    <label>Escudo / Logo</label>
                     <input type="file" accept="image/*" onchange="uploadTeamLogo(${t.id}, this)">
                 </div>
             </div>
@@ -1530,16 +1268,15 @@
         if (!team.roster) team.roster = [];
 
         document.getElementById('modal-header').innerHTML = `
-            ${team.logo ? `<img src="${team.logo}" style="width:54px; height:54px; border-radius:50%; object-fit:cover; border:2px solid var(--accent-cyan);">` : `<div class="team-logo" style="width:54px; height:54px; font-size:1.3rem;">${team.name.substring(0,2).toUpperCase()}</div>`}
+            ${team.logo ? `<img src="${team.logo}" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">` : `<div class="team-logo" style="width:50px; height:50px;">${team.name.substring(0,2).toUpperCase()}</div>`}
             <div>
-                <h2 style="font-family:'Outfit',sans-serif; font-weight:800; font-size:1.25rem;">${team.name}</h2>
-                <span style="color:var(--text-muted); font-size:0.85rem;">División ${currentDiv}</span>
+                <h3 style="margin:0;">${team.name}</h3>
+                <span style="color:var(--text-muted); font-size:0.8rem;">División ${currentDiv}</span>
             </div>
         `;
 
         document.getElementById('modal-dt-input').value = team.manager || '';
         renderRosterList(team);
-
         document.getElementById('team-modal').classList.add('active');
     };
 
@@ -1553,8 +1290,8 @@
         const container = document.getElementById('modal-roster-list');
         container.innerHTML = team.roster.map((player, idx) => `
             <div class="roster-item">
-                <input type="number" class="num-input" value="${player.num}" placeholder="#" onchange="updatePlayer(${idx}, 'num', this.value)" title="Dorsal">
-                <input type="text" style="flex:1; min-width:120px;" value="${player.name}" placeholder="Username" onchange="updatePlayer(${idx}, 'name', this.value)">
+                <input type="number" class="num-input" value="${player.num}" placeholder="#" onchange="updatePlayer(${idx}, 'num', this.value)">
+                <input type="text" style="flex:1; min-width:110px;" value="${player.name}" placeholder="Roblox Username" onchange="updatePlayer(${idx}, 'name', this.value)">
                 <select onchange="updatePlayer(${idx}, 'pos', this.value)">
                     <option value="POR" ${player.pos==='POR'?'selected':''}>POR</option>
                     <option value="DEF" ${player.pos==='DEF'?'selected':''}>DEF</option>
@@ -1562,18 +1299,15 @@
                     <option value="DEL" ${player.pos==='DEL'?'selected':''}>DEL</option>
                 </select>
                 <div style="display:flex; align-items:center; gap:4px;" title="Goles">
-                    <span style="font-size:0.75rem; color:var(--accent-gold);">⚽</span>
-                    <input type="number" class="stat-input" value="${player.goals || 0}" onchange="updatePlayer(${idx}, 'goals', this.value)">
+                    <span>⚽</span><input type="number" class="stat-input" value="${player.goals || 0}" onchange="updatePlayer(${idx}, 'goals', this.value)">
                 </div>
                 <div style="display:flex; align-items:center; gap:4px;" title="Asistencias">
-                    <span style="font-size:0.75rem; color:var(--accent-cyan);">🎯</span>
-                    <input type="number" class="stat-input" value="${player.assists || 0}" onchange="updatePlayer(${idx}, 'assists', this.value)">
+                    <span>🎯</span><input type="number" class="stat-input" value="${player.assists || 0}" onchange="updatePlayer(${idx}, 'assists', this.value)">
                 </div>
-                <div style="display:flex; align-items:center; gap:4px;" title="Atajadas">
-                    <span style="font-size:0.75rem; color:var(--accent-green);">🧤</span>
-                    <input type="number" class="stat-input" value="${player.saves || 0}" onchange="updatePlayer(${idx}, 'saves', this.value)">
+                <div style="display:flex; align-items:center; gap:4px;" title="Paradas">
+                    <span>🧤</span><input type="number" class="stat-input" value="${player.saves || 0}" onchange="updatePlayer(${idx}, 'saves', this.value)">
                 </div>
-                ${isAdmin ? `<button style="background:transparent; border:none; color:var(--accent-red); cursor:pointer; font-size:1.3rem; padding:0 4px;" onclick="deletePlayer(${idx})">&times;</button>` : ''}
+                ${isAdmin ? `<button style="background:transparent; border:none; color:var(--laliga-red); cursor:pointer; font-size:1.2rem; padding:0 4px;" onclick="deletePlayer(${idx})">&times;</button>` : ''}
             </div>
         `).join('');
     }
@@ -1617,7 +1351,7 @@
 
     window.resetCurrentDivision = function() {
         if (!isAdmin) return;
-        if (confirm(`¿Estás seguro de restablecer todos los datos de la ${currentDiv}ª División?`)) {
+        if (confirm(`¿Restablecer datos de la ${currentDiv}ª División?`)) {
             const initial = getInitialData();
             appData[currentDiv] = initial[currentDiv];
             saveStateToCloud();
