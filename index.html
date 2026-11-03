@@ -93,6 +93,20 @@
             flex-wrap: wrap;
         }
 
+        /* Estilo base y animación para TODOS los botones */
+        button, .btn-div, .tab-btn, .action-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        button:hover, .btn-div:hover, .tab-btn:hover, .action-btn:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.25);
+        }
+
+        button:active, .btn-div:active, .tab-btn:active, .action-btn:active {
+            transform: scale(0.95) !important;
+        }
+
         .btn-div {
             background: var(--bg-hover);
             color: var(--text-muted);
@@ -101,13 +115,13 @@
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.2s;
         }
 
         .btn-div.active {
             background: var(--accent-cyan);
             color: #000;
             border-color: var(--accent-cyan);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
         }
 
         .tabs {
@@ -129,7 +143,6 @@
             cursor: pointer;
             border-radius: 6px;
             white-space: nowrap;
-            transition: background 0.2s, color 0.2s;
         }
 
         .tab-btn.active {
@@ -375,11 +388,6 @@
             border-radius: 6px;
             font-weight: 700;
             cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .action-btn:hover {
-            opacity: 0.9;
         }
 
         .btn-save-main {
@@ -389,6 +397,7 @@
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
 
+        /* Botón Flotante y Animaciones */
         .floating-save-btn {
             position: fixed;
             bottom: 24px;
@@ -406,11 +415,25 @@
             display: none;
             align-items: center;
             gap: 8px;
-            transition: transform 0.2s;
         }
 
-        .floating-save-btn:hover {
-            transform: scale(1.05);
+        .floating-save-btn.saving {
+            background: var(--accent-cyan);
+            color: #000;
+            pointer-events: none;
+            animation: pulse-save 1s infinite alternate;
+        }
+
+        .floating-save-btn.success {
+            background: #10B981;
+            color: #FFF;
+            transform: scale(1.08) !important;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.8);
+        }
+
+        @keyframes pulse-save {
+            0% { transform: scale(1); opacity: 0.9; }
+            100% { transform: scale(1.05); opacity: 1; }
         }
 
         body.is-admin .floating-save-btn {
@@ -697,8 +720,8 @@
     </div>
 </div>
 
-<button class="floating-save-btn admin-only" onclick="manualSaveCloud()">
-    💾 Guardar en la Nube
+<button id="floating-save-btn" class="floating-save-btn admin-only" onclick="manualSaveCloud()">
+    <span>💾 Guardar en la Nube</span>
 </button>
 
 <div id="team-modal" class="modal-overlay">
@@ -833,11 +856,32 @@
 
     window.manualSaveCloud = async function() {
         if (!isAdmin) return;
+        const btn = document.getElementById('floating-save-btn');
+        const span = btn ? btn.querySelector('span') : null;
+
+        if (btn && span) {
+            btn.classList.remove('success');
+            btn.classList.add('saving');
+            span.innerText = "⏳ Guardando...";
+        }
+
         const ok = await saveStateToCloud();
-        if (ok) {
-            alert("✅ ¡Todos los cambios han sido guardados con éxito en la nube!");
-        } else {
-            alert("❌ Hubo un error al guardar. Revisa la consola.");
+
+        if (btn && span) {
+            btn.classList.remove('saving');
+            if (ok) {
+                btn.classList.add('success');
+                span.innerText = "¡Guardado con éxito! ✅";
+                setTimeout(() => {
+                    btn.classList.remove('success');
+                    span.innerText = "💾 Guardar en la Nube";
+                }, 3000);
+            } else {
+                span.innerText = "❌ Error al Guardar";
+                setTimeout(() => {
+                    span.innerText = "💾 Guardar en la Nube";
+                }, 3000);
+            }
         }
     };
 
@@ -1029,12 +1073,12 @@
         if (!divData) return;
         const grid = document.getElementById('teams-management-grid');
 
-        grid.innerHTML = divData.teams.map(t => `
+        grid.innerHTML = divData.teams.map((t, index) => `
             <div class="team-card">
                 <div style="display:flex; align-items:center; justify-content:space-between;">
                     <div style="display:flex; align-items:center; gap:12px;">
                         ${t.logo ? `<img src="${t.logo}" class="team-logo">` : `<div class="team-logo">${t.name.substring(0,2).toUpperCase()}</div>`}
-                        <strong>ID #${t.id}</strong>
+                        <strong style="color:var(--accent-cyan);">Equipo ${index + 1}</strong>
                     </div>
                     <button class="action-btn" style="font-size:0.75rem; padding:4px 8px;" onclick="openTeamModal(${t.id})">📋 Plantilla</button>
                 </div>
