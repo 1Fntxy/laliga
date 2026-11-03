@@ -144,10 +144,68 @@
         .btn-admin { background: var(--accent-gold); color: #02040A; font-weight: 800; }
         .btn-reset { background: rgba(239, 68, 68, 0.2); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.4); }
 
+        /* Barra Carrusel de Escudos de Clubes */
+        .clubs-ticker-bar {
+            background: #0B0F19;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .clubs-ticker-bar::-webkit-scrollbar { height: 4px; }
+        .clubs-ticker-bar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        .ticker-label {
+            color: #94A3B8;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            flex-shrink: 0;
+            border-right: 2px solid rgba(255,255,255,0.1);
+            padding-right: 15px;
+        }
+        .ticker-items {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .club-ticker-item {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #1E293B;
+            border: 1px solid rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .club-ticker-item:hover {
+            transform: scale(1.15);
+            border-color: var(--laliga-red);
+            box-shadow: 0 0 10px rgba(238, 29, 35, 0.5);
+        }
+        .club-ticker-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .club-ticker-fallback {
+            font-size: 0.65rem;
+            color: #FFF;
+            font-weight: 800;
+        }
+
         .laliga-hero {
             background: linear-gradient(135deg, var(--laliga-red) 0%, #B91C1C 100%);
             color: #FFF;
-            padding: 32px 24px;
+            padding: 24px;
             box-shadow: 0 10px 25px rgba(238, 29, 35, 0.3);
             margin-bottom: 24px;
         }
@@ -159,14 +217,14 @@
 
         .laliga-hero h2 {
             font-family: 'Outfit', sans-serif;
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .laliga-hero p {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             opacity: 0.9;
             margin-top: 4px;
             font-weight: 600;
@@ -406,7 +464,7 @@
         .btn-export { background: #8B5CF6; color: #FFF; }
         .btn-export:hover { background: #7C3AED; }
 
-        /* Botón Flotante Oculto por Defecto */
+        /* Botón Flotante Oculto hasta ser Admin */
         .floating-save-btn {
             position: fixed; bottom: 24px; right: 24px; background: var(--laliga-red); color: #FFF;
             padding: 16px 28px; border-radius: 40px; font-weight: 800; font-size: 1rem;
@@ -468,6 +526,12 @@
         <button id="btn-admin-toggle" class="btn-div btn-admin" onclick="toggleAdminMode()">🔑 Admin</button>
         <button class="btn-div btn-reset" onclick="resetCurrentDivision()">🔄 Reset</button>
     </div>
+</div>
+
+<!-- Barra deslizable con los escudos de los 16 equipos de la división actual -->
+<div class="clubs-ticker-bar">
+    <div class="ticker-label">Web Clubes</div>
+    <div class="ticker-items" id="ticker-clubs-container"></div>
 </div>
 
 <div class="laliga-hero">
@@ -730,7 +794,7 @@
     const db = getFirestore(app);
 
     const ADMIN_PIN = "021126";
-    let isAdmin = false; // Comienza bloqueado por defecto
+    let isAdmin = false;
 
     const DEFAULT_TEAMS = [
         "Roblox United FC", "Illegal Strikers", "Bloxburg City", "Vip Nation",
@@ -886,7 +950,6 @@
                 document.getElementById('btn-admin-toggle').style.background = "#10B981";
                 document.getElementById('btn-admin-toggle').style.color = "#FFF";
                 
-                // Mostrar pestaña de gestión y botón flotante al autenticarse
                 document.getElementById('tab-btn-gestion').style.display = 'inline-block';
                 document.getElementById('floating-save-btn').style.display = 'flex';
 
@@ -902,11 +965,9 @@
                 document.getElementById('btn-admin-toggle').style.background = "var(--accent-gold)";
                 document.getElementById('btn-admin-toggle').style.color = "#02040A";
                 
-                // Volver a ocultar gestión y botón flotante
                 document.getElementById('tab-btn-gestion').style.display = 'none';
                 document.getElementById('floating-save-btn').style.display = 'none';
                 
-                // Si estaba en la pestaña de gestión, regresarlo a clasificación
                 switchTab('clasificacion', null);
                 alert('Modo Administrador Cerrado.');
                 renderAll();
@@ -938,6 +999,19 @@
         const container = document.getElementById('league-logo-container');
         const logoUrl = divData.leagueLogo || "https://media.discordapp.net/attachments/1353118715406716981/1562489656396873828/2853f42f6c8278a03fdb93880813f8b5.png";
         container.innerHTML = `<img src="${logoUrl}" alt="Logo">`;
+    }
+
+    // Renderizar la barra superior con los 16 escudos de equipos de la división
+    function renderClubsTicker() {
+        const divData = appData[currentDiv];
+        if (!divData || !divData.teams) return;
+        const container = document.getElementById('ticker-clubs-container');
+        
+        container.innerHTML = divData.teams.map(t => `
+            <div class="club-ticker-item" title="${t.name}" onclick="openTeamModal(${t.id})">
+                ${t.logo ? `<img src="${t.logo}" alt="${t.name}">` : `<span class="club-ticker-fallback">${t.name.substring(0,2).toUpperCase()}</span>`}
+            </div>
+        `).join('');
     }
 
     window.updateSocialLinksFromInput = function() {
@@ -988,6 +1062,7 @@
 
     function renderAll() {
         renderLeagueLogo();
+        renderClubsTicker();
         renderSocialLinks();
         renderStandings();
         renderMatchdaySelector();
@@ -1245,6 +1320,7 @@
                 if (team) {
                     team.logo = e.target.result;
                     renderTeamManagement();
+                    renderClubsTicker(); // Actualizar barra superior de escudos al instante
                 }
             };
             reader.readAsDataURL(input.files[0]);
@@ -1269,6 +1345,7 @@
 
         document.getElementById('modal-dt-input').value = team.manager || '';
         document.getElementById('modal-dt-input').disabled = !isAdmin;
+        document.getElementById('modal-add-player-btn').style.display = isAdmin ? 'inline-block' : 'none';
         renderRosterList(team);
         document.getElementById('team-modal').classList.add('active');
     };
@@ -1279,6 +1356,7 @@
             saveStateToCloud();
         }
         renderTops();
+        renderClubsTicker();
     };
 
     function renderRosterList(team) {
