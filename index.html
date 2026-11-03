@@ -87,9 +87,21 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
             box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
             border: 2px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .league-emblem img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #league-logo-input {
+            display: none;
         }
 
         .brand-title h1 {
@@ -158,7 +170,7 @@
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
         }
 
-        /* Pestañas de Navegación Estilo Panel */
+        /* Pestañas de Navegación */
         .tabs {
             display: flex;
             gap: 10px;
@@ -202,7 +214,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Tarjetas Principales */
         .card {
             background: var(--bg-card);
             backdrop-filter: blur(16px);
@@ -221,7 +232,6 @@
             color: #FFF;
         }
 
-        /* Tablas de Posiciones */
         .table-responsive {
             overflow-x: auto;
         }
@@ -407,7 +417,6 @@
             border: 1px solid var(--border-neon);
         }
 
-        /* Bracket / Liguilla */
         .bracket-container {
             display: flex;
             justify-content: space-between;
@@ -487,7 +496,6 @@
             box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
         }
 
-        /* Botón flotante de guardado rápido */
         .floating-save-btn {
             position: fixed;
             bottom: 28px;
@@ -547,7 +555,6 @@
             box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
         }
 
-        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -675,10 +682,16 @@
 <body>
 
 <div class="container">
-    <!-- Banner Principal con nuevo diseño de marca -->
+    <!-- Banner Principal con logo interactivo respaldado en la nube -->
     <div class="hero-banner">
         <div class="brand-info">
-            <div class="league-emblem">⚡</div>
+            <div class="league-emblem" onclick="triggerLeagueLogoUpload()" title="Haz clic para cambiar el logo (Modo Admin)">
+                <div id="league-logo-container">
+                    <!-- Imagen inicial integrada por defecto -->
+                    <img src="https://media.discordapp.net/attachments/1353118715406716981/1562489656396873828/2853f42f6c8278a03fdb93880813f8b5.png" alt="Logo de La Liga">
+                </div>
+                <input type="file" id="league-logo-input" accept="image/*" onchange="uploadLeagueLogo(this)">
+            </div>
             <div class="brand-title">
                 <h1>LA LIGA <span>ILEGAL SOCCER</span></h1>
                 <p>TORNEO OFICIAL ROBLOX • NUBE SINCRONIZADA ☁️</p>
@@ -910,6 +923,7 @@
             }));
 
             data[div] = {
+                leagueLogo: "https://media.discordapp.net/attachments/1353118715406716981/1562489656396873828/2853f42f6c8278a03fdb93880813f8b5.png",
                 teams: teams,
                 matches: generateRoundRobin(teams),
                 bracket: {}
@@ -1018,6 +1032,35 @@
         }
     };
 
+    window.triggerLeagueLogoUpload = function() {
+        if (!isAdmin) {
+            alert('Debes activar el Modo Administrador (🔑 Admin) para cambiar el logo de la liga.');
+            return;
+        }
+        document.getElementById('league-logo-input').click();
+    };
+
+    window.uploadLeagueLogo = function(input) {
+        if (!isAdmin) return;
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (!appData[currentDiv]) appData[currentDiv] = {};
+                appData[currentDiv].leagueLogo = e.target.result;
+                renderLeagueLogo();
+                saveStateToCloud();
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    };
+
+    function renderLeagueLogo() {
+        const divData = appData[currentDiv] || {};
+        const container = document.getElementById('league-logo-container');
+        const logoUrl = divData.leagueLogo || "https://media.discordapp.net/attachments/1353118715406716981/1562489656396873828/2853f42f6c8278a03fdb93880813f8b5.png";
+        container.innerHTML = `<img src="${logoUrl}" alt="Logo Liga">`;
+    }
+
     window.switchDivision = function(div) {
         currentDiv = div;
         currentMatchday = 1;
@@ -1039,6 +1082,7 @@
     };
 
     function renderAll() {
+        renderLeagueLogo();
         renderStandings();
         renderMatchdaySelector();
         renderMatches();
