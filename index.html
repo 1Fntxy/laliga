@@ -144,37 +144,32 @@
         .btn-admin { background: var(--accent-gold); color: #02040A; font-weight: 800; }
         .btn-reset { background: rgba(239, 68, 68, 0.2); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.4); }
 
-        /* Barra Carrusel de Escudos de Clubes */
+        /* Barra de Escudos Distribuidos en toda la línea negra */
         .clubs-ticker-bar {
             background: #0B0F19;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 10px 20px;
+            padding: 10px 24px;
             display: flex;
             align-items: center;
-            gap: 20px;
+            justify-content: space-between;
             overflow-x: auto;
-            white-space: nowrap;
+            gap: 10px;
         }
         .clubs-ticker-bar::-webkit-scrollbar { height: 4px; }
         .clubs-ticker-bar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
-        .ticker-label {
-            color: #94A3B8;
-            font-size: 0.75rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            flex-shrink: 0;
-            border-right: 2px solid rgba(255,255,255,0.1);
-            padding-right: 15px;
-        }
+        
         .ticker-items {
             display: flex;
-            gap: 16px;
+            justify-content: space-between;
             align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 8px;
         }
         .club-ticker-item {
-            width: 34px;
-            height: 34px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: #1E293B;
             border: 1px solid rgba(255,255,255,0.15);
@@ -528,9 +523,8 @@
     </div>
 </div>
 
-<!-- Barra deslizable con los escudos de los 16 equipos de la división actual -->
+<!-- Línea negra con los 16 escudos distribuidos y tooltip con el nombre -->
 <div class="clubs-ticker-bar">
-    <div class="ticker-label">Web Clubes</div>
     <div class="ticker-items" id="ticker-clubs-container"></div>
 </div>
 
@@ -1001,7 +995,7 @@
         container.innerHTML = `<img src="${logoUrl}" alt="Logo">`;
     }
 
-    // Renderizar la barra superior con los 16 escudos de equipos de la división
+    // Renderizar la barra superior con los 16 escudos distribuidos y nombre al pasar el ratón (title)
     function renderClubsTicker() {
         const divData = appData[currentDiv];
         if (!divData || !divData.teams) return;
@@ -1320,7 +1314,7 @@
                 if (team) {
                     team.logo = e.target.result;
                     renderTeamManagement();
-                    renderClubsTicker(); // Actualizar barra superior de escudos al instante
+                    renderClubsTicker();
                 }
             };
             reader.readAsDataURL(input.files[0]);
