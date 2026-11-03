@@ -113,6 +113,7 @@
             margin-bottom: 24px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 8px;
+            overflow-x: auto;
         }
 
         .tab-btn {
@@ -124,6 +125,7 @@
             font-weight: 600;
             cursor: pointer;
             border-radius: 6px;
+            white-space: nowrap;
             transition: background 0.2s, color 0.2s;
         }
 
@@ -193,6 +195,7 @@
             justify-content: center;
             font-size: 0.75rem;
             color: var(--text-muted);
+            flex-shrink: 0;
         }
 
         .team-grid {
@@ -246,6 +249,8 @@
             border-radius: 8px;
             border: 1px solid var(--border-color);
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .matchday-title {
@@ -269,17 +274,20 @@
             align-items: center;
             justify-content: space-between;
             gap: 16px;
+            flex-wrap: wrap;
         }
 
         .match-team {
             display: flex;
             align-items: center;
             gap: 12px;
-            width: 35%;
+            flex: 1;
+            min-width: 140px;
         }
 
         .match-team.away {
             justify-content: flex-end;
+            text-align: right;
         }
 
         .score-inputs {
@@ -435,6 +443,35 @@
             width: 45px;
             text-align: center;
         }
+
+        /* Ajuste responsivo para celulares */
+        @media (max-width: 768px) {
+            .matchday-nav {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+            .matchday-nav > div {
+                justify-content: center;
+                width: 100%;
+            }
+            .matchday-nav button {
+                width: 100%;
+            }
+            .match-card {
+                flex-direction: column;
+                gap: 8px;
+                align-items: stretch;
+            }
+            .match-team, .match-team.away {
+                justify-content: center;
+                text-align: center;
+                width: 100%;
+            }
+            .score-inputs {
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -497,7 +534,7 @@
             
             <div class="matchday-nav">
                 <button class="action-btn" onclick="changeMatchday(-1)">◀ Anterior</button>
-                <div style="display:flex; align-items:center; gap:12px;">
+                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                     <span class="matchday-title" id="matchday-label">Jornada 1</span>
                     <select id="matchday-select" onchange="jumpToMatchday(this.value)" style="padding:4px 8px;"></select>
                 </div>
@@ -511,7 +548,7 @@
 
     <div id="tab-bracket" class="content-section">
         <div class="card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
                 <h2>Cuadro de Eliminación Directa (Liguilla)</h2>
                 <button class="action-btn" onclick="saveBracket()">Guardar Bracket</button>
             </div>
@@ -595,7 +632,7 @@
             <input type="text" id="modal-dt-input" placeholder="Ej. RobloxPro123" onchange="saveModalTeamInfo()">
         </div>
 
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
             <h3>Plantilla de Jugadores</h3>
             <button class="action-btn" style="font-size:0.8rem; padding:4px 8px;" onclick="addRosterPlayer()">+ Agregar Jugador</button>
         </div>
@@ -673,7 +710,7 @@
     }
 
     function loadState() {
-        const saved = localStorage.getItem('la_liga_roblox_db_v2');
+        const saved = localStorage.getItem('la_liga_roblox_db_v3');
         if (saved) {
             try { return JSON.parse(saved); } catch(e){}
         }
@@ -681,7 +718,7 @@
     }
 
     function saveState() {
-        localStorage.setItem('la_liga_roblox_db_v2', JSON.stringify(appData));
+        localStorage.setItem('la_liga_roblox_db_v3', JSON.stringify(appData));
     }
 
     function switchDivision(div) {
