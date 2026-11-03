@@ -236,6 +236,24 @@
             color: var(--text-muted);
         }
 
+        /* Controles de Jornada */
+        .matchday-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-main);
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .matchday-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
         .matches-grid {
             display: flex;
             flex-direction: column;
@@ -475,7 +493,17 @@
 
     <div id="tab-calendario" class="content-section">
         <div class="card">
-            <h2 style="margin-bottom: 16px;">Calendario de Partidos</h2>
+            <h2 style="margin-bottom: 16px;">Calendario de Partidos por Jornada</h2>
+            
+            <div class="matchday-nav">
+                <button class="action-btn" onclick="changeMatchday(-1)">◀ Anterior</button>
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <span class="matchday-title" id="matchday-label">Jornada 1</span>
+                    <select id="matchday-select" onchange="jumpToMatchday(this.value)" style="padding:4px 8px;"></select>
+                </div>
+                <button class="action-btn" onclick="changeMatchday(1)">Siguiente ▶</button>
+            </div>
+
             <div class="matches-grid" id="matches-container">
             </div>
         </div>
@@ -586,42 +614,66 @@
     ];
 
     let currentDiv = 1;
+    let currentMatchday = 1;
     let activeTeamId = null;
     let appData = loadState();
+
+    function generateRoundRobin(teams) {
+        let schedule = [];
+        let n = teams.length;
+        let tempTeams = [...teams];
+        if (n % 2 !== 0) { tempTeams.push(null); n++; }
+
+        let totalRounds = n - 1;
+        let matchesPerRound = n / 2;
+        let matchId = 1;
+
+        for (let round = 0; round < totalRounds; round++) {
+            for (let match = 0; match < matchesPerRound; match++) {
+                let home = tempTeams[match];
+                let away = tempTeams[n - 1 - match];
+
+                if (home !== null && away !== null) {
+                    schedule.push({
+                        id: matchId++,
+                        matchday: round + 1,
+                        homeId: home.id,
+                        awayId: away.id,
+                        homeScore: null,
+                        awayScore: null
+                    });
+                }
+            }
+            tempTeams.splice(1, 0, tempTeams.pop());
+        }
+        return schedule;
+    }
 
     function getInitialData() {
         let data = {};
         [1, 2, 3].forEach(div => {
+            let teams = DEFAULT_TEAMS.map((name, idx) => ({
+                id: idx + 1,
+                name: `${name} ${div > 1 ? 'D' + div : ''}`,
+                logo: "",
+                manager: "",
+                roster: [
+                    { num: 1, name: "Jugador_1", pos: "POR" },
+                    { num: 10, name: "Capitan_Roblox", pos: "DEL" }
+                ]
+            }));
+
             data[div] = {
-                teams: DEFAULT_TEAMS.map((name, idx) => ({
-                    id: idx + 1,
-                    name: `${name} ${div > 1 ? 'D' + div : ''}`,
-                    logo: "",
-                    manager: "",
-                    roster: [
-                        { num: 1, name: "Jugador_1", pos: "POR" },
-                        { num: 10, name: "Capitan_Roblox", pos: "DEL" }
-                    ]
-                })),
-                matches: [],
+                teams: teams,
+                matches: generateRoundRobin(teams),
                 bracket: {}
             };
-            
-            let teamIds = data[div].teams.map(t => t.id);
-            let matchId = 1;
-            for (let i = 0; i < teamIds.length; i++) {
-                for (let j = i + 1; j < teamIds.length; j++) {
-                    data[div].matches.push({
-                        id: matchId++, homeId: teamIds[i], awayId: teamIds[j], homeScore: null, awayScore: null
-                    });
-                }
-            }
         });
         return data;
     }
 
     function loadState() {
-        const saved = localStorage.getItem('la_liga_roblox_db');
+        const saved = localStorage.getItem('la_liga_roblox_db_v2');
         if (saved) {
             try { return JSON.parse(saved); } catch(e){}
         }
@@ -629,11 +681,12 @@
     }
 
     function saveState() {
-        localStorage.setItem('la_liga_roblox_db', JSON.stringify(appData));
+        localStorage.setItem('la_liga_roblox_db_v2', JSON.stringify(appData));
     }
 
     function switchDivision(div) {
         currentDiv = div;
+        currentMatchday = 1;
         document.querySelectorAll('.btn-div').forEach((btn, idx) => {
             if(idx < 3) btn.classList.toggle('active', idx + 1 === div);
         });
@@ -653,6 +706,7 @@
 
     function renderAll() {
         renderStandings();
+        renderMatchdaySelector();
         renderMatches();
         renderTeamManagement();
         renderBracketSelectors();
@@ -713,11 +767,51 @@
         `).join('');
     }
 
+    function getMaxMatchdays() {
+        const divData = appData[currentDiv];
+        if (!divData.matches || divData.matches.length === 0) return 15;
+        return Math.max(...divData.matches.map(m => m.matchday || 1));
+    }
+
+    function renderMatchdaySelector() {
+        const maxMD = getMaxMatchdays();
+        const select = document.getElementById('matchday-select');
+        let options = '';
+        for (let i = 1; i <= maxMD; i++) {
+            options += `<option value="${i}" ${i === currentMatchday ? 'selected' : ''}>Jornada ${i}</option>`;
+        }
+        select.innerHTML = options;
+        document.getElementById('matchday-label').innerText = `Jornada ${currentMatchday}`;
+    }
+
+    function changeMatchday(delta) {
+        const maxMD = getMaxMatchdays();
+        let newMD = currentMatchday + delta;
+        if (newMD >= 1 && newMD <= maxMD) {
+            currentMatchday = newMD;
+            renderMatchdaySelector();
+            renderMatches();
+        }
+    }
+
+    function jumpToMatchday(val) {
+        currentMatchday = parseInt(val);
+        document.getElementById('matchday-label').innerText = `Jornada ${currentMatchday}`;
+        renderMatches();
+    }
+
     function renderMatches() {
         const divData = appData[currentDiv];
         const container = document.getElementById('matches-container');
+
+        const currentMatches = divData.matches.filter(m => m.matchday === currentMatchday);
         
-        container.innerHTML = divData.matches.map(m => {
+        if (currentMatches.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">No hay partidos programados para esta jornada.</div>`;
+            return;
+        }
+
+        container.innerHTML = currentMatches.map(m => {
             const home = divData.teams.find(t => t.id === m.homeId);
             const away = divData.teams.find(t => t.id === m.awayId);
 
