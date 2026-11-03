@@ -542,7 +542,6 @@
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
                 <h3 id="div-title" style="margin:0;">Tabla de Posiciones</h3>
-                <!-- Botón Reset en Clasificación (Visible solo para Admin) -->
                 <button id="btn-reset-standings" class="action-btn" style="display:none; background:var(--laliga-red);" onclick="resetCurrentDivision()">🔄 Resetear División</button>
             </div>
             <div class="table-responsive">
@@ -745,7 +744,7 @@
 </div>
 
 <button id="floating-save-btn" class="floating-save-btn" onclick="manualSaveCloud()">
-    <span>💾 Guardar Datos</span>
+    <span>💾 Guardado Automático Activo</span>
 </button>
 
 <div id="team-modal" class="modal-overlay">
@@ -789,6 +788,8 @@
 
     const ADMIN_PIN = "021126";
     let isAdmin = false;
+    let autoSaveTimer = null;
+    let isInitialLoading = true;
 
     const DEFAULT_TEAMS = [
         "Roblox United FC", "Illegal Strikers", "Bloxburg City", "Vip Nation",
@@ -884,6 +885,7 @@
         } else {
             saveStateToCloud();
         }
+        isInitialLoading = false;
     });
 
     async function saveStateToCloud() {
@@ -897,29 +899,52 @@
         }
     }
 
+    // Sistema de Guardado Automático con Debounce
+    window.triggerAutoSave = function() {
+        if (!isAdmin || isInitialLoading) return;
+        
+        const btn = document.getElementById('floating-save-btn');
+        const span = btn ? btn.querySelector('span') : null;
+
+        if (span) span.innerText = "⏳ Guardando cambios...";
+        if (btn) btn.style.backgroundColor = "#F59E0B";
+
+        clearTimeout(autoSaveTimer);
+        autoSaveTimer = setTimeout(async () => {
+            const ok = await saveStateToCloud();
+            if (btn && span) {
+                if (ok) {
+                    btn.style.backgroundColor = "#10B981";
+                    span.innerText = "Guardado automático ✅";
+                    setTimeout(() => {
+                        btn.style.backgroundColor = "var(--laliga-red)";
+                        span.innerText = "💾 Guardado Automático Activo";
+                    }, 2500);
+                } else {
+                    btn.style.backgroundColor = "#EF4444";
+                    span.innerText = "❌ Error al guardar";
+                    setTimeout(() => {
+                        btn.style.backgroundColor = "var(--laliga-red)";
+                        span.innerText = "💾 Guardado Automático Activo";
+                    }, 2500);
+                }
+            }
+        }, 1500); // 1.5 segundos de retraso tras dejar de escribir
+    };
+
     window.manualSaveCloud = async function() {
         if (!isAdmin) return;
         const btn = document.getElementById('floating-save-btn');
         const span = btn ? btn.querySelector('span') : null;
-
         if (span) span.innerText = "⏳ Guardando...";
-
         const ok = await saveStateToCloud();
-
         if (btn && span) {
             if (ok) {
                 btn.style.backgroundColor = "#10B981";
                 span.innerText = "Guardado con éxito ✅";
                 setTimeout(() => {
                     btn.style.backgroundColor = "var(--laliga-red)";
-                    span.innerText = "💾 Guardar Datos";
-                }, 2500);
-            } else {
-                btn.style.backgroundColor = "#EF4444";
-                span.innerText = "❌ Error al guardar";
-                setTimeout(() => {
-                    btn.style.backgroundColor = "var(--laliga-red)";
-                    span.innerText = "💾 Guardar Datos";
+                    span.innerText = "💾 Guardado Automático Activo";
                 }, 2500);
             }
         }
@@ -986,7 +1011,7 @@
                 if (!appData[currentDiv]) appData[currentDiv] = {};
                 appData[currentDiv].leagueLogo = e.target.result;
                 renderLeagueLogo();
-                saveStateToCloud();
+                triggerAutoSave();
             };
             reader.readAsDataURL(input.files[0]);
         }
@@ -1016,13 +1041,14 @@
         appData.socialDiscord = document.getElementById('admin-discord-url').value;
         appData.socialTiktok = document.getElementById('admin-tiktok-url').value;
         renderSocialLinks();
+        triggerAutoSave();
     };
 
     function renderSocialLinks() {
         const discordInput = document.getElementById('admin-discord-url');
         const tiktokInput = document.getElementById('admin-tiktok-url');
-        if (discordInput) discordInput.value = appData.socialDiscord || "";
-        if (tiktokInput) tiktokInput.value = appData.socialTiktok || "";
+        if (discordInput && discordInput.value !== (appData.socialDiscord || "")) discordInput.value = appData.socialDiscord || "";
+        if (tiktokInput && tiktokInput.value !== (appData.socialTiktok || "")) tiktokInput.value = appData.socialTiktok || "";
 
         const discordBtn = document.getElementById('link-discord');
         const tiktokBtn = document.getElementById('link-tiktok');
@@ -1271,7 +1297,10 @@
         if (!isAdmin) return;
         const divData = appData[currentDiv];
         const match = divData.matches.find(m => m.id === matchId);
-        if (match) match[type + 'Score'] = val === '' ? null : parseInt(val);
+        if (match) {
+            match[type + 'Score'] = val === '' ? null : parseInt(val);
+            triggerAutoSave();
+        }
     };
 
     function renderTeamManagement() {
@@ -1304,7 +1333,10 @@
         if (!isAdmin) return;
         const divData = appData[currentDiv];
         const team = divData.teams.find(t => t.id === id);
-        if (team) team.name = val;
+        if (team) {
+            team.name = val;
+            triggerAutoSave();
+        }
     };
 
     window.uploadTeamLogo = function(id, input) {
@@ -1318,6 +1350,7 @@
                     team.logo = e.target.result;
                     renderTeamManagement();
                     renderClubsTicker();
+                    triggerAutoSave();
                 }
             };
             reader.readAsDataURL(input.files[0]);
@@ -1350,7 +1383,7 @@
     window.closeTeamModal = function() {
         document.getElementById('team-modal').classList.remove('active');
         if (isAdmin) {
-            saveStateToCloud();
+            triggerAutoSave();
         }
         renderTops();
         renderClubsTicker();
@@ -1385,7 +1418,10 @@
     window.updateModalTeamInfo = function() {
         if (!isAdmin) return;
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
-        if (team) team.manager = document.getElementById('modal-dt-input').value;
+        if (team) {
+            team.manager = document.getElementById('modal-dt-input').value;
+            triggerAutoSave();
+        }
     };
 
     window.addRosterPlayer = function() {
@@ -1395,6 +1431,7 @@
             if (!team.roster) team.roster = [];
             team.roster.push({ num: team.roster.length + 1, name: "Nuevo_Jugador", pos: "MED", goals: 0, assists: 0, saves: 0 });
             renderRosterList(team);
+            triggerAutoSave();
         }
     };
 
@@ -1407,6 +1444,7 @@
             } else {
                 team.roster[idx][field] = parseInt(value) || 0;
             }
+            triggerAutoSave();
         }
     };
 
@@ -1416,6 +1454,7 @@
         if (team && team.roster[idx]) {
             team.roster.splice(idx, 1);
             renderRosterList(team);
+            triggerAutoSave();
         }
     };
 
@@ -1434,7 +1473,7 @@
                         });
                     }
                 });
-                saveStateToCloud();
+                triggerAutoSave();
                 renderTops();
                 alert('¡Estadísticas de jugadores restablecidas con éxito!');
             }
@@ -1452,9 +1491,8 @@
         if (confirmText === "CONFIRMAR") {
             const divData = appData[currentDiv];
             if (divData && divData.teams) {
-                // Reiniciar solo los resultados de los partidos y dejar intactos los nombres y escudos de los equipos
                 divData.matches = generateRoundRobin(divData.teams);
-                saveStateToCloud();
+                triggerAutoSave();
                 renderAll();
                 alert('¡División restablecida correctamente manteniendo tus equipos!');
             }
@@ -1508,6 +1546,8 @@
 
         let champion = getWinnerFromLabels('label-f-t1', 'label-f-t2', 'score-f-t1', 'score-f-t2');
         document.getElementById('champion-name').innerText = champion;
+
+        saveBracketToMemory();
     };
 
     function getWinner(sel1Id, sel2Id, score1Id, score2Id) {
@@ -1538,14 +1578,14 @@
         return `${name1} (Empate)`;
     }
 
-    window.saveBracket = async function() {
-        if (!isAdmin) return;
+    function saveBracketToMemory() {
+        if (!isAdmin || isInitialLoading) return;
         let bracketData = {};
         let inputs = document.querySelectorAll('#tab-bracket input, #tab-bracket select');
         inputs.forEach(input => { bracketData[input.id] = input.value; });
         appData[currentDiv].bracket = bracketData;
-        await manualSaveCloud();
-    };
+        triggerAutoSave();
+    }
 
     function loadBracketData() {
         let bracketData = (appData[currentDiv] && appData[currentDiv].bracket) ? appData[currentDiv].bracket : {};
@@ -1556,8 +1596,9 @@
         updateBracketDisplay();
     }
 
-    document.querySelectorAll('#tab-bracket input').forEach(inp => {
+    document.querySelectorAll('#tab-bracket input, #tab-bracket select').forEach(inp => {
         inp.addEventListener('input', updateBracketDisplay);
+        inp.addEventListener('change', updateBracketDisplay);
     });
 </script>
 
