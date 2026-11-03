@@ -818,10 +818,10 @@
                 Discord
             </a>
 
-            <!-- Botón TikTok dinámico -->
+            <!-- Botón TikTok con Logo Real y Corregido -->
             <a id="link-tiktok" href="#" target="_blank" class="btn-social btn-tiktok">
                 <svg viewBox="0 0 448 512">
-                    <path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.3V178.4A162.55,162.55,0,1,1,185,15.88V145.28a65,65,0,1,0,35.24,57.7v-205h46.23a163,163,0,0,0,91.3,77.58,160.84,160.84,0,0,0,90.2,8.85ZM36,252.17a126.31,126.31,0,0,0,90.31,121.25,126.31,126.31,0,0,0,121.25-90.31Z"/>
+                    <path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.3V178.4A162.55,162.55,0,1,1,185,15.88V145.28a65,65,0,1,0,35.24,57.7v-205h46.23a163,163,0,0,0,91.3,77.58,160.84,160.84,0,0,0,90.2,8.85Z"/>
                 </svg>
                 TikTok
             </a>
@@ -1114,7 +1114,6 @@
     onSnapshot(doc(db, "liga", "general_data"), (docSnap) => {
         if (docSnap.exists()) {
             appData = docSnap.data();
-            // Compatibilidad por si acaso faltan las propiedades globales
             if (!appData.socialDiscord) appData.socialDiscord = "https://discord.gg/tu-enlace-de-discord";
             if (!appData.socialTiktok) appData.socialTiktok = "https://www.tiktok.com/@tu-usuario-tiktok";
             renderAll();
