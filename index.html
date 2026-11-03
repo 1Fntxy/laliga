@@ -85,9 +85,11 @@
             color: var(--text-muted);
         }
 
-        .division-selector {
+        .controls-header {
             display: flex;
             gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
         .btn-div {
@@ -385,6 +387,12 @@
             color: #FFF;
         }
 
+        .btn-admin {
+            background: #F59E0B;
+            color: #000;
+            font-weight: 700;
+        }
+
         .modal-overlay {
             display: none;
             position: fixed;
@@ -444,7 +452,35 @@
             text-align: center;
         }
 
-        /* Ajuste responsivo para celulares */
+        /* Estilos de Bloqueo para Visitantes */
+        .admin-only {
+            display: none !important;
+        }
+
+        body.is-admin .admin-only {
+            display: inline-flex !important;
+        }
+
+        body.is-admin div.admin-only {
+            display: flex !important;
+        }
+
+        /* Deshabilitar inputs cuando no es admin */
+        body:not(.is-admin) input,
+        body:not(.is-admin) select {
+            pointer-events: none;
+            opacity: 0.8;
+            border-color: transparent;
+        }
+
+        body:not(.is-admin) .matchday-nav button,
+        body:not(.is-admin) .matchday-nav select,
+        body:not(.is-admin) .tab-btn,
+        body:not(.is-admin) .btn-div {
+            pointer-events: auto !important;
+            opacity: 1 !important;
+        }
+
         @media (max-width: 768px) {
             .matchday-nav {
                 flex-direction: column;
@@ -486,11 +522,12 @@
             </div>
         </div>
 
-        <div class="division-selector">
-            <button class="btn-div active" onclick="switchDivision(1)">🏆 1ª División</button>
-            <button class="btn-div" onclick="switchDivision(2)">🥇 2ª División</button>
-            <button class="btn-div" onclick="switchDivision(3)">🥈 3ª División</button>
-            <button class="btn-div btn-reset" onclick="resetCurrentDivision()">🔄 Reset</button>
+        <div class="controls-header">
+            <button class="btn-div active" onclick="switchDivision(1)">🏆 1ª</button>
+            <button class="btn-div" onclick="switchDivision(2)">🥇 2ª</button>
+            <button class="btn-div" onclick="switchDivision(3)">🥈 3ª</button>
+            <button id="btn-admin-toggle" class="btn-div btn-admin" onclick="toggleAdminMode()">🔑 Admin</button>
+            <button class="btn-div btn-reset admin-only" onclick="resetCurrentDivision()">🔄 Reset</button>
         </div>
     </div>
 
@@ -498,7 +535,7 @@
         <button class="tab-btn active" onclick="switchTab('clasificacion', event)">📊 Clasificación</button>
         <button class="tab-btn" onclick="switchTab('calendario', event)">📅 Calendario / Partidos</button>
         <button class="tab-btn" onclick="switchTab('bracket', event)">🏆 Bracket / Liguilla</button>
-        <button class="tab-btn" onclick="switchTab('gestion', event)">🛡️ Gestión de Equipos</button>
+        <button class="tab-btn admin-only" onclick="switchTab('gestion', event)">🛡️ Gestión de Equipos</button>
     </div>
 
     <div id="tab-clasificacion" class="content-section active">
@@ -550,10 +587,10 @@
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
                 <h2>Cuadro de Eliminación Directa (Liguilla)</h2>
-                <button class="action-btn" onclick="saveBracket()">Guardar Bracket</button>
+                <button class="action-btn admin-only" onclick="saveBracket()">Guardar Bracket</button>
             </div>
             <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">
-                Selecciona manualmente a los 8 equipos clasificados para Cuartos de Final y define sus resultados.
+                Selecciona a los 8 equipos clasificados para Cuartos de Final y define sus resultados.
             </p>
 
             <div class="bracket-container">
@@ -634,7 +671,7 @@
 
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
             <h3>Plantilla de Jugadores</h3>
-            <button class="action-btn" style="font-size:0.8rem; padding:4px 8px;" onclick="addRosterPlayer()">+ Agregar Jugador</button>
+            <button class="action-btn admin-only" style="font-size:0.8rem; padding:4px 8px;" onclick="addRosterPlayer()">+ Agregar Jugador</button>
         </div>
 
         <div class="roster-list" id="modal-roster-list">
@@ -643,6 +680,9 @@
 </div>
 
 <script>
+    const ADMIN_PIN = "1234"; // 🔑 TU CLAVE SECRETA AQUÍ (PUEDES CAMBIARLA)
+    let isAdmin = false;
+
     const DEFAULT_TEAMS = [
         "Roblox United FC", "Illegal Strikers", "Bloxburg City", "Vip Nation",
         "Red Bulls Roblox", "Cyber FC", "Phantom XI", "Shadow Strikers",
@@ -654,6 +694,25 @@
     let currentMatchday = 1;
     let activeTeamId = null;
     let appData = loadState();
+
+    function toggleAdminMode() {
+        if (isAdmin) {
+            isAdmin = false;
+            document.body.classList.remove('is-admin');
+            document.getElementById('btn-admin-toggle').innerText = '🔑 Admin';
+            alert('Modo Administrador Cerrado.');
+        } else {
+            let pass = prompt('Ingresa el PIN de Administrador:');
+            if (pass === ADMIN_PIN) {
+                isAdmin = true;
+                document.body.classList.add('is-admin');
+                document.getElementById('btn-admin-toggle').innerText = '🔓 Salir Admin';
+                alert('¡Modo Administrador Activado!');
+            } else if (pass !== null) {
+                alert('PIN Incorrecto.');
+            }
+        }
+    }
 
     function generateRoundRobin(teams) {
         let schedule = [];
@@ -710,7 +769,7 @@
     }
 
     function loadState() {
-        const saved = localStorage.getItem('la_liga_roblox_db_v5');
+        const saved = localStorage.getItem('la_liga_roblox_db_v6');
         if (saved) {
             try { return JSON.parse(saved); } catch(e){}
         }
@@ -718,7 +777,7 @@
     }
 
     function saveState() {
-        localStorage.setItem('la_liga_roblox_db_v5', JSON.stringify(appData));
+        localStorage.setItem('la_liga_roblox_db_v6', JSON.stringify(appData));
     }
 
     function switchDivision(div) {
@@ -875,6 +934,7 @@
     }
 
     function updateScore(matchId, type, val) {
+        if (!isAdmin) return;
         const divData = appData[currentDiv];
         const match = divData.matches.find(m => m.id === matchId);
         if (match) {
@@ -910,6 +970,7 @@
     }
 
     function updateTeamName(id, val) {
+        if (!isAdmin) return;
         const divData = appData[currentDiv];
         const team = divData.teams.find(t => t.id === id);
         if (team) {
@@ -920,6 +981,7 @@
     }
 
     function uploadTeamLogo(id, input) {
+        if (!isAdmin) return;
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -974,12 +1036,13 @@
                     <option value="MED" ${player.pos==='MED'?'selected':''}>MED</option>
                     <option value="DEL" ${player.pos==='DEL'?'selected':''}>DEL</option>
                 </select>
-                <button style="background:transparent; border:none; color:#EF4444; cursor:pointer;" onclick="deletePlayer(${idx})">&times;</button>
+                ${isAdmin ? `<button style="background:transparent; border:none; color:#EF4444; cursor:pointer;" onclick="deletePlayer(${idx})">&times;</button>` : ''}
             </div>
         `).join('');
     }
 
     function saveModalTeamInfo() {
+        if (!isAdmin) return;
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
         if (team) {
             team.manager = document.getElementById('modal-dt-input').value;
@@ -988,6 +1051,7 @@
     }
 
     function addRosterPlayer() {
+        if (!isAdmin) return;
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
         if (team) {
             if (!team.roster) team.roster = [];
@@ -998,6 +1062,7 @@
     }
 
     function updatePlayer(idx, field, value) {
+        if (!isAdmin) return;
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
         if (team && team.roster[idx]) {
             team.roster[idx][field] = field === 'num' ? parseInt(value) || 0 : value;
@@ -1006,6 +1071,7 @@
     }
 
     function deletePlayer(idx) {
+        if (!isAdmin) return;
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
         if (team && team.roster[idx]) {
             team.roster.splice(idx, 1);
@@ -1015,6 +1081,7 @@
     }
 
     function resetCurrentDivision() {
+        if (!isAdmin) return;
         if (confirm(`¿Estás seguro de restablecer todos los datos de la ${currentDiv}ª División?`)) {
             const initial = getInitialData();
             appData[currentDiv] = initial[currentDiv];
@@ -1097,6 +1164,7 @@
     }
 
     function saveBracket() {
+        if (!isAdmin) return;
         const bracketData = {};
         const inputs = document.querySelectorAll('#tab-bracket input, #tab-bracket select');
         inputs.forEach(input => {
