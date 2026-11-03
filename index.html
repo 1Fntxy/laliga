@@ -824,9 +824,9 @@
         </div>
     </div>
 
-    <!-- Sección Estadísticas y Tops Individuales -->
+    <!-- Sección Estadísticas y Tops Individuales (Top 5 Horizontal) -->
     <div id="tab-estadisticas" class="content-section">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
             <div class="card" style="margin-bottom:0;">
                 <h2 style="margin-bottom: 16px; color: var(--accent-gold);">⚽ Pichichis (Goleadores)</h2>
                 <div class="table-responsive">
@@ -1107,7 +1107,6 @@
             if (!appData.socialDiscord) appData.socialDiscord = "https://discord.gg/tu-enlace-de-discord";
             if (!appData.socialTiktok) appData.socialTiktok = "https://www.tiktok.com/@tu-usuario-tiktok";
             
-            // Asegurar compatibilidad si faltan propiedades de stats en jugadores antiguos
             [1, 2, 3].forEach(div => {
                 if (appData[div] && appData[div].teams) {
                     appData[div].teams.forEach(t => {
@@ -1375,8 +1374,8 @@
             }
         });
 
-        // Top Goleadores
-        let topGoals = [...allPlayers].sort((a, b) => b.goals - a.goals).slice(0, 10);
+        // Top 5 Goleadores
+        let topGoals = [...allPlayers].sort((a, b) => b.goals - a.goals).slice(0, 5);
         document.getElementById('tops-goles-body').innerHTML = topGoals.map((p, i) => `
             <tr>
                 <td><strong style="color:var(--accent-gold);">#${i+1}</strong></td>
@@ -1386,8 +1385,8 @@
             </tr>
         `).join('') || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin registros</td></tr>`;
 
-        // Top Asistencias
-        let topAssists = [...allPlayers].sort((a, b) => b.assists - a.assists).slice(0, 10);
+        // Top 5 Asistencias
+        let topAssists = [...allPlayers].sort((a, b) => b.assists - a.assists).slice(0, 5);
         document.getElementById('tops-asist-body').innerHTML = topAssists.map((p, i) => `
             <tr>
                 <td><strong style="color:var(--accent-cyan);">#${i+1}</strong></td>
@@ -1397,8 +1396,8 @@
             </tr>
         `).join('') || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin registros</td></tr>`;
 
-        // Top Atajadas
-        let topSaves = [...allPlayers].sort((a, b) => b.saves - a.saves).slice(0, 10);
+        // Top 5 Atajadas
+        let topSaves = [...allPlayers].sort((a, b) => b.saves - a.saves).slice(0, 5);
         document.getElementById('tops-atajadas-body').innerHTML = topSaves.map((p, i) => `
             <tr>
                 <td><strong style="color:var(--accent-green);">#${i+1}</strong></td>
