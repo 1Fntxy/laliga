@@ -137,7 +137,7 @@
         .btn-discord { background: var(--accent-discord); }
         .btn-tiktok { background: var(--accent-tiktok); }
         .btn-admin { background: var(--accent-gold); color: #02040A; font-weight: 800; }
-        .btn-reset { background: rgba(239, 68, 68, 0.2); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.4); }
+        .btn-reset { background: rgba(239, 68, 68, 0.2); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.4); display: none; }
 
         .clubs-ticker-bar {
             background: #0B0F19;
@@ -514,7 +514,7 @@
             TikTok
         </a>
         <button id="btn-admin-toggle" class="btn-div btn-admin" onclick="toggleAdminMode()">🔑 Admin</button>
-        <button class="btn-div btn-reset" onclick="resetCurrentDivision()">🔄 Reset</button>
+        <button id="btn-reset-top" class="btn-div btn-reset" onclick="resetCurrentDivision()">🔄 Reset</button>
     </div>
 </div>
 
@@ -540,7 +540,11 @@
 
     <div id="tab-clasificacion" class="content-section active">
         <div class="card">
-            <h3 id="div-title">Tabla de Posiciones</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
+                <h3 id="div-title" style="margin:0;">Tabla de Posiciones</h3>
+                <!-- Botón Reset en Clasificación (Visible solo para Admin) -->
+                <button id="btn-reset-standings" class="action-btn" style="display:none; background:var(--laliga-red);" onclick="resetCurrentDivision()">🔄 Resetear División</button>
+            </div>
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -721,6 +725,12 @@
             </div>
         </div>
 
+        <div class="card" style="margin-bottom: 24px; border-color: rgba(239, 68, 68, 0.4); background: #FFF5F5;">
+            <h3 style="color: var(--laliga-red);">⚡ Restablecer Estadísticas de Jugadores</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Pone a cero los goles, asistencias y paradas de todos los jugadores de la división actual sin borrar los partidos.</p>
+            <button class="action-btn" style="background: var(--laliga-red);" onclick="resetPlayerStatsOnly()">🔄 Resetear Goles, Asistencias y Paradas</button>
+        </div>
+
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; flex-wrap:wrap; gap:12px;">
                 <h3>Configuración de Equipos</h3>
@@ -750,7 +760,7 @@
 
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
             <h4 style="font-weight: 700;">Plantilla y Estadísticas (⚽ Goles | 🎯 Asist. | 🧤 Paradas)</h4>
-            <button class="action-btn" style="font-size:0.8rem; padding:6px 12px;" onclick="addRosterPlayer()">+ Agregar Jugador</button>
+            <button id="modal-add-player-btn" class="action-btn" style="font-size:0.8rem; padding:6px 12px;" onclick="addRosterPlayer()">+ Agregar Jugador</button>
         </div>
 
         <div class="roster-list" id="modal-roster-list"></div>
@@ -936,6 +946,8 @@
                 
                 document.getElementById('tab-btn-gestion').style.display = 'inline-block';
                 document.getElementById('floating-save-btn').style.display = 'flex';
+                document.getElementById('btn-reset-top').style.display = 'inline-block';
+                document.getElementById('btn-reset-standings').style.display = 'inline-block';
 
                 alert('¡Modo Administrador Activado!');
                 renderAll();
@@ -951,6 +963,8 @@
                 
                 document.getElementById('tab-btn-gestion').style.display = 'none';
                 document.getElementById('floating-save-btn').style.display = 'none';
+                document.getElementById('btn-reset-top').style.display = 'none';
+                document.getElementById('btn-reset-standings').style.display = 'none';
                 
                 switchTab('clasificacion', null);
                 alert('Modo Administrador Cerrado.');
@@ -1328,6 +1342,7 @@
 
         document.getElementById('modal-dt-input').value = team.manager || '';
         document.getElementById('modal-dt-input').disabled = !isAdmin;
+        document.getElementById('modal-add-player-btn').style.display = isAdmin ? 'inline-block' : 'none';
         renderRosterList(team);
         document.getElementById('team-modal').classList.add('active');
     };
@@ -1404,15 +1419,47 @@
         }
     };
 
+    window.resetPlayerStatsOnly = function() {
+        if (!isAdmin) return;
+        let confirmText = prompt(`⚠️ ATENCIÓN: Estás a punto de borrar las estadísticas de goles y asistencias de la ${currentDiv}ª División.\nEscribe "RESET" para confirmar:`);
+        if (confirmText === "RESET") {
+            const divData = appData[currentDiv];
+            if (divData && divData.teams) {
+                divData.teams.forEach(t => {
+                    if (t.roster) {
+                        t.roster.forEach(p => {
+                            p.goals = 0;
+                            p.assists = 0;
+                            p.saves = 0;
+                        });
+                    }
+                });
+                saveStateToCloud();
+                renderTops();
+                alert('¡Estadísticas de jugadores restablecidas con éxito!');
+            }
+        } else if (confirmText !== null) {
+            alert('Acción cancelada. No escribiste "RESET" correctamente.');
+        }
+    };
+
     window.resetCurrentDivision = function() {
         if (!isAdmin) {
             alert('Acceso Denegado: Requiere Modo Administrador.');
             return;
         }
-        if (confirm(`¿Restablecer datos de la ${currentDiv}ª División?`)) {
-            const initial = getInitialData();
-            appData[currentDiv] = initial[currentDiv];
-            saveStateToCloud();
+        let confirmText = prompt(`⚠️ ADVERTENCIA: Vas a reiniciar los marcadores y partidos de la ${currentDiv}ª División (los nombres de tus equipos registrados se conservarán).\nEscribe "CONFIRMAR" para proceder:`);
+        if (confirmText === "CONFIRMAR") {
+            const divData = appData[currentDiv];
+            if (divData && divData.teams) {
+                // Reiniciar solo los resultados de los partidos y dejar intactos los nombres y escudos de los equipos
+                divData.matches = generateRoundRobin(divData.teams);
+                saveStateToCloud();
+                renderAll();
+                alert('¡División restablecida correctamente manteniendo tus equipos!');
+            }
+        } else if (confirmText !== null) {
+            alert('Acción cancelada. No escribiste "CONFIRMAR" correctamente.');
         }
     };
 
@@ -1454,7 +1501,7 @@
         document.getElementById(`label-s2-t2`).innerText = s2_2;
 
         let f1 = getWinnerFromLabels('label-s1-t1', 'label-s1-t2', 'score-s1-t1', 'score-s1-t2');
-        let f2 = getWinnerFromLabels('label-s2-t1', 'label-s2-t2', 'score-s2-t1', 'score-s2-t2');
+        let f2 = getWinnerFromLabels('label-s2-t1', 'label-s2-t2', 'score-s1-t2', 'score-s2-t2');
 
         document.getElementById(`label-f-t1`).innerText = f1;
         document.getElementById(`label-f-t2`).innerText = f2;
