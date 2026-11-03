@@ -14,8 +14,10 @@
             --text-main: #1E293B;
             --text-muted: #64748B;
             --laliga-red: #EE1D23;
+            --laliga-red-hover: #D0141A;
             --border-color: #E2E8F0;
             --accent-green: #10B981;
+            --accent-green-hover: #059669;
             --accent-gold: #F59E0B;
             --accent-discord: #5865F2;
             --accent-tiktok: #FE2C55;
@@ -396,20 +398,23 @@
         .bracket-team-select { background: #FFF; border: 1px solid var(--border-color); color: var(--text-main); padding: 6px; border-radius: 6px; font-size: 0.8rem; width: 100%; }
         .bracket-score-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700; }
 
+        /* Botones rojos principales */
         .action-btn {
             background: var(--laliga-red); color: #FFF; padding: 10px 18px; border-radius: 10px; font-weight: 800; font-size: 0.9rem;
         }
-        .btn-save-main { background: var(--accent-green); color: #FFF; }
+        .action-btn:hover { background: var(--laliga-red-hover); }
+        
         .btn-export { background: #8B5CF6; color: #FFF; }
+        .btn-export:hover { background: #7C3AED; }
 
-        /* Botón Flotante Verde Siempre Visible */
+        /* Botón Flotante Rojo por defecto, se pone verde al guardar con éxito */
         .floating-save-btn {
-            position: fixed; bottom: 24px; right: 24px; background: #10B981; color: #FFF;
+            position: fixed; bottom: 24px; right: 24px; background: var(--laliga-red); color: #FFF;
             padding: 16px 28px; border-radius: 40px; font-weight: 800; font-size: 1rem;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5); z-index: 999; display: flex; align-items: center; gap: 10px;
-            cursor: pointer; border: none;
+            box-shadow: 0 10px 25px rgba(238, 29, 35, 0.4); z-index: 999; display: flex; align-items: center; gap: 10px;
+            cursor: pointer; border: none; transition: all 0.3s ease;
         }
-        .floating-save-btn:hover { background: #059669; transform: scale(1.05); }
+        .floating-save-btn:hover { background: var(--laliga-red-hover); transform: scale(1.05); }
 
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -513,7 +518,7 @@
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; flex-wrap:wrap; gap:12px;">
                 <h3>Calendario de Partidos</h3>
-                <button class="action-btn btn-save-main" onclick="manualSaveCloud()">💾 Guardar Partidos</button>
+                <button class="action-btn" onclick="manualSaveCloud()">💾 Guardar Datos</button>
             </div>
             
             <div class="matchday-nav">
@@ -589,7 +594,7 @@
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
                 <h3>Cuadro de Eliminación Directa</h3>
-                <button class="action-btn btn-save-main" onclick="saveBracket()">💾 Guardar Liguilla</button>
+                <button class="action-btn" onclick="saveBracket()">💾 Guardar Datos</button>
             </div>
             <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">Selecciona a los clasificados para Cuartos de Final y define marcadores.</p>
 
@@ -653,7 +658,7 @@
         <div class="card" style="margin-bottom: 24px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
                 <h3>Enlaces de Redes Sociales</h3>
-                <button class="action-btn btn-save-main" onclick="manualSaveCloud()">💾 Guardar Enlaces</button>
+                <button class="action-btn" onclick="manualSaveCloud()">💾 Guardar Datos</button>
             </div>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
                 <div class="input-group">
@@ -672,7 +677,7 @@
                 <h3>Configuración de Equipos</h3>
                 <div style="display:flex; gap:10px; flex-wrap:wrap;">
                     <button class="action-btn btn-export" onclick="exportDataJSON()">📥 Exportar JSON</button>
-                    <button class="action-btn btn-save-main" onclick="manualSaveCloud()">💾 Guardar Equipos</button>
+                    <button class="action-btn" onclick="manualSaveCloud()">💾 Guardar Datos</button>
                 </div>
             </div>
             <div class="team-grid" id="teams-management-grid"></div>
@@ -680,9 +685,9 @@
     </div>
 </div>
 
-<!-- Botón Flotante Verde Siempre Disponible -->
+<!-- Botón Flotante Rojo (Se vuelve verde al guardar con éxito) -->
 <button id="floating-save-btn" class="floating-save-btn" onclick="manualSaveCloud()">
-    <span>💾 Guardar Cambios en la Nube</span>
+    <span>💾 Guardar Datos</span>
 </button>
 
 <div id="team-modal" class="modal-overlay">
@@ -703,7 +708,7 @@
         <div class="roster-list" id="modal-roster-list"></div>
 
         <div style="margin-top:24px; text-align:right;">
-            <button class="action-btn btn-save-main" onclick="closeTeamModal()">💾 Guardar y Cerrar</button>
+            <button class="action-btn" onclick="closeTeamModal()">Guardar y Cerrar</button>
         </div>
     </div>
 </div>
@@ -842,13 +847,23 @@
 
         const ok = await saveStateToCloud();
 
-        if (span) {
+        if (btn && span) {
             if (ok) {
-                span.innerText = "¡Guardado con éxito! ✅";
-                setTimeout(() => { span.innerText = "💾 Guardar Cambios en la Nube"; }, 2500);
+                // Se pone verde con éxito
+                btn.style.backgroundColor = "#10B981";
+                span.innerText = "Guardado con éxito ✅";
+                setTimeout(() => {
+                    // Regresa a rojo original
+                    btn.style.backgroundColor = "var(--laliga-red)";
+                    span.innerText = "💾 Guardar Datos";
+                }, 2500);
             } else {
+                btn.style.backgroundColor = "#EF4444";
                 span.innerText = "❌ Error al guardar";
-                setTimeout(() => { span.innerText = "💾 Guardar Cambios en la Nube"; }, 2500);
+                setTimeout(() => {
+                    btn.style.backgroundColor = "var(--laliga-red)";
+                    span.innerText = "💾 Guardar Datos";
+                }, 2500);
             }
         }
     };
@@ -1330,16 +1345,16 @@
         let s2_1 = getWinner('q3-t1', 'q3-t2', 'score-q3-t1', 'score-q3-t2');
         let s2_2 = getWinner('q4-t1', 'q4-t2', 'score-q4-t1', 'score-q4-t2');
 
-        document.getElementById('label-s1-t1').innerText = s1_1;
-        document.getElementById('label-s1-t2').innerText = s1_2;
-        document.getElementById('label-s2-t1').innerText = s2_1;
-        document.getElementById('label-s2-t2').innerText = s2_2;
+        document.getElementById(`label-s1-t1`).innerText = s1_1;
+        document.getElementById(`label-s1-t2`).innerText = s1_2;
+        document.getElementById(`label-s2-t1`).innerText = s2_1;
+        document.getElementById(`label-s2-t2`).innerText = s2_2;
 
         let f1 = getWinnerFromLabels('label-s1-t1', 'label-s1-t2', 'score-s1-t1', 'score-s1-t2');
         let f2 = getWinnerFromLabels('label-s2-t1', 'label-s2-t2', 'score-s2-t1', 'score-s2-t2');
 
-        document.getElementById('label-f-t1').innerText = f1;
-        document.getElementById('label-f-t2').innerText = f2;
+        document.getElementById(`label-f-t1`).innerText = f1;
+        document.getElementById(`label-f-t2`).innerText = f2;
 
         let champion = getWinnerFromLabels('label-f-t1', 'label-f-t2', 'score-f-t1', 'score-f-t2');
         document.getElementById('champion-name').innerText = champion;
