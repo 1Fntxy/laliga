@@ -17,6 +17,7 @@
             --accent-green: #10B981;
             --accent-gold: #F59E0B;
             --accent-red: #EF4444;
+            --accent-gray: #64748B;
             --neon-glow: 0 0 25px rgba(0, 240, 255, 0.2);
             --text-main: #F8FAFC;
             --text-muted: #94A3B8;
@@ -298,6 +299,41 @@
             box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
         }
 
+        /* Estilo para los puntos de racha (últimos partidos) */
+        .form-streak {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .form-dot {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 900;
+            color: #FFF;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .form-dot.win {
+            background-color: var(--accent-green);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+        }
+
+        .form-dot.loss {
+            background-color: var(--accent-red);
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+        }
+
+        .form-dot.draw {
+            background-color: var(--accent-gray);
+            box-shadow: 0 0 10px rgba(100, 116, 139, 0.4);
+        }
+
         .team-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
@@ -359,7 +395,6 @@
             gap: 12px;
         }
 
-        /* Estilo Neón para el Selector Unificado de Jornadas */
         .matchday-select-styled {
             font-family: 'Outfit', sans-serif;
             font-size: 1.25rem;
@@ -754,6 +789,7 @@
                             <th>GC</th>
                             <th>DG</th>
                             <th>PTS</th>
+                            <th>Últimos 5</th>
                             <th>Plantilla</th>
                         </tr>
                     </thead>
@@ -775,7 +811,6 @@
             <div class="matchday-nav">
                 <button class="action-btn" onclick="changeMatchday(-1)">◀ Anterior</button>
                 <div style="display:flex; align-items:center; justify-content:center;">
-                    <!-- Selector único neón desplegable -->
                     <select id="matchday-select" class="matchday-select-styled" onchange="jumpToMatchday(this.value)"></select>
                 </div>
                 <button class="action-btn" onclick="changeMatchday(1)">Siguiente ▶</button>
@@ -1116,9 +1151,10 @@
         const divData = appData[currentDiv];
         if (!divData) return;
         let stats = divData.teams.map(t => ({
-            ...t, pj: 0, pg: 0, pe: 0, pp: 0, gf: 0, gc: 0, dg: 0, pts: 0
+            ...t, pj: 0, pg: 0, pe: 0, pp: 0, gf: 0, gc: 0, dg: 0, pts: 0, form: []
         }));
 
+        // Mapear partidos jugados para calcular estadísticas y racha
         divData.matches.forEach(m => {
             if (m.homeScore !== null && m.awayScore !== null) {
                 let home = stats.find(t => t.id === m.homeId);
@@ -1131,40 +1167,68 @@
 
                     if (m.homeScore > m.awayScore) {
                         home.pg++; home.pts += 3; away.pp++;
+                        home.form.push({ matchday: m.matchday, result: 'W' });
+                        away.form.push({ matchday: m.matchday, result: 'L' });
                     } else if (m.homeScore < m.awayScore) {
                         away.pg++; away.pts += 3; home.pp++;
+                        home.form.push({ matchday: m.matchday, result: 'L' });
+                        away.form.push({ matchday: m.matchday, result: 'W' });
                     } else {
                         home.pe++; home.pts += 1;
                         away.pe++; away.pts += 1;
+                        home.form.push({ matchday: m.matchday, result: 'D' });
+                        away.form.push({ matchday: m.matchday, result: 'D' });
                     }
                 }
             }
         });
 
-        stats.forEach(t => t.dg = t.gf - t.gc);
+        stats.forEach(t => {
+            t.dg = t.gf - t.gc;
+            // Ordenar racha por jornada de manera ascendente y tomar los últimos 5
+            t.form.sort((a, b) => a.matchday - b.matchday);
+            t.last5 = t.form.slice(-5).map(f => f.result);
+        });
+
         stats.sort((a, b) => b.pts - a.pts || b.dg - a.dg || b.gf - a.gf);
 
         const tbody = document.getElementById('standings-body');
-        tbody.innerHTML = stats.map((t, idx) => `
-            <tr>
-                <td><strong style="color:var(--accent-cyan);">${idx + 1}</strong></td>
-                <td>
-                    <div class="team-cell">
-                        ${t.logo ? `<img src="${t.logo}" class="team-logo">` : `<div class="team-logo">${t.name.substring(0, 2).toUpperCase()}</div>`}
-                        <span>${t.name}</span>
-                    </div>
-                </td>
-                <td>${t.pj}</td>
-                <td>${t.pg}</td>
-                <td>${t.pe}</td>
-                <td>${t.pp}</td>
-                <td>${t.gf}</td>
-                <td>${t.gc}</td>
-                <td>${t.dg > 0 ? '+' + t.dg : t.dg}</td>
-                <td><strong style="color: var(--accent-green); font-weight:800;">${t.pts}</strong></td>
-                <td><button class="action-btn" style="font-size:0.75rem; padding:6px 12px;" onclick="openTeamModal(${t.id})">📋 Plantilla</button></td>
-            </tr>
-        `).join('');
+        tbody.innerHTML = stats.map((t, idx) => {
+            // Generar los puntitos de racha
+            let formHTML = '<div class="form-streak">';
+            if (t.last5.length === 0) {
+                formHTML += '<span style="color:var(--text-muted); font-size:0.8rem;">Sin partidos</span>';
+            } else {
+                t.last5.forEach(res => {
+                    if (res === 'W') formHTML += `<div class="form-dot win" title="Victoria">✓</div>`;
+                    else if (res === 'L') formHTML += `<div class="form-dot loss" title="Derrota">✕</div>`;
+                    else formHTML += `<div class="form-dot draw" title="Empate">-</div>`;
+                });
+            }
+            formHTML += '</div>';
+
+            return `
+                <tr>
+                    <td><strong style="color:var(--accent-cyan);">${idx + 1}</strong></td>
+                    <td>
+                        <div class="team-cell">
+                            ${t.logo ? `<img src="${t.logo}" class="team-logo">` : `<div class="team-logo">${t.name.substring(0, 2).toUpperCase()}</div>`}
+                            <span>${t.name}</span>
+                        </div>
+                    </td>
+                    <td>${t.pj}</td>
+                    <td>${t.pg}</td>
+                    <td>${t.pe}</td>
+                    <td>${t.pp}</td>
+                    <td>${t.gf}</td>
+                    <td>${t.gc}</td>
+                    <td>${t.dg > 0 ? '+' + t.dg : t.dg}</td>
+                    <td><strong style="color: var(--accent-green); font-weight:800;">${t.pts}</strong></td>
+                    <td>${formHTML}</td>
+                    <td><button class="action-btn" style="font-size:0.75rem; padding:6px 12px;" onclick="openTeamModal(${t.id})">📋 Plantilla</button></td>
+                </tr>
+            `;
+        }).join('');
     }
 
     function getMaxMatchdays() {
