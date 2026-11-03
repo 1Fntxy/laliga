@@ -241,7 +241,6 @@
             color: var(--text-muted);
         }
 
-        /* Controles de Jornada */
         .matchday-nav {
             display: flex;
             align-items: center;
@@ -452,7 +451,6 @@
             text-align: center;
         }
 
-        /* Estilos de Bloqueo para Visitantes */
         .admin-only {
             display: none !important;
         }
@@ -465,7 +463,6 @@
             display: flex !important;
         }
 
-        /* Deshabilitar inputs cuando no es admin */
         body:not(.is-admin) input,
         body:not(.is-admin) select {
             pointer-events: none;
@@ -518,7 +515,7 @@
             <div class="brand-logo">👑</div>
             <div class="brand-title">
                 <h1>LA LIGA <span>ILEGAL SOCCER</span></h1>
-                <p>Liga Oficial Roblox • 3 Divisiones</p>
+                <p>Liga Oficial Roblox • Sincronizada en la Nube ☁️</p>
             </div>
         </div>
 
@@ -679,8 +676,24 @@
     </div>
 </div>
 
-<script>
-    const ADMIN_PIN = "1234"; // 🔑 TU CLAVE SECRETA AQUÍ (PUEDES CAMBIARLA)
+<!-- Firebase SDK -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBfh15wxd1qwYhKDkQ_5GjuJLxISH6EF8",
+        authDomain: "la-liga-9b628.firebaseapp.com",
+        projectId: "la-liga-9b628",
+        storageBucket: "la-liga-9b628.appspot.com",
+        messagingSenderId: "953867843684",
+        appId: "1:953867843684:web:e8201fbc8392a5676af71"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const ADMIN_PIN = "021126";
     let isAdmin = false;
 
     const DEFAULT_TEAMS = [
@@ -693,25 +706,29 @@
     let currentDiv = 1;
     let currentMatchday = 1;
     let activeTeamId = null;
-    let appData = loadState();
+    let appData = getInitialData();
 
-    function toggleAdminMode() {
-        if (isAdmin) {
-            isAdmin = false;
-            document.body.classList.remove('is-admin');
-            document.getElementById('btn-admin-toggle').innerText = '🔑 Admin';
-            alert('Modo Administrador Cerrado.');
-        } else {
-            let pass = prompt('Ingresa el PIN de Administrador:');
-            if (pass === ADMIN_PIN) {
-                isAdmin = true;
-                document.body.classList.add('is-admin');
-                document.getElementById('btn-admin-toggle').innerText = '🔓 Salir Admin';
-                alert('¡Modo Administrador Activado!');
-            } else if (pass !== null) {
-                alert('PIN Incorrecto.');
-            }
-        }
+    function getInitialData() {
+        let data = {};
+        [1, 2, 3].forEach(div => {
+            let teams = DEFAULT_TEAMS.map((name, idx) => ({
+                id: idx + 1,
+                name: `${name} ${div > 1 ? 'D' + div : ''}`,
+                logo: "",
+                manager: "",
+                roster: [
+                    { num: 1, name: "Jugador_1", pos: "POR" },
+                    { num: 10, name: "Capitan_Roblox", pos: "DEL" }
+                ]
+            }));
+
+            data[div] = {
+                teams: teams,
+                matches: generateRoundRobin(teams),
+                bracket: {}
+            };
+        });
+        return data;
     }
 
     function generateRoundRobin(teams) {
@@ -745,42 +762,44 @@
         return schedule;
     }
 
-    function getInitialData() {
-        let data = {};
-        [1, 2, 3].forEach(div => {
-            let teams = DEFAULT_TEAMS.map((name, idx) => ({
-                id: idx + 1,
-                name: `${name} ${div > 1 ? 'D' + div : ''}`,
-                logo: "",
-                manager: "",
-                roster: [
-                    { num: 1, name: "Jugador_1", pos: "POR" },
-                    { num: 10, name: "Capitan_Roblox", pos: "DEL" }
-                ]
-            }));
-
-            data[div] = {
-                teams: teams,
-                matches: generateRoundRobin(teams),
-                bracket: {}
-            };
-        });
-        return data;
-    }
-
-    function loadState() {
-        const saved = localStorage.getItem('la_liga_roblox_db_v6');
-        if (saved) {
-            try { return JSON.parse(saved); } catch(e){}
+    // Escuchar cambios en la nube en tiempo real
+    onSnapshot(doc(db, "liga", "general_data"), (docSnap) => {
+        if (docSnap.exists()) {
+            appData = docSnap.data();
+            renderAll();
+        } else {
+            saveStateToCloud();
         }
-        return getInitialData();
+    });
+
+    async function saveStateToCloud() {
+        try {
+            await setDoc(doc(db, "liga", "general_data"), appData);
+        } catch (e) {
+            console.error("Error al guardar en la nube: ", e);
+        }
     }
 
-    function saveState() {
-        localStorage.setItem('la_liga_roblox_db_v6', JSON.stringify(appData));
-    }
+    window.toggleAdminMode = function() {
+        if (isAdmin) {
+            isAdmin = false;
+            document.body.classList.remove('is-admin');
+            document.getElementById('btn-admin-toggle').innerText = '🔑 Admin';
+            alert('Modo Administrador Cerrado.');
+        } else {
+            let pass = prompt('Ingresa el PIN de Administrador:');
+            if (pass === ADMIN_PIN) {
+                isAdmin = true;
+                document.body.classList.add('is-admin');
+                document.getElementById('btn-admin-toggle').innerText = '🔓 Salir Admin';
+                alert('¡Modo Administrador Activado!');
+            } else if (pass !== null) {
+                alert('PIN Incorrecto.');
+            }
+        }
+    };
 
-    function switchDivision(div) {
+    window.switchDivision = function(div) {
         currentDiv = div;
         currentMatchday = 1;
         document.querySelectorAll('.btn-div').forEach((btn, idx) => {
@@ -788,9 +807,9 @@
         });
         document.getElementById('div-title').innerText = `${div}ª División • Tabla de Posiciones`;
         renderAll();
-    }
+    };
 
-    function switchTab(tabName, evt) {
+    window.switchTab = function(tabName, evt) {
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
         
@@ -798,7 +817,7 @@
             evt.target.classList.add('active');
         }
         document.getElementById(`tab-${tabName}`).classList.add('active');
-    }
+    };
 
     function renderAll() {
         renderStandings();
@@ -811,6 +830,7 @@
 
     function renderStandings() {
         const divData = appData[currentDiv];
+        if (!divData) return;
         let stats = divData.teams.map(t => ({
             ...t, pj: 0, pg: 0, pe: 0, pp: 0, gf: 0, gc: 0, dg: 0, pts: 0
         }));
@@ -865,7 +885,7 @@
 
     function getMaxMatchdays() {
         const divData = appData[currentDiv];
-        if (!divData.matches || divData.matches.length === 0) return 15;
+        if (!divData || !divData.matches || divData.matches.length === 0) return 15;
         return Math.max(...divData.matches.map(m => m.matchday || 1));
     }
 
@@ -880,7 +900,7 @@
         document.getElementById('matchday-label').innerText = `Jornada ${currentMatchday}`;
     }
 
-    function changeMatchday(delta) {
+    window.changeMatchday = function(delta) {
         const maxMD = getMaxMatchdays();
         let newMD = currentMatchday + delta;
         if (newMD >= 1 && newMD <= maxMD) {
@@ -888,16 +908,17 @@
             renderMatchdaySelector();
             renderMatches();
         }
-    }
+    };
 
-    function jumpToMatchday(val) {
+    window.jumpToMatchday = function(val) {
         currentMatchday = parseInt(val);
         document.getElementById('matchday-label').innerText = `Jornada ${currentMatchday}`;
         renderMatches();
-    }
+    };
 
     function renderMatches() {
         const divData = appData[currentDiv];
+        if (!divData) return;
         const container = document.getElementById('matches-container');
 
         const currentMatches = divData.matches.filter(m => m.matchday === currentMatchday);
@@ -933,19 +954,19 @@
         }).join('');
     }
 
-    function updateScore(matchId, type, val) {
+    window.updateScore = function(matchId, type, val) {
         if (!isAdmin) return;
         const divData = appData[currentDiv];
         const match = divData.matches.find(m => m.id === matchId);
         if (match) {
             match[type + 'Score'] = val === '' ? null : parseInt(val);
-            saveState();
-            renderStandings();
+            saveStateToCloud();
         }
-    }
+    };
 
     function renderTeamManagement() {
         const divData = appData[currentDiv];
+        if (!divData) return;
         const grid = document.getElementById('teams-management-grid');
 
         grid.innerHTML = divData.teams.map(t => `
@@ -969,18 +990,17 @@
         `).join('');
     }
 
-    function updateTeamName(id, val) {
+    window.updateTeamName = function(id, val) {
         if (!isAdmin) return;
         const divData = appData[currentDiv];
         const team = divData.teams.find(t => t.id === id);
         if (team) {
             team.name = val;
-            saveState();
-            renderAll();
+            saveStateToCloud();
         }
-    }
+    };
 
-    function uploadTeamLogo(id, input) {
+    window.uploadTeamLogo = function(id, input) {
         if (!isAdmin) return;
         if (input.files && input.files[0]) {
             const reader = new FileReader();
@@ -989,15 +1009,14 @@
                 const team = divData.teams.find(t => t.id === id);
                 if (team) {
                     team.logo = e.target.result;
-                    saveState();
-                    renderAll();
+                    saveStateToCloud();
                 }
             };
             reader.readAsDataURL(input.files[0]);
         }
-    }
+    };
 
-    function openTeamModal(teamId) {
+    window.openTeamModal = function(teamId) {
         activeTeamId = teamId;
         const divData = appData[currentDiv];
         const team = divData.teams.find(t => t.id === teamId);
@@ -1017,12 +1036,12 @@
         renderRosterList(team);
 
         document.getElementById('team-modal').classList.add('active');
-    }
+    };
 
-    function closeTeamModal() {
+    window.closeTeamModal = function() {
         document.getElementById('team-modal').classList.remove('active');
-        saveState();
-    }
+        saveStateToCloud();
+    };
 
     function renderRosterList(team) {
         const container = document.getElementById('modal-roster-list');
@@ -1041,57 +1060,57 @@
         `).join('');
     }
 
-    function saveModalTeamInfo() {
+    window.saveModalTeamInfo = function() {
         if (!isAdmin) return;
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
         if (team) {
             team.manager = document.getElementById('modal-dt-input').value;
-            saveState();
+            saveStateToCloud();
         }
-    }
+    };
 
-    function addRosterPlayer() {
+    window.addRosterPlayer = function() {
         if (!isAdmin) return;
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
         if (team) {
             if (!team.roster) team.roster = [];
             team.roster.push({ num: team.roster.length + 1, name: "Nuevo_Jugador", pos: "MED" });
-            saveState();
+            saveStateToCloud();
             renderRosterList(team);
         }
-    }
+    };
 
-    function updatePlayer(idx, field, value) {
+    window.updatePlayer = function(idx, field, value) {
         if (!isAdmin) return;
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
         if (team && team.roster[idx]) {
             team.roster[idx][field] = field === 'num' ? parseInt(value) || 0 : value;
-            saveState();
+            saveStateToCloud();
         }
-    }
+    };
 
-    function deletePlayer(idx) {
+    window.deletePlayer = function(idx) {
         if (!isAdmin) return;
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
         if (team && team.roster[idx]) {
             team.roster.splice(idx, 1);
-            saveState();
+            saveStateToCloud();
             renderRosterList(team);
         }
-    }
+    };
 
-    function resetCurrentDivision() {
+    window.resetCurrentDivision = function() {
         if (!isAdmin) return;
         if (confirm(`¿Estás seguro de restablecer todos los datos de la ${currentDiv}ª División?`)) {
             const initial = getInitialData();
             appData[currentDiv] = initial[currentDiv];
-            saveState();
-            renderAll();
+            saveStateToCloud();
         }
-    }
+    };
 
     function renderBracketSelectors() {
         const divData = appData[currentDiv];
+        if (!divData) return;
         const optionsHTML = `<option value="">-- Seleccionar --</option>` + 
             divData.teams.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
 
@@ -1101,8 +1120,9 @@
         }
     }
 
-    function updateBracketDisplay() {
+    window.updateBracketDisplay = function() {
         const divData = appData[currentDiv];
+        if (!divData) return;
         const getTeamName = (id) => {
             const t = divData.teams.find(x => x.id == id);
             return t ? t.name : 'Por Definir';
@@ -1133,7 +1153,7 @@
 
         const champion = getWinnerFromLabels('label-f-t1', 'label-f-t2', 'score-f-t1', 'score-f-t2');
         document.getElementById('champion-name').innerText = champion;
-    }
+    };
 
     function getWinner(sel1Id, sel2Id, score1Id, score2Id) {
         const divData = appData[currentDiv];
@@ -1163,7 +1183,7 @@
         return `${name1} (Empate)`;
     }
 
-    function saveBracket() {
+    window.saveBracket = function() {
         if (!isAdmin) return;
         const bracketData = {};
         const inputs = document.querySelectorAll('#tab-bracket input, #tab-bracket select');
@@ -1171,12 +1191,12 @@
             bracketData[input.id] = input.value;
         });
         appData[currentDiv].bracket = bracketData;
-        saveState();
-        alert('¡Bracket guardado correctamente!');
-    }
+        saveStateToCloud();
+        alert('¡Bracket guardado en la nube!');
+    };
 
     function loadBracketData() {
-        const bracketData = appData[currentDiv].bracket || {};
+        const bracketData = (appData[currentDiv] && appData[currentDiv].bracket) ? appData[currentDiv].bracket : {};
         Object.keys(bracketData).forEach(id => {
             const el = document.getElementById(id);
             if (el) el.value = bracketData[id];
@@ -1187,8 +1207,6 @@
     document.querySelectorAll('#tab-bracket input').forEach(inp => {
         inp.addEventListener('input', updateBracketDisplay);
     });
-
-    renderAll();
 </script>
 
 </body>
