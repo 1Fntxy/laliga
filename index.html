@@ -14,9 +14,7 @@
             --text-main: #1E293B;
             --text-muted: #64748B;
             --laliga-red: #EE1D23;
-            --laliga-red-hover: #D0141A;
             --border-color: #E2E8F0;
-            --accent-cyan: #00F0FF;
             --accent-green: #10B981;
             --accent-gold: #F59E0B;
             --accent-discord: #5865F2;
@@ -36,7 +34,6 @@
             padding-bottom: 120px;
         }
 
-        /* Barra superior tipo web oficial */
         .top-bar {
             background-color: #0B0F19;
             color: #FFF;
@@ -99,7 +96,6 @@
             flex-wrap: wrap;
         }
 
-        /* Botones generales de control */
         button, a.btn-social, .btn-div, .tab-btn, .action-btn {
             cursor: pointer;
             border: none;
@@ -147,7 +143,6 @@
         .btn-admin { background: var(--accent-gold); color: #02040A; font-weight: 800; }
         .btn-reset { background: rgba(239, 68, 68, 0.2); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.4); }
 
-        /* Banner de sección rojo estilo LaLiga */
         .laliga-hero {
             background: linear-gradient(135deg, var(--laliga-red) 0%, #B91C1C 100%);
             color: #FFF;
@@ -176,7 +171,6 @@
             font-weight: 600;
         }
 
-        /* Contenedor Principal */
         .container {
             width: 100%;
             max-width: 1200px;
@@ -184,7 +178,6 @@
             padding: 0 20px;
         }
 
-        /* Pestañas de Navegación principales */
         .main-tabs {
             display: flex;
             gap: 8px;
@@ -225,7 +218,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Tarjetas Estilo Componentes */
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -243,7 +235,6 @@
             margin-bottom: 16px;
         }
 
-        /* Píldoras de Estadísticas secundarias (Goleadores, Asistencias, Paradas) */
         .stats-pills {
             display: flex;
             gap: 10px;
@@ -269,7 +260,6 @@
             border-color: var(--text-main);
         }
 
-        /* Tablas */
         .table-responsive { overflow-x: auto; }
 
         table {
@@ -322,7 +312,6 @@
             flex-shrink: 0;
         }
 
-        /* Puntos de racha */
         .form-streak { display: flex; gap: 5px; align-items: center; }
         .form-dot {
             width: 22px; height: 22px; border-radius: 50%;
@@ -333,7 +322,6 @@
         .form-dot.loss { background-color: var(--laliga-red); }
         .form-dot.draw { background-color: #94A3B8; }
 
-        /* Calendario y Partidos */
         .matchday-nav {
             display: flex;
             align-items: center;
@@ -386,7 +374,6 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Bracket y Gestión */
         .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
         .team-card {
             background: #FAFAFA; border: 1px solid var(--border-color); border-radius: 14px; padding: 16px;
@@ -409,25 +396,21 @@
         .bracket-team-select { background: #FFF; border: 1px solid var(--border-color); color: var(--text-main); padding: 6px; border-radius: 6px; font-size: 0.8rem; width: 100%; }
         .bracket-score-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700; }
 
-        /* Botones de acción */
         .action-btn {
             background: var(--laliga-red); color: #FFF; padding: 10px 18px; border-radius: 10px; font-weight: 800; font-size: 0.9rem;
         }
         .btn-save-main { background: var(--accent-green); color: #FFF; }
         .btn-export { background: #8B5CF6; color: #FFF; }
 
+        /* Botón Flotante Verde Siempre Visible */
         .floating-save-btn {
-            position: fixed; bottom: 24px; right: 24px; background: var(--accent-green); color: #FFF;
-            padding: 14px 26px; border-radius: 40px; font-weight: 800; font-size: 1rem;
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4); z-index: 999; display: none; align-items: center; gap: 8px;
+            position: fixed; bottom: 24px; right: 24px; background: #10B981; color: #FFF;
+            padding: 16px 28px; border-radius: 40px; font-weight: 800; font-size: 1rem;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5); z-index: 999; display: flex; align-items: center; gap: 10px;
+            cursor: pointer; border: none;
         }
+        .floating-save-btn:hover { background: #059669; transform: scale(1.05); }
 
-        body.is-admin .floating-save-btn { display: flex !important; }
-        .admin-only { display: none !important; }
-        body.is-admin .admin-only { display: inline-flex !important; }
-        body.is-admin div.admin-only { display: flex !important; }
-
-        /* Modal de Plantillas */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); z-index: 1000;
@@ -453,10 +436,9 @@
 </head>
 <body>
 
-<!-- Barra Superior Oficial -->
 <div class="top-bar">
     <div class="brand-container">
-        <div class="league-emblem" onclick="triggerLeagueLogoUpload()" title="Cambiar logo (Modo Admin)">
+        <div class="league-emblem" onclick="triggerLeagueLogoUpload()" title="Cambiar logo">
             <div id="league-logo-container">
                 <img src="https://media.discordapp.net/attachments/1353118715406716981/1562489656396873828/2853f42f6c8278a03fdb93880813f8b5.png" alt="Logo">
             </div>
@@ -480,11 +462,10 @@
             TikTok
         </a>
         <button id="btn-admin-toggle" class="btn-div btn-admin" onclick="toggleAdminMode()">🔑 Admin</button>
-        <button class="btn-div btn-reset admin-only" onclick="resetCurrentDivision()">🔄 Reset</button>
+        <button class="btn-div btn-reset" onclick="resetCurrentDivision()">🔄 Reset</button>
     </div>
 </div>
 
-<!-- Hero Banner Estilo LaLiga -->
 <div class="laliga-hero">
     <div class="laliga-hero-content">
         <h2 id="hero-title">Temporada Oficial • 1ª División</h2>
@@ -493,16 +474,14 @@
 </div>
 
 <div class="container">
-    <!-- Pestañas de Navegación -->
     <div class="main-tabs">
         <button class="tab-btn active" onclick="switchTab('clasificacion', event)">📊 Clasificación</button>
         <button class="tab-btn" onclick="switchTab('calendario', event)">📅 Calendario</button>
         <button class="tab-btn" onclick="switchTab('estadisticas', event)">⚡ Estadísticas / Tops</button>
         <button class="tab-btn" onclick="switchTab('bracket', event)">🏆 Liguilla</button>
-        <button class="tab-btn admin-only" onclick="switchTab('gestion', event)">🛡️ Gestión</button>
+        <button class="tab-btn" onclick="switchTab('gestion', event)">🛡️ Gestión</button>
     </div>
 
-    <!-- Sección Clasificación -->
     <div id="tab-clasificacion" class="content-section active">
         <div class="card">
             <h3 id="div-title">Tabla de Posiciones</h3>
@@ -530,12 +509,11 @@
         </div>
     </div>
 
-    <!-- Sección Calendario -->
     <div id="tab-calendario" class="content-section">
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; flex-wrap:wrap; gap:12px;">
                 <h3>Calendario de Partidos</h3>
-                <button class="action-btn btn-save-main admin-only" onclick="manualSaveCloud()">💾 Guardar Partidos</button>
+                <button class="action-btn btn-save-main" onclick="manualSaveCloud()">💾 Guardar Partidos</button>
             </div>
             
             <div class="matchday-nav">
@@ -548,7 +526,6 @@
         </div>
     </div>
 
-    <!-- Sección Estadísticas / Tops (Estilo la captura con píldoras) -->
     <div id="tab-estadisticas" class="content-section">
         <div class="stats-pills">
             <button class="pill-btn active" onclick="switchStatSubtab('goles', event)">⚽ Goleadores</button>
@@ -556,7 +533,6 @@
             <button class="pill-btn" onclick="switchStatSubtab('paradas', event)">🧤 Paradas / Atajadas</button>
         </div>
 
-        <!-- Subtab Goleadores -->
         <div id="stat-subtab-goles" class="stat-subcontent card">
             <h3>Top 5 Pichichis (Goleadores)</h3>
             <div class="table-responsive">
@@ -574,7 +550,6 @@
             </div>
         </div>
 
-        <!-- Subtab Asistencias -->
         <div id="stat-subtab-asistencias" class="stat-subcontent card" style="display:none;">
             <h3>Top 5 Máximos Asistidores</h3>
             <div class="table-responsive">
@@ -592,7 +567,6 @@
             </div>
         </div>
 
-        <!-- Subtab Paradas -->
         <div id="stat-subtab-paradas" class="stat-subcontent card" style="display:none;">
             <h3>Top 5 Mejores Paradas (Porteros)</h3>
             <div class="table-responsive">
@@ -611,12 +585,11 @@
         </div>
     </div>
 
-    <!-- Sección Liguilla / Bracket -->
     <div id="tab-bracket" class="content-section">
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
                 <h3>Cuadro de Eliminación Directa</h3>
-                <button class="action-btn btn-save-main admin-only" onclick="saveBracket()">💾 Guardar Liguilla</button>
+                <button class="action-btn btn-save-main" onclick="saveBracket()">💾 Guardar Liguilla</button>
             </div>
             <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">Selecciona a los clasificados para Cuartos de Final y define marcadores.</p>
 
@@ -676,12 +649,11 @@
         </div>
     </div>
 
-    <!-- Sección Gestión de Equipos y Enlaces -->
     <div id="tab-gestion" class="content-section">
         <div class="card" style="margin-bottom: 24px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
                 <h3>Enlaces de Redes Sociales</h3>
-                <button class="action-btn btn-save-main admin-only" onclick="manualSaveCloud()">💾 Guardar Enlaces</button>
+                <button class="action-btn btn-save-main" onclick="manualSaveCloud()">💾 Guardar Enlaces</button>
             </div>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
                 <div class="input-group">
@@ -699,8 +671,8 @@
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; flex-wrap:wrap; gap:12px;">
                 <h3>Configuración de Equipos</h3>
                 <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <button class="action-btn btn-export admin-only" onclick="exportDataJSON()">📥 Exportar JSON</button>
-                    <button class="action-btn btn-save-main admin-only" onclick="manualSaveCloud()">💾 Guardar Equipos</button>
+                    <button class="action-btn btn-export" onclick="exportDataJSON()">📥 Exportar JSON</button>
+                    <button class="action-btn btn-save-main" onclick="manualSaveCloud()">💾 Guardar Equipos</button>
                 </div>
             </div>
             <div class="team-grid" id="teams-management-grid"></div>
@@ -708,12 +680,11 @@
     </div>
 </div>
 
-<!-- Botón Flotante Guardado -->
-<button id="floating-save-btn" class="floating-save-btn admin-only" onclick="manualSaveCloud()">
-    <span>💾 Guardar Cambios</span>
+<!-- Botón Flotante Verde Siempre Disponible -->
+<button id="floating-save-btn" class="floating-save-btn" onclick="manualSaveCloud()">
+    <span>💾 Guardar Cambios en la Nube</span>
 </button>
 
-<!-- Modal Plantillas -->
 <div id="team-modal" class="modal-overlay">
     <div class="modal-content">
         <button class="modal-close" onclick="closeTeamModal()">&times;</button>
@@ -726,13 +697,13 @@
 
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
             <h4 style="font-weight: 700;">Plantilla y Estadísticas (⚽ Goles | 🎯 Asist. | 🧤 Paradas)</h4>
-            <button class="action-btn admin-only" style="font-size:0.8rem; padding:6px 12px;" onclick="addRosterPlayer()">+ Agregar Jugador</button>
+            <button class="action-btn" style="font-size:0.8rem; padding:6px 12px;" onclick="addRosterPlayer()">+ Agregar Jugador</button>
         </div>
 
         <div class="roster-list" id="modal-roster-list"></div>
 
         <div style="margin-top:24px; text-align:right;">
-            <button class="action-btn btn-save-main admin-only" onclick="closeTeamModal()">Guardar y Cerrar</button>
+            <button class="action-btn btn-save-main" onclick="closeTeamModal()">💾 Guardar y Cerrar</button>
         </div>
     </div>
 </div>
@@ -755,7 +726,7 @@
     const db = getFirestore(app);
 
     const ADMIN_PIN = "021126";
-    let isAdmin = false;
+    let isAdmin = true;
 
     const DEFAULT_TEAMS = [
         "Roblox United FC", "Illegal Strikers", "Bloxburg City", "Vip Nation",
@@ -864,30 +835,25 @@
     }
 
     window.manualSaveCloud = async function() {
-        if (!isAdmin) return;
         const btn = document.getElementById('floating-save-btn');
         const span = btn ? btn.querySelector('span') : null;
 
-        if (btn && span) {
-            btn.classList.add('saving');
-            span.innerText = "⏳ Guardando...";
-        }
+        if (span) span.innerText = "⏳ Guardando...";
 
         const ok = await saveStateToCloud();
 
-        if (btn && span) {
+        if (span) {
             if (ok) {
                 span.innerText = "¡Guardado con éxito! ✅";
-                setTimeout(() => { span.innerText = "💾 Guardar Cambios"; }, 2500);
+                setTimeout(() => { span.innerText = "💾 Guardar Cambios en la Nube"; }, 2500);
             } else {
                 span.innerText = "❌ Error al guardar";
-                setTimeout(() => { span.innerText = "💾 Guardar Cambios"; }, 2500);
+                setTimeout(() => { span.innerText = "💾 Guardar Cambios en la Nube"; }, 2500);
             }
         }
     };
 
     window.exportDataJSON = function() {
-        if (!isAdmin) return;
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
         const downloadAnchor = document.createElement('a');
         downloadAnchor.setAttribute("href", dataStr);
@@ -898,34 +864,20 @@
     };
 
     window.toggleAdminMode = function() {
-        if (isAdmin) {
-            isAdmin = false;
-            document.body.classList.remove('is-admin');
-            document.getElementById('btn-admin-toggle').innerText = '🔑 Admin';
-            alert('Modo Administrador Cerrado.');
-        } else {
-            let pass = prompt('Ingresa el PIN de Administrador:');
-            if (pass === ADMIN_PIN) {
-                isAdmin = true;
-                document.body.classList.add('is-admin');
-                document.getElementById('btn-admin-toggle').innerText = '🔓 Salir Admin';
-                alert('¡Modo Administrador Activado!');
-            } else if (pass !== null) {
-                alert('PIN Incorrecto.');
-            }
+        let pass = prompt('Ingresa el PIN de Administrador:');
+        if (pass === ADMIN_PIN) {
+            isAdmin = true;
+            alert('¡Modo Administrador Confirmado!');
+        } else if (pass !== null) {
+            alert('PIN Incorrecto.');
         }
     };
 
     window.triggerLeagueLogoUpload = function() {
-        if (!isAdmin) {
-            alert('Activa el Modo Administrador (🔑 Admin) para cambiar el logo.');
-            return;
-        }
         document.getElementById('league-logo-input').click();
     };
 
     window.uploadLeagueLogo = function(input) {
-        if (!isAdmin) return;
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -946,7 +898,6 @@
     }
 
     window.updateSocialLinksFromInput = function() {
-        if (!isAdmin) return;
         appData.socialDiscord = document.getElementById('admin-discord-url').value;
         appData.socialTiktok = document.getElementById('admin-tiktok-url').value;
         renderSocialLinks();
@@ -1103,7 +1054,6 @@
             }
         });
 
-        // Goleadores Top 5
         let topGoals = [...allPlayers].sort((a, b) => b.goals - a.goals).slice(0, 5);
         document.getElementById('tops-goles-body').innerHTML = topGoals.map((p, i) => `
             <tr>
@@ -1114,7 +1064,6 @@
             </tr>
         `).join('') || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin registros</td></tr>`;
 
-        // Asistencias Top 5
         let topAssists = [...allPlayers].sort((a, b) => b.assists - a.assists).slice(0, 5);
         document.getElementById('tops-asist-body').innerHTML = topAssists.map((p, i) => `
             <tr>
@@ -1125,7 +1074,6 @@
             </tr>
         `).join('') || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin registros</td></tr>`;
 
-        // Paradas Top 5
         let topSaves = [...allPlayers].sort((a, b) => b.saves - a.saves).slice(0, 5);
         document.getElementById('tops-atajadas-body').innerHTML = topSaves.map((p, i) => `
             <tr>
@@ -1204,7 +1152,6 @@
     }
 
     window.updateScore = function(matchId, type, val) {
-        if (!isAdmin) return;
         const divData = appData[currentDiv];
         const match = divData.matches.find(m => m.id === matchId);
         if (match) match[type + 'Score'] = val === '' ? null : parseInt(val);
@@ -1237,14 +1184,12 @@
     }
 
     window.updateTeamName = function(id, val) {
-        if (!isAdmin) return;
         const divData = appData[currentDiv];
         const team = divData.teams.find(t => t.id === id);
         if (team) team.name = val;
     };
 
     window.uploadTeamLogo = function(id, input) {
-        if (!isAdmin) return;
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -1307,19 +1252,17 @@
                 <div style="display:flex; align-items:center; gap:4px;" title="Paradas">
                     <span>🧤</span><input type="number" class="stat-input" value="${player.saves || 0}" onchange="updatePlayer(${idx}, 'saves', this.value)">
                 </div>
-                ${isAdmin ? `<button style="background:transparent; border:none; color:var(--laliga-red); cursor:pointer; font-size:1.2rem; padding:0 4px;" onclick="deletePlayer(${idx})">&times;</button>` : ''}
+                <button style="background:transparent; border:none; color:var(--laliga-red); cursor:pointer; font-size:1.2rem; padding:0 4px;" onclick="deletePlayer(${idx})">&times;</button>
             </div>
         `).join('');
     }
 
     window.updateModalTeamInfo = function() {
-        if (!isAdmin) return;
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
         if (team) team.manager = document.getElementById('modal-dt-input').value;
     };
 
     window.addRosterPlayer = function() {
-        if (!isAdmin) return;
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
         if (team) {
             if (!team.roster) team.roster = [];
@@ -1329,7 +1272,6 @@
     };
 
     window.updatePlayer = function(idx, field, value) {
-        if (!isAdmin) return;
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
         if (team && team.roster[idx]) {
             if (field === 'name' || field === 'pos') {
@@ -1341,7 +1283,6 @@
     };
 
     window.deletePlayer = function(idx) {
-        if (!isAdmin) return;
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
         if (team && team.roster[idx]) {
             team.roster.splice(idx, 1);
@@ -1350,7 +1291,6 @@
     };
 
     window.resetCurrentDivision = function() {
-        if (!isAdmin) return;
         if (confirm(`¿Restablecer datos de la ${currentDiv}ª División?`)) {
             const initial = getInitialData();
             appData[currentDiv] = initial[currentDiv];
@@ -1434,7 +1374,6 @@
     }
 
     window.saveBracket = async function() {
-        if (!isAdmin) return;
         let bracketData = {};
         let inputs = document.querySelectorAll('#tab-bracket input, #tab-bracket select');
         inputs.forEach(input => { bracketData[input.id] = input.value; });
