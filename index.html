@@ -18,6 +18,8 @@
             --accent-gold: #F59E0B;
             --accent-red: #EF4444;
             --accent-gray: #64748B;
+            --accent-discord: #5865F2;
+            --accent-tiktok: #FE2C55;
             --neon-glow: 0 0 25px rgba(0, 240, 255, 0.2);
             --text-main: #F8FAFC;
             --text-muted: #94A3B8;
@@ -138,19 +140,20 @@
         }
 
         /* Botones y Controles */
-        button, .btn-div, .tab-btn, .action-btn {
+        button, a.btn-social, .btn-div, .tab-btn, .action-btn {
             cursor: pointer;
             border: none;
             outline: none;
+            text-decoration: none;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        button:hover, .btn-div:hover, .tab-btn:hover, .action-btn:hover {
+        button:hover, a.btn-social:hover, .btn-div:hover, .tab-btn:hover, .action-btn:hover {
             transform: translateY(-2px);
             filter: brightness(1.15);
         }
 
-        button:active, .btn-div:active, .tab-btn:active, .action-btn:active {
+        button:active, a.btn-social:active, .btn-div:active, .tab-btn:active, .action-btn:active {
             transform: translateY(1px) scale(0.97);
         }
 
@@ -169,6 +172,42 @@
             color: #02040A;
             border-color: var(--accent-cyan);
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+        }
+
+        /* Botones de Redes Sociales Estilizados */
+        .btn-social {
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #FFF;
+        }
+
+        .btn-discord {
+            background: rgba(88, 101, 242, 0.2);
+            border: 1px solid rgba(88, 101, 242, 0.5);
+            color: #8EA1FF;
+            box-shadow: 0 0 12px rgba(88, 101, 242, 0.2);
+        }
+        .btn-discord:hover {
+            background: var(--accent-discord);
+            color: #FFF;
+            box-shadow: 0 0 18px rgba(88, 101, 242, 0.5);
+        }
+
+        .btn-tiktok {
+            background: rgba(254, 44, 85, 0.2);
+            border: 1px solid rgba(254, 44, 85, 0.5);
+            color: #FF8CA3;
+            box-shadow: 0 0 12px rgba(254, 44, 85, 0.2);
+        }
+        .btn-tiktok:hover {
+            background: var(--accent-tiktok);
+            color: #FFF;
+            box-shadow: 0 0 18px rgba(254, 44, 85, 0.5);
         }
 
         /* Pestañas de Navegación */
@@ -299,7 +338,7 @@
             box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
         }
 
-        /* Estilo para los puntos de racha (últimos partidos) */
+        /* Estilo para los puntos de racha */
         .form-streak {
             display: flex;
             gap: 6px;
@@ -553,6 +592,12 @@
             box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
         }
 
+        .btn-export {
+            background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+            color: #FFF;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+
         .floating-save-btn {
             position: fixed;
             bottom: 28px;
@@ -694,7 +739,8 @@
         body:not(.is-admin) .matchday-nav button,
         body:not(.is-admin) .matchday-nav select,
         body:not(.is-admin) .tab-btn,
-        body:not(.is-admin) .btn-div {
+        body:not(.is-admin) .btn-div,
+        body:not(.is-admin) a.btn-social {
             pointer-events: auto !important;
             opacity: 1 !important;
         }
@@ -758,6 +804,11 @@
             <button class="btn-div active" onclick="switchDivision(1)">🏆 1ª DIV</button>
             <button class="btn-div" onclick="switchDivision(2)">🥇 2ª DIV</button>
             <button class="btn-div" onclick="switchDivision(3)">🥈 3ª DIV</button>
+            
+            <!-- Botones de Redes Sociales (Cambia los enlaces # por tus URLs reales) -->
+            <a href="https://discord.gg/tu-enlace-de-discord" target="_blank" class="btn-social btn-discord">💬 Discord</a>
+            <a href="https://www.tiktok.com/@tu-usuario-tiktok" target="_blank" class="btn-social btn-tiktok">🎵 TikTok</a>
+
             <button id="btn-admin-toggle" class="btn-div btn-admin" onclick="toggleAdminMode()">🔑 Admin</button>
             <button class="btn-div btn-reset admin-only" onclick="resetCurrentDivision()">🔄 Reset</button>
         </div>
@@ -893,7 +944,10 @@
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; flex-wrap:wrap; gap:12px;">
                 <h2>Configuración de Equipos</h2>
-                <button class="action-btn btn-save-main admin-only" onclick="manualSaveCloud()">💾 Guardar Equipos</button>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <button class="action-btn btn-export admin-only" onclick="exportDataJSON()">📥 Exportar Datos (JSON)</button>
+                    <button class="action-btn btn-save-main admin-only" onclick="manualSaveCloud()">💾 Guardar Equipos</button>
+                </div>
             </div>
             <div class="team-grid" id="teams-management-grid">
             </div>
@@ -1069,6 +1123,18 @@
         }
     };
 
+    // Función para exportar los datos en formato JSON
+    window.exportDataJSON = function() {
+        if (!isAdmin) return;
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", `respaldo_la_liga_div${currentDiv}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+    };
+
     window.toggleAdminMode = function() {
         if (isAdmin) {
             isAdmin = false;
@@ -1154,7 +1220,6 @@
             ...t, pj: 0, pg: 0, pe: 0, pp: 0, gf: 0, gc: 0, dg: 0, pts: 0, form: []
         }));
 
-        // Mapear partidos jugados para calcular estadísticas y racha
         divData.matches.forEach(m => {
             if (m.homeScore !== null && m.awayScore !== null) {
                 let home = stats.find(t => t.id === m.homeId);
@@ -1185,7 +1250,6 @@
 
         stats.forEach(t => {
             t.dg = t.gf - t.gc;
-            // Ordenar racha por jornada de manera ascendente y tomar los últimos 5
             t.form.sort((a, b) => a.matchday - b.matchday);
             t.last5 = t.form.slice(-5).map(f => f.result);
         });
@@ -1194,7 +1258,6 @@
 
         const tbody = document.getElementById('standings-body');
         tbody.innerHTML = stats.map((t, idx) => {
-            // Generar los puntitos de racha
             let formHTML = '<div class="form-streak">';
             if (t.last5.length === 0) {
                 formHTML += '<span style="color:var(--text-muted); font-size:0.8rem;">Sin partidos</span>';
