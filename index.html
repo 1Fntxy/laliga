@@ -304,6 +304,12 @@
             padding: 4px;
         }
 
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 20px;
+        }
+
         .bracket-container {
             display: flex;
             justify-content: space-between;
@@ -444,6 +450,12 @@
             text-align: center;
         }
 
+        .stat-input {
+            width: 60px;
+            text-align: center;
+            font-weight: 700;
+        }
+
         /* Ajuste responsivo para celulares */
         @media (max-width: 768px) {
             .matchday-nav {
@@ -497,6 +509,7 @@
     <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('clasificacion', event)">📊 Clasificación</button>
         <button class="tab-btn" onclick="switchTab('calendario', event)">📅 Calendario / Partidos</button>
+        <button class="tab-btn" onclick="switchTab('estadisticas', event)">🌟 Goleadores & Stats</button>
         <button class="tab-btn" onclick="switchTab('bracket', event)">🏆 Bracket / Liguilla</button>
         <button class="tab-btn" onclick="switchTab('gestion', event)">🛡️ Gestión de Equipos</button>
     </div>
@@ -542,6 +555,61 @@
             </div>
 
             <div class="matches-grid" id="matches-container">
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-estadisticas" class="content-section">
+        <div class="stats-grid">
+            <div class="card">
+                <h3 style="color: var(--accent-cyan); margin-bottom: 16px;">⚽ Tabla de Goleadores</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Jugador</th>
+                                <th>Equipo</th>
+                                <th>Goles</th>
+                            </tr>
+                        </thead>
+                        <tbody id="goals-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="color: var(--accent-green); margin-bottom: 16px;">🎯 Tabla de Asistencias</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Jugador</th>
+                                <th>Equipo</th>
+                                <th>Asist.</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assists-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card" style="grid-column: 1 / -1;">
+                <h3 style="color: var(--accent-gold); margin-bottom: 16px;">🧤 Tabla de Atajadas (Porteros)</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Jugador</th>
+                                <th>Equipo</th>
+                                <th>Atajadas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="saves-body"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -633,9 +701,10 @@
         </div>
 
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
-            <h3>Plantilla de Jugadores</h3>
+            <h3>Plantilla y Estadísticas de Jugadores</h3>
             <button class="action-btn" style="font-size:0.8rem; padding:4px 8px;" onclick="addRosterPlayer()">+ Agregar Jugador</button>
         </div>
+        <p style="color:var(--text-muted); font-size:0.8rem; margin-bottom:8px;">Edita goles, asistencias y atajadas directamente para actualizar las tablas generales.</p>
 
         <div class="roster-list" id="modal-roster-list">
         </div>
@@ -695,8 +764,8 @@
                 logo: "",
                 manager: "",
                 roster: [
-                    { num: 1, name: "Jugador_1", pos: "POR" },
-                    { num: 10, name: "Capitan_Roblox", pos: "DEL" }
+                    { num: 1, name: "Portero_Pro", pos: "POR", goals: 0, assists: 0, saves: 12 },
+                    { num: 10, name: "Capitan_Roblox", pos: "DEL", goals: 5, assists: 2, saves: 0 }
                 ]
             }));
 
@@ -710,7 +779,7 @@
     }
 
     function loadState() {
-        const saved = localStorage.getItem('la_liga_roblox_db_v3');
+        const saved = localStorage.getItem('la_liga_roblox_db_v4');
         if (saved) {
             try { return JSON.parse(saved); } catch(e){}
         }
@@ -718,7 +787,7 @@
     }
 
     function saveState() {
-        localStorage.setItem('la_liga_roblox_db_v3', JSON.stringify(appData));
+        localStorage.setItem('la_liga_roblox_db_v4', JSON.stringify(appData));
     }
 
     function switchDivision(div) {
@@ -745,6 +814,7 @@
         renderStandings();
         renderMatchdaySelector();
         renderMatches();
+        renderStatisticsTables();
         renderTeamManagement();
         renderBracketSelectors();
         loadBracketData();
@@ -802,6 +872,55 @@
                 <td><button class="action-btn" style="font-size:0.75rem; padding:4px 8px;" onclick="openTeamModal(${t.id})">📋 Plantilla</button></td>
             </tr>
         `).join('');
+    }
+
+    function renderStatisticsTables() {
+        const divData = appData[currentDiv];
+        let allPlayers = [];
+
+        divData.teams.forEach(team => {
+            if (team.roster) {
+                team.roster.forEach(p => {
+                    allPlayers.push({
+                        ...p,
+                        teamName: team.name
+                    });
+                });
+            }
+        });
+
+        // Goleadores
+        let goalsList = [...allPlayers].sort((a, b) => (b.goals || 0) - (a.goals || 0));
+        document.getElementById('goals-body').innerHTML = goalsList.slice(0, 10).map((p, idx) => `
+            <tr>
+                <td><strong>${idx + 1}</strong></td>
+                <td>${p.name} <span style="font-size:0.75rem; color:var(--text-muted);">(${p.pos})</span></td>
+                <td>${p.teamName}</td>
+                <td><strong style="color: var(--accent-cyan);">${p.goals || 0}</strong></td>
+            </tr>
+        `).join('') || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin registros</td></tr>`;
+
+        // Asistencias
+        let assistsList = [...allPlayers].sort((a, b) => (b.assists || 0) - (a.assists || 0));
+        document.getElementById('assists-body').innerHTML = assistsList.slice(0, 10).map((p, idx) => `
+            <tr>
+                <td><strong>${idx + 1}</strong></td>
+                <td>${p.name} <span style="font-size:0.75rem; color:var(--text-muted);">(${p.pos})</span></td>
+                <td>${p.teamName}</td>
+                <td><strong style="color: var(--accent-green);">${p.assists || 0}</strong></td>
+            </tr>
+        `).join('') || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin registros</td></tr>`;
+
+        // Atajadas
+        let savesList = [...allPlayers].sort((a, b) => (b.saves || 0) - (a.saves || 0));
+        document.getElementById('saves-body').innerHTML = savesList.slice(0, 10).map((p, idx) => `
+            <tr>
+                <td><strong>${idx + 1}</strong></td>
+                <td>${p.name} <span style="font-size:0.75rem; color:var(--text-muted);">(${p.pos})</span></td>
+                <td>${p.teamName}</td>
+                <td><strong style="color: var(--accent-gold);">${p.saves || 0}</strong></td>
+            </tr>
+        `).join('') || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin registros</td></tr>`;
     }
 
     function getMaxMatchdays() {
@@ -960,21 +1079,27 @@
     function closeTeamModal() {
         document.getElementById('team-modal').classList.remove('active');
         saveState();
+        renderStatisticsTables();
     }
 
     function renderRosterList(team) {
         const container = document.getElementById('modal-roster-list');
         container.innerHTML = team.roster.map((player, idx) => `
-            <div class="roster-item">
-                <input type="number" class="num-input" value="${player.num}" placeholder="#" onchange="updatePlayer(${idx}, 'num', this.value)">
-                <input type="text" style="flex:1;" value="${player.name}" placeholder="Username Roblox" onchange="updatePlayer(${idx}, 'name', this.value)">
-                <select onchange="updatePlayer(${idx}, 'pos', this.value)">
+            <div class="roster-item" style="flex-wrap: wrap;">
+                <input type="number" class="num-input" value="${player.num}" placeholder="#" title="Dorsal" onchange="updatePlayer(${idx}, 'num', this.value)">
+                <input type="text" style="flex:1; min-width:120px;" value="${player.name}" placeholder="Username" onchange="updatePlayer(${idx}, 'name', this.value)">
+                <select onchange="updatePlayer(${idx}, 'pos', this.value)" style="width:70px;">
                     <option value="POR" ${player.pos==='POR'?'selected':''}>POR</option>
                     <option value="DEF" ${player.pos==='DEF'?'selected':''}>DEF</option>
                     <option value="MED" ${player.pos==='MED'?'selected':''}>MED</option>
                     <option value="DEL" ${player.pos==='DEL'?'selected':''}>DEL</option>
                 </select>
-                <button style="background:transparent; border:none; color:#EF4444; cursor:pointer;" onclick="deletePlayer(${idx})">&times;</button>
+                <div style="display:flex; gap:4px; align-items:center; font-size:0.75rem; color:var(--text-muted);">
+                    ⚽<input type="number" class="stat-input" value="${player.goals || 0}" title="Goles" onchange="updatePlayer(${idx}, 'goals', this.value)">
+                    🎯<input type="number" class="stat-input" value="${player.assists || 0}" title="Asistencias" onchange="updatePlayer(${idx}, 'assists', this.value)">
+                    🧤<input type="number" class="stat-input" value="${player.saves || 0}" title="Atajadas" onchange="updatePlayer(${idx}, 'saves', this.value)">
+                </div>
+                <button style="background:transparent; border:none; color:#EF4444; cursor:pointer; font-size:1.2rem;" onclick="deletePlayer(${idx})">&times;</button>
             </div>
         `).join('');
     }
@@ -991,7 +1116,7 @@
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
         if (team) {
             if (!team.roster) team.roster = [];
-            team.roster.push({ num: team.roster.length + 1, name: "Nuevo_Jugador", pos: "MED" });
+            team.roster.push({ num: team.roster.length + 1, name: "Nuevo_Jugador", pos: "MED", goals: 0, assists: 0, saves: 0 });
             saveState();
             renderRosterList(team);
         }
@@ -1000,7 +1125,11 @@
     function updatePlayer(idx, field, value) {
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
         if (team && team.roster[idx]) {
-            team.roster[idx][field] = field === 'num' ? parseInt(value) || 0 : value;
+            if (field === 'num' || field === 'goals' || field === 'assists' || field === 'saves') {
+                team.roster[idx][field] = parseInt(value) || 0;
+            } else {
+                team.roster[idx][field] = value;
+            }
             saveState();
         }
     }
