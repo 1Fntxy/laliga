@@ -4,24 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Liga Ilegal Soccer - Roblox</title>
-    <!-- Fuente Moderna de Google -->
+    <!-- Fuente Moderna -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-main: #07090E;
-            --bg-card: rgba(18, 24, 38, 0.75);
-            --bg-card-hover: rgba(30, 41, 59, 0.85);
-            --border-color: rgba(255, 255, 255, 0.08);
-            --border-glow: rgba(6, 182, 212, 0.3);
+            --bg-main: #030712;
+            --bg-card: rgba(15, 23, 42, 0.85);
+            --border-color: rgba(6, 182, 212, 0.2);
             --accent-cyan: #06B6D4;
-            --accent-cyan-glow: rgba(6, 182, 212, 0.4);
             --accent-green: #10B981;
             --accent-gold: #F59E0B;
             --accent-red: #EF4444;
-            --text-main: #F8FAFC;
-            --text-muted: #94A3B8;
+            --neon-glow: 0 0 20px rgba(6, 182, 212, 0.35);
+            --text-main: #F3F4F6;
+            --text-muted: #9CA3AF;
         }
 
         * {
@@ -29,19 +27,20 @@
             margin: 0;
             padding: 0;
             font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.25s ease-in-out;
         }
 
         body {
             background-color: var(--bg-main);
             background-image: 
-                radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.12) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%);
+                radial-gradient(circle at 10% 20%, rgba(6, 182, 212, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
             background-attachment: fixed;
             color: var(--text-main);
             padding: 24px;
             display: flex;
             justify-content: center;
-            padding-bottom: 90px;
+            padding-bottom: 100px;
             min-height: 100vh;
         }
 
@@ -50,60 +49,60 @@
             max-width: 1240px;
         }
 
-        /* Navbar Esfera / Glassmorphism */
+        /* Navbar estilo Glassmorphism con bordes brillantes */
         .navbar {
             background: var(--bg-card);
             backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--border-color);
             border-radius: 20px;
-            padding: 18px 28px;
+            padding: 20px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
             flex-wrap: wrap;
             gap: 16px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), var(--neon-glow);
         }
 
         .brand-info {
             display: flex;
             align-items: center;
-            gap: 18px;
+            gap: 16px;
         }
 
         .brand-logo {
-            width: 52px;
-            height: 52px;
-            background: linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
-            border: 1.5px solid var(--accent-cyan);
+            width: 54px;
+            height: 54px;
+            background: linear-gradient(135deg, #0EA5E9 0%, #047857 100%);
+            border: 2px solid var(--accent-cyan);
             border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 26px;
-            box-shadow: 0 0 20px var(--accent-cyan-glow);
+            font-size: 28px;
+            box-shadow: 0 0 15px var(--accent-cyan);
         }
 
         .brand-title h1 {
-            font-size: 1.55rem;
+            font-size: 1.6rem;
             font-weight: 800;
             letter-spacing: -0.5px;
             color: #FFF;
+            text-transform: uppercase;
         }
 
         .brand-title h1 span {
-            background: linear-gradient(90deg, #06B6D4, #38BDF8);
+            background: linear-gradient(90deg, #22D3EE, #34D399);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-style: normal;
         }
 
         .brand-title p {
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
-            font-weight: 500;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         .controls-header {
@@ -113,46 +112,46 @@
             flex-wrap: wrap;
         }
 
-        /* Efectos globales para Botones */
+        /* Botones generales */
         button, .btn-div, .tab-btn, .action-btn {
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            cursor: pointer;
+            border: none;
             outline: none;
         }
 
         button:hover, .btn-div:hover, .tab-btn:hover, .action-btn:hover {
-            transform: translateY(-2px) scale(1.02);
+            transform: translateY(-3px) scale(1.02);
+            filter: brightness(1.2);
         }
 
         button:active, .btn-div:active, .tab-btn:active, .action-btn:active {
-            transform: translateY(1px) scale(0.97) !important;
+            transform: translateY(1px) scale(0.97);
         }
 
         .btn-div {
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(255, 255, 255, 0.05);
             color: var(--text-muted);
-            border: 1px solid var(--border-color);
-            padding: 9px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 18px;
             border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.9rem;
         }
 
         .btn-div.active {
-            background: linear-gradient(135deg, var(--accent-cyan) 0%, #0891B2 100%);
-            color: #000;
-            font-weight: 700;
-            border-color: transparent;
-            box-shadow: 0 4px 20px var(--accent-cyan-glow);
+            background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
+            color: #030712;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
         }
 
-        /* Pestañas estilo Nav-Pills */
+        /* Pestañas de Navegación */
         .tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 28px;
-            background: rgba(15, 23, 42, 0.6);
-            padding: 6px;
+            gap: 12px;
+            margin-bottom: 24px;
+            background: rgba(3, 7, 18, 0.6);
+            padding: 8px;
             border-radius: 16px;
             border: 1px solid var(--border-color);
             overflow-x: auto;
@@ -160,44 +159,47 @@
 
         .tab-btn {
             background: transparent;
-            border: none;
             color: var(--text-muted);
-            padding: 10px 20px;
+            padding: 12px 22px;
             font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
+            font-weight: 700;
             border-radius: 12px;
             white-space: nowrap;
         }
 
         .tab-btn.active {
-            color: var(--text-main);
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            color: #FFF;
+            background: rgba(6, 182, 212, 0.15);
+            border: 1px solid var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
         }
 
         .content-section {
             display: none;
+            animation: fadeIn 0.4s ease-in-out;
         }
 
         .content-section.active {
             display: block;
         }
 
-        /* Tarjetas de Contenido */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tarjetas Principales */
         .card {
             background: var(--bg-card);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
             border-radius: 20px;
             padding: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
         }
 
-        /* Tablas de Posiciones Modernas */
+        /* Tablas */
         .table-responsive {
             overflow-x: auto;
         }
@@ -210,49 +212,46 @@
         }
 
         th {
-            padding: 12px 18px;
-            color: var(--text-muted);
+            padding: 14px 18px;
+            color: var(--accent-cyan);
             font-size: 0.8rem;
-            font-weight: 700;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
-            border: none;
+            letter-spacing: 1px;
+            background: rgba(6, 182, 212, 0.05);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
         }
+
+        th:first-child { border-left: 1px solid var(--border-color); border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+        th:last-child { border-right: 1px solid var(--border-color); border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
 
         td {
             padding: 14px 18px;
             font-size: 0.95rem;
             background: rgba(255, 255, 255, 0.02);
-            border-top: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        td:first-child {
-            border-left: 1px solid var(--border-color);
-            border-top-left-radius: 12px;
-            border-bottom-left-radius: 12px;
-        }
-
-        td:last-child {
-            border-right: 1px solid var(--border-color);
-            border-top-right-radius: 12px;
-            border-bottom-right-radius: 12px;
-        }
+        td:first-child { border-left: 1px solid rgba(255, 255, 255, 0.05); border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+        td:last-child { border-right: 1px solid rgba(255, 255, 255, 0.05); border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
 
         tr:hover td {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(6, 182, 212, 0.06);
+            border-color: rgba(6, 182, 212, 0.2);
         }
 
         .team-cell {
             display: flex;
             align-items: center;
             gap: 14px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .team-logo {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             object-fit: cover;
             background: rgba(255, 255, 255, 0.05);
@@ -261,9 +260,9 @@
             align-items: center;
             justify-content: center;
             font-size: 0.8rem;
-            color: var(--text-muted);
+            color: var(--accent-cyan);
+            font-weight: 800;
             flex-shrink: 0;
-            font-weight: 700;
         }
 
         .team-grid {
@@ -273,13 +272,14 @@
         }
 
         .team-card {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 18px;
             display: flex;
             flex-direction: column;
             gap: 14px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
         }
 
         .input-group {
@@ -291,22 +291,21 @@
         .input-group label {
             font-size: 0.8rem;
             color: var(--text-muted);
-            font-weight: 600;
+            font-weight: 700;
         }
 
         input[type="text"], input[type="number"], select {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--text-main);
             padding: 10px 14px;
             border-radius: 10px;
             font-size: 0.9rem;
-            transition: all 0.2s;
         }
 
         input[type="text"]:focus, input[type="number"]:focus, select:focus {
             border-color: var(--accent-cyan);
-            box-shadow: 0 0 10px var(--accent-cyan-glow);
+            box-shadow: 0 0 12px rgba(6, 182, 212, 0.4);
         }
 
         input[type="file"] {
@@ -318,7 +317,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.3);
             padding: 14px 22px;
             border-radius: 14px;
             border: 1px solid var(--border-color);
@@ -328,9 +327,10 @@
         }
 
         .matchday-title {
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             font-weight: 800;
             color: var(--accent-cyan);
+            text-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
         }
 
         .matches-grid {
@@ -343,7 +343,7 @@
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-color);
             border-radius: 14px;
-            padding: 14px 22px;
+            padding: 16px 22px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -357,7 +357,7 @@
             gap: 14px;
             flex: 1;
             min-width: 140px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .match-team.away {
@@ -372,15 +372,17 @@
         }
 
         .score-input {
-            width: 50px;
+            width: 52px;
             text-align: center;
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             font-weight: 800;
             padding: 6px;
             border-radius: 8px;
+            background: rgba(0,0,0,0.6);
+            color: var(--accent-cyan);
         }
 
-        /* Bracket Liguilla */
+        /* Bracket / Liguilla */
         .bracket-container {
             display: flex;
             justify-content: space-between;
@@ -403,13 +405,14 @@
             font-size: 1rem;
             color: var(--accent-cyan);
             margin-bottom: 12px;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 2px solid var(--border-color);
             padding-bottom: 8px;
-            font-weight: 700;
+            font-weight: 800;
+            text-transform: uppercase;
         }
 
         .bracket-match {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-color);
             border-radius: 14px;
             padding: 14px;
@@ -419,7 +422,7 @@
         }
 
         .bracket-team-select {
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
             border: 1px solid var(--border-color);
             color: var(--text-main);
             padding: 8px;
@@ -436,7 +439,7 @@
 
         .bracket-score-row span {
             font-size: 0.9rem;
-            font-weight: 600;
+            font-weight: 700;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -444,37 +447,32 @@
         }
 
         .action-btn {
-            background: var(--accent-cyan);
-            color: #000;
-            border: none;
-            padding: 9px 18px;
+            background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
+            color: #030712;
+            padding: 10px 20px;
             border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 14px var(--accent-cyan-glow);
+            font-weight: 800;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
         }
 
         .btn-save-main {
-            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            background: linear-gradient(135deg, #10B981 0%, #047857 100%);
             color: #FFF;
-            font-weight: 800;
-            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
         }
 
-        /* Botón Flotante Neón */
+        /* Botón flotante de guardado rápido */
         .floating-save-btn {
             position: fixed;
             bottom: 28px;
             right: 28px;
-            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            background: linear-gradient(135deg, #10B981 0%, #047857 100%);
             color: #FFF;
-            border: none;
-            padding: 16px 28px;
+            padding: 16px 30px;
             border-radius: 50px;
             font-weight: 800;
             font-size: 1.05rem;
-            cursor: pointer;
-            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.6);
             z-index: 999;
             display: none;
             align-items: center;
@@ -483,21 +481,21 @@
 
         .floating-save-btn.saving {
             background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
-            color: #000;
+            color: #030712;
             pointer-events: none;
-            animation: pulse-save 1s infinite alternate;
+            animation: neon-pulse 1s infinite alternate;
         }
 
         .floating-save-btn.success {
-            background: linear-gradient(135deg, #10B981 0%, #047857 100%);
+            background: linear-gradient(135deg, #059669 0%, #065F46 100%);
             color: #FFF;
             transform: scale(1.08) !important;
-            box-shadow: 0 0 30px rgba(16, 185, 129, 0.8);
+            box-shadow: 0 0 35px rgba(16, 185, 129, 0.9);
         }
 
-        @keyframes pulse-save {
-            0% { transform: scale(1); opacity: 0.9; }
-            100% { transform: scale(1.05); opacity: 1; }
+        @keyframes neon-pulse {
+            0% { transform: scale(1); box-shadow: 0 0 10px rgba(6, 182, 212, 0.4); }
+            100% { transform: scale(1.05); box-shadow: 0 0 25px rgba(6, 182, 212, 0.8); }
         }
 
         body.is-admin .floating-save-btn {
@@ -511,24 +509,25 @@
         }
 
         .btn-reset:hover {
-            background: #EF4444;
+            background: var(--accent-red);
             color: #FFF;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
         }
 
         .btn-admin {
             background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-            color: #000;
-            font-weight: 700;
-            border: none;
+            color: #030712;
+            font-weight: 800;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
         }
 
-        /* Modal Flotante de Plantillas */
+        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
+            background: rgba(3, 7, 18, 0.85);
+            backdrop-filter: blur(10px);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -549,16 +548,15 @@
             overflow-y: auto;
             padding: 28px;
             position: relative;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), var(--neon-glow);
         }
 
         .modal-close {
             position: absolute;
             top: 20px; right: 20px;
             background: transparent;
-            border: none;
             color: var(--text-muted);
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             cursor: pointer;
         }
 
@@ -573,10 +571,10 @@
             display: flex;
             gap: 10px;
             align-items: center;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.02);
             padding: 10px 14px;
             border-radius: 10px;
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .num-input {
@@ -773,7 +771,7 @@
                         <div class="bracket-score-row"><span id="label-f-t1">Finalista 1</span><input type="number" id="score-f-t1" class="score-input" value="0"></div>
                         <div class="bracket-score-row"><span id="label-f-t2">Finalista 2</span><input type="number" id="score-f-t2" class="score-input" value="0"></div>
                     </div>
-                    <div class="bracket-match" style="text-align: center; background: radial-gradient(circle, #1E293B 0%, #0F172A 100%); border: 2px solid var(--accent-gold);">
+                    <div class="bracket-match" style="text-align: center; background: radial-gradient(circle, #1E293B 0%, #030712 100%); border: 2px solid var(--accent-gold); box-shadow: 0 0 20px rgba(245,158,11,0.2);">
                         <span style="font-size: 0.8rem; color: var(--accent-gold); font-weight: 800;">🏆 CAMPEÓN OFICIAL</span>
                         <h2 id="champion-name" style="color: #FFF; font-size: 1.25rem; margin-top: 6px; font-weight: 800;">- Por Definir -</h2>
                     </div>
@@ -1057,7 +1055,7 @@
                 <td>${t.gc}</td>
                 <td>${t.dg > 0 ? '+' + t.dg : t.dg}</td>
                 <td><strong style="color: var(--accent-green); font-weight:800;">${t.pts}</strong></td>
-                <td><button class="action-btn" style="font-size:0.75rem; padding:5px 10px;" onclick="openTeamModal(${t.id})">📋 Plantilla</button></td>
+                <td><button class="action-btn" style="font-size:0.75rem; padding:6px 12px;" onclick="openTeamModal(${t.id})">📋 Plantilla</button></td>
             </tr>
         `).join('');
     }
@@ -1120,7 +1118,7 @@
                     <div class="score-inputs">
                         <input type="number" class="score-input" value="${m.homeScore !== null ? m.homeScore : ''}" 
                             onchange="updateScore(${m.id}, 'home', this.value)">
-                        <span style="color:var(--text-muted); font-weight:700;">-</span>
+                        <span style="color:var(--text-muted); font-weight:800;">-</span>
                         <input type="number" class="score-input" value="${m.awayScore !== null ? m.awayScore : ''}" 
                             onchange="updateScore(${m.id}, 'away', this.value)">
                     </div>
@@ -1154,7 +1152,7 @@
                         ${t.logo ? `<img src="${t.logo}" class="team-logo">` : `<div class="team-logo">${t.name.substring(0,2).toUpperCase()}</div>`}
                         <strong style="color:var(--accent-cyan);">Equipo ${index + 1}</strong>
                     </div>
-                    <button class="action-btn" style="font-size:0.75rem; padding:5px 10px;" onclick="openTeamModal(${t.id})">📋 Plantilla</button>
+                    <button class="action-btn" style="font-size:0.75rem; padding:6px 12px;" onclick="openTeamModal(${t.id})">📋 Plantilla</button>
                 </div>
                 <div class="input-group">
                     <label>Nombre del Equipo</label>
@@ -1202,7 +1200,7 @@
         if (!team.roster) team.roster = [];
 
         document.getElementById('modal-header').innerHTML = `
-            ${team.logo ? `<img src="${team.logo}" style="width:52px; height:52px; border-radius:50%; object-fit:cover;">` : `<div class="team-logo" style="width:52px; height:52px; font-size:1.3rem;">${team.name.substring(0,2).toUpperCase()}</div>`}
+            ${team.logo ? `<img src="${team.logo}" style="width:54px; height:54px; border-radius:50%; object-fit:cover; border:2px solid var(--accent-cyan);">` : `<div class="team-logo" style="width:54px; height:54px; font-size:1.3rem;">${team.name.substring(0,2).toUpperCase()}</div>`}
             <div>
                 <h2 style="font-weight:800; font-size:1.25rem;">${team.name}</h2>
                 <span style="color:var(--text-muted); font-size:0.85rem;">División ${currentDiv}</span>
@@ -1232,7 +1230,7 @@
                     <option value="MED" ${player.pos==='MED'?'selected':''}>MED</option>
                     <option value="DEL" ${player.pos==='DEL'?'selected':''}>DEL</option>
                 </select>
-                ${isAdmin ? `<button style="background:transparent; border:none; color:var(--accent-red); cursor:pointer; font-size:1.2rem; padding:0 4px;" onclick="deletePlayer(${idx})">&times;</button>` : ''}
+                ${isAdmin ? `<button style="background:transparent; border:none; color:var(--accent-red); cursor:pointer; font-size:1.3rem; padding:0 4px;" onclick="deletePlayer(${idx})">&times;</button>` : ''}
             </div>
         `).join('');
     }
