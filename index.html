@@ -571,9 +571,45 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Estilos para el panel de eventos del partido (goles, asistencias, paradas) */
-        .match-events-section {
+        /* Contenedor de estadísticas laterales (Izquierda para local, Derecha para visitante) */
+        .match-side-events-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
             border-top: 1px dashed var(--border-color);
+            padding-top: 10px;
+        }
+
+        .team-events-side {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+        .team-events-side.away-side {
+            text-align: right;
+            align-items: flex-end;
+        }
+
+        .compact-event-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--bg-subcard);
+            border: 1px solid var(--border-color);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            color: var(--text-main);
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .match-events-section {
+            border-top: 1px solid var(--border-color);
             padding-top: 10px;
             display: flex;
             flex-direction: column;
@@ -612,22 +648,6 @@
             padding: 8px;
             border-radius: 8px;
             border: 1px solid var(--border-color);
-        }
-
-        .match-events-summary {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-        .event-badge {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-weight: 600;
-            color: var(--text-main);
         }
 
         .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
@@ -750,6 +770,14 @@
             .score-inputs {
                 justify-content: center;
                 margin: 4px 0;
+            }
+
+            .match-side-events-container {
+                grid-template-columns: 1fr;
+            }
+            .team-events-side.away-side {
+                text-align: left;
+                align-items: flex-start;
             }
 
             .card { padding: 16px; }
@@ -1178,7 +1206,7 @@
                         awayId: away.id,
                         homeScore: null,
                         awayScore: null,
-                        events: [] // Array para almacenar goleadores/asistidores/paradas del partido
+                        events: []
                     });
                 }
             }
@@ -1692,7 +1720,6 @@
         const divData = appData[currentDiv];
         if (!divData || !divData.teams) return;
 
-        // Resetear contadores de jugadores a 0
         divData.teams.forEach(t => {
             if (t.roster) {
                 t.roster.forEach(p => {
@@ -1703,7 +1730,6 @@
             }
         });
 
-        // Sumar desde los eventos de cada partido
         divData.matches.forEach(m => {
             if (m.events && Array.isArray(m.events)) {
                 m.events.forEach(ev => {
@@ -1739,29 +1765,32 @@
 
             if (!m.events) m.events = [];
 
-            // Generar opciones de jugadores para ambos equipos
             let homePlayersOpts = home.roster && home.roster.length > 0 
                 ? home.roster.map(p => `<option value="${p.name}">${p.name} (#${p.num})</option>`).join('')
-                : `<option value="">Sin jugadores en plantilla</option>`;
+                : `<option value="">Sin jugadores</option>`;
 
             let awayPlayersOpts = away.roster && away.roster.length > 0 
                 ? away.roster.map(p => `<option value="${p.name}">${p.name} (#${p.num})</option>`).join('')
-                : `<option value="">Sin jugadores en plantilla</option>`;
+                : `<option value="">Sin jugadores</option>`;
 
-            // Resumen visible para todos (público)
-            let eventsSummaryHTML = '';
-            if (m.events.length > 0) {
-                eventsSummaryHTML = `<div class="match-events-summary">` + m.events.map(ev => {
-                    let teamObj = divData.teams.find(t => t.id == ev.teamId);
-                    let teamShort = teamObj ? teamObj.name.substring(0, 8) : '';
-                    let icon = ev.type === 'goal' ? '⚽ GOL' : (ev.type === 'assist' ? '🎯 ASIST' : '🧤 PARADA');
-                    return `<span class="event-badge">${icon}: <b>${ev.playerName}</b> (${teamShort}) [+${ev.qty}]</span>`;
-                }).join('') + `</div>`;
-            } else {
-                eventsSummaryHTML = `<div style="font-size:0.8rem; color:var(--text-muted);">Sin incidencias registradas en este partido.</div>`;
-            }
+            // Agrupar eventos por lado (Local / Visitante) de forma compacta
+            let homeEventsList = m.events.filter(ev => ev.teamId == home.id);
+            let awayEventsList = m.events.filter(ev => ev.teamId == away.id);
 
-            // Controles de edición solo para Admin
+            let homeSideHTML = homeEventsList.length > 0 
+                ? homeEventsList.map(ev => {
+                    let icon = ev.type === 'goal' ? '⚽' : (ev.type === 'assist' ? '🎯' : '🧤');
+                    return `<span class="compact-event-badge">${icon} <b>${ev.playerName}</b> [+${ev.qty}]</span>`;
+                }).join('') 
+                : `<span style="font-size:0.75rem; color:var(--text-muted); font-style:italic;">Sin incidencias</span>`;
+
+            let awaySideHTML = awayEventsList.length > 0 
+                ? awayEventsList.map(ev => {
+                    let icon = ev.type === 'goal' ? '⚽' : (ev.type === 'assist' ? '🎯' : '🧤');
+                    return `<span class="compact-event-badge">${icon} <b>${ev.playerName}</b> [+${ev.qty}]</span>`;
+                }).join('') 
+                : `<span style="font-size:0.75rem; color:var(--text-muted); font-style:italic;">Sin incidencias</span>`;
+
             let adminEventsEditor = '';
             if (isAdmin) {
                 let eventRowsHTML = m.events.map((ev, evIdx) => {
@@ -1816,8 +1845,16 @@
                             ${away.logo ? `<img src="${away.logo}" class="team-logo">` : `<div class="team-logo">${away.name.substring(0,2).toUpperCase()}</div>`}
                         </div>
                     </div>
+
+                    <div class="match-side-events-container">
+                        <div class="team-events-side">
+                            ${homeSideHTML}
+                        </div>
+                        <div class="team-events-side away-side">
+                            ${awaySideHTML}
+                        </div>
+                    </div>
                     
-                    ${eventsSummaryHTML}
                     ${adminEventsEditor}
                 </div>
             `;
