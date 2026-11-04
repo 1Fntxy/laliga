@@ -639,6 +639,7 @@
         }
         .match-events-body.show { display: flex; flex-direction: column; }
 
+        /* Fila de incidencia unificada por jugador (estilo imagen de referencia) */
         .event-row-input {
             display: flex;
             gap: 8px;
@@ -648,6 +649,25 @@
             padding: 8px;
             border-radius: 8px;
             border: 1px solid var(--border-color);
+        }
+
+        .stat-input-box {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--bg-subcard);
+            border: 1px solid var(--border-color);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .stat-input-box input {
+            width: 42px;
+            text-align: center;
+            padding: 4px;
+            font-size: 0.85rem;
+            font-weight: 800;
         }
 
         .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
@@ -1521,7 +1541,7 @@
         tempStats.sort((a, b) => b.pts - a.pts || b.dg - a.dg || b.gf - a.gf);
 
         let positions = {};
-        tempStats.sort((a, b) => b.pts - a.pts || b.dg - a.dg || b.gf - a.gf).forEach((t, idx) => { positions[t.id] = idx + 1; });
+        tempStats.forEach((t, idx) => { positions[t.id] = idx + 1; });
         return positions;
     }
 
@@ -1737,9 +1757,9 @@
                     if (team && team.roster) {
                         let player = team.roster.find(p => p.name === ev.playerName);
                         if (player) {
-                            if (ev.type === 'goal') player.goals = (player.goals || 0) + (parseInt(ev.qty) || 1);
-                            if (ev.type === 'assist') player.assists = (player.assists || 0) + (parseInt(ev.qty) || 1);
-                            if (ev.type === 'save') player.saves = (player.saves || 0) + (parseInt(ev.qty) || 1);
+                            player.goals = (player.goals || 0) + (parseInt(ev.goals) || 0);
+                            player.assists = (player.assists || 0) + (parseInt(ev.assists) || 0);
+                            player.saves = (player.saves || 0) + (parseInt(ev.saves) || 0);
                         }
                     }
                 });
@@ -1747,7 +1767,7 @@
         });
     }
 
-    // Agrupa todas las acciones del jugador en una sola línea limpia
+    // Agrupa todas las acciones del jugador en una sola línea limpia para la tarjeta del partido
     function getGroupedTeamEventsHTML(eventsList, teamId) {
         if (!eventsList || eventsList.length === 0) {
             return `<span style="font-size:0.75rem; color:var(--text-muted); font-style:italic;">Sin incidencias</span>`;
@@ -1758,10 +1778,9 @@
             if (!playerMap[ev.playerName]) {
                 playerMap[ev.playerName] = { goals: 0, assists: 0, saves: 0 };
             }
-            let qty = parseInt(ev.qty) || 1;
-            if (ev.type === 'goal') playerMap[ev.playerName].goals += qty;
-            if (ev.type === 'assist') playerMap[ev.playerName].assists += qty;
-            if (ev.type === 'save') playerMap[ev.playerName].saves += qty;
+            playerMap[ev.playerName].goals += parseInt(ev.goals) || 0;
+            playerMap[ev.playerName].assists += parseInt(ev.assists) || 0;
+            playerMap[ev.playerName].saves += parseInt(ev.saves) || 0;
         });
 
         let html = '';
@@ -1772,9 +1791,11 @@
             if (stats.assists > 0) parts.push(`🎯 ${stats.assists}`);
             if (stats.saves > 0) parts.push(`🧤 ${stats.saves}`);
 
-            html += `<span class="compact-event-badge"><b>${playerName}</b>: ${parts.join(' | ')}</span>`;
+            if (parts.length > 0) {
+                html += `<span class="compact-event-badge"><b>${playerName}</b>: ${parts.join(' | ')}</span>`;
+            }
         }
-        return html;
+        return html || `<span style="font-size:0.75rem; color:var(--text-muted); font-style:italic;">Sin incidencias</span>`;
     }
 
     function renderMatches() {
@@ -1795,14 +1816,6 @@
 
             if (!m.events) m.events = [];
 
-            let homePlayersOpts = home.roster && home.roster.length > 0 
-                ? home.roster.map(p => `<option value="${p.name}">${p.name} (#${p.num})</option>`).join('')
-                : `<option value="">Sin jugadores</option>`;
-
-            let awayPlayersOpts = away.roster && away.roster.length > 0 
-                ? away.roster.map(p => `<option value="${p.name}">${p.name} (#${p.num})</option>`).join('')
-                : `<option value="">Sin jugadores</option>`;
-
             let homeEventsList = m.events.filter(ev => ev.teamId == home.id);
             let awayEventsList = m.events.filter(ev => ev.teamId == away.id);
 
@@ -1813,21 +1826,20 @@
             if (isAdmin) {
                 let eventRowsHTML = m.events.map((ev, evIdx) => {
                     let teamObj = divData.teams.find(t => t.id == ev.teamId);
+                    let playersOpts = teamObj && teamObj.roster ? teamObj.roster.map(p => `<option value="${p.name}" ${p.name === ev.playerName ? 'selected' : ''}>${p.name}</option>`).join('') : '';
+
                     return `
                         <div class="event-row-input">
                             <select onchange="updateMatchEvent(${m.id}, ${evIdx}, 'teamId', this.value)">
                                 <option value="${home.id}" ${ev.teamId == home.id ? 'selected' : ''}>${home.name}</option>
                                 <option value="${away.id}" ${ev.teamId == away.id ? 'selected' : ''}>${away.name}</option>
                             </select>
-                            <select onchange="updateMatchEvent(${m.id}, ${evIdx}, 'type', this.value)">
-                                <option value="goal" ${ev.type === 'goal' ? 'selected' : ''}>⚽ Goles</option>
-                                <option value="assist" ${ev.type === 'assist' ? 'selected' : ''}>🎯 Asistencias</option>
-                                <option value="save" ${ev.type === 'save' ? 'selected' : ''}>🧤 Paradas</option>
-                            </select>
                             <select onchange="updateMatchEvent(${m.id}, ${evIdx}, 'playerName', this.value)">
-                                ${teamObj && teamObj.roster ? teamObj.roster.map(p => `<option value="${p.name}" ${p.name === ev.playerName ? 'selected' : ''}>${p.name}</option>`).join('') : ''}
+                                ${playersOpts}
                             </select>
-                            <input type="number" class="stat-input" value="${ev.qty || 1}" min="1" onchange="updateMatchEvent(${m.id}, ${evIdx}, 'qty', this.value)" title="Cantidad">
+                            <div class="stat-input-box" title="Goles">⚽ <input type="number" value="${ev.goals || 0}" min="0" onchange="updateMatchEvent(${m.id}, ${evIdx}, 'goals', this.value)"></div>
+                            <div class="stat-input-box" title="Asistencias">🎯 <input type="number" value="${ev.assists || 0}" min="0" onchange="updateMatchEvent(${m.id}, ${evIdx}, 'assists', this.value)"></div>
+                            <div class="stat-input-box" title="Atajadas / Paradas">🧤 <input type="number" value="${ev.saves || 0}" min="0" onchange="updateMatchEvent(${m.id}, ${evIdx}, 'saves', this.value)"></div>
                             <button class="action-btn" style="background:var(--laliga-red); padding:4px 10px; font-size:0.8rem;" onclick="removeMatchEvent(${m.id}, ${evIdx})">&times;</button>
                         </div>
                     `;
@@ -1839,7 +1851,7 @@
                         <div id="match-events-box-${m.id}" class="match-events-body">
                             <div style="font-size:0.8rem; font-weight:700; color:var(--text-main);">Incidencias del partido:</div>
                             ${eventRowsHTML}
-                            <button class="action-btn" style="font-size:0.8rem; padding:6px 12px; margin-top:4px;" onclick="addMatchEvent(${m.id}, ${home.id})">+ Agregar Incidencia</button>
+                            <button class="action-btn" style="font-size:0.8rem; padding:6px 12px; margin-top:4px;" onclick="addMatchEvent(${m.id}, ${home.id})">+ Agregar Jugador a Incidencias</button>
                         </div>
                     </div>
                 `;
@@ -1892,9 +1904,10 @@
             const defaultPlayer = team && team.roster && team.roster.length > 0 ? team.roster[0].name : "Jugador";
             match.events.push({
                 teamId: defaultTeamId,
-                type: 'goal',
                 playerName: defaultPlayer,
-                qty: 1
+                goals: 0,
+                assists: 0,
+                saves: 0
             });
             recalculateAllPlayerStats();
             renderMatches();
@@ -1908,8 +1921,8 @@
         const divData = appData[currentDiv];
         const match = divData.matches.find(m => m.id === matchId);
         if (match && match.events[evIdx]) {
-            if (field === 'qty') {
-                match.events[evIdx][field] = parseInt(val) || 1;
+            if (field === 'goals' || field === 'assists' || field === 'saves') {
+                match.events[evIdx][field] = parseInt(val) || 0;
             } else {
                 match.events[evIdx][field] = val;
             }
