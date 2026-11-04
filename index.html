@@ -52,7 +52,6 @@
             padding-bottom: 120px;
         }
 
-        /* Barra Superior Fija (Sticky Header) */
         .top-bar {
             position: sticky;
             top: 0;
@@ -636,7 +635,7 @@
         </div>
 
         <div id="stat-subtab-goles" class="stat-subcontent card">
-            <h3>Top 5 Pichichis (Goleadores)</h3>
+            <h3>Mejores Goleadores</h3>
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -653,7 +652,7 @@
         </div>
 
         <div id="stat-subtab-asistencias" class="stat-subcontent card" style="display:none;">
-            <h3>Top 5 Máximos Asistidores</h3>
+            <h3>Mejores Asistidores</h3>
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -670,7 +669,7 @@
         </div>
 
         <div id="stat-subtab-paradas" class="stat-subcontent card" style="display:none;">
-            <h3>Top 5 Mejores Paradas (Porteros)</h3>
+            <h3>Mejores Porteros</h3>
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -1339,7 +1338,8 @@
             }
         });
 
-        let topGoals = [...allPlayers].sort((a, b) => b.goals - a.goals).slice(0, 5);
+        // Top 10 Goleadores
+        let topGoals = [...allPlayers].sort((a, b) => b.goals - a.goals).slice(0, 10);
         document.getElementById('tops-goles-body').innerHTML = topGoals.map((p, i) => `
             <tr>
                 <td><strong style="color:var(--laliga-red);">#${i+1}</strong></td>
@@ -1349,7 +1349,8 @@
             </tr>
         `).join('') || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin registros</td></tr>`;
 
-        let topAssists = [...allPlayers].sort((a, b) => b.assists - a.assists).slice(0, 5);
+        // Top 10 Asistidores
+        let topAssists = [...allPlayers].sort((a, b) => b.assists - a.assists).slice(0, 10);
         document.getElementById('tops-asist-body').innerHTML = topAssists.map((p, i) => `
             <tr>
                 <td><strong style="color:var(--laliga-red);">#${i+1}</strong></td>
@@ -1359,7 +1360,8 @@
             </tr>
         `).join('') || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin registros</td></tr>`;
 
-        let topSaves = [...allPlayers].sort((a, b) => b.saves - a.saves).slice(0, 5);
+        // Top 10 Porteros / Paradas
+        let topSaves = [...allPlayers].sort((a, b) => b.saves - a.saves).slice(0, 10);
         document.getElementById('tops-atajadas-body').innerHTML = topSaves.map((p, i) => `
             <tr>
                 <td><strong style="color:var(--laliga-red);">#${i+1}</strong></td>
