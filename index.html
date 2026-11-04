@@ -52,6 +52,59 @@
             padding-bottom: 120px;
         }
 
+        /* Pantalla de carga (Loader con Balón Rodando) */
+        #page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        #page-loader.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .rolling-ball-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .rolling-ball {
+            font-size: 3.5rem;
+            animation: rollBall 0.7s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite alternate;
+        }
+
+        .loader-text {
+            color: #FFF;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @keyframes rollBall {
+            0% {
+                transform: translateX(-100px) rotate(0deg);
+            }
+            100% {
+                transform: translateX(100px) rotate(360deg);
+            }
+        }
+
         .top-bar {
             position: sticky;
             top: 0;
@@ -487,7 +540,7 @@
         .btn-export { background: #8B5CF6; color: #FFF; }
         .btn-export:hover { background: #7C3AED; }
 
-        /* Botón de Guardado Flotante Minimalista */
+        /* Botón flotante minimalista */
         .floating-save-btn {
             position: fixed;
             bottom: 20px;
@@ -544,6 +597,14 @@
     </style>
 </head>
 <body>
+
+<!-- Pantalla de carga con balón rodando -->
+<div id="page-loader">
+    <div class="rolling-ball-container">
+        <div class="rolling-ball">⚽</div>
+        <div class="loader-text">Cargando...</div>
+    </div>
+</div>
 
 <div class="top-bar">
     <div class="header-controls-left">
@@ -1137,26 +1198,41 @@
     }
 
     window.switchDivision = function(div) {
-        currentDiv = div;
-        currentMatchday = 1;
-        document.querySelectorAll('.header-controls-left .btn-div').forEach((btn, idx) => {
-            btn.classList.toggle('active', idx + 1 === div);
+        showLoaderAndExecute(() => {
+            currentDiv = div;
+            currentMatchday = 1;
+            document.querySelectorAll('.header-controls-left .btn-div').forEach((btn, idx) => {
+                btn.classList.toggle('active', idx + 1 === div);
+            });
+            document.getElementById('hero-title').innerText = `Temporada Oficial • ${div}ª División`;
+            document.getElementById('div-title').innerText = `${div}ª División • Tabla de Posiciones`;
+            renderAll();
         });
-        document.getElementById('hero-title').innerText = `Temporada Oficial • ${div}ª División`;
-        document.getElementById('div-title').innerText = `${div}ª División • Tabla de Posiciones`;
-        renderAll();
     };
 
     window.switchTab = function(tabName, evt) {
-        document.querySelectorAll('.main-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
-        
-        if (evt && evt.target) evt.target.classList.add('active');
-        document.getElementById(`tab-${tabName}`).classList.add('active');
-        if (tabName === 'estadisticas' || tabName === 'clasificacion') {
-            animateCounters();
-        }
+        showLoaderAndExecute(() => {
+            document.querySelectorAll('.main-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+            
+            if (evt && evt.target) evt.target.classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            if (tabName === 'estadisticas' || tabName === 'clasificacion') {
+                animateCounters();
+            }
+        });
     };
+
+    function showLoaderAndExecute(callback) {
+        const loader = document.getElementById('page-loader');
+        loader.classList.add('active');
+        setTimeout(() => {
+            callback();
+            setTimeout(() => {
+                loader.classList.remove('active');
+            }, 200);
+        }, 500); // Duración de transición de medio segundo con el balón rodando
+    }
 
     window.switchStatSubtab = function(subtabName, evt) {
         document.querySelectorAll('.stats-pills .pill-btn').forEach(btn => btn.classList.remove('active'));
