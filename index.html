@@ -571,7 +571,7 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Contenedor de estadísticas laterales (Izquierda para local, Derecha para visitante) */
+        /* Contenedor de estadísticas laterales con agrupamiento por jugador */
         .match-side-events-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -595,12 +595,12 @@
         .compact-event-badge {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             background: var(--bg-subcard);
             border: 1px solid var(--border-color);
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 700;
             color: var(--text-main);
             max-width: 100%;
             overflow: hidden;
@@ -1747,6 +1747,36 @@
         });
     }
 
+    // Función auxiliar para agrupar en una misma línea las acciones de cada jugador por equipo
+    function getGroupedTeamEventsHTML(eventsList, teamId) {
+        if (!eventsList || eventsList.length === 0) {
+            return `<span style="font-size:0.75rem; color:var(--text-muted); font-style:italic;">Sin incidencias</span>`;
+        }
+
+        let playerMap = {};
+        eventsList.forEach(ev => {
+            if (!playerMap[ev.playerName]) {
+                playerMap[ev.playerName] = { goals: 0, assists: 0, saves: 0 };
+            }
+            let qty = parseInt(ev.qty) || 1;
+            if (ev.type === 'goal') playerMap[ev.playerName].goals += qty;
+            if (ev.type === 'assist') playerMap[ev.playerName].assists += qty;
+            if (ev.type === 'save') playerMap[ev.playerName].saves += qty;
+        });
+
+        let html = '';
+        for (let playerName in playerMap) {
+            let stats = playerMap[playerName];
+            let parts = [];
+            if (stats.goals > 0) parts.push(`⚽ ${stats.goals}`);
+            if (stats.assists > 0) parts.push(`🎯 ${stats.assists}`);
+            if (stats.saves > 0) parts.push(`🧤 ${stats.saves}`);
+
+            html += `<span class="compact-event-badge"><b>${playerName}</b>: ${parts.join(' | ')}</span>`;
+        }
+        return html;
+    }
+
     function renderMatches() {
         const divData = appData[currentDiv];
         if (!divData) return;
@@ -1773,29 +1803,16 @@
                 ? away.roster.map(p => `<option value="${p.name}">${p.name} (#${p.num})</option>`).join('')
                 : `<option value="">Sin jugadores</option>`;
 
-            // Agrupar eventos por lado (Local / Visitante) de forma compacta
             let homeEventsList = m.events.filter(ev => ev.teamId == home.id);
             let awayEventsList = m.events.filter(ev => ev.teamId == away.id);
 
-            let homeSideHTML = homeEventsList.length > 0 
-                ? homeEventsList.map(ev => {
-                    let icon = ev.type === 'goal' ? '⚽' : (ev.type === 'assist' ? '🎯' : '🧤');
-                    return `<span class="compact-event-badge">${icon} <b>${ev.playerName}</b> [+${ev.qty}]</span>`;
-                }).join('') 
-                : `<span style="font-size:0.75rem; color:var(--text-muted); font-style:italic;">Sin incidencias</span>`;
-
-            let awaySideHTML = awayEventsList.length > 0 
-                ? awayEventsList.map(ev => {
-                    let icon = ev.type === 'goal' ? '⚽' : (ev.type === 'assist' ? '🎯' : '🧤');
-                    return `<span class="compact-event-badge">${icon} <b>${ev.playerName}</b> [+${ev.qty}]</span>`;
-                }).join('') 
-                : `<span style="font-size:0.75rem; color:var(--text-muted); font-style:italic;">Sin incidencias</span>`;
+            let homeSideHTML = getGroupedTeamEventsHTML(homeEventsList, home.id);
+            let awaySideHTML = getGroupedTeamEventsHTML(awayEventsList, away.id);
 
             let adminEventsEditor = '';
             if (isAdmin) {
                 let eventRowsHTML = m.events.map((ev, evIdx) => {
                     let teamObj = divData.teams.find(t => t.id == ev.teamId);
-                    let playersOptions = (ev.teamId == home.id ? homePlayersOpts : awayPlayersOpts);
                     return `
                         <div class="event-row-input">
                             <select onchange="updateMatchEvent(${m.id}, ${evIdx}, 'teamId', this.value)">
@@ -2076,7 +2093,7 @@
 
     window.resetPlayerStatsOnly = function() {
         if (!isAdmin) return;
-        let confirmText = prompt(`⚠️ ATENCIÓN: Estás a punto de vaciar las incidencias de goles y asistencias de todos los partidos en la ${currentDiv}ª División.`);
+        let confirmText = prompt(`⚠️ ATENCIÓN: Estás a punto de vaciar las incidencias de todos los partidos en la ${currentDiv}ª División.\nEscribe "RESET" para confirmar:`);
         if (confirmText === "RESET") {
             const divData = appData[currentDiv];
             if (divData && divData.matches) {
