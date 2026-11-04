@@ -52,7 +52,11 @@
             padding-bottom: 120px;
         }
 
+        /* Barra Superior Fija (Sticky Header) */
         .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 998;
             background-color: var(--topbar-bg);
             color: #FFF;
             padding: 12px 24px;
@@ -62,6 +66,7 @@
             border-bottom: 3px solid var(--laliga-red);
             flex-wrap: wrap;
             gap: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .brand-container {
@@ -386,7 +391,6 @@
         .form-dot.loss { background-color: var(--laliga-red); }
         .form-dot.draw { background-color: #94A3B8; }
 
-        /* Estilos de Indicadores de Tendencia */
         .trend-badge {
             font-size: 0.75rem;
             font-weight: 800;
@@ -492,7 +496,6 @@
         }
         .floating-save-btn:hover { background: var(--laliga-red-hover); transform: scale(1.05); }
 
-        /* Estilos y Animación Zoom-In del Modal */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); z-index: 1000;
@@ -832,7 +835,6 @@
     let autoSaveTimer = null;
     let isInitialLoading = true;
 
-    // Lógica para cambiar de Tema (Claro / Oscuro)
     window.toggleTheme = function() {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -1148,7 +1150,6 @@
         animateCounters();
     };
 
-    // Función del Contador Animado
     function animateCounters() {
         const counters = document.querySelectorAll('.animate-num');
         counters.forEach(counter => {
@@ -1180,7 +1181,6 @@
         loadBracketData();
     }
 
-    // Calcula las posiciones históricas por jornada para obtener las tendencias (🔼, 🔻, ➖)
     function calculatePositionsForMatches(matchesLimit) {
         const divData = appData[currentDiv];
         if (!divData) return {};
@@ -1258,7 +1258,6 @@
 
         stats.sort((a, b) => b.pts - a.pts || b.dg - a.dg || b.gf - a.gf);
 
-        // Obtener pos previa para tendencias
         let prevPositions = {};
         if (maxPlayedMD > 1) {
             prevPositions = calculatePositionsForMatches(maxPlayedMD - 1);
@@ -1278,7 +1277,6 @@
             }
             formHTML += '</div>';
 
-            // Cálculo del distintivo de tendencia (🔼 / 🔻 / ➖)
             let currentPos = idx + 1;
             let prevPos = prevPositions[t.id];
             let trendBadge = `<span class="trend-badge trend-same" title="Sin cambios">➖</span>`;
