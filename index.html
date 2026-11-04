@@ -638,7 +638,7 @@
         }
         .match-events-body.show { display: flex; flex-direction: column; }
 
-        /* Fila unificada de estadísticas por jugador (Goles | Asist | Atajadas) */
+        /* Fila unificada limpia en una sola línea con Equipo, Jugador y las 3 casillas de Estadísticas juntas */
         .event-row-input {
             display: flex;
             gap: 8px;
@@ -1828,16 +1828,16 @@
 
                     return `
                         <div class="event-row-input">
-                            <select onchange="updateMatchEvent(${m.id}, ${evIdx}, 'teamId', this.value)">
+                            <select onchange="updateMatchEventField(${m.id}, ${evIdx}, 'teamId', this.value)">
                                 <option value="${home.id}" ${ev.teamId == home.id ? 'selected' : ''}>${home.name}</option>
                                 <option value="${away.id}" ${ev.teamId == away.id ? 'selected' : ''}>${away.name}</option>
                             </select>
-                            <select onchange="updateMatchEvent(${m.id}, ${evIdx}, 'playerName', this.value)">
+                            <select onchange="updateMatchEventField(${m.id}, ${evIdx}, 'playerName', this.value)">
                                 ${playersOpts}
                             </select>
-                            <div class="stat-input-box" title="Goles">⚽ <input type="number" value="${ev.goals || 0}" min="0" onchange="updateMatchEvent(${m.id}, ${evIdx}, 'goals', this.value)"></div>
-                            <div class="stat-input-box" title="Asistencias">🎯 <input type="number" value="${ev.assists || 0}" min="0" onchange="updateMatchEvent(${m.id}, ${evIdx}, 'assists', this.value)"></div>
-                            <div class="stat-input-box" title="Atajadas / Paradas">🧤 <input type="number" value="${ev.saves || 0}" min="0" onchange="updateMatchEvent(${m.id}, ${evIdx}, 'saves', this.value)"></div>
+                            <div class="stat-input-box" title="Goles">⚽ <input type="number" value="${ev.goals || 0}" min="0" oninput="updateMatchEventNumSilent(${m.id}, ${evIdx}, 'goals', this.value)"></div>
+                            <div class="stat-input-box" title="Asistencias">🎯 <input type="number" value="${ev.assists || 0}" min="0" oninput="updateMatchEventNumSilent(${m.id}, ${evIdx}, 'assists', this.value)"></div>
+                            <div class="stat-input-box" title="Atajadas / Paradas">🧤 <input type="number" value="${ev.saves || 0}" min="0" oninput="updateMatchEventNumSilent(${m.id}, ${evIdx}, 'saves', this.value)"></div>
                             <button class="action-btn" style="background:var(--laliga-red); padding:4px 10px; font-size:0.8rem;" onclick="removeMatchEvent(${m.id}, ${evIdx})">&times;</button>
                         </div>
                     `;
@@ -1914,18 +1914,30 @@
         }
     };
 
-    window.updateMatchEvent = function(matchId, evIdx, field, val) {
+    // Cambio para selects (equipo o jugador) que sí actualizan la vista sin cerrar nada
+    window.updateMatchEventField = function(matchId, evIdx, field, val) {
         if (!isAdmin) return;
         const divData = appData[currentDiv];
         const match = divData.matches.find(m => m.id === matchId);
         if (match && match.events[evIdx]) {
-            if (field === 'goals' || field === 'assists' || field === 'saves') {
-                match.events[evIdx][field] = parseInt(val) || 0;
-            } else {
-                match.events[evIdx][field] = val;
-            }
+            match.events[evIdx][field] = val;
             recalculateAllPlayerStats();
             renderMatches();
+            const box = document.getElementById(`match-events-box-${matchId}`);
+            if (box) box.classList.add('show');
+            renderTops();
+            triggerAutoSave();
+        }
+    };
+
+    // Cambio silencioso para números (goles, asist, paradas) sin redibujar el DOM para que no se pierda el foco ni parpadee
+    window.updateMatchEventNumSilent = function(matchId, evIdx, field, val) {
+        if (!isAdmin) return;
+        const divData = appData[currentDiv];
+        const match = divData.matches.find(m => m.id === matchId);
+        if (match && match.events[evIdx]) {
+            match.events[evIdx][field] = parseInt(val) || 0;
+            recalculateAllPlayerStats();
             renderTops();
             triggerAutoSave();
         }
@@ -1939,6 +1951,8 @@
             match.events.splice(evIdx, 1);
             recalculateAllPlayerStats();
             renderMatches();
+            const box = document.getElementById(`match-events-box-${matchId}`);
+            if (box) box.classList.add('show');
             renderTops();
             triggerAutoSave();
         }
