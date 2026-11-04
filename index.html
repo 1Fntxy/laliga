@@ -638,35 +638,40 @@
         }
         .match-events-body.show { display: flex; flex-direction: column; }
 
-        /* Fila unificada limpia en una sola línea con Equipo, Jugador y las 3 casillas de Estadísticas juntas */
-        .event-row-input {
+        /* Estilo EXACTO en línea horizontal para el registro de incidencias del partido */
+        .match-event-row {
             display: flex;
             gap: 8px;
             align-items: center;
-            flex-wrap: wrap;
             background: var(--bg-card);
-            padding: 8px;
-            border-radius: 8px;
+            padding: 8px 12px;
+            border-radius: 10px;
             border: 1px solid var(--border-color);
+            flex-wrap: nowrap;
+            overflow-x: auto;
         }
-
-        .stat-input-box {
-            display: flex;
-            align-items: center;
-            gap: 4px;
+        .match-event-row select {
+            background: var(--bg-subcard);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            outline: none;
+        }
+        .match-event-row .event-player-select { flex: 2; min-width: 140px; }
+        .match-event-row .event-team-select { width: 130px; }
+        .match-event-stat-box { display: flex; align-items: center; gap: 4px; }
+        .match-event-stat-input {
+            width: 55px;
+            text-align: center;
+            font-weight: 800;
             background: var(--bg-subcard);
             border: 1px solid var(--border-color);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 700;
-        }
-        .stat-input-box input {
-            width: 42px;
-            text-align: center;
-            padding: 4px;
-            font-size: 0.85rem;
-            font-weight: 800;
+            color: var(--text-main);
+            padding: 6px;
+            border-radius: 8px;
         }
 
         .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
@@ -732,7 +737,7 @@
         }
         .modal-overlay.active { display: flex; opacity: 1; }
         .modal-content {
-            background: var(--bg-card); border-radius: 16px; width: 100%; max-width: 650px; max-height: 90vh;
+            background: var(--bg-card); border-radius: 16px; width: 100%; max-width: 800px; max-height: 90vh;
             overflow-y: auto; padding: 24px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.25);
             border: 1px solid var(--border-color);
             transform: scale(0.92); opacity: 0;
@@ -742,10 +747,24 @@
             transform: scale(1); opacity: 1;
         }
         .modal-close { position: absolute; top: 16px; right: 16px; background: transparent; color: var(--text-muted); font-size: 1.6rem; cursor: pointer; }
+        
         .roster-list { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
-        .roster-item { display: flex; gap: 8px; align-items: center; background: var(--bg-subcard); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); flex-wrap: wrap; }
-        .num-input { width: 45px; text-align: center; }
-        .stat-input { width: 50px; text-align: center; }
+        .roster-item { 
+            display: flex; 
+            gap: 8px; 
+            align-items: center; 
+            background: var(--bg-subcard); 
+            padding: 8px 12px; 
+            border-radius: 10px; 
+            border: 1px solid var(--border-color); 
+            flex-wrap: nowrap; 
+            overflow-x: auto;
+        }
+        .num-input { width: 50px; text-align: center; }
+        .name-input { flex: 2; min-width: 140px; }
+        .pos-select { width: 95px; }
+        .stat-input-roster { width: 55px; text-align: center; font-weight: 800; }
+        .stat-box-roster { display: flex; align-items: center; gap: 4px; }
 
         @media (max-width: 1024px) {
             .mobile-only { display: block !important; }
@@ -802,12 +821,6 @@
             .card { padding: 16px; }
             .matchday-nav { justify-content: center; }
             .modal-content { padding: 16px; }
-            
-            .roster-item {
-                display: grid;
-                grid-template-columns: 45px 1fr auto;
-                gap: 8px;
-            }
         }
     </style>
 </head>
@@ -1139,6 +1152,7 @@
     let isAdmin = false;
     let autoSaveTimer = null;
     let isInitialLoading = true;
+    let openMatchEventsBoxes = {}; // Mantiene abiertos los paneles de incidencias al actualizar
 
     window.toggleTheme = function() {
         const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -1450,6 +1464,7 @@
         setTimeout(() => {
             currentDiv = div;
             currentMatchday = 1;
+            openMatchEventsBoxes = {};
             document.querySelectorAll('.desktop-only .btn-div').forEach((btn, idx) => {
                 btn.classList.toggle('active', idx + 1 === div);
             });
@@ -1725,6 +1740,7 @@
         let newMD = currentMatchday + delta;
         if (newMD >= 1 && newMD <= maxMD) {
             currentMatchday = newMD;
+            openMatchEventsBoxes = {}; // resetear abiertos al cambiar de jornada
             renderMatchdaySelector();
             renderMatches();
         }
@@ -1732,6 +1748,7 @@
 
     window.jumpToMatchday = function(val) {
         currentMatchday = parseInt(val);
+        openMatchEventsBoxes = {};
         renderMatches();
     };
 
@@ -1827,26 +1844,28 @@
                     let playersOpts = teamObj && teamObj.roster ? teamObj.roster.map(p => `<option value="${p.name}" ${p.name === ev.playerName ? 'selected' : ''}>${p.name}</option>`).join('') : '';
 
                     return `
-                        <div class="event-row-input">
-                            <select onchange="updateMatchEventField(${m.id}, ${evIdx}, 'teamId', this.value)">
+                        <div class="match-event-row">
+                            <select class="event-team-select" onchange="updateMatchEventField(${m.id}, ${evIdx}, 'teamId', this.value)">
                                 <option value="${home.id}" ${ev.teamId == home.id ? 'selected' : ''}>${home.name}</option>
                                 <option value="${away.id}" ${ev.teamId == away.id ? 'selected' : ''}>${away.name}</option>
                             </select>
-                            <select onchange="updateMatchEventField(${m.id}, ${evIdx}, 'playerName', this.value)">
+                            <select class="event-player-select" onchange="updateMatchEventField(${m.id}, ${evIdx}, 'playerName', this.value)">
                                 ${playersOpts}
                             </select>
-                            <div class="stat-input-box" title="Goles">⚽ <input type="number" value="${ev.goals || 0}" min="0" oninput="updateMatchEventNumSilent(${m.id}, ${evIdx}, 'goals', this.value)"></div>
-                            <div class="stat-input-box" title="Asistencias">🎯 <input type="number" value="${ev.assists || 0}" min="0" oninput="updateMatchEventNumSilent(${m.id}, ${evIdx}, 'assists', this.value)"></div>
-                            <div class="stat-input-box" title="Atajadas / Paradas">🧤 <input type="number" value="${ev.saves || 0}" min="0" oninput="updateMatchEventNumSilent(${m.id}, ${evIdx}, 'saves', this.value)"></div>
-                            <button class="action-btn" style="background:var(--laliga-red); padding:4px 10px; font-size:0.8rem;" onclick="removeMatchEvent(${m.id}, ${evIdx})">&times;</button>
+                            <div class="match-event-stat-box" title="Goles">⚽ <input type="number" class="match-event-stat-input" value="${ev.goals || 0}" min="0" oninput="updateMatchEventNumSilent(${m.id}, ${evIdx}, 'goals', this.value)"></div>
+                            <div class="match-event-stat-box" title="Asistencias">🎯 <input type="number" class="match-event-stat-input" value="${ev.assists || 0}" min="0" oninput="updateMatchEventNumSilent(${m.id}, ${evIdx}, 'assists', this.value)"></div>
+                            <div class="match-event-stat-box" title="Atajadas / Paradas">🧤 <input type="number" class="match-event-stat-input" value="${ev.saves || 0}" min="0" oninput="updateMatchEventNumSilent(${m.id}, ${evIdx}, 'saves', this.value)"></div>
+                            <button class="action-btn" style="background:var(--laliga-red); padding:4px 10px; font-size:0.9rem;" onclick="removeMatchEvent(${m.id}, ${evIdx})">&times;</button>
                         </div>
                     `;
                 }).join('');
 
+                let isBoxOpen = openMatchEventsBoxes[m.id] ? 'show' : '';
+
                 adminEventsEditor = `
                     <div class="match-events-section">
                         <button class="match-events-toggle-btn" onclick="toggleMatchEventsBox(${m.id})">⚙️ Registrar Goles / Asistencias / Paradas (Admin)</button>
-                        <div id="match-events-box-${m.id}" class="match-events-body">
+                        <div id="match-events-box-${m.id}" class="match-events-body ${isBoxOpen}">
                             <div style="font-size:0.8rem; font-weight:700; color:var(--text-main);">Incidencias del partido:</div>
                             ${eventRowsHTML}
                             <button class="action-btn" style="font-size:0.8rem; padding:6px 12px; margin-top:4px;" onclick="addMatchEvent(${m.id}, ${home.id})">+ Agregar Jugador a Incidencias</button>
@@ -1890,7 +1909,10 @@
 
     window.toggleMatchEventsBox = function(matchId) {
         const box = document.getElementById(`match-events-box-${matchId}`);
-        if (box) box.classList.toggle('show');
+        if (box) {
+            box.classList.toggle('show');
+            openMatchEventsBoxes[matchId] = box.classList.contains('show');
+        }
     };
 
     window.addMatchEvent = function(matchId, defaultTeamId) {
@@ -1907,6 +1929,7 @@
                 assists: 0,
                 saves: 0
             });
+            openMatchEventsBoxes[matchId] = true; // Mantener abierto al agregar
             recalculateAllPlayerStats();
             renderMatches();
             renderTops();
@@ -1914,29 +1937,27 @@
         }
     };
 
-    // Cambio para selects (equipo o jugador) que sí actualizan la vista sin cerrar nada
     window.updateMatchEventField = function(matchId, evIdx, field, val) {
         if (!isAdmin) return;
         const divData = appData[currentDiv];
         const match = divData.matches.find(m => m.id === matchId);
         if (match && match.events[evIdx]) {
             match.events[evIdx][field] = val;
+            openMatchEventsBoxes[matchId] = true; // Mantener abierto al editar select
             recalculateAllPlayerStats();
             renderMatches();
-            const box = document.getElementById(`match-events-box-${matchId}`);
-            if (box) box.classList.add('show');
             renderTops();
             triggerAutoSave();
         }
     };
 
-    // Cambio silencioso para números (goles, asist, paradas) sin redibujar el DOM para que no se pierda el foco ni parpadee
     window.updateMatchEventNumSilent = function(matchId, evIdx, field, val) {
         if (!isAdmin) return;
         const divData = appData[currentDiv];
         const match = divData.matches.find(m => m.id === matchId);
         if (match && match.events[evIdx]) {
             match.events[evIdx][field] = parseInt(val) || 0;
+            openMatchEventsBoxes[matchId] = true; // Mantener abierto al tipear números (evita cierre/pérdida de foco)
             recalculateAllPlayerStats();
             renderTops();
             triggerAutoSave();
@@ -1949,10 +1970,9 @@
         const match = divData.matches.find(m => m.id === matchId);
         if (match && match.events[evIdx]) {
             match.events.splice(evIdx, 1);
+            openMatchEventsBoxes[matchId] = true;
             recalculateAllPlayerStats();
             renderMatches();
-            const box = document.getElementById(`match-events-box-${matchId}`);
-            if (box) box.classList.add('show');
             renderTops();
             triggerAutoSave();
         }
@@ -2054,24 +2074,35 @@
     function renderRosterList(team) {
         const container = document.getElementById('modal-roster-list');
         container.innerHTML = team.roster.map((player, idx) => `
-            <div class="roster-item">
-                <input type="number" class="num-input" value="${player.num}" placeholder="#" ${!isAdmin ? 'disabled' : ''} onchange="updatePlayer(${idx}, 'num', this.value)">
-                <input type="text" style="flex:1; min-width:100px;" value="${player.name}" placeholder="Roblox Username" ${!isAdmin ? 'disabled' : ''} onchange="updatePlayer(${idx}, 'name', this.value)">
-                <select ${!isAdmin ? 'disabled' : ''} onchange="updatePlayer(${idx}, 'pos', this.value)">
+            <div class="roster-item" id="roster-row-${idx}">
+                <input type="number" class="num-input" value="${player.num}" placeholder="#" ${!isAdmin ? 'disabled' : ''} oninput="updateRosterFieldSilent(${idx}, 'num', this.value)">
+                <input type="text" class="name-input" value="${player.name}" placeholder="Roblox Username" ${!isAdmin ? 'disabled' : ''} oninput="updateRosterFieldSilent(${idx}, 'name', this.value)">
+                <select class="pos-select" ${!isAdmin ? 'disabled' : ''} onchange="updateRosterFieldSilent(${idx}, 'pos', this.value)">
                     <option value="POR" ${player.pos==='POR'?'selected':''}>POR</option>
                     <option value="DEF" ${player.pos==='DEF'?'selected':''}>DEF</option>
                     <option value="MED" ${player.pos==='MED'?'selected':''}>MED</option>
                     <option value="DEL" ${player.pos==='DEL'?'selected':''}>DEL</option>
                 </select>
-                <div style="display:flex; align-items:center; gap:4px; grid-column: span 3; justify-content: flex-end;" title="Estadísticas acumuladas">
-                    <span>⚽</span><input type="number" class="stat-input" value="${player.goals || 0}" disabled title="Calculado por partidos">
-                    <span>🎯</span><input type="number" class="stat-input" value="${player.assists || 0}" disabled title="Calculado por partidos">
-                    <span>🧤</span><input type="number" class="stat-input" value="${player.saves || 0}" disabled title="Calculado por partidos">
-                    ${isAdmin ? `<button style="background:transparent; border:none; color:var(--laliga-red); cursor:pointer; font-size:1.2rem; margin-left:6px;" onclick="deletePlayer(${idx})">&times;</button>` : ``}
-                </div>
+                <div class="stat-box-roster" title="Goles">⚽ <input type="number" class="stat-input-roster" value="${player.goals || 0}" min="0" ${!isAdmin ? 'disabled' : ''} oninput="updateRosterFieldSilent(${idx}, 'goals', this.value)"></div>
+                <div class="stat-box-roster" title="Asistencias">🎯 <input type="number" class="stat-input-roster" value="${player.assists || 0}" min="0" ${!isAdmin ? 'disabled' : ''} oninput="updateRosterFieldSilent(${idx}, 'assists', this.value)"></div>
+                <div class="stat-box-roster" title="Paradas / Atajadas">🧤 <input type="number" class="stat-input-roster" value="${player.saves || 0}" min="0" ${!isAdmin ? 'disabled' : ''} oninput="updateRosterFieldSilent(${idx}, 'saves', this.value)"></div>
+                ${isAdmin ? `<button style="background:transparent; border:none; color:var(--laliga-red); cursor:pointer; font-size:1.2rem; margin-left:4px;" onclick="deletePlayer(${idx})">&times;</button>` : ``}
             </div>
         `).join('');
     }
+
+    window.updateRosterFieldSilent = function(idx, field, value) {
+        if (!isAdmin) return;
+        const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
+        if (team && team.roster[idx]) {
+            if (field === 'name' || field === 'pos') {
+                team.roster[idx][field] = value;
+            } else {
+                team.roster[idx][field] = parseInt(value) || 0;
+            }
+            triggerAutoSave();
+        }
+    };
 
     window.updateModalTeamInfo = function() {
         if (!isAdmin) return;
@@ -2089,19 +2120,6 @@
             if (!team.roster) team.roster = [];
             team.roster.push({ num: team.roster.length + 1, name: "Nuevo_Jugador", pos: "MED", goals: 0, assists: 0, saves: 0 });
             renderRosterList(team);
-            triggerAutoSave();
-        }
-    };
-
-    window.updatePlayer = function(idx, field, value) {
-        if (!isAdmin) return;
-        const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
-        if (team && team.roster[idx]) {
-            if (field === 'name' || field === 'pos') {
-                team.roster[idx][field] = value;
-            } else {
-                team.roster[idx][field] = parseInt(value) || 0;
-            }
             triggerAutoSave();
         }
     };
