@@ -493,11 +493,11 @@
     </div>
 
     <div class="brand-container">
-        <div class="league-emblem" onclick="triggerLeagueLogoUpload()" title="Cambiar logo">
+        <div class="league-emblem" onclick="triggerLeagueLogoUrlInput()" title="Cambiar logo (URL)">
             <div id="league-logo-container">
                 <img src="https://media.discordapp.net/attachments/1353118715406716981/1562489656396873828/2853f42f6c8278a03fdb93880813f8b5.png" alt="Logo">
             </div>
-            <input type="file" id="league-logo-input" accept="image/*" onchange="uploadLeagueLogo(this)">
+            <input type="text" id="league-logo-input" placeholder="URL del logo" style="display:none; width: 150px; font-size: 0.75rem;" onchange="updateLeagueLogoUrl(this.value)">
         </div>
         <div class="brand-title">
             <h1>LA LIGA ILEGAL SOCCER</h1>
@@ -899,7 +899,6 @@
         }
     }
 
-    // Sistema de Guardado Automático con Debounce
     window.triggerAutoSave = function() {
         if (!isAdmin || isInitialLoading) return;
         
@@ -929,7 +928,7 @@
                     }, 2500);
                 }
             }
-        }, 1500); // 1.5 segundos de retraso tras dejar de escribir
+        }, 1500);
     };
 
     window.manualSaveCloud = async function() {
@@ -998,23 +997,18 @@
         }
     };
 
-    window.triggerLeagueLogoUpload = function() {
+    window.triggerLeagueLogoUrlInput = function() {
         if (!isAdmin) return;
-        document.getElementById('league-logo-input').click();
+        const input = document.getElementById('league-logo-input');
+        input.style.display = input.style.display === 'none' ? 'block' : 'none';
     };
 
-    window.uploadLeagueLogo = function(input) {
+    window.updateLeagueLogoUrl = function(val) {
         if (!isAdmin) return;
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                if (!appData[currentDiv]) appData[currentDiv] = {};
-                appData[currentDiv].leagueLogo = e.target.result;
-                renderLeagueLogo();
-                triggerAutoSave();
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
+        if (!appData[currentDiv]) appData[currentDiv] = {};
+        appData[currentDiv].leagueLogo = val;
+        renderLeagueLogo();
+        triggerAutoSave();
     };
 
     function renderLeagueLogo() {
@@ -1022,6 +1016,8 @@
         const container = document.getElementById('league-logo-container');
         const logoUrl = divData.leagueLogo || "https://media.discordapp.net/attachments/1353118715406716981/1562489656396873828/2853f42f6c8278a03fdb93880813f8b5.png";
         container.innerHTML = `<img src="${logoUrl}" alt="Logo">`;
+        const input = document.getElementById('league-logo-input');
+        if (input && input.value !== logoUrl) input.value = divData.leagueLogo || "";
     }
 
     function renderClubsTicker() {
@@ -1322,8 +1318,8 @@
                     <input type="text" value="${t.name}" ${!isAdmin ? 'disabled' : ''} onchange="updateTeamName(${t.id}, this.value)">
                 </div>
                 <div class="input-group">
-                    <label>Escudo / Logo</label>
-                    <input type="file" accept="image/*" ${!isAdmin ? 'disabled' : ''} onchange="uploadTeamLogo(${t.id}, this)">
+                    <label>Escudo / Logo (URL de imagen)</label>
+                    <input type="text" value="${t.logo || ''}" placeholder="https://ejemplo.com/escudo.png" ${!isAdmin ? 'disabled' : ''} onchange="updateTeamLogoUrl(${t.id}, this.value)">
                 </div>
             </div>
         `).join('');
@@ -1339,21 +1335,15 @@
         }
     };
 
-    window.uploadTeamLogo = function(id, input) {
+    window.updateTeamLogoUrl = function(id, val) {
         if (!isAdmin) return;
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const divData = appData[currentDiv];
-                const team = divData.teams.find(t => t.id === id);
-                if (team) {
-                    team.logo = e.target.result;
-                    renderTeamManagement();
-                    renderClubsTicker();
-                    triggerAutoSave();
-                }
-            };
-            reader.readAsDataURL(input.files[0]);
+        const divData = appData[currentDiv];
+        const team = divData.teams.find(t => t.id === id);
+        if (team) {
+            team.logo = val;
+            renderTeamManagement();
+            renderClubsTicker();
+            triggerAutoSave();
         }
     };
 
