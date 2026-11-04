@@ -1521,7 +1521,7 @@
         tempStats.sort((a, b) => b.pts - a.pts || b.dg - a.dg || b.gf - a.gf);
 
         let positions = {};
-        tempStats.forEach((t, idx) => { positions[t.id] = idx + 1; });
+        tempStats.sort((a, b) => b.pts - a.pts || b.dg - a.dg || b.gf - a.gf).forEach((t, idx) => { positions[t.id] = idx + 1; });
         return positions;
     }
 
@@ -1747,7 +1747,7 @@
         });
     }
 
-    // Función auxiliar para agrupar en una misma línea las acciones de cada jugador por equipo
+    // Agrupa todas las acciones del jugador en una sola línea limpia
     function getGroupedTeamEventsHTML(eventsList, teamId) {
         if (!eventsList || eventsList.length === 0) {
             return `<span style="font-size:0.75rem; color:var(--text-muted); font-style:italic;">Sin incidencias</span>`;
