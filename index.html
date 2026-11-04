@@ -52,7 +52,6 @@
             padding-bottom: 120px;
         }
 
-        /* Ocultar flechas numéricas de forma definitiva en todos los navegadores móviles y de escritorio */
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { 
             -webkit-appearance: none !important; 
@@ -65,7 +64,6 @@
             appearance: textfield !important;
         }
 
-        /* Pantalla de carga para cambio de división */
         #page-loader {
             position: fixed;
             top: 0;
@@ -173,7 +171,6 @@
             flex-wrap: wrap;
         }
 
-        /* Control de visibilidad Escritorio vs Móvil */
         .mobile-only { display: none !important; }
         .desktop-only { display: flex !important; }
 
@@ -542,13 +539,19 @@
             outline: none;
         }
 
-        .matches-grid { display: flex; flex-direction: column; gap: 12px; }
+        .matches-grid { display: flex; flex-direction: column; gap: 16px; }
 
         .match-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .match-main-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -566,6 +569,65 @@
             width: 48px; text-align: center; font-size: 1.1rem; font-weight: 800;
             padding: 6px; border-radius: 8px; background: var(--bg-subcard); color: var(--text-main);
             border: 1px solid var(--border-color);
+        }
+
+        /* Estilos para el panel de eventos del partido (goles, asistencias, paradas) */
+        .match-events-section {
+            border-top: 1px dashed var(--border-color);
+            padding-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .match-events-toggle-btn {
+            background: var(--bg-subcard);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            align-self: flex-start;
+        }
+        .match-events-toggle-btn:hover { background: var(--laliga-red); color: #FFF; border-color: var(--laliga-red); }
+
+        .match-events-body {
+            display: none;
+            background: var(--bg-subcard);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            gap: 10px;
+        }
+        .match-events-body.show { display: flex; flex-direction: column; }
+
+        .event-row-input {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            background: var(--bg-card);
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .match-events-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .event-badge {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            color: var(--text-main);
         }
 
         .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
@@ -598,7 +660,6 @@
         .btn-export { background: #8B5CF6; color: #FFF; }
         .btn-export:hover { background: #7C3AED; }
 
-        /* Botón flotante minimalista */
         .floating-save-btn {
             position: fixed;
             bottom: 20px;
@@ -647,7 +708,6 @@
         .num-input { width: 45px; text-align: center; }
         .stat-input { width: 50px; text-align: center; }
 
-        /* Adaptación móvil robusta (hasta 1024px) */
         @media (max-width: 1024px) {
             .mobile-only { display: block !important; }
             .desktop-only { display: none !important; }
@@ -659,9 +719,7 @@
                 gap: 12px;
             }
 
-            .header-controls-left {
-                width: 100%;
-            }
+            .header-controls-left { width: 100%; }
 
             .mobile-dropdown-container .btn-div {
                 width: 100%;
@@ -677,7 +735,7 @@
                 justify-content: center; 
             }
 
-            .match-card {
+            .match-main-row {
                 flex-direction: column;
                 align-items: stretch;
                 text-align: center;
@@ -708,7 +766,6 @@
 </head>
 <body>
 
-<!-- Pantalla de carga para cambio de división -->
 <div id="page-loader">
     <div class="rolling-ball-container">
         <div class="rolling-ball">⚽</div>
@@ -1120,7 +1177,8 @@
                         homeId: home.id,
                         awayId: away.id,
                         homeScore: null,
-                        awayScore: null
+                        awayScore: null,
+                        events: [] // Array para almacenar goleadores/asistidores/paradas del partido
                     });
                 }
             }
@@ -1146,6 +1204,11 @@
                             });
                         }
                     });
+                    if (appData[div].matches) {
+                        appData[div].matches.forEach(m => {
+                            if (!m.events) m.events = [];
+                        });
+                    }
                 }
             });
 
@@ -1625,6 +1688,39 @@
         renderMatches();
     };
 
+    function recalculateAllPlayerStats() {
+        const divData = appData[currentDiv];
+        if (!divData || !divData.teams) return;
+
+        // Resetear contadores de jugadores a 0
+        divData.teams.forEach(t => {
+            if (t.roster) {
+                t.roster.forEach(p => {
+                    p.goals = 0;
+                    p.assists = 0;
+                    p.saves = 0;
+                });
+            }
+        });
+
+        // Sumar desde los eventos de cada partido
+        divData.matches.forEach(m => {
+            if (m.events && Array.isArray(m.events)) {
+                m.events.forEach(ev => {
+                    let team = divData.teams.find(t => t.id == ev.teamId);
+                    if (team && team.roster) {
+                        let player = team.roster.find(p => p.name === ev.playerName);
+                        if (player) {
+                            if (ev.type === 'goal') player.goals = (player.goals || 0) + (parseInt(ev.qty) || 1);
+                            if (ev.type === 'assist') player.assists = (player.assists || 0) + (parseInt(ev.qty) || 1);
+                            if (ev.type === 'save') player.saves = (player.saves || 0) + (parseInt(ev.qty) || 1);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
     function renderMatches() {
         const divData = appData[currentDiv];
         if (!divData) return;
@@ -1639,26 +1735,149 @@
         container.innerHTML = currentMatches.map(m => {
             const home = divData.teams.find(t => t.id === m.homeId);
             const away = divData.teams.find(t => t.id === m.awayId);
+            if (!home || !away) return '';
+
+            if (!m.events) m.events = [];
+
+            // Generar opciones de jugadores para ambos equipos
+            let homePlayersOpts = home.roster && home.roster.length > 0 
+                ? home.roster.map(p => `<option value="${p.name}">${p.name} (#${p.num})</option>`).join('')
+                : `<option value="">Sin jugadores en plantilla</option>`;
+
+            let awayPlayersOpts = away.roster && away.roster.length > 0 
+                ? away.roster.map(p => `<option value="${p.name}">${p.name} (#${p.num})</option>`).join('')
+                : `<option value="">Sin jugadores en plantilla</option>`;
+
+            // Resumen visible para todos (público)
+            let eventsSummaryHTML = '';
+            if (m.events.length > 0) {
+                eventsSummaryHTML = `<div class="match-events-summary">` + m.events.map(ev => {
+                    let teamObj = divData.teams.find(t => t.id == ev.teamId);
+                    let teamShort = teamObj ? teamObj.name.substring(0, 8) : '';
+                    let icon = ev.type === 'goal' ? '⚽ GOL' : (ev.type === 'assist' ? '🎯 ASIST' : '🧤 PARADA');
+                    return `<span class="event-badge">${icon}: <b>${ev.playerName}</b> (${teamShort}) [+${ev.qty}]</span>`;
+                }).join('') + `</div>`;
+            } else {
+                eventsSummaryHTML = `<div style="font-size:0.8rem; color:var(--text-muted);">Sin incidencias registradas en este partido.</div>`;
+            }
+
+            // Controles de edición solo para Admin
+            let adminEventsEditor = '';
+            if (isAdmin) {
+                let eventRowsHTML = m.events.map((ev, evIdx) => {
+                    let teamObj = divData.teams.find(t => t.id == ev.teamId);
+                    let playersOptions = (ev.teamId == home.id ? homePlayersOpts : awayPlayersOpts);
+                    return `
+                        <div class="event-row-input">
+                            <select onchange="updateMatchEvent(${m.id}, ${evIdx}, 'teamId', this.value)">
+                                <option value="${home.id}" ${ev.teamId == home.id ? 'selected' : ''}>${home.name}</option>
+                                <option value="${away.id}" ${ev.teamId == away.id ? 'selected' : ''}>${away.name}</option>
+                            </select>
+                            <select onchange="updateMatchEvent(${m.id}, ${evIdx}, 'type', this.value)">
+                                <option value="goal" ${ev.type === 'goal' ? 'selected' : ''}>⚽ Goles</option>
+                                <option value="assist" ${ev.type === 'assist' ? 'selected' : ''}>🎯 Asistencias</option>
+                                <option value="save" ${ev.type === 'save' ? 'selected' : ''}>🧤 Paradas</option>
+                            </select>
+                            <select onchange="updateMatchEvent(${m.id}, ${evIdx}, 'playerName', this.value)">
+                                ${teamObj && teamObj.roster ? teamObj.roster.map(p => `<option value="${p.name}" ${p.name === ev.playerName ? 'selected' : ''}>${p.name}</option>`).join('') : ''}
+                            </select>
+                            <input type="number" class="stat-input" value="${ev.qty || 1}" min="1" onchange="updateMatchEvent(${m.id}, ${evIdx}, 'qty', this.value)" title="Cantidad">
+                            <button class="action-btn" style="background:var(--laliga-red); padding:4px 10px; font-size:0.8rem;" onclick="removeMatchEvent(${m.id}, ${evIdx})">&times;</button>
+                        </div>
+                    `;
+                }).join('');
+
+                adminEventsEditor = `
+                    <div class="match-events-section">
+                        <button class="match-events-toggle-btn" onclick="toggleMatchEventsBox(${m.id})">⚙️ Registrar Goles / Asistencias / Paradas (Admin)</button>
+                        <div id="match-events-box-${m.id}" class="match-events-body">
+                            <div style="font-size:0.8rem; font-weight:700; color:var(--text-main);">Incidencias del partido:</div>
+                            ${eventRowsHTML}
+                            <button class="action-btn" style="font-size:0.8rem; padding:6px 12px; margin-top:4px;" onclick="addMatchEvent(${m.id}, ${home.id})">+ Agregar Incidencia</button>
+                        </div>
+                    </div>
+                `;
+            }
 
             return `
                 <div class="match-card">
-                    <div class="match-team">
-                        ${home.logo ? `<img src="${home.logo}" class="team-logo">` : `<div class="team-logo">${home.name.substring(0,2).toUpperCase()}</div>`}
-                        <span>${home.name}</span>
+                    <div class="match-main-row">
+                        <div class="match-team">
+                            ${home.logo ? `<img src="${home.logo}" class="team-logo">` : `<div class="team-logo">${home.name.substring(0,2).toUpperCase()}</div>`}
+                            <span>${home.name}</span>
+                        </div>
+                        <div class="score-inputs">
+                            <input type="number" class="score-input" value="${m.homeScore !== null ? m.homeScore : ''}" ${!isAdmin ? 'disabled' : ''} onchange="updateScore(${m.id}, 'home', this.value)">
+                            <span style="color:var(--text-muted); font-weight:800;">-</span>
+                            <input type="number" class="score-input" value="${m.awayScore !== null ? m.awayScore : ''}" ${!isAdmin ? 'disabled' : ''} onchange="updateScore(${m.id}, 'away', this.value)">
+                        </div>
+                        <div class="match-team away">
+                            <span>${away.name}</span>
+                            ${away.logo ? `<img src="${away.logo}" class="team-logo">` : `<div class="team-logo">${away.name.substring(0,2).toUpperCase()}</div>`}
+                        </div>
                     </div>
-                    <div class="score-inputs">
-                        <input type="number" class="score-input" value="${m.homeScore !== null ? m.homeScore : ''}" ${!isAdmin ? 'disabled' : ''} onchange="updateScore(${m.id}, 'home', this.value)">
-                        <span style="color:var(--text-muted); font-weight:800;">-</span>
-                        <input type="number" class="score-input" value="${m.awayScore !== null ? m.awayScore : ''}" ${!isAdmin ? 'disabled' : ''} onchange="updateScore(${m.id}, 'away', this.value)">
-                    </div>
-                    <div class="match-team away">
-                        <span>${away.name}</span>
-                        ${away.logo ? `<img src="${away.logo}" class="team-logo">` : `<div class="team-logo">${away.name.substring(0,2).toUpperCase()}</div>`}
-                    </div>
+                    
+                    ${eventsSummaryHTML}
+                    ${adminEventsEditor}
                 </div>
             `;
         }).join('');
     }
+
+    window.toggleMatchEventsBox = function(matchId) {
+        const box = document.getElementById(`match-events-box-${matchId}`);
+        if (box) box.classList.toggle('show');
+    };
+
+    window.addMatchEvent = function(matchId, defaultTeamId) {
+        if (!isAdmin) return;
+        const divData = appData[currentDiv];
+        const match = divData.matches.find(m => m.id === matchId);
+        if (match) {
+            const team = divData.teams.find(t => t.id == defaultTeamId);
+            const defaultPlayer = team && team.roster && team.roster.length > 0 ? team.roster[0].name : "Jugador";
+            match.events.push({
+                teamId: defaultTeamId,
+                type: 'goal',
+                playerName: defaultPlayer,
+                qty: 1
+            });
+            recalculateAllPlayerStats();
+            renderMatches();
+            renderTops();
+            triggerAutoSave();
+        }
+    };
+
+    window.updateMatchEvent = function(matchId, evIdx, field, val) {
+        if (!isAdmin) return;
+        const divData = appData[currentDiv];
+        const match = divData.matches.find(m => m.id === matchId);
+        if (match && match.events[evIdx]) {
+            if (field === 'qty') {
+                match.events[evIdx][field] = parseInt(val) || 1;
+            } else {
+                match.events[evIdx][field] = val;
+            }
+            recalculateAllPlayerStats();
+            renderMatches();
+            renderTops();
+            triggerAutoSave();
+        }
+    };
+
+    window.removeMatchEvent = function(matchId, evIdx) {
+        if (!isAdmin) return;
+        const divData = appData[currentDiv];
+        const match = divData.matches.find(m => m.id === matchId);
+        if (match && match.events[evIdx]) {
+            match.events.splice(evIdx, 1);
+            recalculateAllPlayerStats();
+            renderMatches();
+            renderTops();
+            triggerAutoSave();
+        }
+    };
 
     window.updateScore = function(matchId, type, val) {
         if (!isAdmin) return;
@@ -1765,10 +1984,10 @@
                     <option value="MED" ${player.pos==='MED'?'selected':''}>MED</option>
                     <option value="DEL" ${player.pos==='DEL'?'selected':''}>DEL</option>
                 </select>
-                <div style="display:flex; align-items:center; gap:4px; grid-column: span 3; justify-content: flex-end;" title="Estadísticas">
-                    <span>⚽</span><input type="number" class="stat-input" value="${player.goals || 0}" ${!isAdmin ? 'disabled' : ''} onchange="updatePlayer(${idx}, 'goals', this.value)">
-                    <span>🎯</span><input type="number" class="stat-input" value="${player.assists || 0}" ${!isAdmin ? 'disabled' : ''} onchange="updatePlayer(${idx}, 'assists', this.value)">
-                    <span>🧤</span><input type="number" class="stat-input" value="${player.saves || 0}" ${!isAdmin ? 'disabled' : ''} onchange="updatePlayer(${idx}, 'saves', this.value)">
+                <div style="display:flex; align-items:center; gap:4px; grid-column: span 3; justify-content: flex-end;" title="Estadísticas acumuladas">
+                    <span>⚽</span><input type="number" class="stat-input" value="${player.goals || 0}" disabled title="Calculado por partidos">
+                    <span>🎯</span><input type="number" class="stat-input" value="${player.assists || 0}" disabled title="Calculado por partidos">
+                    <span>🧤</span><input type="number" class="stat-input" value="${player.saves || 0}" disabled title="Calculado por partidos">
                     ${isAdmin ? `<button style="background:transparent; border:none; color:var(--laliga-red); cursor:pointer; font-size:1.2rem; margin-left:6px;" onclick="deletePlayer(${idx})">&times;</button>` : ``}
                 </div>
             </div>
@@ -1820,25 +2039,16 @@
 
     window.resetPlayerStatsOnly = function() {
         if (!isAdmin) return;
-        let confirmText = prompt(`⚠️ ATENCIÓN: Estás a punto de borrar las estadísticas de goles y asistencias de la ${currentDiv}ª División.\nEscribe "RESET" para confirmar:`);
+        let confirmText = prompt(`⚠️ ATENCIÓN: Estás a punto de vaciar las incidencias de goles y asistencias de todos los partidos en la ${currentDiv}ª División.`);
         if (confirmText === "RESET") {
             const divData = appData[currentDiv];
-            if (divData && divData.teams) {
-                divData.teams.forEach(t => {
-                    if (t.roster) {
-                        t.roster.forEach(p => {
-                            p.goals = 0;
-                            p.assists = 0;
-                            p.saves = 0;
-                        });
-                    }
-                });
+            if (divData && divData.matches) {
+                divData.matches.forEach(m => { m.events = []; });
+                recalculateAllPlayerStats();
                 triggerAutoSave();
-                renderTops();
+                renderAll();
                 alert('¡Estadísticas de jugadores restablecidas con éxito!');
             }
-        } else if (confirmText !== null) {
-            alert('Acción cancelada. No escribiste "RESET" correctamente.');
         }
     };
 
@@ -1847,17 +2057,16 @@
             alert('Acceso Denegado: Requiere Modo Administrador.');
             return;
         }
-        let confirmText = prompt(`⚠️ ADVERTENCIA: Vas a reiniciar los marcadores y partidos de la ${currentDiv}ª División (los nombres de tus equipos registrados se conservarán).\nEscribe "CONFIRMAR" para proceder:`);
+        let confirmText = prompt(`⚠️ ADVERTENCIA: Vas a reiniciar los marcadores, eventos y partidos de la ${currentDiv}ª División (los equipos se conservarán).\nEscribe "CONFIRMAR":`);
         if (confirmText === "CONFIRMAR") {
             const divData = appData[currentDiv];
             if (divData && divData.teams) {
                 divData.matches = generateRoundRobin(divData.teams);
+                recalculateAllPlayerStats();
                 triggerAutoSave();
                 renderAll();
-                alert('¡División restablecida correctamente manteniendo tus equipos!');
+                alert('¡División restablecida correctamente!');
             }
-        } else if (confirmText !== null) {
-            alert('Acción cancelada. No escribiste "CONFIRMAR" correctamente.');
         }
     };
 
