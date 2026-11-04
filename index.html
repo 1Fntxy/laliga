@@ -571,7 +571,7 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Botón general para mostrar/ocultar los detalles del partido */
+        /* Botón general ubicado exactamente en el espacio central que señalaste */
         .match-details-toggle-btn {
             background: var(--bg-subcard);
             color: var(--text-muted);
@@ -584,7 +584,6 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            align-self: flex-start;
         }
         .match-details-toggle-btn:hover { background: var(--laliga-red); color: #FFF; border-color: var(--laliga-red); }
 
@@ -1868,8 +1867,8 @@
                 let isBoxOpen = openMatchEventsBoxes[m.id] ? 'show' : '';
 
                 adminEventsEditor = `
-                    <div class="match-events-section">
-                        <button class="match-events-toggle-btn" onclick="toggleMatchEventsBox(${m.id})">⚙️ Registrar Incidencias por Jugador (Admin)</button>
+                    <div class="match-events-section match-events-wrapper-${m.id}">
+                        <button class="match-events-toggle-btn match-events-btn-${m.id}" onclick="toggleMatchEventsBox(event, ${m.id})">⚙️ Registrar Incidencias por Jugador (Admin)</button>
                         <div id="match-events-box-${m.id}" class="match-events-body ${isBoxOpen}">
                             <div style="font-size:0.8rem; font-weight:700; color:var(--text-main);">Jugadores con acciones en el partido:</div>
                             ${eventRowsHTML}
@@ -1880,7 +1879,7 @@
             }
 
             let isDetailsOpen = openMatchDetailsBoxes[m.id] ? 'show' : '';
-            let detailsBtnText = openMatchDetailsBoxes[m.id] ? '▲ Ocultar resumen del partido' : '▼ Ver resumen del partido';
+            let detailsBtnText = openMatchDetailsBoxes[m.id] ? '▲ Ocultar resumen' : '▼ Ver resumen';
 
             return `
                 <div class="match-card">
@@ -1891,7 +1890,12 @@
                         </div>
                         <div class="score-inputs">
                             <input type="number" class="score-input" value="${m.homeScore !== null ? m.homeScore : ''}" ${!isAdmin ? 'disabled' : ''} onchange="updateScore(${m.id}, 'home', this.value)">
-                            <span style="color:var(--text-muted); font-weight:800;">-</span>
+                            
+                            <!-- Botón de resumen movido exactamente al espacio central entre los marcadores -->
+                            <button class="match-details-toggle-btn" onclick="toggleMatchDetailsBox(${m.id})" id="details-btn-${m.id}">
+                                ${detailsBtnText}
+                            </button>
+
                             <input type="number" class="score-input" value="${m.awayScore !== null ? m.awayScore : ''}" ${!isAdmin ? 'disabled' : ''} onchange="updateScore(${m.id}, 'away', this.value)">
                         </div>
                         <div class="match-team away">
@@ -1899,11 +1903,6 @@
                             ${away.logo ? `<img src="${away.logo}" class="team-logo">` : `<div class="team-logo">${away.name.substring(0,2).toUpperCase()}</div>`}
                         </div>
                     </div>
-
-                    <!-- Botón para ver/ocultar el resumen resumido de incidencias del partido -->
-                    <button class="match-details-toggle-btn" onclick="toggleMatchDetailsBox(${m.id})" id="details-btn-${m.id}">
-                        ${detailsBtnText}
-                    </button>
 
                     <div id="match-details-content-${m.id}" class="match-details-content ${isDetailsOpen}">
                         <div class="match-side-events-container">
@@ -1922,6 +1921,22 @@
         }).join('');
     }
 
+    // Detector de clics fuera de las cajas de registro de incidencias para cerrarlas y guardarlas automáticamente
+    window.addEventListener('click', function(e) {
+        if (!isAdmin) return;
+        for (let matchId in openMatchEventsBoxes) {
+            if (openMatchEventsBoxes[matchId]) {
+                const wrapper = document.querySelector(`.match-events-wrapper-${matchId}`);
+                if (wrapper && !wrapper.contains(e.target)) {
+                    openMatchEventsBoxes[matchId] = false;
+                    const box = document.getElementById(`match-events-box-${matchId}`);
+                    if (box) box.classList.remove('show');
+                    triggerAutoSave();
+                }
+            }
+        }
+    });
+
     window.toggleMatchDetailsBox = function(matchId) {
         const content = document.getElementById(`match-details-content-${matchId}`);
         const btn = document.getElementById(`details-btn-${matchId}`);
@@ -1929,15 +1944,19 @@
             content.classList.toggle('show');
             let isOpen = content.classList.contains('show');
             openMatchDetailsBoxes[matchId] = isOpen;
-            btn.innerText = isOpen ? '▲ Ocultar resumen del partido' : '▼ Ver resumen del partido';
+            btn.innerText = isOpen ? '▲ Ocultar resumen' : '▼ Ver resumen';
         }
     };
 
-    window.toggleMatchEventsBox = function(matchId) {
+    window.toggleMatchEventsBox = function(event, matchId) {
+        event.stopPropagation();
         const box = document.getElementById(`match-events-box-${matchId}`);
         if (box) {
             box.classList.toggle('show');
             openMatchEventsBoxes[matchId] = box.classList.contains('show');
+            if (!openMatchEventsBoxes[matchId]) {
+                triggerAutoSave();
+            }
         }
     };
 
@@ -1983,7 +2002,7 @@
         const match = divData.matches.find(m => m.id === matchId);
         if (match && match.events[evIdx]) {
             match.events[evIdx][field] = parseInt(val) || 0;
-            openMatchEventsBoxes[matchId] = true; // Mantiene el panel abierto y el foco al escribir
+            openMatchEventsBoxes[matchId] = true; 
             recalculateAllPlayerStats();
             renderTops();
             triggerAutoSave();
