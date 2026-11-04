@@ -487,13 +487,31 @@
         .btn-export { background: #8B5CF6; color: #FFF; }
         .btn-export:hover { background: #7C3AED; }
 
+        /* Botón de Guardado Flotante Minimalista */
         .floating-save-btn {
-            position: fixed; bottom: 24px; right: 24px; background: var(--laliga-red); color: #FFF;
-            padding: 16px 28px; border-radius: 40px; font-weight: 800; font-size: 1rem;
-            box-shadow: 0 10px 25px rgba(238, 29, 35, 0.4); z-index: 999; display: none; align-items: center; gap: 10px;
-            cursor: pointer; border: none; transition: all 0.3s ease;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--topbar-bg);
+            color: #FFF;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.78rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+            z-index: 999;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
         }
-        .floating-save-btn:hover { background: var(--laliga-red-hover); transform: scale(1.05); }
+        .floating-save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+        }
 
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -787,7 +805,7 @@
 </div>
 
 <button id="floating-save-btn" class="floating-save-btn" onclick="manualSaveCloud()">
-    <span>💾 Guardado Automático Activo</span>
+    <span>💾 AutoGuardado</span>
 </button>
 
 <div id="team-modal" class="modal-overlay">
@@ -971,26 +989,26 @@
         const btn = document.getElementById('floating-save-btn');
         const span = btn ? btn.querySelector('span') : null;
 
-        if (span) span.innerText = "⏳ Guardando cambios...";
-        if (btn) btn.style.backgroundColor = "#F59E0B";
+        if (span) span.innerText = "⏳ Guardando...";
+        if (btn) btn.style.borderColor = "var(--accent-gold)";
 
         clearTimeout(autoSaveTimer);
         autoSaveTimer = setTimeout(async () => {
             const ok = await saveStateToCloud();
             if (btn && span) {
                 if (ok) {
-                    btn.style.backgroundColor = "#10B981";
-                    span.innerText = "Guardado automático ✅";
+                    btn.style.borderColor = "var(--accent-green)";
+                    span.innerText = "Guardado ✅";
                     setTimeout(() => {
-                        btn.style.backgroundColor = "var(--laliga-red)";
-                        span.innerText = "💾 Guardado Automático Activo";
+                        btn.style.borderColor = "var(--border-color)";
+                        span.innerText = "💾 AutoGuardado";
                     }, 2500);
                 } else {
-                    btn.style.backgroundColor = "#EF4444";
-                    span.innerText = "❌ Error al guardar";
+                    btn.style.borderColor = "var(--laliga-red)";
+                    span.innerText = "❌ Error";
                     setTimeout(() => {
-                        btn.style.backgroundColor = "var(--laliga-red)";
-                        span.innerText = "💾 Guardado Automático Activo";
+                        btn.style.borderColor = "var(--border-color)";
+                        span.innerText = "💾 AutoGuardado";
                     }, 2500);
                 }
             }
@@ -1005,11 +1023,11 @@
         const ok = await saveStateToCloud();
         if (btn && span) {
             if (ok) {
-                btn.style.backgroundColor = "#10B981";
-                span.innerText = "Guardado con éxito ✅";
+                btn.style.borderColor = "var(--accent-green)";
+                span.innerText = "Guardado ✅";
                 setTimeout(() => {
-                    btn.style.backgroundColor = "var(--laliga-red)";
-                    span.innerText = "💾 Guardado Automático Activo";
+                    btn.style.borderColor = "var(--border-color)";
+                    span.innerText = "💾 AutoGuardado";
                 }, 2500);
             }
         }
@@ -1338,7 +1356,6 @@
             }
         });
 
-        // Top 10 Goleadores
         let topGoals = [...allPlayers].sort((a, b) => b.goals - a.goals).slice(0, 10);
         document.getElementById('tops-goles-body').innerHTML = topGoals.map((p, i) => `
             <tr>
@@ -1349,7 +1366,6 @@
             </tr>
         `).join('') || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin registros</td></tr>`;
 
-        // Top 10 Asistidores
         let topAssists = [...allPlayers].sort((a, b) => b.assists - a.assists).slice(0, 10);
         document.getElementById('tops-asist-body').innerHTML = topAssists.map((p, i) => `
             <tr>
@@ -1360,7 +1376,6 @@
             </tr>
         `).join('') || `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin registros</td></tr>`;
 
-        // Top 10 Porteros / Paradas
         let topSaves = [...allPlayers].sort((a, b) => b.saves - a.saves).slice(0, 10);
         document.getElementById('tops-atajadas-body').innerHTML = topSaves.map((p, i) => `
             <tr>
