@@ -52,7 +52,7 @@
             padding-bottom: 120px;
         }
 
-        /* Pantalla de carga (Loader con Balón Rodando) */
+        /* Pantalla de carga exclusiva para cambio de División */
         #page-loader {
             position: fixed;
             top: 0;
@@ -598,11 +598,11 @@
 </head>
 <body>
 
-<!-- Pantalla de carga con balón rodando -->
+<!-- Pantalla de carga para cambio de división -->
 <div id="page-loader">
     <div class="rolling-ball-container">
         <div class="rolling-ball">⚽</div>
-        <div class="loader-text">Cargando...</div>
+        <div class="loader-text">Cargando División...</div>
     </div>
 </div>
 
@@ -1197,8 +1197,11 @@
         if (tiktokBtn) tiktokBtn.href = appData.socialTiktok || "#";
     }
 
+    // Animación exclusiva de balón rodando al cambiar de División
     window.switchDivision = function(div) {
-        showLoaderAndExecute(() => {
+        const loader = document.getElementById('page-loader');
+        loader.classList.add('active');
+        setTimeout(() => {
             currentDiv = div;
             currentMatchday = 1;
             document.querySelectorAll('.header-controls-left .btn-div').forEach((btn, idx) => {
@@ -1207,32 +1210,23 @@
             document.getElementById('hero-title').innerText = `Temporada Oficial • ${div}ª División`;
             document.getElementById('div-title').innerText = `${div}ª División • Tabla de Posiciones`;
             renderAll();
-        });
-    };
-
-    window.switchTab = function(tabName, evt) {
-        showLoaderAndExecute(() => {
-            document.querySelectorAll('.main-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
-            
-            if (evt && evt.target) evt.target.classList.add('active');
-            document.getElementById(`tab-${tabName}`).classList.add('active');
-            if (tabName === 'estadisticas' || tabName === 'clasificacion') {
-                animateCounters();
-            }
-        });
-    };
-
-    function showLoaderAndExecute(callback) {
-        const loader = document.getElementById('page-loader');
-        loader.classList.add('active');
-        setTimeout(() => {
-            callback();
             setTimeout(() => {
                 loader.classList.remove('active');
             }, 200);
-        }, 500); // Duración de transición de medio segundo con el balón rodando
-    }
+        }, 500);
+    };
+
+    // Cambio de pestañas inmediato (sin animación de balón)
+    window.switchTab = function(tabName, evt) {
+        document.querySelectorAll('.main-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+        
+        if (evt && evt.target) evt.target.classList.add('active');
+        document.getElementById(`tab-${tabName}`).classList.add('active');
+        if (tabName === 'estadisticas' || tabName === 'clasificacion') {
+            animateCounters();
+        }
+    };
 
     window.switchStatSubtab = function(subtabName, evt) {
         document.querySelectorAll('.stats-pills .pill-btn').forEach(btn => btn.classList.remove('active'));
