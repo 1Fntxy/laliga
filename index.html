@@ -52,7 +52,7 @@
             padding-bottom: 120px;
         }
 
-        /* Pantalla de carga exclusiva para cambio de División */
+        /* Pantalla de carga para cambio de división */
         #page-loader {
             position: fixed;
             top: 0;
@@ -162,6 +162,56 @@
             gap: 10px;
             align-items: center;
             flex-wrap: wrap;
+        }
+
+        /* Control de Visibilidad según dispositivo */
+        .mobile-only { display: none !important; }
+        .desktop-only { display: flex !important; }
+
+        /* Estilos del Desplegable Móvil de Divisiones */
+        .mobile-dropdown-container {
+            position: relative;
+        }
+
+        .dropdown-menu-content {
+            display: none;
+            position: absolute;
+            top: 110%;
+            left: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            z-index: 1000;
+            min-width: 150px;
+            overflow: hidden;
+        }
+
+        .dropdown-menu-content.show {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dropdown-item {
+            background: transparent;
+            color: var(--text-main);
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover, .dropdown-item.active {
+            background: var(--laliga-red);
+            color: #FFF;
         }
 
         button, a.btn-social, .btn-div, .tab-btn, .action-btn {
@@ -381,7 +431,7 @@
             border-color: var(--text-main);
         }
 
-        .table-responsive { overflow-x: auto; }
+        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
         table {
             width: 100%;
@@ -398,6 +448,7 @@
             letter-spacing: 0.8px;
             border-bottom: 2px solid var(--border-color);
             background: var(--bg-subcard);
+            white-space: nowrap;
         }
 
         td {
@@ -406,6 +457,7 @@
             border-bottom: 1px solid var(--border-color);
             font-weight: 600;
             color: var(--text-main);
+            white-space: nowrap;
         }
 
         tr:hover td { background-color: var(--table-hover); }
@@ -589,10 +641,50 @@
         .num-input { width: 45px; text-align: center; }
         .stat-input { width: 50px; text-align: center; }
 
-        @media (max-width: 900px) {
-            .top-bar { flex-direction: column; text-align: center; justify-content: center; }
-            .brand-container { margin: 10px 0; }
-            .header-controls-left, .header-controls-right { justify-content: center; }
+        /* Media Queries Exclusivos para Celulares / Pantallas pequeñas (< 850px) */
+        @media (max-width: 850px) {
+            .mobile-only { display: block !important; }
+            .desktop-only { display: none !important; }
+
+            .top-bar { 
+                flex-direction: column; 
+                text-align: center; 
+                padding: 12px 16px;
+                gap: 12px;
+            }
+
+            .brand-container { margin: 0 auto; }
+            .brand-title h1 { font-size: 1.15rem; }
+
+            .header-controls-left, .header-controls-right { 
+                width: 100%;
+                justify-content: center; 
+            }
+
+            .match-card {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .match-team {
+                justify-content: center !important;
+                text-align: center !important;
+            }
+
+            .score-inputs {
+                justify-content: center;
+                margin: 4px 0;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .matchday-nav {
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -607,10 +699,25 @@
 </div>
 
 <div class="top-bar">
-    <div class="header-controls-left">
+    <!-- Selector para PC/Monitor -->
+    <div class="header-controls-left desktop-only">
         <button class="btn-div active" onclick="switchDivision(1)">🏆 1ª DIV</button>
         <button class="btn-div" onclick="switchDivision(2)">🥇 2ª DIV</button>
         <button class="btn-div" onclick="switchDivision(3)">🥈 3ª DIV</button>
+    </div>
+
+    <!-- Selector Desplegable exclusivo para Celular -->
+    <div class="header-controls-left mobile-only">
+        <div class="mobile-dropdown-container">
+            <button class="btn-div active" onclick="toggleDivisionMenu()">
+                🏆 <span id="mobile-current-div-label">1ª DIV</span> ▼
+            </button>
+            <div id="mobile-division-menu" class="dropdown-menu-content">
+                <button class="dropdown-item active" onclick="selectMobileDivision(1)">🏆 1ª División</button>
+                <button class="dropdown-item" onclick="selectMobileDivision(2)">🥇 2ª División</button>
+                <button class="dropdown-item" onclick="selectMobileDivision(3)">🥈 3ª División</button>
+            </div>
+        </div>
     </div>
 
     <div class="brand-container">
@@ -1197,6 +1304,21 @@
         if (tiktokBtn) tiktokBtn.href = appData.socialTiktok || "#";
     }
 
+    // Funciones del menú desplegable móvil
+    window.toggleDivisionMenu = function() {
+        const menu = document.getElementById('mobile-division-menu');
+        menu.classList.toggle('show');
+    };
+
+    window.selectMobileDivision = function(divNum) {
+        toggleDivisionMenu();
+        document.getElementById('mobile-current-div-label').innerText = `${divNum}ª DIV`;
+        document.querySelectorAll('#mobile-division-menu .dropdown-item').forEach((item, idx) => {
+            item.classList.toggle('active', idx + 1 === divNum);
+        });
+        switchDivision(divNum);
+    };
+
     // Animación exclusiva de balón rodando al cambiar de División
     window.switchDivision = function(div) {
         const loader = document.getElementById('page-loader');
@@ -1204,7 +1326,7 @@
         setTimeout(() => {
             currentDiv = div;
             currentMatchday = 1;
-            document.querySelectorAll('.header-controls-left .btn-div').forEach((btn, idx) => {
+            document.querySelectorAll('.desktop-only .btn-div').forEach((btn, idx) => {
                 btn.classList.toggle('active', idx + 1 === div);
             });
             document.getElementById('hero-title').innerText = `Temporada Oficial • ${div}ª División`;
