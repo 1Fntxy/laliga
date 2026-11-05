@@ -386,7 +386,7 @@
             font-weight: 600;
         }
 
-        /* CONTENEDOR GENERAL MÁS ANCHO PARA ABARCAR CASI TODA LA PANTALLA */
+        /* CONTENEDOR AMPLIO PARA LAS LLAVES */
         .container {
             width: 100%;
             max-width: 98%;
@@ -482,7 +482,7 @@
             font-size: 1.6rem;
         }
 
-        /* ESTILOS AMPLIADOS Y AJUSTADOS PARA LAS LLAVES */
+        /* LLAVES DE 16 EQUIPOS ANCHAS */
         .ucl-bracket-container {
             display: flex;
             justify-content: space-between;
@@ -606,7 +606,6 @@
             text-align: center;
         }
 
-        /* CAMPEÓN DE EUROPA ABAJO DE LA GRAN FINAL */
         .sc-champ-box {
             background: rgba(4, 18, 56, 0.95);
             border: 2px solid var(--accent-gold);
@@ -804,6 +803,115 @@
             border: 1px solid var(--border-color);
         }
 
+        .match-details-toggle-btn {
+            background: var(--bg-subcard);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .match-details-toggle-btn:hover { background: var(--laliga-red); color: #FFF; border-color: var(--laliga-red); }
+
+        .match-details-content {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 10px;
+        }
+        .match-details-content.show { display: flex; }
+
+        .team-events-side {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+        .team-events-side.away-side {
+            text-align: right;
+            align-items: flex-end;
+        }
+
+        .compact-event-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-subcard);
+            border: 1px solid var(--border-color);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            color: var(--text-main);
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .match-events-section {
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .match-events-toggle-btn {
+            background: var(--bg-subcard);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            align-self: flex-start;
+        }
+        .match-events-toggle-btn:hover { background: var(--laliga-red); color: #FFF; border-color: var(--laliga-red); }
+
+        .match-events-body {
+            display: none;
+            background: var(--bg-subcard);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            gap: 10px;
+        }
+        .match-events-body.show { display: flex; flex-direction: column; }
+
+        .match-player-stat-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: var(--bg-card);
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            flex-wrap: nowrap;
+            overflow-x: auto;
+        }
+        .match-player-stat-row select, .match-player-stat-row input {
+            background: var(--bg-subcard);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            outline: none;
+        }
+        .ps-team-select { width: 130px; }
+        .ps-player-select { flex: 2; min-width: 140px; }
+        .ps-stat-box { display: flex; align-items: center; gap: 4px; font-size: 0.85rem; font-weight: 700; }
+        .ps-input { width: 50px; text-align: center; font-weight: 800; }
+
         .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
         .team-card {
             background: var(--bg-subcard); border: 1px solid var(--border-color); border-radius: 14px; padding: 16px;
@@ -830,6 +938,9 @@
             background: var(--laliga-red); color: #FFF; padding: 10px 18px; border-radius: 10px; font-weight: 800; font-size: 0.9rem;
         }
         .action-btn:hover { background: var(--laliga-red-hover); }
+        
+        .btn-export { background: #8B5CF6; color: #FFF; }
+        .btn-export:hover { background: #7C3AED; }
 
         .floating-save-btn {
             position: fixed;
@@ -870,6 +981,30 @@
             transform: scale(1); opacity: 1;
         }
         .modal-close { position: absolute; top: 16px; right: 16px; background: transparent; color: var(--text-muted); font-size: 1.6rem; cursor: pointer; }
+        
+        .pin-modal-content {
+            max-width: 380px !important;
+            text-align: center;
+            padding: 30px 24px !important;
+        }
+
+        .roster-list { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+        .roster-item { 
+            display: flex; 
+            gap: 8px; 
+            align-items: center; 
+            background: var(--bg-subcard); 
+            padding: 8px 12px; 
+            border-radius: 10px; 
+            border: 1px solid var(--border-color); 
+            flex-wrap: nowrap; 
+            overflow-x: auto;
+        }
+        .num-input { width: 50px; text-align: center; }
+        .name-input { flex: 2; min-width: 140px; }
+        .pos-select { width: 95px; }
+        .stat-input-roster { width: 55px; text-align: center; font-weight: 800; }
+        .stat-box-roster { display: flex; align-items: center; gap: 4px; }
 
         @media (max-width: 1024px) {
             .mobile-only { display: block !important; }
@@ -886,6 +1021,23 @@
             .brand-container { margin: 0 auto; }
             .brand-title h1 { font-size: 1.15rem; }
             .header-controls-right { width: 100%; justify-content: center; }
+
+            .match-main-row {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .match-team {
+                justify-content: center !important;
+                text-align: center !important;
+            }
+
+            .score-inputs {
+                justify-content: center;
+                margin: 4px 0;
+            }
         }
     </style>
 </head>
@@ -941,6 +1093,7 @@
         <a id="link-tiktok" href="#" target="_blank" class="btn-social btn-tiktok">TikTok</a>
         <button id="btn-admin-toggle" class="btn-div btn-admin" onclick="openAdminPinModal()">🔑 Admin</button>
         <button id="btn-staff-toggle" class="btn-div btn-staff" onclick="openStaffPinModal()">🛡️ Staff</button>
+        <button id="btn-reset-top" class="btn-div btn-reset" onclick="resetCurrentDivision()">🔄 Reset</button>
     </div>
 </div>
 
@@ -972,12 +1125,139 @@
         <button class="tab-btn" onclick="switchTorneoTab('copadelrey', event)">Copa del Rey</button>
     </div>
 
-    <!-- SECCIÓN DE TORNEOS (CHAMPIONS LEAGUE AJUSTADA) -->
+    <!-- PESTAÑA CLASIFICACIÓN -->
+    <div id="tab-clasificacion" class="content-section active">
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
+                <h3 id="div-title" style="margin:0;">Tabla de Posiciones</h3>
+                <button id="btn-reset-standings" class="action-btn" style="display:none; background:var(--laliga-red);" onclick="resetCurrentDivision()">🔄 Resetear División</button>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pos</th>
+                            <th>Equipo</th>
+                            <th>PJ</th>
+                            <th>PG</th>
+                            <th>PE</th>
+                            <th>PP</th>
+                            <th>GF</th>
+                            <th>GC</th>
+                            <th>DG</th>
+                            <th>PTS</th>
+                            <th>Últimos 5</th>
+                            <th>Plantilla</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standings-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- PESTAÑA CALENDARIO -->
+    <div id="tab-calendario" class="content-section">
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; flex-wrap:wrap; gap:12px;">
+                <h3>Calendario de Partidos</h3>
+            </div>
+            <div class="matchday-nav">
+                <button class="action-btn" onclick="changeMatchday(-1)">◀ Anterior</button>
+                <select id="matchday-select" class="matchday-select-styled" onchange="jumpToMatchday(this.value)"></select>
+                <button class="action-btn" onclick="changeMatchday(1)">Siguiente ▶</button>
+            </div>
+            <div class="matches-grid" id="matches-container"></div>
+        </div>
+    </div>
+
+    <!-- PESTAÑA ESTADÍSTICAS -->
+    <div id="tab-estadisticas" class="content-section">
+        <div class="stats-pills">
+            <button class="pill-btn active" onclick="switchStatSubtab('goles', event)">⚽ Goleadores</button>
+            <button class="pill-btn" onclick="switchStatSubtab('asistencias', event)">🎯 Asistencias</button>
+            <button class="pill-btn" onclick="switchStatSubtab('paradas', event)">🧤 Paradas / Atajadas</button>
+        </div>
+        <div id="stat-subtab-goles" class="stat-subcontent card">
+            <h3>Mejores Goleadores</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead><tr><th>#</th><th>Jugador</th><th>Equipo</th><th>Goles Totales</th></tr></thead>
+                    <tbody id="tops-goles-body"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="stat-subtab-asistencias" class="stat-subcontent card" style="display:none;">
+            <h3>Mejores Asistidores</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead><tr><th>#</th><th>Jugador</th><th>Equipo</th><th>Asistencias</th></tr></thead>
+                    <tbody id="tops-asist-body"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="stat-subtab-paradas" class="stat-subcontent card" style="display:none;">
+            <h3>Mejores Porteros</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead><tr><th>#</th><th>Portero</th><th>Equipo</th><th>Paradas Totales</th></tr></thead>
+                    <tbody id="tops-atajadas-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- PESTAÑA LIGUILLA -->
+    <div id="tab-bracket" class="content-section">
+        <div class="card">
+            <h3>Cuadro de Eliminación Directa</h3>
+            <div class="bracket-container">
+                <div class="bracket-column">
+                    <h4>Cuartos de Final</h4>
+                    <script>
+                        for(let i=1; i<=4; i++){
+                            document.write(`
+                                <div class="bracket-match">
+                                    <select id="q${i}-t1" class="bracket-team-select" disabled onchange="updateBracketDisplay()"></select>
+                                    <div class="bracket-score-row"><span id="label-q${i}-t1">Eq 1</span><input type="number" id="score-q${i}-t1" class="score-input" value="0" disabled></div>
+                                    <div class="bracket-score-row"><span id="label-q${i}-t2">Eq 2</span><input type="number" id="score-q${i}-t2" class="score-input" value="0" disabled></div>
+                                    <select id="q${i}-t2" class="bracket-team-select" disabled onchange="updateBracketDisplay()"></select>
+                                </div>
+                            `);
+                        }
+                    </script>
+                </div>
+                <div class="bracket-column">
+                    <h4>Semifinales</h4>
+                    <div class="bracket-match">
+                        <div class="bracket-score-row"><span id="label-s1-t1">Ganador Q1</span><input type="number" id="score-s1-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row"><span id="label-s1-t2">Ganador Q2</span><input type="number" id="score-s1-t2" class="score-input" value="0" disabled></div>
+                    </div>
+                    <div class="bracket-match">
+                        <div class="bracket-score-row"><span id="label-s2-t1">Ganador Q3</span><input type="number" id="score-s2-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row"><span id="label-s2-t2">Ganador Q4</span><input type="number" id="score-s2-t2" class="score-input" value="0" disabled></div>
+                    </div>
+                </div>
+                <div class="bracket-column">
+                    <h4>Gran Final</h4>
+                    <div class="bracket-match" style="border-color: var(--laliga-red);">
+                        <div class="bracket-score-row"><span id="label-f-t1">Finalista 1</span><input type="number" id="score-f-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row"><span id="label-f-t2">Finalista 2</span><input type="number" id="score-f-t2" class="score-input" value="0" disabled></div>
+                    </div>
+                    <div class="bracket-match" style="text-align: center; background: var(--bg-card); border: 2px solid var(--laliga-red);">
+                        <span style="font-size: 0.75rem; color: #FF6B70; font-weight: 800;">🏆 CAMPEÓN</span>
+                        <h4 id="champion-name" style="color: var(--text-main); font-size: 1.1rem; margin-top: 4px; border:none;">- Por Definir -</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN DE TORNEOS (CHAMPIONS LEAGUE AJUSTADA SEGÚN TUS INSTRUCCIONES) -->
     <div id="tab-torneos" class="content-section">
         <div id="torneo-subtab-supercopa" class="torneo-subcontent">
             <div class="card supercup-card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
-                    <!-- TÍTULO SIN '(16 EQUIPOS)' Y SIN EL LOGO PEQUEÑO AL LADO DEL TEXTO -->
                     <div style="display:flex; align-items:center; gap:10px;">
                         <h3 class="glowing-supercopa-title" style="margin:0;">CHAMPIONS LEAGUE</h3>
                     </div>
@@ -987,13 +1267,12 @@
                     </div>
                 </div>
 
-                <!-- LLAVES COMPLETAS ANCHAS -->
+                <!-- LLAVES ANCHAS Y MODIFICADAS -->
                 <div class="ucl-bracket-container">
                     
-                    <!-- COLUMNA 1: OCTAVOS DE FINAL -->
+                    <!-- Octavos de Final -->
                     <div class="ucl-column">
                         <h4>Octavos de Final</h4>
-                        <!-- Octavos 1 al 8 -->
                         <script>
                             for(let o=1; o<=8; o++){
                                 document.write(`
@@ -1026,10 +1305,9 @@
                         </script>
                     </div>
 
-                    <!-- COLUMNA 2: CUARTOS DE FINAL -->
+                    <!-- Cuartos de Final -->
                     <div class="ucl-column">
                         <h4>Cuartos de Final</h4>
-                        <!-- Cuartos 1 al 4 -->
                         <script>
                             for(let c=1; c<=4; c++){
                                 document.write(`
@@ -1062,10 +1340,9 @@
                         </script>
                     </div>
 
-                    <!-- COLUMNA 3: SEMIFINALES -->
+                    <!-- Semifinales -->
                     <div class="ucl-column">
                         <h4>Semifinales</h4>
-                        <!-- Semis 1 y 2 -->
                         <script>
                             for(let s=1; s<=2; s++){
                                 document.write(`
@@ -1098,11 +1375,9 @@
                         </script>
                     </div>
 
-                    <!-- COLUMNA 4: GRAN FINAL (MOVIDA A LA POSICIÓN CENTRAL/INFERIOR) -->
+                    <!-- Gran Final (Movida abajo con el Campeón debajo) -->
                     <div class="ucl-column" style="justify-content: center; gap: 30px;">
                         <h4>Gran Final</h4>
-                        
-                        <!-- CUADRO DE GRAN FINAL MOVIDO ABAJO -->
                         <div class="ucl-match-box" style="border-color: var(--laliga-red);">
                             <div class="ucl-team-row">
                                 <div class="ucl-team-info">
@@ -1128,7 +1403,6 @@
                             </div>
                         </div>
 
-                        <!-- RECUADRO DEL CAMPEÓN JUSTO DEBAJO -->
                         <div class="sc-champ-box">
                             <span style="font-size: 0.75rem; color: #60A5FA; font-weight: 900; letter-spacing: 1px;">👑 CAMPEÓN DE EUROPA</span>
                             <h3 id="ucl-champion-name" style="color: #FFF; font-size: 1.15rem; margin-top: 4px; border:none; font-weight:900; text-shadow: 0 2px 4px rgba(0,0,0,0.9);">- Por Definir -</h3>
@@ -1138,22 +1412,86 @@
                 </div>
             </div>
 
-            <!-- CONFIGURACIÓN DE PARTICIPANTES -->
             <div class="card" style="margin-top: 24px; border-color: #0404E2; background: var(--bg-subcard);">
                 <h3 style="color: #60A5FA;">Configuración de Equipos - Champions League</h3>
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Asigna los 16 equipos participantes (8 de 1ª Div, 5 de 2ª Div, 3 de 3ª Div) o usa el sorteo aleatorio:</p>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;" id="ucl-config-selectors-container"></div>
             </div>
 
-            <!-- CLASIFICADOS AL MOMENTO (INCLUYE ESCUDOS) -->
             <div class="card" style="margin-top: 24px; border-color: var(--accent-green); background: var(--bg-subcard);">
                 <h3 style="color: var(--accent-green);">📊 Clasificados / Avance al Momento (Con Escudos)</h3>
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Equipos que van avanzando de fase según el marcador global:</p>
                 <div id="ucl-qualified-live-container" class="ucl-qualified-grid"></div>
             </div>
         </div>
+
+        <div id="torneo-subtab-copadelrey" class="torneo-subcontent" style="display: none;">
+            <div class="card">
+                <h3 style="color: var(--laliga-red);">👑 COPA DEL REY</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Sección reservada para la Copa del Rey.</p>
+            </div>
+        </div>
     </div>
 
+    <!-- PESTAÑA GESTIÓN -->
+    <div id="tab-gestion" class="content-section">
+        <div class="card" style="margin-bottom: 24px;">
+            <h3>Enlaces de Redes Sociales</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                <div class="input-group">
+                    <label>Enlace de Discord:</label>
+                    <input type="text" id="admin-discord-url" placeholder="https://discord.gg/..." onchange="updateSocialLinksFromInput()">
+                </div>
+                <div class="input-group">
+                    <label>Enlace de TikTok:</label>
+                    <input type="text" id="admin-tiktok-url" placeholder="https://www.tiktok.com/@..." onchange="updateSocialLinksFromInput()">
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h3>Configuración de Equipos</h3>
+            <div class="team-grid" id="teams-management-grid"></div>
+        </div>
+    </div>
+</div>
+
+<button id="floating-save-btn" class="floating-save-btn" onclick="manualSaveCloud()">
+    <span>💾 AutoGuardado</span>
+</button>
+
+<!-- MODALES DE ADMIN / STAFF / PLANTILLA -->
+<div id="admin-pin-modal" class="modal-overlay">
+    <div class="modal-content pin-modal-content">
+        <button class="modal-close" onclick="closeAdminPinModal()">&times;</button>
+        <h3>🔑 Acceso de Administrador</h3>
+        <input type="password" id="admin-pin-input" placeholder="Contraseña..." style="width: 100%; text-align: center; font-size: 1.1rem; font-weight: 700; margin: 20px 0;" onkeydown="if(event.key==='Enter') verifyAdminPin()">
+        <button class="action-btn" style="background: #10B981; width: 100%;" onclick="verifyAdminPin()">Entrar</button>
+    </div>
+</div>
+
+<div id="staff-pin-modal" class="modal-overlay">
+    <div class="modal-content pin-modal-content">
+        <button class="modal-close" onclick="closeStaffPinModal()">&times;</button>
+        <h3>🛡️ Acceso de Staff</h3>
+        <input type="password" id="staff-pin-input" placeholder="Contraseña..." style="width: 100%; text-align: center; font-size: 1.1rem; font-weight: 700; margin: 20px 0;" onkeydown="if(event.key==='Enter') verifyStaffPin()">
+        <button class="action-btn" style="background: var(--accent-staff); width: 100%;" onclick="verifyStaffPin()">Entrar</button>
+    </div>
+</div>
+
+<div id="team-modal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeTeamModal()">&times;</button>
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;" id="modal-header"></div>
+        <div class="input-group" style="margin-bottom:20px;">
+            <label>Director Técnico / Capitán:</label>
+            <input type="text" id="modal-dt-input" placeholder="Ej. ProPlayer" onchange="updateModalTeamInfo()">
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h4>Plantilla y Estadísticas</h4>
+            <button id="modal-add-player-btn" class="action-btn" style="font-size:0.8rem; padding:6px 12px;" onclick="addRosterPlayer()">+ Agregar Jugador</button>
+        </div>
+        <div class="roster-list" id="modal-roster-list"></div>
+    </div>
 </div>
 
 <script type="module">
@@ -1179,20 +1517,71 @@
     let isStaff = false;
     let autoSaveTimer = null;
     let isInitialLoading = true;
+    let currentDiv = 1;
+    let currentMatchday = 1;
+    let activeTeamId = null;
+    let openMatchEventsBoxes = {}; 
+    let openMatchDetailsBoxes = {}; 
+
+    const DEFAULT_TEAMS = [
+        "Roblox United FC", "Illegal Strikers", "Bloxburg City", "Vip Nation",
+        "Red Bulls Roblox", "Cyber FC", "Phantom XI", "Shadow Strikers",
+        "Titan FC", "Apex Predators", "Nova Squad", "Vortex FC",
+        "Ironclad XI", "Storm Breakers", "Venom FC", "Legacy Elite"
+    ];
+
     let appData = getInitialData();
 
     function getInitialData() {
         let data = { socialDiscord: "", socialTiktok: "", supercup: {} };
         [1, 2, 3].forEach(div => {
-            data[div] = { leagueLogo: "", teams: [], matches: [], bracket: {} };
+            let teams = DEFAULT_TEAMS.map((name, idx) => ({
+                id: idx + 1,
+                name: `${name} ${div > 1 ? 'D' + div : ''}`,
+                logo: "",
+                manager: "",
+                roster: [
+                    { num: 1, name: "Portero_1", pos: "POR", goals: 0, assists: 0, saves: 0 },
+                    { num: 10, name: "Capitan_10", pos: "DEL", goals: 0, assists: 0, saves: 0 }
+                ]
+            }));
+            data[div] = {
+                leagueLogo: "https://media.discordapp.net/attachments/1353118715406716981/1562489656396873828/2853f42f6c8278a03fdb93880813f8b5.png",
+                teams: teams,
+                matches: generateRoundRobin(teams),
+                bracket: {}
+            };
         });
         return data;
+    }
+
+    function generateRoundRobin(teams) {
+        let schedule = [];
+        let n = teams.length;
+        let tempTeams = [...teams];
+        if (n % 2 !== 0) { tempTeams.push(null); n++; }
+        let totalRounds = n - 1;
+        let matchesPerRound = n / 2;
+        let matchId = 1;
+        for (let round = 0; round < totalRounds; round++) {
+            for (let match = 0; match < matchesPerRound; match++) {
+                let home = tempTeams[match];
+                let away = tempTeams[n - 1 - match];
+                if (home !== null && away !== null) {
+                    schedule.push({ id: matchId++, matchday: round + 1, homeId: home.id, awayId: away.id, homeScore: null, awayScore: null, events: [] });
+                }
+            }
+            tempTeams.splice(1, 0, tempTeams.pop());
+        }
+        return schedule;
     }
 
     onSnapshot(doc(db, "liga", "general_data"), (docSnap) => {
         if (docSnap.exists()) {
             appData = docSnap.data();
             renderAll();
+        } else {
+            saveStateToCloud();
         }
         isInitialLoading = false;
     });
@@ -1213,13 +1602,282 @@
         autoSaveTimer = setTimeout(() => { saveStateToCloud(); }, 1500);
     };
 
+    window.toggleTheme = function() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme_preference', newTheme);
+    };
+
+    function loadSavedTheme() {
+        const savedTheme = localStorage.getItem('theme_preference') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+    loadSavedTheme();
+
+    window.openAdminPinModal = function() {
+        if (!isAdmin) {
+            document.getElementById('admin-pin-input').value = '';
+            document.getElementById('admin-pin-modal').classList.add('active');
+        } else {
+            if (confirm('¿Cerrar sesión de Administrador?')) {
+                isAdmin = false;
+                document.getElementById('btn-admin-toggle').innerText = "🔑 Admin";
+                document.getElementById('tab-btn-gestion').style.display = 'none';
+                document.getElementById('btn-reset-top').style.display = 'none';
+                document.getElementById('btn-reset-standings').style.display = 'none';
+                renderAll();
+            }
+        }
+    };
+    window.closeAdminPinModal = () => document.getElementById('admin-pin-modal').classList.remove('active');
+    window.verifyAdminPin = function() {
+        if (document.getElementById('admin-pin-input').value === ADMIN_PIN) {
+            isAdmin = true; isStaff = false;
+            closeAdminPinModal();
+            document.getElementById('btn-admin-toggle').innerText = "🔓 Admin: Activo";
+            document.getElementById('tab-btn-gestion').style.display = 'inline-block';
+            document.getElementById('btn-reset-top').style.display = 'inline-block';
+            document.getElementById('btn-reset-standings').style.display = 'inline-block';
+            renderAll();
+            alert('¡Modo Administrador Activado!');
+        } else { alert('PIN Incorrecto.'); }
+    };
+
+    window.openStaffPinModal = function() {
+        if (!isStaff) {
+            document.getElementById('staff-pin-input').value = '';
+            document.getElementById('staff-pin-modal').classList.add('active');
+        } else {
+            if (confirm('¿Cerrar sesión de Staff?')) {
+                isStaff = false;
+                document.getElementById('btn-staff-toggle').innerText = "🛡️ Staff";
+                renderAll();
+            }
+        }
+    };
+    window.closeStaffPinModal = () => document.getElementById('staff-pin-modal').classList.remove('active');
+    window.verifyStaffPin = function() {
+        if (document.getElementById('staff-pin-input').value === STAFF_PIN) {
+            isStaff = true; isAdmin = false;
+            closeStaffPinModal();
+            document.getElementById('btn-staff-toggle').innerText = "🔓 Staff: Activo";
+            renderAll();
+            alert('¡Modo Staff Activado!');
+        } else { alert('PIN Incorrecto.'); }
+    };
+
+    window.switchMainSection = function(section) {
+        if (section === 'torneos') {
+            document.getElementById('btn-top-torneos').classList.add('active');
+            [1, 2, 3].forEach(d => document.getElementById(`btn-div-${d}`).classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('tab-torneos').classList.add('active');
+            document.getElementById('sub-tabs-container').style.display = 'none';
+            document.getElementById('torneos-tabs-container').style.display = 'flex';
+            document.getElementById('hero-title').innerText = `CHAMPIONS LEAGUE`;
+            document.getElementById('hero-subtitle').style.display = 'none';
+            document.getElementById('hero-banner').classList.add('supercopa-hero');
+        } else {
+            currentDiv = section;
+            currentMatchday = 1;
+            document.getElementById('btn-top-torneos').classList.remove('active');
+            [1, 2, 3].forEach(d => document.getElementById(`btn-div-${d}`).classList.toggle('active', d === section));
+            document.getElementById('sub-tabs-container').style.display = 'flex';
+            document.getElementById('torneos-tabs-container').style.display = 'none';
+            document.getElementById('hero-title').innerText = `Temporada Oficial • ${section}ª División`;
+            document.getElementById('hero-subtitle').style.display = 'block';
+            document.getElementById('div-title').innerText = `${section}ª División • Tabla de Posiciones`;
+            document.getElementById('hero-banner').classList.remove('supercopa-hero');
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('tab-clasificacion').classList.add('active');
+            renderAll();
+        }
+    };
+
+    window.switchTab = (name, evt) => {
+        document.querySelectorAll('.main-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        if (evt && evt.target) evt.target.classList.add('active');
+        document.getElementById(`tab-${name}`).classList.add('active');
+    };
+
+    window.switchTorneoTab = (name, evt) => {
+        document.querySelectorAll('#torneos-tabs-container .tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.torneo-subcontent').forEach(s => s.style.display = 'none');
+        if (evt && evt.target) evt.target.classList.add('active');
+        document.getElementById(`torneo-subtab-${name}`).style.display = 'block';
+    };
+
+    window.switchStatSubtab = (name, evt) => {
+        document.querySelectorAll('.stats-pills .pill-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.stat-subcontent').forEach(s => s.style.display = 'none');
+        if (evt && evt.target) evt.target.classList.add('active');
+        document.getElementById(`stat-subtab-${name}`).style.display = 'block';
+    };
+
+    function renderAll() {
+        renderStandings();
+        renderMatchdaySelector();
+        renderMatches();
+        renderTops();
+        renderTeamManagement();
+        renderClubsTicker();
+        renderUCLSelectorsAndData();
+    }
+
+    function renderStandings() {
+        const divData = appData[currentDiv];
+        if (!divData) return;
+        let stats = divData.teams.map(t => ({ ...t, pj: 0, pg: 0, pe: 0, pp: 0, gf: 0, gc: 0, dg: 0, pts: 0, form: [] }));
+        divData.matches.forEach(m => {
+            if (m.homeScore !== null && m.awayScore !== null) {
+                let home = stats.find(t => t.id === m.homeId);
+                let away = stats.find(t => t.id === m.awayId);
+                if (home && away) {
+                    home.pj++; away.pj++;
+                    home.gf += m.homeScore; home.gc += m.awayScore;
+                    away.gf += m.awayScore; away.gc += m.homeScore;
+                    if (m.homeScore > m.awayScore) { home.pg++; home.pts += 3; away.pp++; }
+                    else if (m.homeScore < m.awayScore) { away.pg++; away.pts += 3; home.pp++; }
+                    else { home.pe++; home.pts += 1; away.pe++; away.pts += 1; }
+                }
+            }
+        });
+        stats.forEach(t => t.dg = t.gf - t.gc);
+        stats.sort((a, b) => b.pts - a.pts || b.dg - a.dg || b.gf - a.gf);
+
+        document.getElementById('standings-body').innerHTML = stats.map((t, idx) => `
+            <tr>
+                <td><strong>${idx + 1}</strong></td>
+                <td><div class="team-cell"><div class="team-logo">${t.logo ? `<img src="${t.logo}" onerror="this.outerHTML='${t.name.substring(0,2)}'">` : t.name.substring(0,2)}</div><span>${t.name}</span></div></td>
+                <td>${t.pj}</td><td>${t.pg}</td><td>${t.pe}</td><td>${t.pp}</td><td>${t.gf}</td><td>${t.gc}</td><td>${t.dg > 0 ? '+' + t.dg : t.dg}</td>
+                <td><strong style="color: var(--laliga-red);">${t.pts}</strong></td>
+                <td>-</td>
+                <td><button class="action-btn" style="font-size:0.75rem; padding:6px 12px;" onclick="openTeamModal(${t.id})">Plantilla</button></td>
+            </tr>
+        `).join('');
+    }
+
+    function renderClubsTicker() {
+        const divData = appData[currentDiv];
+        if (!divData || !divData.teams) return;
+        document.getElementById('ticker-clubs-container').innerHTML = divData.teams.map(t => `
+            <div class="club-ticker-item" title="${t.name}" onclick="openTeamModal(${t.id})">
+                ${t.logo ? `<img src="${t.logo}" onerror="this.outerHTML='${t.name.substring(0,2)}'">` : t.name.substring(0,2)}
+            </div>
+        `).join('');
+    }
+
+    function renderTops() {
+        const divData = appData[currentDiv];
+        if (!divData) return;
+        let allPlayers = [];
+        divData.teams.forEach(t => {
+            if (t.roster) t.roster.forEach(p => allPlayers.push({ name: p.name, teamName: t.name, goals: p.goals || 0, assists: p.assists || 0, saves: p.saves || 0 }));
+        });
+        document.getElementById('tops-goles-body').innerHTML = [...allPlayers].sort((a,b)=>b.goals-a.goals).slice(0,10).map((p,i)=>`<tr><td>#${i+1}</td><td>${p.name}</td><td>${p.teamName}</td><td><strong>⚽ ${p.goals}</strong></td></tr>`).join('');
+        document.getElementById('tops-asist-body').innerHTML = [...allPlayers].sort((a,b)=>b.assists-a.assists).slice(0,10).map((p,i)=>`<tr><td>#${i+1}</td><td>${p.name}</td><td>${p.teamName}</td><td><strong>🎯 ${p.assists}</strong></td></tr>`).join('');
+        document.getElementById('tops-atajadas-body').innerHTML = [...allPlayers].sort((a,b)=>b.saves-a.saves).slice(0,10).map((p,i)=>`<tr><td>#${i+1}</td><td>${p.name}</td><td>${p.teamName}</td><td><strong>🧤 ${p.saves}</strong></td></tr>`).join('');
+    }
+
+    function renderMatchdaySelector() {
+        const maxMD = Math.max(...appData[currentDiv].matches.map(m => m.matchday || 1));
+        let opts = '';
+        for (let i = 1; i <= maxMD; i++) opts += `<option value="${i}" ${i === currentMatchday ? 'selected' : ''}>Jornada ${i}</option>`;
+        document.getElementById('matchday-select').innerHTML = opts;
+    }
+
+    window.changeMatchday = (delta) => {
+        let maxMD = Math.max(...appData[currentDiv].matches.map(m => m.matchday || 1));
+        if (currentMatchday + delta >= 1 && currentMatchday + delta <= maxMD) {
+            currentMatchday += delta;
+            renderMatchdaySelector();
+            renderMatches();
+        }
+    };
+    window.jumpToMatchday = (val) => { currentMatchday = parseInt(val); renderMatches(); };
+
+    function renderMatches() {
+        const divData = appData[currentDiv];
+        const matches = divData.matches.filter(m => m.matchday === currentMatchday);
+        document.getElementById('matches-container').innerHTML = matches.map(m => {
+            let home = divData.teams.find(t => t.id === m.homeId);
+            let away = divData.teams.find(t => t.id === m.awayId);
+            return `
+                <div class="match-card">
+                    <div class="match-main-row">
+                        <div class="match-team"><span>${home.name}</span></div>
+                        <div class="score-inputs">
+                            <input type="number" class="score-input" value="${m.homeScore !== null ? m.homeScore : ''}" ${!isAdmin && !isStaff ? 'disabled' : ''} onchange="updateScore(${m.id}, 'home', this.value)">
+                            -
+                            <input type="number" class="score-input" value="${m.awayScore !== null ? m.awayScore : ''}" ${!isAdmin && !isStaff ? 'disabled' : ''} onchange="updateScore(${m.id}, 'away', this.value)">
+                        </div>
+                        <div class="match-team away"><span>${away.name}</span></div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    window.updateScore = function(matchId, type, val) {
+        if (!isAdmin && !isStaff) return;
+        let match = appData[currentDiv].matches.find(m => m.id === matchId);
+        if (match) {
+            match[type + 'Score'] = val === '' ? null : parseInt(val);
+            triggerAutoSave();
+        }
+    };
+
+    function renderTeamManagement() {
+        const divData = appData[currentDiv];
+        document.getElementById('teams-management-grid').innerHTML = divData.teams.map(t => `
+            <div class="team-card">
+                <strong>${t.name}</strong>
+                <div class="input-group"><label>Logo URL</label><input type="text" value="${t.logo || ''}" onchange="updateTeamLogo(${t.id}, this.value)"></div>
+            </div>
+        `).join('');
+    }
+
+    window.updateTeamLogo = function(id, val) {
+        let team = appData[currentDiv].teams.find(t => t.id === id);
+        if (team) { team.logo = val; renderTeamManagement(); renderClubsTicker(); triggerAutoSave(); }
+    };
+
+    window.openTeamModal = function(teamId) {
+        activeTeamId = teamId;
+        const team = appData[currentDiv].teams.find(t => t.id === teamId);
+        document.getElementById('modal-header').innerHTML = `<h3>${team.name}</h3>`;
+        document.getElementById('modal-dt-input').value = team.manager || '';
+        renderRosterList(team);
+        document.getElementById('team-modal').classList.add('active');
+    };
+    window.closeTeamModal = () => document.getElementById('team-modal').classList.remove('active');
+
+    function renderRosterList(team) {
+        if (!team.roster) team.roster = [];
+        document.getElementById('modal-roster-list').innerHTML = team.roster.map((p, idx) => `
+            <div class="roster-item">
+                <input type="text" value="${p.name}" onchange="updateRosterName(${idx}, this.value)">
+                <span>⚽ ${p.goals || 0}</span>
+            </div>
+        `).join('');
+    }
+    window.updateRosterName = (idx, val) => {
+        let team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
+        if(team && team.roster[idx]) { team.roster[idx].name = val; triggerAutoSave(); }
+    };
+    window.addRosterPlayer = () => {
+        let team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
+        if(team) { if(!team.roster) team.roster = []; team.roster.push({name: "Jugador", goals:0, assists:0, saves:0}); renderRosterList(team); triggerAutoSave(); }
+    };
+
+    /* LÓGICA CHAMPIONS LEAGUE 16 EQUIPOS (ACTUALIZADA CON ESCUDOS Y NUEVA POSICIÓN DE FINAL) */
     function getAllTeamsAcrossDivisions() {
         let all = [];
         [1, 2, 3].forEach(d => {
             if (appData[d] && appData[d].teams) {
-                appData[d].teams.forEach(t => {
-                    all.push({ id: `${d}-${t.id}`, name: `${t.name}`, logo: t.logo || '', div: d });
-                });
+                appData[d].teams.forEach(t => all.push({ id: `${d}-${t.id}`, name: t.name, logo: t.logo || '', div: d }));
             }
         });
         return all;
@@ -1227,19 +1885,14 @@
 
     function getTeamObjByFullId(fullId) {
         if (!fullId) return null;
-        const parts = fullId.split('-');
-        const d = parts[0];
-        const tId = parts[1];
-        if (appData[d] && appData[d].teams) {
-            return appData[d].teams.find(x => x.id == tId) || null;
-        }
-        return null;
+        let p = fullId.split('-');
+        return appData[p[0]]?.teams.find(x => x.id == p[1]) || null;
     }
 
     function setTeamLogoBox(elementId, logoUrl, name) {
         const el = document.getElementById(elementId);
         if (!el) return;
-        const initials = name && name !== 'Por Definir' ? name.substring(0, 2).toUpperCase() : '?';
+        let initials = name && name !== 'Por Definir' ? name.substring(0, 2).toUpperCase() : '?';
         if (logoUrl && logoUrl.trim() !== '') {
             el.innerHTML = `<img src="${logoUrl}" alt="${name}" onerror="this.outerHTML='${initials}'">`;
         } else {
@@ -1247,98 +1900,73 @@
         }
     }
 
-    /* ACTUALIZACIÓN DINÁMICA DE LA CHAMPIONS CON ESCUDOS Y RUTAS DE LLAVE */
     window.updateUCLDisplay = function() {
         let teams = [];
         for (let i = 1; i <= 16; i++) {
             let sel = document.getElementById(`ucl-cfg-team-${i}`);
-            let val = sel ? sel.value : '';
-            let obj = getTeamObjByFullId(val);
+            let obj = getTeamObjByFullId(sel ? sel.value : '');
             teams.push(obj ? { name: obj.name, logo: obj.logo } : { name: 'Por Definir', logo: '' });
         }
 
-        // Octavos
         let oWinners = [];
         for (let m = 1; m <= 8; m++) {
-            let t1 = teams[(m - 1) * 2];
-            let t2 = teams[(m - 1) * 2 + 1];
-
+            let t1 = teams[(m - 1) * 2], t2 = teams[(m - 1) * 2 + 1];
             document.getElementById(`ucl-lbl-o${m}-t1`).innerText = t1.name;
             document.getElementById(`ucl-lbl-o${m}-t2`).innerText = t2.name;
             setTeamLogoBox(`ucl-img-o${m}-t1`, t1.logo, t1.name);
             setTeamLogoBox(`ucl-img-o${m}-t2`, t2.logo, t2.name);
 
-            let i1 = document.getElementById(`ucl-s-o${m}-t1-i`).value;
-            let v1 = document.getElementById(`ucl-s-o${m}-t1-v`).value;
-            let i2 = document.getElementById(`ucl-s-o${m}-t2-i`).value;
-            let v2 = document.getElementById(`ucl-s-o${m}-t2-v`).value;
-
+            let i1 = document.getElementById(`ucl-s-o${m}-t1-i`).value, v1 = document.getElementById(`ucl-s-o${m}-t1-v`).value;
+            let i2 = document.getElementById(`ucl-s-o${m}-t2-i`).value, v2 = document.getElementById(`ucl-s-o${m}-t2-v`).value;
             let res = calcGlobalWinner(t1, t2, i1, v1, i2, v2);
             document.getElementById(`ucl-gl-o${m}-t1`).innerText = `G:${res.g1}`;
             document.getElementById(`ucl-gl-o${m}-t2`).innerText = `G:${res.g2}`;
             oWinners.push(res.winnerObj);
         }
 
-        // Cuartos
         let cWinners = [];
         for (let m = 1; m <= 4; m++) {
-            let t1 = oWinners[(m - 1) * 2];
-            let t2 = oWinners[(m - 1) * 2 + 1];
-
+            let t1 = oWinners[(m - 1) * 2], t2 = oWinners[(m - 1) * 2 + 1];
             document.getElementById(`ucl-lbl-c${m}-t1`).innerText = t1.name;
             document.getElementById(`ucl-lbl-c${m}-t2`).innerText = t2.name;
             setTeamLogoBox(`ucl-img-c${m}-t1`, t1.logo, t1.name);
             setTeamLogoBox(`ucl-img-c${m}-t2`, t2.logo, t2.name);
 
-            let i1 = document.getElementById(`ucl-s-c${m}-t1-i`).value;
-            let v1 = document.getElementById(`ucl-s-c${m}-t1-v`).value;
-            let i2 = document.getElementById(`ucl-s-c${m}-t2-i`).value;
-            let v2 = document.getElementById(`ucl-s-c${m}-t2-v`).value;
-
+            let i1 = document.getElementById(`ucl-s-c${m}-t1-i`).value, v1 = document.getElementById(`ucl-s-c${m}-t1-v`).value;
+            let i2 = document.getElementById(`ucl-s-c${m}-t2-i`).value, v2 = document.getElementById(`ucl-s-c${m}-t2-v`).value;
             let res = calcGlobalWinner(t1, t2, i1, v1, i2, v2);
             document.getElementById(`ucl-gl-c${m}-t1`).innerText = `G:${res.g1}`;
             document.getElementById(`ucl-gl-c${m}-t2`).innerText = `G:${res.g2}`;
             cWinners.push(res.winnerObj);
         }
 
-        // Semis
         let sWinners = [];
         for (let m = 1; m <= 2; m++) {
-            let t1 = cWinners[(m - 1) * 2];
-            let t2 = cWinners[(m - 1) * 2 + 1];
-
+            let t1 = cWinners[(m - 1) * 2], t2 = cWinners[(m - 1) * 2 + 1];
             document.getElementById(`ucl-lbl-s${m}-t1`).innerText = t1.name;
             document.getElementById(`ucl-lbl-s${m}-t2`).innerText = t2.name;
             setTeamLogoBox(`ucl-img-s${m}-t1`, t1.logo, t1.name);
             setTeamLogoBox(`ucl-img-s${m}-t2`, t2.logo, t2.name);
 
-            let i1 = document.getElementById(`ucl-s-s${m}-t1-i`).value;
-            let v1 = document.getElementById(`ucl-s-s${m}-t1-v`).value;
-            let i2 = document.getElementById(`ucl-s-s${m}-t2-i`).value;
-            let v2 = document.getElementById(`ucl-s-s${m}-t2-v`).value;
-
+            let i1 = document.getElementById(`ucl-s-s${m}-t1-i`).value, v1 = document.getElementById(`ucl-s-s${m}-t1-v`).value;
+            let i2 = document.getElementById(`ucl-s-s${m}-t2-i`).value, v2 = document.getElementById(`ucl-s-s${m}-t2-v`).value;
             let res = calcGlobalWinner(t1, t2, i1, v1, i2, v2);
             document.getElementById(`ucl-gl-s${m}-t1`).innerText = `G:${res.g1}`;
             document.getElementById(`ucl-gl-s${m}-t2`).innerText = `G:${res.g2}`;
             sWinners.push(res.winnerObj);
         }
 
-        // Final
-        let f1 = sWinners[0];
-        let f2 = sWinners[1];
+        let f1 = sWinners[0], f2 = sWinners[1];
         document.getElementById('ucl-lbl-f1').innerText = f1.name;
         document.getElementById('ucl-lbl-f2').innerText = f2.name;
         setTeamLogoBox('ucl-img-f-t1', f1.logo, f1.name);
         setTeamLogoBox('ucl-img-f-t2', f2.logo, f2.name);
 
-        let fi1 = document.getElementById('ucl-s-f-t1-i').value;
-        let fv1 = document.getElementById('ucl-s-f-t1-v').value;
-        let fi2 = document.getElementById('ucl-s-f-t2-i').value;
-        let fv2 = document.getElementById('ucl-s-f-t2-v').value;
-
+        let fi1 = document.getElementById('ucl-s-f-t1-i').value, fv1 = document.getElementById('ucl-s-f-t1-v').value;
+        let fi2 = document.getElementById('ucl-s-f-t2-i').value, fv2 = document.getElementById('ucl-s-f-t2-v').value;
         let finalRes = calcGlobalWinner(f1, f2, fi1, fv1, fi2, fv2);
-        document.getElementById('ucl-gl-f-t1').innerText = `G:${finalRes.g1}`;
-        document.getElementById('ucl-gl-f-t2').innerText = `G:${finalRes.g2}`;
+        document.getElementById(`ucl-gl-f-t1`).innerText = `G:${finalRes.g1}`;
+        document.getElementById(`ucl-gl-f-t2`).innerText = `G:${finalRes.g2}`;
         document.getElementById('ucl-champion-name').innerText = finalRes.winnerObj.name;
 
         renderUCLQualifiedLiveWithLogos(oWinners, cWinners, sWinners, finalRes.winnerObj);
@@ -1346,12 +1974,9 @@
     };
 
     function calcGlobalWinner(t1, t2, i1, v1, i2, v2) {
-        if (t1.name === 'Por Definir' || t2.name === 'Por Definir') {
-            return { winnerObj: { name: 'Por Definir', logo: '' }, g1: 0, g2: 0 };
-        }
+        if (t1.name === 'Por Definir' || t2.name === 'Por Definir') return { winnerObj: { name: 'Por Definir', logo: '' }, g1: 0, g2: 0 };
         let g1 = (parseInt(i1) || 0) + (parseInt(v1) || 0);
         let g2 = (parseInt(i2) || 0) + (parseInt(v2) || 0);
-
         if (g1 > g2) return { winnerObj: t1, g1, g2 };
         if (g2 > g1) return { winnerObj: t2, g1, g2 };
         return { winnerObj: { name: `${t1.name} (Penales)`, logo: t1.logo }, g1, g2 };
@@ -1360,82 +1985,33 @@
     function renderUCLQualifiedLiveWithLogos(oW, cW, sW, champ) {
         let container = document.getElementById('ucl-qualified-live-container');
         if (!container) return;
-
         let listHTML = '';
         let addBadge = (phase, teamObj) => {
             if (teamObj && teamObj.name !== 'Por Definir' && !teamObj.name.includes('Por Definir')) {
-                const initials = teamObj.name.substring(0, 2).toUpperCase();
-                const logoImg = (teamObj.logo && teamObj.logo.trim() !== '') 
-                    ? `<img src="${teamObj.logo}" style="width:20px; height:20px; border-radius:50%; object-fit:cover;" onerror="this.outerHTML=''">`
-                    : '';
-                listHTML += `
-                    <div class="ucl-qualified-item">
-                        <span>${phase}:</span> 
-                        <div style="display:flex; align-items:center; gap:6px;">
-                            ${logoImg}
-                            <strong style="color:#60A5FA;">${teamObj.name}</strong>
-                        </div>
-                    </div>`;
+                let logoImg = teamObj.logo ? `<img src="${teamObj.logo}" style="width:20px; height:20px; border-radius:50%; object-fit:cover;">` : '';
+                listHTML += `<div class="ucl-qualified-item"><span>${phase}:</span> <div style="display:flex; align-items:center; gap:6px;">${logoImg}<strong style="color:#60A5FA;">${teamObj.name}</strong></div></div>`;
             }
         };
-
         oW.forEach((w, idx) => addBadge(`Cuartos (O${idx+1})`, w));
         cW.forEach((w, idx) => addBadge(`Semis (C${idx+1})`, w));
         sW.forEach((w, idx) => addBadge(`Finalista (S${idx+1})`, w));
         if (champ && champ.name !== 'Por Definir' && !champ.name.includes('Por Definir')) {
-            const logoImg = (champ.logo && champ.logo.trim() !== '') 
-                ? `<img src="${champ.logo}" style="width:20px; height:20px; border-radius:50%; object-fit:cover;">`
-                : '';
-            listHTML += `
-                <div class="ucl-qualified-item" style="border-color:var(--accent-gold); background:rgba(245, 158, 11, 0.15);">
-                    <span>🏆 Campeón:</span> 
-                    <div style="display:flex; align-items:center; gap:6px;">
-                        ${logoImg}
-                        <strong style="color:var(--accent-gold);">${champ.name}</strong>
-                    </div>
-                </div>`;
+            let logoImg = champ.logo ? `<img src="${champ.logo}" style="width:20px; height:20px; border-radius:50%; object-fit:cover;">` : '';
+            listHTML += `<div class="ucl-qualified-item" style="border-color:var(--accent-gold); background:rgba(245, 158, 11, 0.15);"><span>🏆 Campeón:</span> <div style="display:flex; align-items:center; gap:6px;">${logoImg}<strong style="color:var(--accent-gold);">${champ.name}</strong></div></div>`;
         }
-
         container.innerHTML = listHTML || `<span style="font-size:0.85rem; color:var(--text-muted); font-style:italic;">Aún no hay clasificados registrados.</span>`;
     }
 
     function renderUCLSelectorsAndData() {
         const allTeams = getAllTeamsAcrossDivisions();
-        const optionsHTML = `<option value="">-- Seleccionar --</option>` + 
-            allTeams.map(t => `<option value="${t.id}">${t.name} (${t.div}ª Div)</option>`).join('');
-
+        const optionsHTML = `<option value="">-- Seleccionar --</option>` + allTeams.map(t => `<option value="${t.id}">${t.name} (${t.div}ª Div)</option>`).join('');
         let container = document.getElementById('ucl-config-selectors-container');
         if (!container) return;
-
         let html = '';
         for (let i = 1; i <= 16; i++) {
-            html += `
-                <div class="input-group">
-                    <label>Participante #${i}:</label>
-                    <select id="ucl-cfg-team-${i}" class="ucl-team-select-cfg" onchange="updateUCLDisplay()">
-                        ${optionsHTML}
-                    </select>
-                </div>
-            `;
+            html += `<div class="input-group"><label>Participante #${i}:</label><select id="ucl-cfg-team-${i}" onchange="updateUCLDisplay()">${optionsHTML}</select></div>`;
         }
         container.innerHTML = html;
-        loadUCLData();
-    }
-
-    function renderAll() {
-        renderUCLSelectorsAndData();
-    }
-
-    function saveUCLToMemory() {
-        if ((!isAdmin && !isStaff) || isInitialLoading) return;
-        let supercupData = {};
-        let inputs = document.querySelectorAll('#tab-torneos input, #tab-torneos select');
-        inputs.forEach(input => { supercupData[input.id] = input.value; });
-        appData.supercup = supercupData;
-        triggerAutoSave();
-    }
-
-    function loadUCLData() {
         let supercupData = appData.supercup || {};
         Object.keys(supercupData).forEach(id => {
             let el = document.getElementById(id);
@@ -1443,6 +2019,15 @@
         });
         updateUCLDisplay();
     }
+
+    function saveUCLToMemory() {
+        if ((!isAdmin && !isStaff) || isInitialLoading) return;
+        let supercupData = {};
+        document.querySelectorAll('#tab-torneos input, #tab-torneos select').forEach(input => { supercupData[input.id] = input.value; });
+        appData.supercup = supercupData;
+        triggerAutoSave();
+    }
 </script>
+
 </body>
 </html>
