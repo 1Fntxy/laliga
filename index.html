@@ -248,7 +248,6 @@
             box-shadow: 0 0 15px rgba(238, 29, 35, 0.5);
         }
 
-        /* Estilo especial para el botón superior de Torneos */
         .btn-torneos-top {
             background: rgba(245, 158, 11, 0.2);
             color: #FCD34D;
@@ -424,7 +423,6 @@
             margin-bottom: 16px;
         }
 
-        /* FONDO DIRECTO ASEGURADO PARA LA SUPERCOPA */
         .supercup-card {
             position: relative;
             background: linear-gradient(rgba(11, 15, 25, 0.78), rgba(11, 15, 25, 0.88)), url('https://media.discordapp.net/attachments/1353118715406716981/1567727795256172665/supercopa.jpg') !important;
@@ -892,11 +890,10 @@
 </div>
 
 <div class="top-bar">
-    <!-- Divisiones a la izquierda -->
     <div class="header-controls-left desktop-only">
-        <button class="btn-div active" onclick="switchDivision(1)">🏆 1ª DIV</button>
-        <button class="btn-div" onclick="switchDivision(2)">🥇 2ª DIV</button>
-        <button class="btn-div" onclick="switchDivision(3)">🥈 3ª DIV</button>
+        <button id="btn-div-1" class="btn-div active" onclick="switchMainSection(1)">🏆 1ª DIV</button>
+        <button id="btn-div-2" class="btn-div" onclick="switchMainSection(2)">🥇 2ª DIV</button>
+        <button id="btn-div-3" class="btn-div" onclick="switchMainSection(3)">🥈 3ª DIV</button>
     </div>
 
     <div class="header-controls-left mobile-only">
@@ -908,17 +905,13 @@
                 <button class="dropdown-item active" onclick="selectMobileDivision(1)">🏆 1ª División</button>
                 <button class="dropdown-item" onclick="selectMobileDivision(2)">🥇 2ª División</button>
                 <button class="dropdown-item" onclick="selectMobileDivision(3)">🥈 3ª División</button>
+                <button class="dropdown-item" onclick="selectMobileDivision('torneos')">🇪🇸 Torneos (Supercopa)</button>
             </div>
         </div>
     </div>
 
-    <!-- BOTÓN NUEVO DE TORNEOS (UBICADO ARRIBA DONDE PEDISTE) -->
     <div class="desktop-only" style="margin-left: 10px;">
         <button id="btn-top-torneos" class="btn-div btn-torneos-top" onclick="switchMainSection('torneos')">🏆 Torneos</button>
-    </div>
-    
-    <div class="mobile-only" style="width: 100%;">
-        <button class="btn-div btn-torneos-top" style="width: 100%;" onclick="switchMainSection('torneos')">🏆 Torneos (Supercopa)</button>
     </div>
 
     <div class="brand-container">
@@ -1150,7 +1143,6 @@
                 <div class="bracket-column">
                     <h4>Semifinales</h4>
                     
-                    <!-- Semifinal 1 -->
                     <div class="bracket-match" style="border-left: 4px solid var(--laliga-red);">
                         <span style="font-size:0.7rem; color:var(--laliga-red); font-weight:800;">SEMIFINAL 1</span>
                         <div class="bracket-score-row">
@@ -1163,7 +1155,6 @@
                         </div>
                     </div>
 
-                    <!-- Semifinal 2 -->
                     <div class="bracket-match" style="border-left: 4px solid var(--accent-staff);">
                         <span style="font-size:0.7rem; color:var(--accent-staff); font-weight:800;">SEMIFINAL 2</span>
                         <div class="bracket-score-row">
@@ -1180,7 +1171,6 @@
                 <div class="bracket-column">
                     <h4>Gran Final</h4>
                     
-                    <!-- Final -->
                     <div class="bracket-match" style="border: 2px solid var(--accent-gold); box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);">
                         <span style="font-size:0.7rem; color:var(--accent-gold); font-weight:800;">GRAN FINAL</span>
                         <div class="bracket-score-row">
@@ -1193,7 +1183,6 @@
                         </div>
                     </div>
 
-                    <!-- Campeón -->
                     <div class="bracket-match" style="text-align: center; background: rgba(11, 15, 25, 0.9); border: 2px solid var(--accent-gold);">
                         <span style="font-size: 0.8rem; color: var(--accent-gold); font-weight: 900;">👑 SUPERCAMPEÓN DE ESPAÑA</span>
                         <h3 id="supercup-champion-name" style="color: #FFF; font-size: 1.3rem; margin-top: 4px; border:none; font-weight:900; text-shadow: 0 2px 4px rgba(0,0,0,0.9);">- Por Definir -</h3>
@@ -1202,7 +1191,6 @@
             </div>
         </div>
 
-        <!-- SELECCIÓN DE PARTICIPANTES DE SUPERCOPA (VISIBLE EN GESTIÓN O DENTRO DE TORNEOS) -->
         <div class="card" style="margin-top: 24px; border-color: var(--accent-gold); background: var(--bg-subcard);">
             <h3 style="color: var(--accent-gold);">🇪🇸 Configuración de Participantes Supercopa</h3>
             <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Elige a los 4 equipos clasificados para la Supercopa (requiere modo Admin o Staff):</p>
@@ -1729,11 +1717,20 @@
 
     window.selectMobileDivision = function(divNum) {
         toggleDivisionMenu();
-        document.getElementById('mobile-current-div-label').innerText = `${divNum}ª DIV`;
+        if (divNum === 'torneos') {
+            document.getElementById('mobile-current-div-label').innerText = `Torneos`;
+            switchMainSection('torneos');
+        } else {
+            document.getElementById('mobile-current-div-label').innerText = `${divNum}ª DIV`;
+            switchMainSection(divNum);
+        }
         document.querySelectorAll('#mobile-division-menu .dropdown-item').forEach((item, idx) => {
-            item.classList.toggle('active', idx + 1 === divNum);
+            if (divNum === 'torneos') {
+                item.classList.toggle('active', idx === 3);
+            } else {
+                item.classList.toggle('active', idx + 1 === divNum);
+            }
         });
-        switchMainSection(divNum);
     };
 
     window.switchMainSection = function(section) {
@@ -1741,31 +1738,36 @@
         loader.classList.add('active');
         setTimeout(() => {
             if (section === 'torneos') {
-                // Activar pestaña Torneos arriba
                 document.getElementById('btn-top-torneos').classList.add('active');
-                document.querySelectorAll('.desktop-only .btn-div:not(#btn-top-torneos)').forEach(b => b.classList.remove('active'));
+                [1, 2, 3].forEach(d => {
+                    const b = document.getElementById(`btn-div-${d}`);
+                    if (b) b.classList.remove('active');
+                });
                 
                 document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
                 document.getElementById('tab-torneos').classList.add('active');
                 document.getElementById('sub-tabs-container').style.display = 'none';
                 document.getElementById('hero-title').innerText = `Torneos Oficiales • Supercopa`;
             } else {
-                // Es una división (1, 2 o 3)
                 currentDiv = section;
                 currentMatchday = 1;
                 openMatchEventsBoxes = {};
                 openMatchDetailsBoxes = {};
 
-                document.getElementById('btn-top-torneos').classList.remove('active');
-                document.querySelectorAll('.desktop-only .btn-div:not(#btn-top-torneos)').forEach((btn, idx) => {
-                    btn.classList.toggle('active', idx + 1 === section);
+                const torneosBtn = document.getElementById('btn-top-torneos');
+                if (torneosBtn) torneosBtn.classList.remove('active');
+
+                [1, 2, 3].forEach(d => {
+                    const b = document.getElementById(`btn-div-${d}`);
+                    if (b) {
+                        b.classList.toggle('active', d === section);
+                    }
                 });
 
                 document.getElementById('sub-tabs-container').style.display = 'flex';
                 document.getElementById('hero-title').innerText = `Temporada Oficial • ${section}ª División`;
                 document.getElementById('div-title').innerText = `${section}ª División • Tabla de Posiciones`;
                 
-                // Activar por defecto la pestaña de clasificación
                 document.querySelectorAll('.main-tabs .tab-btn').forEach((btn, idx) => {
                     btn.classList.toggle('active', idx === 0);
                 });
