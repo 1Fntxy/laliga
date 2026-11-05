@@ -340,13 +340,13 @@
             margin-bottom: 24px;
         }
 
-        /* FRANJA DEGRADADA EXCLUSIVA PARA SUPERCOPA (ESTÁTICA/STICKY AL SCROLEAR Y MÁS GRANDE) */
+        /* FRANJA DEGRADADA EXCLUSIVA PARA SUPERCOPA (ESTÁTICA Y MÁS DELGADA) */
         .laliga-hero.supercopa-hero {
             position: sticky;
-            top: 73px; /* Justo debajo de la barra de navegación principal */
+            top: 73px;
             z-index: 998;
             background: linear-gradient(90deg, #EE1D23 0%, #B51318 45%, #590407 75%, #150102 100%);
-            padding: 32px 24px;
+            padding: 18px 24px; /* Más delgada como pediste */
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         }
 
@@ -360,9 +360,9 @@
         }
 
         .hero-banner-logo {
-            height: 75px; /* Imagen más grande como pediste */
+            height: 95px; /* Imagen superior derecha más grande */
             object-fit: contain;
-            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6));
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.7));
         }
 
         .laliga-hero h2 {
@@ -444,7 +444,7 @@
             margin-bottom: 16px;
         }
 
-        /* CARD ESPECIAL SUPERCOPA (BORDES ROJOS INTENSOS) */
+        /* CARD ESPECIAL SUPERCOPA */
         .supercup-card {
             position: relative;
             background: linear-gradient(rgba(11, 15, 25, 0.85), rgba(11, 15, 25, 0.92)), url('https://media.discordapp.net/attachments/1353118715406716981/1567727795256172665/supercopa.jpg') !important;
@@ -467,11 +467,24 @@
             border-color: rgba(238, 29, 35, 0.6);
         }
 
-        /* ILUMINACIÓN Y SOMBRA ROJA EN LA PALABRA SUPERCOPA QUE SEÑALASTE */
+        /* TÍTULO SUPERCOPA CON LA NUEVA IMAGEN AL LADO Y BRILLO ROJO */
+        .supercup-title-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
         .glowing-supercopa-title {
             color: #FFF;
             text-shadow: 0 0 10px #EE1D23, 0 0 20px #EE1D23, 0 0 30px #FF4D52, 0 2px 4px rgba(0,0,0,0.9);
             letter-spacing: 1.5px;
+            font-size: 1.6rem;
+        }
+
+        .supercopa-inline-logo {
+            height: 48px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 8px rgba(238, 29, 35, 0.8));
         }
 
         /* DISEÑO TIPO PÓSTER OFICIAL DE LA SUPERCOPA */
@@ -530,26 +543,21 @@
             text-align: center;
         }
 
-        /* LOGO EN LUGAR DEL EMOJI DEL TROFEO */
-        .sc-logo-badge {
-            width: 90px;
-            height: 90px;
-            background: rgba(11, 15, 25, 0.8);
-            border: 2px solid var(--laliga-red);
-            border-radius: 50%;
+        /* SIN CÍRCULO, PERO CON ILUMINACIÓN ROJA EN LA IMAGEN DE EN MEDIO */
+        .sc-logo-badge-nocircle {
+            width: 100px;
+            height: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 25px rgba(238, 29, 35, 0.6);
-            overflow: hidden;
-            padding: 12px;
+            filter: drop-shadow(0 0 15px rgba(238, 29, 35, 0.9)) drop-shadow(0 0 25px rgba(238, 29, 35, 0.6));
+            padding: 5px;
         }
 
-        .sc-logo-badge img {
+        .sc-logo-badge-nocircle img {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
         }
 
         .sc-final-box {
@@ -1268,8 +1276,11 @@
         <div id="torneo-subtab-supercopa" class="torneo-subcontent">
             <div class="card supercup-card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; flex-wrap:wrap; gap:12px;">
-                    <!-- PALABRA SUPERCOPA CON BRILLO Y SOMBRA ROJA QUE PEDISTE -->
-                    <h3 class="glowing-supercopa-title" style="font-size: 1.6rem; letter-spacing: 1px;">SUPERCOPA</h3>
+                    <!-- TÍTULO SUPERCOPA CON LA NUEVA IMAGEN AL LADO Y BRILLO -->
+                    <div class="supercup-title-container">
+                        <h3 class="glowing-supercopa-title">SUPERCOPA</h3>
+                        <img src="https://media.discordapp.net/attachments/1353118715406716981/1567753284717117540/image.png?ex=6aed5386&is=6aec0206&hm=b76a5f8d810da55a9136c6426bdd77ae211b0204e3b7a65dc36a30d200be976e&=&format=webp&quality=lossless" alt="Supercopa Logo" class="supercopa-inline-logo">
+                    </div>
                     <span style="background: var(--laliga-red); color: #FFF; font-weight: 800; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">FINAL FOUR</span>
                 </div>
 
@@ -1290,10 +1301,10 @@
                         </div>
                     </div>
 
-                    <!-- CENTRO (IMAGEN DE SUPERCOPA EN LUGAR DEL EMOJI + FINAL + CAMPEÓN) -->
+                    <!-- CENTRO (IMAGEN DE SUPERCOPA SIN CÍRCULO PERO CON ILUMINACIÓN) -->
                     <div class="sc-center-col">
-                        <div class="sc-logo-badge" title="Supercopa">
-                            <img src="https://media.discordapp.net/attachments/1353118715406716981/1567747255748796426/supercopapng.png?ex=6aed4de9&is=6aebfc69&hm=39bc272682f739bb29b09d38ae55af3242bce20d2b5a4605b76733d21dfad623&=&format=webp&quality=lossless" alt="Supercopa">
+                        <div class="sc-logo-badge-nocircle" title="Supercopa">
+                            <img src="https://media.discordapp.net/attachments/1353118715406716981/1567753284717117540/image.png?ex=6aed5386&is=6aec0206&hm=b76a5f8d810da55a9136c6426bdd77ae211b0204e3b7a65dc36a30d200be976e&=&format=webp&quality=lossless" alt="Supercopa">
                         </div>
                         
                         <div class="sc-final-box">
@@ -1906,7 +1917,7 @@
                 
                 if (heroBanner) heroBanner.classList.add('supercopa-hero');
                 if (heroRightImg) {
-                    heroRightImg.src = "https://media.discordapp.net/attachments/1353118715406716981/1567747255748796426/supercopapng.png?ex=6aed4de9&is=6aebfc69&hm=39bc272682f739bb29b09d38ae55af3242bce20d2b5a4605b76733d21dfad623&=&format=webp&quality=lossless";
+                    heroRightImg.src = "https://media.discordapp.net/attachments/1353118715406716981/1567753284717117540/image.png?ex=6aed5386&is=6aec0206&hm=b76a5f8d810da55a9136c6426bdd77ae211b0204e3b7a65dc36a30d200be976e&=&format=webp&quality=lossless";
                     heroRightImg.style.display = 'block';
                 }
 
