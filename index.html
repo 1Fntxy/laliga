@@ -271,13 +271,9 @@
             color: #FFF;
         }
 
-        .btn-social svg { width: 16px; height: 16px; fill: currentColor; }
-        .btn-discord { background: var(--accent-discord); }
-        .btn-tiktok { background: var(--accent-tiktok); }
         .btn-theme { background: rgba(255, 255, 255, 0.15); color: #FFF; font-weight: 800; border: 1px solid rgba(255, 255, 255, 0.25); }
         .btn-admin { background: var(--accent-gold); color: #02040A; font-weight: 800; }
         .btn-staff { background: var(--accent-staff); color: #FFF; font-weight: 800; }
-        .btn-reset { background: rgba(239, 68, 68, 0.2); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.4); display: none; }
 
         .clubs-ticker-bar {
             background: var(--topbar-bg);
@@ -324,11 +320,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-        .club-ticker-fallback {
-            font-size: 0.65rem;
-            color: var(--text-main);
-            font-weight: 800;
         }
 
         .laliga-hero {
@@ -442,7 +433,7 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
         }
 
-        /* DISEÑO DE LA CHAMPIONS LEAGUE (REFERENCIA IMAGEN) */
+        /* DISEÑO DE LA CHAMPIONS LEAGUE */
         .ucl-poster-container {
             background: radial-gradient(circle at center, #0B2578 0%, #030825 100%);
             border: 2px solid #3B82F6;
@@ -649,31 +640,6 @@
             border: 1px solid var(--border-color);
         }
 
-        .stats-pills {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-            padding-bottom: 4px;
-        }
-
-        .pill-btn {
-            background: var(--bg-card);
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
-            padding: 8px 18px;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            white-space: nowrap;
-        }
-
-        .pill-btn.active {
-            background: var(--text-main);
-            color: var(--bg-card);
-            border-color: var(--text-main);
-        }
-
         .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
         table {
@@ -704,13 +670,6 @@
         }
 
         tr:hover td { background-color: var(--table-hover); }
-
-        .team-cell {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 700;
-        }
 
         .team-logo {
             width: 36px;
@@ -829,8 +788,6 @@
 
         .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
         .team-card { background: var(--bg-subcard); border: 1px solid var(--border-color); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-        .input-group { display: flex; flex-direction: column; gap: 6px; }
-        .input-group label { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; }
     </style>
 </head>
 <body>
@@ -870,7 +827,7 @@
     <div class="brand-container">
         <div class="league-emblem" onclick="triggerLeagueLogoUrlInput()" title="Cambiar logo (URL)">
             <div id="league-logo-container">
-                <img src="https://media.discordapp.net/attachments/1353118715406716981/1562489656396873828/2853f42f6c8278a03fdb93880813f8b5.png" alt="Logo">
+                <img id="main-league-logo" src="https://media.discordapp.net/attachments/1353118715406716981/1562489656396873828/2853f42f6c8278a03fdb93880813f8b5.png" alt="Logo">
             </div>
             <input type="text" id="league-logo-input" placeholder="URL del logo" style="display:none; width: 150px; font-size: 0.75rem;" onchange="updateLeagueLogoUrl(this.value)">
         </div>
@@ -1383,6 +1340,17 @@
         }
     }
 
+    window.toggleTheme = function() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+            document.documentElement.removeAttribute('data-theme');
+            document.getElementById('btn-theme-toggle').innerText = "🌙 Oscuro";
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('btn-theme-toggle').innerText = "☀️ Claro";
+        }
+    };
+
     window.openAdminModal = function() {
         authMode = 'admin';
         document.getElementById('pin-modal-title').innerText = "🔑 Acceso Administrador";
@@ -1466,6 +1434,8 @@
 
     function renderAll() {
         if (!appData) return;
+        renderLeagueLogo();
+        renderTickerClubs();
         renderStandings();
         renderMatchdaySelector();
         renderMatches();
@@ -1473,6 +1443,26 @@
         populateBracketDropdowns();
         renderBracketState();
         updateInputsLockState();
+    }
+
+    function renderLeagueLogo() {
+        const divData = appData[currentDiv];
+        if (divData && divData.leagueLogo) {
+            const imgEl = document.getElementById('main-league-logo');
+            if (imgEl) imgEl.src = divData.leagueLogo;
+        }
+    }
+
+    function renderTickerClubs() {
+        const divData = appData[currentDiv];
+        if (!divData || !divData.teams) return;
+        const container = document.getElementById('ticker-clubs-container');
+        if (!container) return;
+        container.innerHTML = divData.teams.map(t => `
+            <div class="club-ticker-item" title="${t.name}">
+                ${t.logo ? `<img src="${t.logo}" alt="">` : `<span style="font-size:0.6rem; font-weight:800;">${t.name.substring(0,2)}</span>`}
+            </div>
+        `).join('');
     }
 
     function getTopTeamsFromDiv(divNum, count) {
@@ -1666,7 +1656,12 @@
         document.getElementById('standings-body').innerHTML = stats.map((t, idx) => `
             <tr>
                 <td><strong>${idx+1}</strong></td>
-                <td><div class="team-logo">${t.name.substring(0,2)}</div><span>${t.name}</span></td>
+                <td>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <div class="team-logo">${t.logo ? `<img src="${t.logo}" alt="">` : t.name.substring(0,2)}</div>
+                        <span>${t.name}</span>
+                    </div>
+                </td>
                 <td>${t.pj}</td><td>${t.pg}</td><td>${t.pe}</td><td>${t.pp}</td><td>${t.gf}</td><td>${t.gc}</td><td>${t.dg}</td>
                 <td><strong style="color:var(--laliga-red);">${t.pts}</strong></td>
             </tr>
@@ -1674,14 +1669,80 @@
     }
 
     function renderMatchdaySelector() {
+        const divData = appData[currentDiv];
+        if (!divData || !divData.matches) return;
+        const maxMatchday = Math.max(...divData.matches.map(m => m.matchday), 1);
         const select = document.getElementById('matchday-select');
-        if (select) select.innerHTML = `<option value="1">Jornada 1</option>`;
+        if (!select) return;
+        let html = '';
+        for (let i = 1; i <= maxMatchday; i++) {
+            html += `<option value="${i}" ${i === currentMatchday ? 'selected' : ''}>Jornada ${i}</option>`;
+        }
+        select.innerHTML = html;
     }
 
+    window.changeMatchday = function(dir) {
+        const divData = appData[currentDiv];
+        if (!divData || !divData.matches) return;
+        const maxMatchday = Math.max(...divData.matches.map(m => m.matchday), 1);
+        currentMatchday += dir;
+        if (currentMatchday < 1) currentMatchday = 1;
+        if (currentMatchday > maxMatchday) currentMatchday = maxMatchday;
+        document.getElementById('matchday-select').value = currentMatchday;
+        renderMatches();
+    };
+
+    window.jumpToMatchday = function(val) {
+        currentMatchday = parseInt(val);
+        renderMatches();
+    };
+
     function renderMatches() {
+        const divData = appData[currentDiv];
+        if (!divData || !divData.matches) return;
         const container = document.getElementById('matches-container');
-        if (container) container.innerHTML = `<div style="text-align:center; color:var(--text-muted);">Calendario sincronizado.</div>`;
+        if (!container) return;
+        const filtered = divData.matches.filter(m => m.matchday === currentMatchday);
+        
+        container.innerHTML = filtered.map(m => {
+            let homeTeam = divData.teams.find(t => t.id === m.homeId) || { name: "Local", logo: "" };
+            let awayTeam = divData.teams.find(t => t.id === m.awayId) || { name: "Visita", logo: "" };
+            return `
+                <div class="match-card">
+                    <div class="match-main-row">
+                        <div class="match-team">
+                            <div class="team-logo">${homeTeam.logo ? `<img src="${homeTeam.logo}" alt="">` : homeTeam.name.substring(0,2)}</div>
+                            <span>${homeTeam.name}</span>
+                        </div>
+                        <div class="score-inputs">
+                            <input type="number" class="score-input" value="${m.homeScore !== null ? m.homeScore : ''}" onchange="updateMatchScore(${m.id}, this.value, document.getElementById('away-score-${m.id}').value)">
+                            <span>-</span>
+                            <input type="number" class="score-input" id="away-score-${m.id}" value="${m.awayScore !== null ? m.awayScore : ''}" onchange="updateMatchScore(${m.id}, document.getElementById('home-score-${m.id}').value, this.value)">
+                        </div>
+                        <div class="match-team away">
+                            <span>${awayTeam.name}</span>
+                            <div class="team-logo">${awayTeam.logo ? `<img src="${awayTeam.logo}" alt="">` : awayTeam.name.substring(0,2)}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('') || '<div style="text-align:center; color:var(--text-muted);">No hay partidos en esta jornada.</div>';
     }
+
+    window.updateMatchScore = function(matchId, homeVal, awayVal) {
+        if (!isAdmin && !isStaff) {
+            alert("Se requieren permisos de Admin o Staff para actualizar marcadores.");
+            return;
+        }
+        const divData = appData[currentDiv];
+        const match = divData.matches.find(m => m.id === matchId);
+        if (match) {
+            match.homeScore = homeVal !== "" ? parseInt(homeVal) : null;
+            match.awayScore = awayVal !== "" ? parseInt(awayVal) : null;
+            saveStateToCloud();
+            renderStandings();
+        }
+    };
 </script>
 
 </body>
