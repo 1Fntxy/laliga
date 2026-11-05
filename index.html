@@ -331,8 +331,9 @@
             font-weight: 800;
         }
 
+        /* DEGRADADO SOLICITADO: ROJO A NEGRO */
         .laliga-hero {
-            background: linear-gradient(135deg, var(--laliga-red) 0%, #B91C1C 100%);
+            background: linear-gradient(90deg, #EE1D23 0%, #3B0A0C 45%, #0B0F19 100%);
             color: #FFF;
             padding: 24px;
             box-shadow: 0 10px 25px rgba(238, 29, 35, 0.3);
@@ -445,13 +446,13 @@
             border-color: rgba(245, 158, 11, 0.5);
         }
 
-        /* ESTILOS NUEVA ESTRUCTURA SUPERCOPA (ESTILO PÓSTER) */
+        /* DISEÑO TIPO PÓSTER OFICIAL DE LA SUPERCOPA */
         .sc-poster-layout {
             display: grid;
             grid-template-columns: 1fr 220px 1fr;
             gap: 20px;
             align-items: center;
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
         .sc-side-col {
@@ -1031,8 +1032,7 @@
 
 <div class="laliga-hero">
     <div class="laliga-hero-content">
-        <h2 id="hero-title">Temporada Oficial • 1ª División</h2>
-        <p>Estadísticas en tiempo real, clasificación y calendario sincronizados</p>
+        <h2 id="hero-title">SUPERCOPA</h2>
     </div>
 </div>
 
@@ -1048,8 +1048,8 @@
 
     <!-- PESTAÑAS EXCLUSIVAS PARA TORNEOS -->
     <div class="main-tabs" id="torneos-tabs-container" style="display: none;">
-        <button class="tab-btn active" onclick="switchTorneoTab('supercopa', event)">🇪🇸 Supercopa</button>
-        <button class="tab-btn" onclick="switchTorneoTab('copadelrey', event)">👑 Copa del Rey</button>
+        <button class="tab-btn active" onclick="switchTorneoTab('supercopa', event)">Supercopa</button>
+        <button class="tab-btn" onclick="switchTorneoTab('copadelrey', event)">Copa del Rey</button>
     </div>
 
     <div id="tab-clasificacion" class="content-section active">
@@ -1226,10 +1226,9 @@
         <div id="torneo-subtab-supercopa" class="torneo-subcontent">
             <div class="card supercup-card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; flex-wrap:wrap; gap:12px;">
-                    <h3 style="color: var(--accent-gold); font-size: 1.6rem; letter-spacing: 1px;">🇪🇸 SUPERCOPA DE ESPAÑA</h3>
+                    <h3 style="color: var(--accent-gold); font-size: 1.6rem; letter-spacing: 1px;">SUPERCOPA</h3>
                     <span style="background: var(--accent-gold); color: #000; font-weight: 800; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">FINAL FOUR</span>
                 </div>
-                <p style="font-size: 0.9rem; margin-bottom: 20px;">Torneo relámpago de eliminación directa entre los Monarcas de cada división y el Subcampeón de 1ª División.</p>
 
                 <!-- NUEVO DISEÑO TIPO PÓSTER OFICIAL DE LA SUPERCOPA -->
                 <div class="sc-poster-layout">
@@ -1250,7 +1249,7 @@
 
                     <!-- CENTRO (LOGO + FINAL + CAMPEÓN) -->
                     <div class="sc-center-col">
-                        <div class="sc-logo-badge" title="Supercopa de España">🏆</div>
+                        <div class="sc-logo-badge" title="Supercopa">🏆</div>
                         
                         <div class="sc-final-box">
                             <div class="sc-match-title" style="margin-bottom:8px;">GRAN FINAL</div>
@@ -1265,7 +1264,7 @@
                         </div>
 
                         <div class="sc-champ-box">
-                            <span style="font-size: 0.75rem; color: var(--accent-gold); font-weight: 900; letter-spacing: 1px;">👑 SUPERCAMPEÓN DE ESPAÑA</span>
+                            <span style="font-size: 0.75rem; color: var(--accent-gold); font-weight: 900; letter-spacing: 1px;">👑 SUPERCAMPEÓN</span>
                             <h3 id="supercup-champion-name" style="color: #FFF; font-size: 1.25rem; margin-top: 4px; border:none; font-weight:900; text-shadow: 0 2px 4px rgba(0,0,0,0.9);">- Por Definir -</h3>
                         </div>
                     </div>
@@ -1288,7 +1287,7 @@
             </div>
 
             <div class="card" style="margin-top: 24px; border-color: var(--accent-gold); background: var(--bg-subcard);">
-                <h3 style="color: var(--accent-gold);">🇪🇸 Configuración de Participantes Supercopa</h3>
+                <h3 style="color: var(--accent-gold);">Configuración de Participantes Supercopa</h3>
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Elige a los 4 equipos clasificados para la Supercopa (requiere modo Admin o Staff):</p>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
                     <div class="input-group">
@@ -1854,7 +1853,7 @@
                 
                 document.getElementById('sub-tabs-container').style.display = 'none';
                 document.getElementById('torneos-tabs-container').style.display = 'flex';
-                document.getElementById('hero-title').innerText = `Torneos Oficiales`;
+                document.getElementById('hero-title').innerText = `SUPERCOPA`;
 
                 document.querySelectorAll('#torneos-tabs-container .tab-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
                 document.querySelectorAll('.torneo-subcontent').forEach((sub, i) => sub.style.display = i === 0 ? 'block' : 'none');
