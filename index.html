@@ -1718,7 +1718,7 @@
             <!-- CONFIGURACIÓN DE PARTICIPANTES (SÓLO ADMIN / STAFF) -->
             <div class="card" style="margin-top: 24px; border-color: #0404E2; background: var(--bg-subcard);">
                 <h3 style="color: #60A5FA;">Configuración de Equipos - Champions League (16 Plazas)</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Asigna los 16 equipos participantes (8 de 1ª Div, 5 de 2ª Div, 3 de 3ª Div) o haz clic en el sorteo aleatorio:</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Asigna los 16 equipos participantes o haz clic en el sorteo aleatorio:</p>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;" id="ucl-config-selectors-container">
                     <!-- Se generan dinámicamente mediante JS -->
                 </div>
@@ -3130,7 +3130,7 @@
         }
     }
 
-    /* LÓGICA DE CHAMPIONS LEAGUE CON NOMBRES Y ESCUDOS EN LA TABLA DE LLAVES */
+    /* LÓGICA DE CHAMPIONS LEAGUE CON DRAFT SIN REPETICIÓN Y EN OCTAVOS */
     function renderUCLSelectorsAndData() {
         const allTeams = getAllTeamsAcrossDivisions();
         const optionsHTML = `<option value="">-- Seleccionar --</option>` + 
@@ -3162,20 +3162,18 @@
             return;
         }
 
-        let t1 = allTeams.filter(t => t.div === 1).sort(() => 0.5 - Math.random()).slice(0, 8);
-        let t2 = allTeams.filter(t => t.div === 2).sort(() => 0.5 - Math.random()).slice(0, 5);
-        let t3 = allTeams.filter(t => t.div === 3).sort(() => 0.5 - Math.random()).slice(0, 3);
-
-        let pool = [...t1, ...t2, ...t3].sort(() => 0.5 - Math.random());
+        // Mezclar todos los equipos únicos para evitar duplicados en el draft
+        let shuffled = [...allTeams].sort(() => 0.5 - Math.random());
+        let selectedTeams = shuffled.slice(0, 16);
 
         for (let i = 1; i <= 16; i++) {
             let select = document.getElementById(`ucl-cfg-team-${i}`);
-            if (select && pool[i - 1]) {
-                select.value = pool[i - 1].id;
+            if (select && selectedTeams[i - 1]) {
+                select.value = selectedTeams[i - 1].id;
             }
         }
         updateUCLDisplay();
-        alert('¡Sorteo aleatorio (Draft) completado con éxito!');
+        alert('¡Sorteo aleatorio (Draft) sin equipos repetidos completado con éxito!');
     };
 
     function getTeamInfoByFullId(fullId) {
@@ -3188,18 +3186,6 @@
             return team ? { name: team.name, logo: team.logo || '' } : { name: 'Por Definir', logo: '' };
         }
         return { name: 'Por Definir', logo: '' };
-    }
-
-    function getTeamInfoByName(name) {
-        if (!name || name === 'Por Definir' || name.includes('Por Definir')) return { name: name || 'Por Definir', logo: '' };
-        let cleanName = name.replace(' (Penales)', '').replace(' (Empate)', '');
-        for (let d = 1; d <= 3; d++) {
-            if (appData[d] && appData[d].teams) {
-                let found = appData[d].teams.find(t => t.name === cleanName);
-                if (found) return { name: name, logo: found.logo || '' };
-            }
-        }
-        return { name: name, logo: '' };
     }
 
     function setTeamBadgeAndLabel(badgeId, labelId, teamInfo) {
