@@ -488,6 +488,13 @@
             color: var(--text-muted);
             font-weight: 800;
             flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .team-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .form-streak { display: flex; gap: 5px; align-items: center; }
@@ -1395,7 +1402,6 @@
         });
     }
 
-    // Funciones de Modales de PIN personalizados
     window.openAdminPinModal = function() {
         if (!isAdmin) {
             document.getElementById('admin-pin-input').value = '';
