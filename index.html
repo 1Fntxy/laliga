@@ -116,7 +116,7 @@
         .top-bar {
             position: sticky;
             top: 0;
-            z-index: 998;
+            z-index: 999;
             background-color: var(--topbar-bg);
             color: #FFF;
             padding: 12px 24px;
@@ -340,11 +340,14 @@
             margin-bottom: 24px;
         }
 
-        /* FRANJA DEGRADADA EXCLUSIVA PARA SUPERCOPA (MÁS ANCHA, MENOS ROJO / MÁS NEGRO, CON IMAGEN DERECHA) */
+        /* FRANJA DEGRADADA EXCLUSIVA PARA SUPERCOPA (ESTÁTICA/STICKY AL SCROLEAR Y MÁS GRANDE) */
         .laliga-hero.supercopa-hero {
+            position: sticky;
+            top: 73px; /* Justo debajo de la barra de navegación principal */
+            z-index: 998;
             background: linear-gradient(90deg, #EE1D23 0%, #B51318 45%, #590407 75%, #150102 100%);
             padding: 32px 24px;
-            position: relative;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         }
 
         .laliga-hero-content {
@@ -357,7 +360,7 @@
         }
 
         .hero-banner-logo {
-            height: 55px;
+            height: 75px; /* Imagen más grande como pediste */
             object-fit: contain;
             filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6));
         }
@@ -441,7 +444,7 @@
             margin-bottom: 16px;
         }
 
-        /* CARD ESPECIAL SUPERCOPA (BORDES CAMBIADOS DE AMARILLO A ROJO INTENSO) */
+        /* CARD ESPECIAL SUPERCOPA (BORDES ROJOS INTENSOS) */
         .supercup-card {
             position: relative;
             background: linear-gradient(rgba(11, 15, 25, 0.85), rgba(11, 15, 25, 0.92)), url('https://media.discordapp.net/attachments/1353118715406716981/1567727795256172665/supercopa.jpg') !important;
@@ -462,6 +465,13 @@
             background: rgba(11, 15, 25, 0.95);
             color: #FFF;
             border-color: rgba(238, 29, 35, 0.6);
+        }
+
+        /* ILUMINACIÓN Y SOMBRA ROJA EN LA PALABRA SUPERCOPA QUE SEÑALASTE */
+        .glowing-supercopa-title {
+            color: #FFF;
+            text-shadow: 0 0 10px #EE1D23, 0 0 20px #EE1D23, 0 0 30px #FF4D52, 0 2px 4px rgba(0,0,0,0.9);
+            letter-spacing: 1.5px;
         }
 
         /* DISEÑO TIPO PÓSTER OFICIAL DE LA SUPERCOPA */
@@ -520,6 +530,7 @@
             text-align: center;
         }
 
+        /* LOGO EN LUGAR DEL EMOJI DEL TROFEO */
         .sc-logo-badge {
             width: 90px;
             height: 90px;
@@ -529,8 +540,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 25px rgba(238, 29, 35, 0.5);
-            font-size: 2.5rem;
+            box-shadow: 0 0 25px rgba(238, 29, 35, 0.6);
+            overflow: hidden;
+            padding: 12px;
+        }
+
+        .sc-logo-badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
         }
 
         .sc-final-box {
@@ -1048,7 +1067,7 @@
     <div class="ticker-items" id="ticker-clubs-container"></div>
 </div>
 
-<!-- LA CLASE SE ACTUALIZA DINÁMICAMENTE SEGÚN LA SECCIÓN -->
+<!-- FRANJA HERO DINÁMICA -->
 <div id="hero-banner" class="laliga-hero">
     <div class="laliga-hero-content">
         <div>
@@ -1249,7 +1268,8 @@
         <div id="torneo-subtab-supercopa" class="torneo-subcontent">
             <div class="card supercup-card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; flex-wrap:wrap; gap:12px;">
-                    <h3 style="color: #FF6B70; font-size: 1.6rem; letter-spacing: 1px;">SUPERCOPA</h3>
+                    <!-- PALABRA SUPERCOPA CON BRILLO Y SOMBRA ROJA QUE PEDISTE -->
+                    <h3 class="glowing-supercopa-title" style="font-size: 1.6rem; letter-spacing: 1px;">SUPERCOPA</h3>
                     <span style="background: var(--laliga-red); color: #FFF; font-weight: 800; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">FINAL FOUR</span>
                 </div>
 
@@ -1270,9 +1290,11 @@
                         </div>
                     </div>
 
-                    <!-- CENTRO (LOGO + FINAL + CAMPEÓN) -->
+                    <!-- CENTRO (IMAGEN DE SUPERCOPA EN LUGAR DEL EMOJI + FINAL + CAMPEÓN) -->
                     <div class="sc-center-col">
-                        <div class="sc-logo-badge" title="Supercopa">🏆</div>
+                        <div class="sc-logo-badge" title="Supercopa">
+                            <img src="https://media.discordapp.net/attachments/1353118715406716981/1567747255748796426/supercopapng.png?ex=6aed4de9&is=6aebfc69&hm=39bc272682f739bb29b09d38ae55af3242bce20d2b5a4605b76733d21dfad623&=&format=webp&quality=lossless" alt="Supercopa">
+                        </div>
                         
                         <div class="sc-final-box">
                             <div class="sc-match-title" style="margin-bottom:8px;">GRAN FINAL</div>
@@ -1882,7 +1904,6 @@
                 document.getElementById('hero-title').innerText = `SUPERCOPA`;
                 document.getElementById('hero-subtitle').style.display = 'none';
                 
-                // Aplicar degradado exclusivo y mostrar la imagen solicitada en la esquina superior derecha
                 if (heroBanner) heroBanner.classList.add('supercopa-hero');
                 if (heroRightImg) {
                     heroRightImg.src = "https://media.discordapp.net/attachments/1353118715406716981/1567747255748796426/supercopapng.png?ex=6aed4de9&is=6aebfc69&hm=39bc272682f739bb29b09d38ae55af3242bce20d2b5a4605b76733d21dfad623&=&format=webp&quality=lossless";
@@ -1915,7 +1936,6 @@
                 document.getElementById('hero-subtitle').style.display = 'block';
                 document.getElementById('div-title').innerText = `${section}ª División • Tabla de Posiciones`;
                 
-                // Restaurar rojo sólido original para divisiones y ocultar imagen lateral
                 if (heroBanner) heroBanner.classList.remove('supercopa-hero');
                 if (heroRightImg) heroRightImg.style.display = 'none';
 
