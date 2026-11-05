@@ -388,7 +388,7 @@
 
         .container {
             width: 100%;
-            max-width: 1400px; /* Ampliado ligeramente para dar más espacio a las llaves */
+            max-width: 1450px;
             margin: 0 auto;
             padding: 0 20px;
         }
@@ -453,12 +453,12 @@
         .supercup-card {
             position: relative;
             background-color: #0833A2 !important;
-            background-image: linear-gradient(rgba(8, 51, 162, 0.9), rgba(4, 18, 56, 0.95)), url('https://media.discordapp.net/attachments/1353118715406716981/1567727795256172665/supercopa.jpg') !important;
+            background-image: linear-gradient(rgba(8, 51, 162, 0.92), rgba(4, 18, 56, 0.96)), url('https://media.discordapp.net/attachments/1353118715406716981/1567727795256172665/supercopa.jpg') !important;
             background-size: cover !important;
             background-position: center center !important;
             color: #FFF;
             border: 2px solid #0404E2;
-            padding: 32px;
+            padding: 28px;
             box-shadow: 0 10px 30px rgba(8, 51, 162, 0.4);
             animation: colorShiftCard 8s ease infinite alternate;
         }
@@ -493,32 +493,68 @@
             font-size: 1.6rem;
         }
 
-        /* ESTILOS DE LLAVES DE 16 EQUIPOS AMPLIADOS Y REORGANIZADOS */
-        .ucl-bracket-container {
+        /* ========================================================= */
+        /*   ESTILOS DE CHAMPIONS LEAGUE ENFRENTADA (2 BLOQUES DE 8)   */
+        /* ========================================================= */
+        .ucl-bracket-grid {
             display: flex;
-            justify-content: space-between;
-            gap: 22px; /* Más espacio entre columnas para amplitud */
+            flex-direction: column;
+            gap: 30px;
             overflow-x: auto;
-            padding: 15px 0;
-            align-items: flex-start;
+            padding: 10px 0;
         }
 
-        .ucl-column {
-            flex: 1;
-            min-width: 270px; /* Columnas más anchas */
+        .ucl-bracket-block {
+            background: rgba(4, 12, 40, 0.6);
+            border: 1px solid rgba(4, 4, 226, 0.4);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .ucl-block-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            color: #FCD34D;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            margin-bottom: 16px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+            padding-bottom: 6px;
+        }
+
+        .ucl-bracket-tree {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            min-width: 900px;
+        }
+
+        .ucl-tree-col {
             display: flex;
             flex-direction: column;
             justify-content: space-around;
+            flex: 1;
             gap: 16px;
         }
 
-        .ucl-column h4 {
+        .ucl-tree-col.center-final-col {
+            flex: 1.2;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .ucl-tree-col h5 {
             font-family: 'Outfit', sans-serif;
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #60A5FA;
-            border-bottom: 2px solid rgba(4, 4, 226, 0.5);
-            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(4, 4, 226, 0.5);
+            padding-bottom: 4px;
+            margin-bottom: 6px;
             font-weight: 800;
             text-transform: uppercase;
         }
@@ -528,10 +564,10 @@
             backdrop-filter: blur(8px);
             border: 1px solid rgba(4, 4, 226, 0.6);
             border-radius: 12px;
-            padding: 12px 14px;
+            padding: 8px 10px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 6px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
 
@@ -539,35 +575,60 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 8px;
-            font-size: 0.85rem;
+            gap: 6px;
+            font-size: 0.8rem;
             font-weight: 700;
         }
 
-        .ucl-team-select, .ucl-team-name-lbl {
+        .ucl-team-badge {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(2, 6, 23, 0.8);
+            border: 1px solid rgba(4, 4, 226, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+            font-size: 0.6rem;
+            color: #FFF;
+            font-weight: 800;
+        }
+
+        .ucl-team-badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .ucl-team-name-lbl {
             flex: 1;
             background: rgba(4, 18, 56, 0.9);
             color: #FFF;
             border: 1px solid rgba(4, 4, 226, 0.5);
             border-radius: 6px;
-            padding: 6px 8px;
-            font-size: 0.8rem;
+            padding: 4px 6px;
+            font-size: 0.75rem;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .ucl-scores-group {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
         }
 
         .ucl-score-input {
-            width: 36px;
-            height: 28px;
+            width: 30px;
+            height: 26px;
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: 800;
             background: rgba(2, 6, 23, 0.9);
             color: #FFF;
@@ -575,20 +636,18 @@
             border-radius: 4px;
         }
 
-        /* Badge global limpio sin la "G" */
         .ucl-global-badge {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             background: #020617;
             color: #60A5FA;
-            padding: 3px 7px;
+            padding: 2px 5px;
             border-radius: 4px;
             font-weight: 900;
             border: 1px solid #0404E2;
-            min-width: 28px;
+            min-width: 24px;
             text-align: center;
         }
 
-        /* SECCIÓN DE CLASIFICADOS AL MOMENTO */
         .ucl-qualified-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -1282,11 +1341,11 @@
         </div>
     </div>
 
-    <!-- SECCIÓN DE TORNEOS (CHAMPIONS LEAGUE MODIFICADA SEGÚN TUS INDICACIONES) -->
+    <!-- SECCIÓN DE TORNEOS (CHAMPIONS LEAGUE CON LLAVES ENFRENTADAS EN 2 BLOQUES DE 8) -->
     <div id="tab-torneos" class="content-section">
         <div id="torneo-subtab-supercopa" class="torneo-subcontent">
             <div class="card supercup-card">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; flex-wrap:wrap; gap:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
                     <div class="supercup-title-container">
                         <h3 class="glowing-supercopa-title">CHAMPIONS LEAGUE</h3>
                     </div>
@@ -1296,296 +1355,341 @@
                     </div>
                 </div>
 
-                <!-- LLAVES COMPLETAS DE 16 EQUIPOS (OCTAVOS -> CUARTOS -> SEMI -> FINAL ABAJO) -->
-                <div class="ucl-bracket-container">
+                <!-- CONTENEDOR ENFRENTADO: BLOQUE SUPERIOR Y BLOQUE INFERIOR -->
+                <div class="ucl-bracket-grid">
                     
-                    <!-- COLUMNA 1: OCTAVOS DE FINAL (8 PARTIDOS) -->
-                    <div class="ucl-column">
-                        <h4>Octavos de Final</h4>
-                        <!-- Octavo 1 -->
-                        <div class="ucl-match-box">
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-o1-t1" class="ucl-team-name-lbl">Eq 1</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-o1-t1-i" class="ucl-score-input" value="0" placeholder="Ida" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-o1-t1-v" class="ucl-score-input" value="0" placeholder="Vuelta" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o1-t1" class="ucl-global-badge">0</span>
+                    <!-- BLOQUE A (4 OCTAVOS ENFRENTADOS -> 2 CUARTOS -> 1 SEMIFINALISTA) -->
+                    <div class="ucl-bracket-block">
+                        <div class="ucl-block-title">LLAVE A (SEMIFINAL 1)</div>
+                        <div class="ucl-bracket-tree">
+                            
+                            <!-- OCTAVOS IZQUIERDA -->
+                            <div class="ucl-tree-col">
+                                <h5>Octavos A1</h5>
+                                <div class="ucl-match-box">
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-o1-t1">E1</div><span id="ucl-lbl-o1-t1">Eq 1</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-o1-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-o1-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-o1-t1" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-o1-t2">E2</div><span id="ucl-lbl-o1-t2">Eq 2</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-o1-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-o1-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-o1-t2" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h5>Octavos A2</h5>
+                                <div class="ucl-match-box">
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-o2-t1">E3</div><span id="ucl-lbl-o2-t1">Eq 3</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-o2-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-o2-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-o2-t1" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-o2-t2">E4</div><span id="ucl-lbl-o2-t2">Eq 4</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-o2-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-o2-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-o2-t2" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-o1-t2" class="ucl-team-name-lbl">Eq 2</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-o1-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-o1-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o1-t2" class="ucl-global-badge">0</span>
+
+                            <!-- CUARTO IZQUIERDA -->
+                            <div class="ucl-tree-col">
+                                <h5>Cuarto A1</h5>
+                                <div class="ucl-match-box">
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-c1-t1">C1</div><span id="ucl-lbl-c1-t1">Ganador O1</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-c1-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-c1-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-c1-t1" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-c1-t2">C1</div><span id="ucl-lbl-c1-t2">Ganador O2</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-c1-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-c1-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-c1-t2" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <!-- Octavo 2 -->
-                        <div class="ucl-match-box">
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-o2-t1" class="ucl-team-name-lbl">Eq 3</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-o2-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-o2-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o2-t1" class="ucl-global-badge">0</span>
+
+                            <!-- SEMIFINAL 1 (CENTRO) -->
+                            <div class="ucl-tree-col center-final-col">
+                                <h5>Semifinal 1</h5>
+                                <div class="ucl-match-box" style="width: 100%; border-color: #60A5FA;">
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-s1-t1">S1</div><span id="ucl-lbl-s1-t1">Ganador C1</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-s1-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-s1-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-s1-t1" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-s1-t2">S1</div><span id="ucl-lbl-s1-t2">Ganador C2</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-s1-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-s1-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-s1-t2" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-o2-t2" class="ucl-team-name-lbl">Eq 4</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-o2-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-o2-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o2-t2" class="ucl-global-badge">0</span>
+
+                            <!-- CUARTO DERECHA -->
+                            <div class="ucl-tree-col">
+                                <h5>Cuarto A2</h5>
+                                <div class="ucl-match-box">
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-c2-t1">C2</div><span id="ucl-lbl-c2-t1">Ganador O3</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-c2-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-c2-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-c2-t1" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-c2-t2">C2</div><span id="ucl-lbl-c2-t2">Ganador O4</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-c2-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-c2-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-c2-t2" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <!-- Octavo 3 -->
-                        <div class="ucl-match-box">
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-o3-t1" class="ucl-team-name-lbl">Eq 5</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-o3-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-o3-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o3-t1" class="ucl-global-badge">0</span>
+
+                            <!-- OCTAVOS DERECHA -->
+                            <div class="ucl-tree-col">
+                                <h5>Octavos A3</h5>
+                                <div class="ucl-match-box">
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-o3-t1">E5</div><span id="ucl-lbl-o3-t1">Eq 5</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-o3-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-o3-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-o3-t1" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-o3-t2">E6</div><span id="ucl-lbl-o3-t2">Eq 6</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-o3-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-o3-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-o3-t2" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h5>Octavos A4</h5>
+                                <div class="ucl-match-box">
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-o4-t1">E7</div><span id="ucl-lbl-o4-t1">Eq 7</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-o4-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-o4-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-o4-t1" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-o4-t2">E8</div><span id="ucl-lbl-o4-t2">Eq 8</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-o4-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-o4-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-o4-t2" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-o3-t2" class="ucl-team-name-lbl">Eq 6</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-o3-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-o3-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o3-t2" class="ucl-global-badge">0</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Octavo 4 -->
-                        <div class="ucl-match-box">
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-o4-t1" class="ucl-team-name-lbl">Eq 7</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-o4-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-o4-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o4-t1" class="ucl-global-badge">0</span>
-                                </div>
-                            </div>
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-o4-t2" class="ucl-team-name-lbl">Eq 8</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-o4-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-o4-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o4-t2" class="ucl-global-badge">0</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Octavo 5 -->
-                        <div class="ucl-match-box">
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-o5-t1" class="ucl-team-name-lbl">Eq 9</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-o5-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-o5-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o5-t1" class="ucl-global-badge">0</span>
-                                </div>
-                            </div>
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-o5-t2" class="ucl-team-name-lbl">Eq 10</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-o5-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-o5-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o5-t2" class="ucl-global-badge">0</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Octavo 6 -->
-                        <div class="ucl-match-box">
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-o6-t1" class="ucl-team-name-lbl">Eq 11</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-o6-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-o6-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o6-t1" class="ucl-global-badge">0</span>
-                                </div>
-                            </div>
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-o6-t2" class="ucl-team-name-lbl">Eq 12</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-o6-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-o6-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o6-t2" class="ucl-global-badge">0</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Octavo 7 -->
-                        <div class="ucl-match-box">
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-o7-t1" class="ucl-team-name-lbl">Eq 13</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-o7-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-o7-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o7-t1" class="ucl-global-badge">0</span>
-                                </div>
-                            </div>
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-o7-t2" class="ucl-team-name-lbl">Eq 14</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-o7-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-o7-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o7-t2" class="ucl-global-badge">0</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Octavo 8 -->
-                        <div class="ucl-match-box">
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-o8-t1" class="ucl-team-name-lbl">Eq 15</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-o8-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-o8-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o8-t1" class="ucl-global-badge">0</span>
-                                </div>
-                            </div>
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-o8-t2" class="ucl-team-name-lbl">Eq 16</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-o8-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-o8-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o8-t2" class="ucl-global-badge">0</span>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
 
-                    <!-- COLUMNA 2: CUARTOS DE FINAL (4 PARTIDOS) -->
-                    <div class="ucl-column">
-                        <h4>Cuartos de Final</h4>
-                        <!-- Cuarto 1 -->
-                        <div class="ucl-match-box">
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-c1-t1" class="ucl-team-name-lbl">Ganador O1</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-c1-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-c1-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-c1-t1" class="ucl-global-badge">0</span>
+                    <!-- BLOQUE B (4 OCTAVOS ENFRENTADOS -> 2 CUARTOS -> 1 SEMIFINALISTA) -->
+                    <div class="ucl-bracket-block">
+                        <div class="ucl-block-title">LLAVE B (SEMIFINAL 2)</div>
+                        <div class="ucl-bracket-tree">
+                            
+                            <!-- OCTAVOS IZQUIERDA -->
+                            <div class="ucl-tree-col">
+                                <h5>Octavos B1</h5>
+                                <div class="ucl-match-box">
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-o5-t1">E9</div><span id="ucl-lbl-o5-t1">Eq 9</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-o5-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-o5-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-o5-t1" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-o5-t2">E10</div><span id="ucl-lbl-o5-t2">Eq 10</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-o5-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-o5-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-o5-t2" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h5>Octavos B2</h5>
+                                <div class="ucl-match-box">
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-o6-t1">E11</div><span id="ucl-lbl-o6-t1">Eq 11</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-o6-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-o6-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-o6-t1" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-o6-t2">E12</div><span id="ucl-lbl-o6-t2">Eq 12</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-o6-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-o6-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-o6-t2" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-c1-t2" class="ucl-team-name-lbl">Ganador O2</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-c1-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-c1-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-c1-t2" class="ucl-global-badge">0</span>
+
+                            <!-- CUARTO IZQUIERDA -->
+                            <div class="ucl-tree-col">
+                                <h5>Cuarto B1</h5>
+                                <div class="ucl-match-box">
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-c3-t1">C3</div><span id="ucl-lbl-c3-t1">Ganador O5</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-c3-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-c3-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-c3-t1" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-c3-t2">C3</div><span id="ucl-lbl-c3-t2">Ganador O6</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-c3-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-c3-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-c3-t2" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <!-- Cuarto 2 -->
-                        <div class="ucl-match-box">
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-c2-t1" class="ucl-team-name-lbl">Ganador O3</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-c2-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-c2-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-c2-t1" class="ucl-global-badge">0</span>
+
+                            <!-- SEMIFINAL 2 (CENTRO) -->
+                            <div class="ucl-tree-col center-final-col">
+                                <h5>Semifinal 2</h5>
+                                <div class="ucl-match-box" style="width: 100%; border-color: #60A5FA;">
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-s2-t1">S2</div><span id="ucl-lbl-s2-t1">Ganador C3</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-s2-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-s2-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-s2-t1" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-s2-t2">S2</div><span id="ucl-lbl-s2-t2">Ganador C4</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-s2-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-s2-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-s2-t2" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-c2-t2" class="ucl-team-name-lbl">Ganador O4</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-c2-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-c2-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-c2-t2" class="ucl-global-badge">0</span>
+
+                            <!-- CUARTO DERECHA -->
+                            <div class="ucl-tree-col">
+                                <h5>Cuarto B2</h5>
+                                <div class="ucl-match-box">
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-c4-t1">C4</div><span id="ucl-lbl-c4-t1">Ganador O7</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-c4-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-c4-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-c4-t1" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-c4-t2">C4</div><span id="ucl-lbl-c4-t2">Ganador O8</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-c4-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-c4-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-c4-t2" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <!-- Cuarto 3 -->
-                        <div class="ucl-match-box">
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-c3-t1" class="ucl-team-name-lbl">Ganador O5</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-c3-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-c3-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-c3-t1" class="ucl-global-badge">0</span>
+
+                            <!-- OCTAVOS DERECHA -->
+                            <div class="ucl-tree-col">
+                                <h5>Octavos B3</h5>
+                                <div class="ucl-match-box">
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-o7-t1">E13</div><span id="ucl-lbl-o7-t1">Eq 13</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-o7-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-o7-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-o7-t1" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-o7-t2">E14</div><span id="ucl-lbl-o7-t2">Eq 14</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-o7-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-o7-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-o7-t2" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h5>Octavos B4</h5>
+                                <div class="ucl-match-box">
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-o8-t1">E15</div><span id="ucl-lbl-o8-t1">Eq 15</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-o8-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-o8-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-o8-t1" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="ucl-team-row">
+                                        <div class="ucl-team-name-lbl"><div class="ucl-team-badge" id="ucl-badge-o8-t2">E16</div><span id="ucl-lbl-o8-t2">Eq 16</span></div>
+                                        <div class="ucl-scores-group">
+                                            <input type="number" id="ucl-s-o8-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <input type="number" id="ucl-s-o8-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                            <span id="ucl-gl-o8-t2" class="ucl-global-badge">0</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-c3-t2" class="ucl-team-name-lbl">Ganador O6</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-c3-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-c3-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-c3-t2" class="ucl-global-badge">0</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Cuarto 4 -->
-                        <div class="ucl-match-box">
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-c4-t1" class="ucl-team-name-lbl">Ganador O7</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-c4-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-c4-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-c4-t1" class="ucl-global-badge">0</span>
-                                </div>
-                            </div>
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-c4-t2" class="ucl-team-name-lbl">Ganador O8</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-c4-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-c4-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-c4-t2" class="ucl-global-badge">0</span>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
 
-                    <!-- COLUMNA 3: SEMIFINALES (2 PARTIDOS) -->
-                    <div class="ucl-column">
-                        <h4>Semifinales</h4>
-                        <!-- Semi 1 -->
-                        <div class="ucl-match-box">
+                    <!-- GRAN FINAL SEPARADA AL CENTRO ABAJO -->
+                    <div style="max-width: 500px; margin: 0 auto; width: 100%;">
+                        <div style="text-align:center; font-family:'Outfit', sans-serif; font-weight:800; color:var(--laliga-red); font-size:1rem; margin-bottom:8px; text-transform:uppercase;">🔥 GRAN FINAL DE EUROPA 🔥</div>
+                        <div class="ucl-match-box" style="border-color: var(--laliga-red); padding:12px;">
                             <div class="ucl-team-row">
-                                <span id="ucl-lbl-s1-t1" class="ucl-team-name-lbl">Ganador C1</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-s1-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-s1-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-s1-t1" class="ucl-global-badge">0</span>
-                                </div>
-                            </div>
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-s1-t2" class="ucl-team-name-lbl">Ganador C2</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-s1-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-s1-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-s1-t2" class="ucl-global-badge">0</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Semi 2 -->
-                        <div class="ucl-match-box">
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-s2-t1" class="ucl-team-name-lbl">Ganador C3</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-s2-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-s2-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-s2-t1" class="ucl-global-badge">0</span>
-                                </div>
-                            </div>
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-s2-t2" class="ucl-team-name-lbl">Ganador C4</span>
-                                <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-s2-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-s2-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-s2-t2" class="ucl-global-badge">0</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- COLUMNA 4: GRAN FINAL Y CAMPEÓN (MOVIDA ABAJO A LA DERECHA SEGÚN TU SEÑALAMIENTO) -->
-                    <div class="ucl-column" style="justify-content: flex-end;">
-                        <h4>Gran Final</h4>
-                        <div class="ucl-match-box" style="border-color: var(--laliga-red);">
-                            <div class="ucl-team-row">
-                                <span id="ucl-lbl-f1" class="ucl-team-name-lbl" style="font-weight:900;">Finalista 1</span>
+                                <div class="ucl-team-name-lbl" style="font-weight:900;"><div class="ucl-team-badge" id="ucl-badge-f1">F1</div><span id="ucl-lbl-f1">Finalista 1</span></div>
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-f-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-f-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
@@ -1593,7 +1697,7 @@
                                 </div>
                             </div>
                             <div class="ucl-team-row" style="margin-top:6px;">
-                                <span id="ucl-lbl-f2" class="ucl-team-name-lbl" style="font-weight:900;">Finalista 2</span>
+                                <div class="ucl-team-name-lbl" style="font-weight:900;"><div class="ucl-team-badge" id="ucl-badge-f2">F2</div><span id="ucl-lbl-f2">Finalista 2</span></div>
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-f-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-f-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
@@ -1602,9 +1706,9 @@
                             </div>
                         </div>
 
-                        <div class="sc-champ-box" style="margin-top: 15px; background: rgba(4, 18, 56, 0.95); border: 1px solid #0404E2; padding: 12px; border-radius: 12px; text-align: center;">
-                            <span style="font-size: 0.7rem; color: #60A5FA; font-weight: 900; letter-spacing: 1px;">👑 CAMPEÓN DE EUROPA</span>
-                            <h3 id="ucl-champion-name" style="color: #FFF; font-size: 1.1rem; margin-top: 4px; border:none; font-weight:900; text-shadow: 0 2px 4px rgba(0,0,0,0.9);">- Por Definir -</h3>
+                        <div class="sc-champ-box" style="margin-top: 15px; background: rgba(4, 18, 56, 0.95); border: 2px solid var(--accent-gold); padding: 12px; border-radius: 12px; text-align: center;">
+                            <span style="font-size: 0.75rem; color: var(--accent-gold); font-weight: 900; letter-spacing: 1px;">👑 CAMPEÓN DE EUROPA</span>
+                            <h3 id="ucl-champion-name" style="color: #FFF; font-size: 1.2rem; margin-top: 4px; border:none; font-weight:900; text-shadow: 0 2px 4px rgba(0,0,0,0.9);">- Por Definir -</h3>
                         </div>
                     </div>
 
@@ -3026,7 +3130,7 @@
         }
     }
 
-    /* LÓGICA DE CHAMPIONS LEAGUE 16 EQUIPOS */
+    /* LÓGICA DE CHAMPIONS LEAGUE CON NOMBRES Y ESCUDOS EN LA TABLA DE LLAVES */
     function renderUCLSelectorsAndData() {
         const allTeams = getAllTeamsAcrossDivisions();
         const optionsHTML = `<option value="">-- Seleccionar --</option>` + 
@@ -3074,43 +3178,69 @@
         alert('¡Sorteo aleatorio (Draft) completado con éxito!');
     };
 
-    function getTeamNameByFullId(fullId) {
-        if (!fullId) return 'Por Definir';
+    function getTeamInfoByFullId(fullId) {
+        if (!fullId) return { name: 'Por Definir', logo: '' };
         const parts = fullId.split('-');
         const d = parts[0];
         const tId = parts[1];
         if (appData[d] && appData[d].teams) {
             const team = appData[d].teams.find(x => x.id == tId);
-            return team ? team.name : 'Por Definir';
+            return team ? { name: team.name, logo: team.logo || '' } : { name: 'Por Definir', logo: '' };
         }
-        return 'Por Definir';
+        return { name: 'Por Definir', logo: '' };
     }
 
-    function calculateWinnerGlobal(t1Name, t2Name, i1, v1, i2, v2) {
-        if (t1Name === 'Por Definir' || t2Name === 'Por Definir') return { winner: 'Por Definir', g1: 0, g2: 0 };
+    function getTeamInfoByName(name) {
+        if (!name || name === 'Por Definir' || name.includes('Por Definir')) return { name: name || 'Por Definir', logo: '' };
+        let cleanName = name.replace(' (Penales)', '').replace(' (Empate)', '');
+        for (let d = 1; d <= 3; d++) {
+            if (appData[d] && appData[d].teams) {
+                let found = appData[d].teams.find(t => t.name === cleanName);
+                if (found) return { name: name, logo: found.logo || '' };
+            }
+        }
+        return { name: name, logo: '' };
+    }
+
+    function setTeamBadgeAndLabel(badgeId, labelId, teamInfo) {
+        let lblEl = document.getElementById(labelId);
+        let badgeEl = document.getElementById(badgeId);
+        if (lblEl) lblEl.innerText = teamInfo.name;
+        if (badgeEl) {
+            let initials = teamInfo.name ? teamInfo.name.substring(0, 2).toUpperCase() : 'LG';
+            if (teamInfo.logo && teamInfo.logo.trim() !== '') {
+                badgeEl.innerHTML = `<img src="${teamInfo.logo}" alt="${teamInfo.name}" onerror="this.outerHTML='${initials}'">`;
+            } else {
+                badgeEl.innerText = initials;
+            }
+        }
+    }
+
+    function calculateWinnerGlobal(t1Info, t2Info, i1, v1, i2, v2) {
+        if (t1Info.name === 'Por Definir' || t2Info.name === 'Por Definir') return { winner: { name: 'Por Definir', logo: '' }, g1: 0, g2: 0 };
         let g1 = (parseInt(i1) || 0) + (parseInt(v1) || 0);
         let g2 = (parseInt(i2) || 0) + (parseInt(v2) || 0);
 
-        if (g1 > g2) return { winner: t1Name, g1, g2 };
-        if (g2 > g1) return { winner: t2Name, g1, g2 };
-        return { winner: `${t1Name} (Penales)`, g1, g2 };
+        if (g1 > g2) return { winner: t1Info, g1, g2 };
+        if (g2 > g1) return { winner: t2Info, g1, g2 };
+        return { winner: { name: `${t1Info.name} (Penales)`, logo: t1Info.logo }, g1, g2 };
     }
 
     window.updateUCLDisplay = function() {
-        let teamNames = [];
+        let teamInfos = [];
         for (let i = 1; i <= 16; i++) {
             let sel = document.getElementById(`ucl-cfg-team-${i}`);
             let val = sel ? sel.value : '';
-            teamNames.push(getTeamNameByFullId(val));
+            teamInfos.push(getTeamInfoByFullId(val));
         }
 
         let oWinners = [];
         for (let match = 1; match <= 8; match++) {
-            let t1 = teamNames[(match - 1) * 2] || 'Por Definir';
-            let t2 = teamNames[(match - 1) * 2 + 1] || 'Por Definir';
+            let t1 = teamInfos[(match - 1) * 2] || { name: 'Por Definir', logo: '' };
+            let t2 = teamInfos[(match - 1) * 2 + 1] || { name: 'Por Definir', logo: '' };
 
-            document.getElementById(`ucl-lbl-o${match}-t1`).innerText = t1;
-            document.getElementById(`ucl-lbl-o${match}-t2`).innerText = t2;
+            setTeamBadgeAndLabel(`ucl-badge-o${match}-t1`, `ucl-lbl-o${match}-t1`, t1);
+            setTeamBadgeAndLabel(`ucl-badge-o${match}-t2`, `ucl-lbl-o${match}-t2`, t2);
 
             let i1 = document.getElementById(`ucl-s-o${match}-t1-i`).value;
             let v1 = document.getElementById(`ucl-s-o${match}-t1-v`).value;
@@ -3125,11 +3255,11 @@
 
         let cWinners = [];
         for (let match = 1; match <= 4; match++) {
-            let t1 = oWinners[(match - 1) * 2] || 'Por Definir';
-            let t2 = oWinners[(match - 1) * 2 + 1] || 'Por Definir';
+            let t1 = oWinners[(match - 1) * 2] || { name: 'Por Definir', logo: '' };
+            let t2 = oWinners[(match - 1) * 2 + 1] || { name: 'Por Definir', logo: '' };
 
-            document.getElementById(`ucl-lbl-c${match}-t1`).innerText = t1;
-            document.getElementById(`ucl-lbl-c${match}-t2`).innerText = t2;
+            setTeamBadgeAndLabel(`ucl-badge-c${match}-t1`, `ucl-lbl-c${match}-t1`, t1);
+            setTeamBadgeAndLabel(`ucl-badge-c${match}-t2`, `ucl-lbl-c${match}-t2`, t2);
 
             let i1 = document.getElementById(`ucl-s-c${match}-t1-i`).value;
             let v1 = document.getElementById(`ucl-s-c${match}-t1-v`).value;
@@ -3144,11 +3274,11 @@
 
         let sWinners = [];
         for (let match = 1; match <= 2; match++) {
-            let t1 = cWinners[(match - 1) * 2] || 'Por Definir';
-            let t2 = cWinners[(match - 1) * 2 + 1] || 'Por Definir';
+            let t1 = cWinners[(match - 1) * 2] || { name: 'Por Definir', logo: '' };
+            let t2 = cWinners[(match - 1) * 2 + 1] || { name: 'Por Definir', logo: '' };
 
-            document.getElementById(`ucl-lbl-s${match}-t1`).innerText = t1;
-            document.getElementById(`ucl-lbl-s${match}-t2`).innerText = t2;
+            setTeamBadgeAndLabel(`ucl-badge-s${match}-t1`, `ucl-lbl-s${match}-t1`, t1);
+            setTeamBadgeAndLabel(`ucl-badge-s${match}-t2`, `ucl-lbl-s${match}-t2`, t2);
 
             let i1 = document.getElementById(`ucl-s-s${match}-t1-i`).value;
             let v1 = document.getElementById(`ucl-s-s${match}-t1-v`).value;
@@ -3161,10 +3291,10 @@
             sWinners.push(res.winner);
         }
 
-        let f1 = sWinners[0] || 'Por Definir';
-        let f2 = sWinners[1] || 'Por Definir';
-        document.getElementById('ucl-lbl-f1').innerText = f1;
-        document.getElementById('ucl-lbl-f2').innerText = f2;
+        let f1 = sWinners[0] || { name: 'Por Definir', logo: '' };
+        let f2 = sWinners[1] || { name: 'Por Definir', logo: '' };
+        setTeamBadgeAndLabel('ucl-badge-f1', 'ucl-lbl-f1', f1);
+        setTeamBadgeAndLabel('ucl-badge-f2', 'ucl-lbl-f2', f2);
 
         let fi1 = document.getElementById('ucl-s-f-t1-i').value;
         let fv1 = document.getElementById('ucl-s-f-t1-v').value;
@@ -3174,9 +3304,9 @@
         let finalRes = calculateWinnerGlobal(f1, f2, fi1, fv1, fi2, fv2);
         document.getElementById(`ucl-gl-f-t1`).innerText = `${finalRes.g1}`;
         document.getElementById(`ucl-gl-f-t2`).innerText = `${finalRes.g2}`;
-        document.getElementById('ucl-champion-name').innerText = finalRes.winner;
+        document.getElementById('ucl-champion-name').innerText = finalRes.winner.name;
 
-        renderUCLQualifiedLive(oWinners, cWinners, sWinners, finalRes.winner);
+        renderUCLQualifiedLive(oWinners, cWinners, sWinners, finalRes.winner.name);
         saveUCLToMemory();
     };
 
@@ -3185,7 +3315,8 @@
         if (!container) return;
 
         let listHTML = '';
-        let addBadge = (phase, name) => {
+        let addBadge = (phase, info) => {
+            let name = info.name;
             if (name && name !== 'Por Definir' && !name.includes('Por Definir')) {
                 listHTML += `<div class="ucl-qualified-item"><span>${phase}:</span> <strong style="color:#60A5FA;">${name}</strong></div>`;
             }
