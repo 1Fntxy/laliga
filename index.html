@@ -331,7 +331,7 @@
             font-weight: 800;
         }
 
-        /* FRANJA ROJA ESTÁNDAR PARA DIVISIONES (ROJO SÓLIDO ORIGINAL)[cite: 10] */
+        /* FRANJA ROJA ESTÁNDAR PARA DIVISIONES */
         .laliga-hero {
             background-color: var(--laliga-red);
             color: #FFF;
@@ -340,14 +340,26 @@
             margin-bottom: 24px;
         }
 
-        /* FRANJA DEGRADADA EXCLUSIVA PARA SUPERCOPA (MÁS ROJO QUE NEGRO)[cite: 11] */
+        /* FRANJA DEGRADADA EXCLUSIVA PARA SUPERCOPA (MÁS ANCHA, MENOS ROJO / MÁS NEGRO, CON IMAGEN DERECHA) */
         .laliga-hero.supercopa-hero {
-            background: linear-gradient(90deg, #EE1D23 0%, #EE1D23 60%, #8A1014 85%, #250406 100%);
+            background: linear-gradient(90deg, #EE1D23 0%, #B51318 45%, #590407 75%, #150102 100%);
+            padding: 32px 24px;
+            position: relative;
         }
 
         .laliga-hero-content {
             max-width: 1200px;
             margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero-banner-logo {
+            height: 55px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6));
         }
 
         .laliga-hero h2 {
@@ -429,15 +441,16 @@
             margin-bottom: 16px;
         }
 
-        /* CARD ESPECIAL SUPERCOPA */
+        /* CARD ESPECIAL SUPERCOPA (BORDES CAMBIADOS DE AMARILLO A ROJO INTENSO) */
         .supercup-card {
             position: relative;
             background: linear-gradient(rgba(11, 15, 25, 0.85), rgba(11, 15, 25, 0.92)), url('https://media.discordapp.net/attachments/1353118715406716981/1567727795256172665/supercopa.jpg') !important;
             background-size: cover !important;
             background-position: center center !important;
             color: #FFF;
-            border: 2px solid var(--accent-gold);
+            border: 2px solid var(--laliga-red);
             padding: 28px;
+            box-shadow: 0 10px 30px rgba(238, 29, 35, 0.25);
         }
 
         .supercup-card h3, .supercup-card h4 {
@@ -448,7 +461,7 @@
         .supercup-card .score-input {
             background: rgba(11, 15, 25, 0.95);
             color: #FFF;
-            border-color: rgba(245, 158, 11, 0.5);
+            border-color: rgba(238, 29, 35, 0.6);
         }
 
         /* DISEÑO TIPO PÓSTER OFICIAL DE LA SUPERCOPA */
@@ -473,15 +486,15 @@
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: var(--accent-gold);
-            border-bottom: 2px solid rgba(245, 158, 11, 0.3);
+            color: #FF6B70;
+            border-bottom: 2px solid rgba(238, 29, 35, 0.4);
             padding-bottom: 4px;
         }
 
         .sc-match-box {
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(8px);
-            border: 1px solid rgba(245, 158, 11, 0.4);
+            border: 1px solid rgba(238, 29, 35, 0.5);
             border-radius: 12px;
             padding: 14px;
             display: flex;
@@ -493,7 +506,7 @@
         .sc-match-title {
             font-size: 0.7rem;
             font-weight: 800;
-            color: var(--accent-gold);
+            color: #FF6B70;
             letter-spacing: 0.5px;
             text-align: center;
         }
@@ -511,32 +524,32 @@
             width: 90px;
             height: 90px;
             background: rgba(11, 15, 25, 0.8);
-            border: 2px solid var(--accent-gold);
+            border: 2px solid var(--laliga-red);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.4);
+            box-shadow: 0 0 25px rgba(238, 29, 35, 0.5);
             font-size: 2.5rem;
         }
 
         .sc-final-box {
             background: rgba(11, 15, 25, 0.95);
-            border: 2px solid var(--accent-gold);
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+            border: 2px solid var(--laliga-red);
+            box-shadow: 0 0 20px rgba(238, 29, 35, 0.4);
             border-radius: 14px;
             padding: 16px;
             width: 100%;
         }
 
         .sc-champ-box {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(11, 15, 25, 0.9));
-            border: 2px solid var(--accent-gold);
+            background: linear-gradient(135deg, rgba(238, 29, 35, 0.25), rgba(11, 15, 25, 0.9));
+            border: 2px solid var(--laliga-red);
             border-radius: 12px;
             padding: 12px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+            box-shadow: 0 0 20px rgba(238, 29, 35, 0.5);
         }
 
         .stats-pills {
@@ -1038,8 +1051,11 @@
 <!-- LA CLASE SE ACTUALIZA DINÁMICAMENTE SEGÚN LA SECCIÓN -->
 <div id="hero-banner" class="laliga-hero">
     <div class="laliga-hero-content">
-        <h2 id="hero-title">Temporada Oficial • 1ª División</h2>
-        <p id="hero-subtitle">Estadísticas en tiempo real, clasificación y calendario sincronizados</p>
+        <div>
+            <h2 id="hero-title">Temporada Oficial • 1ª División</h2>
+            <p id="hero-subtitle">Estadísticas en tiempo real, clasificación y calendario sincronizados</p>
+        </div>
+        <img id="hero-right-img" src="" alt="" style="display: none;" class="hero-banner-logo">
     </div>
 </div>
 
@@ -1214,12 +1230,12 @@
 
                 <div class="bracket-column">
                     <h4>Gran Final</h4>
-                    <div class="bracket-match" style="border-color: var(--accent-gold);">
+                    <div class="bracket-match" style="border-color: var(--laliga-red);">
                         <div class="bracket-score-row"><span id="label-f-t1">Finalista 1</span><input type="number" id="score-f-t1" class="score-input" value="0" disabled></div>
                         <div class="bracket-score-row"><span id="label-f-t2">Finalista 2</span><input type="number" id="score-f-t2" class="score-input" value="0" disabled></div>
                     </div>
-                    <div class="bracket-match" style="text-align: center; background: var(--bg-card); border: 2px solid var(--accent-gold);">
-                        <span style="font-size: 0.75rem; color: var(--accent-gold); font-weight: 800;">🏆 CAMPEÓN</span>
+                    <div class="bracket-match" style="text-align: center; background: var(--bg-card); border: 2px solid var(--laliga-red);">
+                        <span style="font-size: 0.75rem; color: #FF6B70; font-weight: 800;">🏆 CAMPEÓN</span>
                         <h4 id="champion-name" style="color: var(--text-main); font-size: 1.1rem; margin-top: 4px; border:none;">- Por Definir -</h4>
                     </div>
                 </div>
@@ -1233,8 +1249,8 @@
         <div id="torneo-subtab-supercopa" class="torneo-subcontent">
             <div class="card supercup-card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; flex-wrap:wrap; gap:12px;">
-                    <h3 style="color: var(--accent-gold); font-size: 1.6rem; letter-spacing: 1px;">SUPERCOPA</h3>
-                    <span style="background: var(--accent-gold); color: #000; font-weight: 800; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">FINAL FOUR</span>
+                    <h3 style="color: #FF6B70; font-size: 1.6rem; letter-spacing: 1px;">SUPERCOPA</h3>
+                    <span style="background: var(--laliga-red); color: #FFF; font-weight: 800; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">FINAL FOUR</span>
                 </div>
 
                 <!-- DISEÑO TIPO PÓSTER OFICIAL DE LA SUPERCOPA -->
@@ -1271,7 +1287,7 @@
                         </div>
 
                         <div class="sc-champ-box">
-                            <span style="font-size: 0.75rem; color: var(--accent-gold); font-weight: 900; letter-spacing: 1px;">👑 SUPERCAMPEÓN</span>
+                            <span style="font-size: 0.75rem; color: #FF6B70; font-weight: 900; letter-spacing: 1px;">👑 SUPERCAMPEÓN</span>
                             <h3 id="supercup-champion-name" style="color: #FFF; font-size: 1.25rem; margin-top: 4px; border:none; font-weight:900; text-shadow: 0 2px 4px rgba(0,0,0,0.9);">- Por Definir -</h3>
                         </div>
                     </div>
@@ -1293,8 +1309,8 @@
                 </div>
             </div>
 
-            <div class="card" style="margin-top: 24px; border-color: var(--accent-gold); background: var(--bg-subcard);">
-                <h3 style="color: var(--accent-gold);">Configuración de Participantes Supercopa</h3>
+            <div class="card" style="margin-top: 24px; border-color: var(--laliga-red); background: var(--bg-subcard);">
+                <h3 style="color: var(--laliga-red);">Configuración de Participantes Supercopa</h3>
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Elige a los 4 equipos clasificados para la Supercopa (requiere modo Admin o Staff):</p>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
                     <div class="input-group">
@@ -1588,7 +1604,7 @@
         const span = btn ? btn.querySelector('span') : null;
 
         if (span) span.innerText = "⏳ Guardando...";
-        if (btn) btn.style.borderColor = "var(--accent-gold)";
+        if (btn) btn.style.borderColor = "var(--laliga-red)";
 
         clearTimeout(autoSaveTimer);
         autoSaveTimer = setTimeout(async () => {
@@ -1849,6 +1865,8 @@
         loader.classList.add('active');
         setTimeout(() => {
             const heroBanner = document.getElementById('hero-banner');
+            const heroRightImg = document.getElementById('hero-right-img');
+
             if (section === 'torneos') {
                 document.getElementById('btn-top-torneos').classList.add('active');
                 [1, 2, 3].forEach(d => {
@@ -1864,8 +1882,12 @@
                 document.getElementById('hero-title').innerText = `SUPERCOPA`;
                 document.getElementById('hero-subtitle').style.display = 'none';
                 
-                // Aplicar degradado exclusivo a la Supercopa
+                // Aplicar degradado exclusivo y mostrar la imagen solicitada en la esquina superior derecha
                 if (heroBanner) heroBanner.classList.add('supercopa-hero');
+                if (heroRightImg) {
+                    heroRightImg.src = "https://media.discordapp.net/attachments/1353118715406716981/1567747255748796426/supercopapng.png?ex=6aed4de9&is=6aebfc69&hm=39bc272682f739bb29b09d38ae55af3242bce20d2b5a4605b76733d21dfad623&=&format=webp&quality=lossless";
+                    heroRightImg.style.display = 'block';
+                }
 
                 document.querySelectorAll('#torneos-tabs-container .tab-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
                 document.querySelectorAll('.torneo-subcontent').forEach((sub, i) => sub.style.display = i === 0 ? 'block' : 'none');
@@ -1893,8 +1915,9 @@
                 document.getElementById('hero-subtitle').style.display = 'block';
                 document.getElementById('div-title').innerText = `${section}ª División • Tabla de Posiciones`;
                 
-                // Restaurar rojo sólido original para divisiones[cite: 10]
+                // Restaurar rojo sólido original para divisiones y ocultar imagen lateral
                 if (heroBanner) heroBanner.classList.remove('supercopa-hero');
+                if (heroRightImg) heroRightImg.style.display = 'none';
 
                 document.querySelectorAll('.main-tabs .tab-btn').forEach((btn, idx) => {
                     btn.classList.toggle('active', idx === 0);
