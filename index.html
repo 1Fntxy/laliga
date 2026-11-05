@@ -15,6 +15,7 @@
             --text-main: #1E293B;
             --text-muted: #64748B;
             --laliga-red: #EE1D23;
+            --laliga-red-hover: #D0141A;
             --border-color: #E2E8F0;
             --accent-green: #10B981;
             --accent-gold: #F59E0B;
@@ -58,7 +59,59 @@
             appearance: none !important;
             margin: 0 !important; 
         }
-        input[type=number] { -moz-appearance: textfield !important; appearance: textfield !important; }
+
+        input[type=number] {
+            -moz-appearance: textfield !important;
+            appearance: textfield !important;
+        }
+
+        #page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        #page-loader.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .rolling-ball-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .rolling-ball {
+            font-size: 3.5rem;
+            animation: rollBall 0.7s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite alternate;
+        }
+
+        .loader-text {
+            color: #FFF;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @keyframes rollBall {
+            0% { transform: translateX(-100px) rotate(0deg); }
+            100% { transform: translateX(100px) rotate(360deg); }
+        }
 
         .top-bar {
             position: sticky;
@@ -73,29 +126,323 @@
             border-bottom: 3px solid var(--laliga-red);
             flex-wrap: wrap;
             gap: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
-        .brand-container { display: flex; align-items: center; gap: 15px; margin: 0 auto; }
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 0 auto;
+        }
+
         .league-emblem {
-            width: 48px; height: 48px;
+            width: 48px;
+            height: 48px;
             background: linear-gradient(135deg, var(--laliga-red), #990000);
-            border-radius: 12px; display: flex; align-items: center; justify-content: center;
-            overflow: hidden; cursor: pointer; border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(238, 29, 35, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
-        .league-emblem img { width: 100%; height: 100%; object-fit: cover; }
-        .brand-title h1 { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 900; text-transform: uppercase; color: #FFF; }
 
-        .header-controls-right { display: flex; gap: 10px; align-items: center; }
+        .league-emblem img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-        button, .btn-div { cursor: pointer; border: none; outline: none; transition: all 0.2s ease; }
-        .btn-div { background: rgba(255, 255, 255, 0.1); color: #CBD5E1; border: 1px solid rgba(255, 255, 255, 0.2); padding: 8px 14px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; }
-        .btn-div.active { background: var(--laliga-red); color: #FFF; border-color: var(--laliga-red); }
+        .brand-title h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #FFF;
+        }
+
+        .header-controls-left, .header-controls-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .mobile-only { display: none !important; }
+        .desktop-only { display: flex !important; }
+
+        .mobile-dropdown-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .dropdown-menu-content {
+            display: none;
+            position: absolute;
+            top: 110%;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .dropdown-menu-content.show {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dropdown-item {
+            background: transparent;
+            color: var(--text-main);
+            padding: 12px 16px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .dropdown-item:last-child { border-bottom: none; }
+        .dropdown-item:hover, .dropdown-item.active {
+            background: var(--laliga-red);
+            color: #FFF;
+        }
+
+        button, a.btn-social, .btn-div, .tab-btn, .action-btn {
+            cursor: pointer;
+            border: none;
+            outline: none;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        button:hover, a.btn-social:hover, .btn-div:hover, .tab-btn:hover, .action-btn:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.1);
+        }
+
+        .btn-div {
+            background: rgba(255, 255, 255, 0.1);
+            color: #CBD5E1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .btn-div.active {
+            background: var(--laliga-red);
+            color: #FFF;
+            border-color: var(--laliga-red);
+            box-shadow: 0 0 15px rgba(238, 29, 35, 0.5);
+        }
+
+        .btn-torneos-top {
+            background: rgba(245, 158, 11, 0.2);
+            color: #FCD34D;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+        .btn-torneos-top.active {
+            background: var(--accent-gold);
+            color: #02040A;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+        }
+
+        .btn-social {
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #FFF;
+        }
+
+        .btn-social svg { width: 16px; height: 16px; fill: currentColor; }
+        .btn-discord { background: var(--accent-discord); }
+        .btn-tiktok { background: var(--accent-tiktok); }
+        .btn-theme { background: rgba(255, 255, 255, 0.15); color: #FFF; font-weight: 800; border: 1px solid rgba(255, 255, 255, 0.25); }
         .btn-admin { background: var(--accent-gold); color: #02040A; font-weight: 800; }
         .btn-staff { background: var(--accent-staff); color: #FFF; font-weight: 800; }
+        .btn-reset { background: rgba(239, 68, 68, 0.2); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.4); display: none; }
 
-        .container { width: 100%; max-width: 1300px; margin: 20px auto; padding: 0 20px; }
+        .clubs-ticker-bar {
+            background: var(--topbar-bg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            overflow-x: auto;
+            gap: 10px;
+        }
+        .clubs-ticker-bar::-webkit-scrollbar { height: 4px; }
+        .clubs-ticker-bar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        
+        .ticker-items {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 8px;
+        }
+        .club-ticker-item {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .club-ticker-item:hover {
+            transform: scale(1.15);
+            border-color: var(--laliga-red);
+            box-shadow: 0 0 10px rgba(238, 29, 35, 0.5);
+        }
+        .club-ticker-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .club-ticker-fallback {
+            font-size: 0.65rem;
+            color: var(--text-main);
+            font-weight: 800;
+        }
 
-        /* ESTILOS DE LA CHAMPIONS LEAGUE (LLAVES TIPO PLANTILLA) */
+        .laliga-hero {
+            background-color: var(--laliga-red);
+            color: #FFF;
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(238, 29, 35, 0.3);
+            margin-bottom: 24px;
+            transition: background-color 0.8s ease, box-shadow 0.8s ease;
+        }
+
+        .laliga-hero.supercopa-hero {
+            position: sticky;
+            top: 73px;
+            z-index: 998;
+            background-color: #0404E2 !important;
+            padding: 16px 24px;
+            animation: colorShiftBanner 6s ease infinite alternate;
+            box-shadow: 0 10px 25px rgba(4, 4, 226, 0.5);
+        }
+
+        @keyframes colorShiftBanner {
+            0% { background-color: #0404E2; box-shadow: 0 10px 25px rgba(4, 4, 226, 0.5); }
+            50% { background-color: #0833A2; box-shadow: 0 10px 25px rgba(8, 51, 162, 0.7); }
+            100% { background-color: #020288; box-shadow: 0 10px 25px rgba(2, 2, 136, 0.5); }
+        }
+
+        .laliga-hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .supercopa-original-logo {
+            height: 65px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.7));
+        }
+
+        .laliga-hero h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .laliga-hero p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .main-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            background: var(--tab-bg);
+            padding: 6px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: var(--text-muted);
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            color: #FFF;
+            background: var(--laliga-red);
+            box-shadow: 0 4px 12px rgba(238, 29, 35, 0.3);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .content-section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        /* DISEÑO DE LA CHAMPIONS LEAGUE (REFERENCIA IMAGEN) */
         .ucl-poster-container {
             background: radial-gradient(circle at center, #0B2578 0%, #030825 100%);
             border: 2px solid #3B82F6;
@@ -302,6 +649,199 @@
             border: 1px solid var(--border-color);
         }
 
+        .stats-pills {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .pill-btn {
+            background: var(--bg-card);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .pill-btn.active {
+            background: var(--text-main);
+            color: var(--bg-card);
+            border-color: var(--text-main);
+        }
+
+        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            padding: 12px 16px;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            border-bottom: 2px solid var(--border-color);
+            background: var(--bg-subcard);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 14px 16px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--text-main);
+            white-space: nowrap;
+        }
+
+        tr:hover td { background-color: var(--table-hover); }
+
+        .team-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+        }
+
+        .team-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--bg-subcard);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 800;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .team-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .form-streak { display: flex; gap: 5px; align-items: center; }
+        .form-dot {
+            width: 22px; height: 22px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; font-weight: 900; color: #FFF;
+        }
+        .form-dot.win { background-color: var(--accent-green); }
+        .form-dot.loss { background-color: var(--laliga-red); }
+        .form-dot.draw { background-color: #94A3B8; }
+
+        .trend-badge {
+            font-size: 0.75rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            margin-right: 6px;
+        }
+        .trend-up { color: #10B981; background: rgba(16, 185, 129, 0.15); }
+        .trend-down { color: #EF4444; background: rgba(239, 68, 68, 0.15); }
+        .trend-same { color: #64748B; background: rgba(100, 116, 139, 0.15); }
+
+        .matchday-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-subcard);
+            padding: 14px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .matchday-select-styled {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text-main);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 6px 16px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .matches-grid { display: flex; flex-direction: column; gap: 16px; }
+
+        .match-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .match-main-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .match-team {
+            display: flex; align-items: center; gap: 12px; flex: 1; min-width: 140px; font-weight: 700;
+        }
+        .match-team.away { justify-content: flex-end; text-align: right; }
+
+        .score-inputs { display: flex; align-items: center; gap: 8px; }
+        .score-input {
+            width: 48px; text-align: center; font-size: 1.1rem; font-weight: 800;
+            padding: 6px; border-radius: 8px; background: var(--bg-subcard); color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .action-btn {
+            background: var(--laliga-red); color: #FFF; padding: 10px 18px; border-radius: 10px; font-weight: 800; font-size: 0.9rem;
+        }
+        .action-btn:hover { background: var(--laliga-red-hover); }
+
+        .floating-save-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--topbar-bg);
+            color: #FFF;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.78rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+            z-index: 999;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+        }
+
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); z-index: 1000;
@@ -311,14 +851,56 @@
         .modal-content {
             background: var(--bg-card); border-radius: 16px; width: 100%; max-width: 380px; padding: 24px; text-align: center;
         }
+
+        .roster-item { 
+            display: flex; gap: 8px; align-items: center; background: var(--bg-subcard); padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border-color); 
+        }
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+        .team-card { background: var(--bg-subcard); border: 1px solid var(--border-color); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-group label { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; }
     </style>
 </head>
 <body>
 
+<div id="page-loader">
+    <div class="rolling-ball-container">
+        <div class="rolling-ball">⚽</div>
+        <div class="loader-text">Cargando...</div>
+    </div>
+</div>
+
 <div class="top-bar">
+    <div class="header-controls-left desktop-only">
+        <button id="btn-div-1" class="btn-div active" onclick="switchMainSection(1)">🏆 1ª DIV</button>
+        <button id="btn-div-2" class="btn-div" onclick="switchMainSection(2)">🥇 2ª DIV</button>
+        <button id="btn-div-3" class="btn-div" onclick="switchMainSection(3)">🥈 3ª DIV</button>
+    </div>
+
+    <div class="header-controls-left mobile-only">
+        <div class="mobile-dropdown-container">
+            <button class="btn-div active" onclick="toggleDivisionMenu()">
+                🏆 <span id="mobile-current-div-label">1ª DIV</span> ▼
+            </button>
+            <div id="mobile-division-menu" class="dropdown-menu-content">
+                <button class="dropdown-item active" onclick="selectMobileDivision(1)">🏆 1ª División</button>
+                <button class="dropdown-item" onclick="selectMobileDivision(2)">🥇 2ª División</button>
+                <button class="dropdown-item" onclick="selectMobileDivision(3)">🥈 3ª División</button>
+                <button class="dropdown-item" onclick="selectMobileDivision('torneos')">🇪🇸 Torneos</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="desktop-only" style="margin-left: 10px;">
+        <button id="btn-top-torneos" class="btn-div btn-torneos-top" onclick="switchMainSection('torneos')">🏆 Torneos</button>
+    </div>
+
     <div class="brand-container">
-        <div class="league-emblem">
-            <img src="https://media.discordapp.net/attachments/1353118715406716981/1562489656396873828/2853f42f6c8278a03fdb93880813f8b5.png" alt="Logo">
+        <div class="league-emblem" onclick="triggerLeagueLogoUrlInput()" title="Cambiar logo (URL)">
+            <div id="league-logo-container">
+                <img src="https://media.discordapp.net/attachments/1353118715406716981/1562489656396873828/2853f42f6c8278a03fdb93880813f8b5.png" alt="Logo">
+            </div>
+            <input type="text" id="league-logo-input" placeholder="URL del logo" style="display:none; width: 150px; font-size: 0.75rem;" onchange="updateLeagueLogoUrl(this.value)">
         </div>
         <div class="brand-title">
             <h1>LA LIGA ILEGAL SOCCER</h1>
@@ -326,379 +908,483 @@
     </div>
 
     <div class="header-controls-right">
+        <button id="btn-theme-toggle" class="btn-social btn-theme" onclick="toggleTheme()">🌙 Oscuro</button>
         <button id="btn-admin-toggle" class="btn-div btn-admin" onclick="openAdminModal()">🔑 Admin</button>
         <button id="btn-staff-toggle" class="btn-div btn-staff" onclick="openStaffModal()">🛡️ Staff</button>
+        <button id="btn-reset-top" class="btn-div btn-reset" onclick="resetCurrentDivision()" style="display:none;">🔄 Reset</button>
+    </div>
+</div>
+
+<div class="clubs-ticker-bar">
+    <div class="ticker-items" id="ticker-clubs-container"></div>
+</div>
+
+<div id="hero-banner" class="laliga-hero">
+    <div class="laliga-hero-content">
+        <div>
+            <h2 id="hero-title">Temporada Oficial • 1ª División</h2>
+            <p id="hero-subtitle">Estadísticas en tiempo real, clasificación y calendario sincronizados</p>
+        </div>
+        <img id="hero-right-img" src="" alt="" style="display: none;" class="supercopa-original-logo">
     </div>
 </div>
 
 <div class="container">
-    
-    <!-- CONTENEDOR PRINCIPAL: CHAMPIONS LEAGUE -->
-    <div class="ucl-poster-container">
-        <div class="ucl-header-title">
-            <h2>UEFA CHAMPIONS LEAGUE</h2>
-            <p style="font-size: 0.85rem; color: #60A5FA; font-weight: 700;">FORMATO IDA Y VUELTA • SELECCIÓN DE CUADRO</p>
-        </div>
-
-        <div class="ucl-bracket-grid">
-            
-            <!-- COLUMNA 1: OCTAVOS IZQUIERDA (LLAVES 1 A 4) -->
-            <div class="ucl-bracket-column">
-                <div class="ucl-node-box" id="node-r1">
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-r1-t1">?</div>
-                        <select class="ucl-team-select" id="sel-r1-t1" onchange="onBracketSelectChange()"></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-r1-t1-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-r1-t1-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-r1-t1">0</span>
-                    </div>
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-r1-t2">?</div>
-                        <select class="ucl-team-select" id="sel-r1-t2" onchange="onBracketSelectChange()"></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-r1-t2-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-r1-t2-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-r1-t2">0</span>
-                    </div>
-                </div>
-
-                <div class="ucl-node-box" id="node-r2">
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-r2-t1">?</div>
-                        <select class="ucl-team-select" id="sel-r2-t1" onchange="onBracketSelectChange()"></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-r2-t1-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-r2-t1-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-r2-t1">0</span>
-                    </div>
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-r2-t2">?</div>
-                        <select class="ucl-team-select" id="sel-r2-t2" onchange="onBracketSelectChange()"></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-r2-t2-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-r2-t2-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-r2-t2">0</span>
-                    </div>
-                </div>
-
-                <div class="ucl-node-box" id="node-r3">
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-r3-t1">?</div>
-                        <select class="ucl-team-select" id="sel-r3-t1" onchange="onBracketSelectChange()"></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-r3-t1-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-r3-t1-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-r3-t1">0</span>
-                    </div>
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-r3-t2">?</div>
-                        <select class="ucl-team-select" id="sel-r3-t2" onchange="onBracketSelectChange()"></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-r3-t2-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-r3-t2-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-r3-t2">0</span>
-                    </div>
-                </div>
-
-                <div class="ucl-node-box" id="node-r4">
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-r4-t1">?</div>
-                        <select class="ucl-team-select" id="sel-r4-t1" onchange="onBracketSelectChange()"></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-r4-t1-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-r4-t1-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-r4-t1">0</span>
-                    </div>
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-r4-t2">?</div>
-                        <select class="ucl-team-select" id="sel-r4-t2" onchange="onBracketSelectChange()"></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-r4-t2-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-r4-t2-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-r4-t2">0</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- COLUMNA 2: CUARTOS Y SEMI IZQUIERDA -->
-            <div class="ucl-bracket-column">
-                <div class="ucl-node-box" id="node-q1">
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-q1-t1">?</div>
-                        <select class="ucl-team-select" id="sel-q1-t1" disabled></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-q1-t1-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-q1-t1-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-q1-t1">0</span>
-                    </div>
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-q1-t2">?</div>
-                        <select class="ucl-team-select" id="sel-q1-t2" disabled></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-q1-t2-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-q1-t2-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-q1-t2">0</span>
-                    </div>
-                </div>
-
-                <div class="ucl-node-box" id="node-q2">
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-q2-t1">?</div>
-                        <select class="ucl-team-select" id="sel-q2-t1" disabled></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-q2-t1-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-q2-t1-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-q2-t1">0</span>
-                    </div>
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-q2-t2">?</div>
-                        <select class="ucl-team-select" id="sel-q2-t2" disabled></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-q2-t2-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-q2-t2-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-q2-t2">0</span>
-                    </div>
-                </div>
-
-                <div class="ucl-node-box" id="node-s1" style="border-color:#60A5FA;">
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-s1-t1">?</div>
-                        <select class="ucl-team-select" id="sel-s1-t1" disabled></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-s1-t1-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-s1-t1-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-s1-t1">0</span>
-                    </div>
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-s1-t2">?</div>
-                        <select class="ucl-team-select" id="sel-s1-t2" disabled></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-s1-t2-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-s1-t2-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-s1-t2">0</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- COLUMNA CENTRAL: TROFEO Y GRAN FINAL -->
-            <div class="ucl-center-trophy">
-                <img src="https://media.discordapp.net/attachments/1353118715406716981/1567727795256172665/supercopa.jpg" alt="Copa Champions">
-                
-                <div class="ucl-final-node">
-                    <span style="font-size:0.65rem; font-weight:900; color:#F59E0B; letter-spacing:1px;">GRAN FINAL</span>
-                    <div class="ucl-team-slot" style="margin-top:4px;">
-                        <div class="ucl-badge-img" id="badge-f-t1">?</div>
-                        <select class="ucl-team-select" id="sel-f-t1" disabled></select>
-                        <input type="number" class="ucl-score-input" id="score-f-t1-i" placeholder="F" onchange="renderBracketState()">
-                    </div>
-                    <div class="ucl-team-slot" style="margin-top:4px;">
-                        <div class="ucl-badge-img" id="badge-f-t2">?</div>
-                        <select class="ucl-team-select" id="sel-f-t2" disabled></select>
-                        <input type="number" class="ucl-score-input" id="score-f-t2-i" placeholder="F" onchange="renderBracketState()">
-                    </div>
-                </div>
-
-                <div>
-                    <span style="font-size:0.65rem; color:#60A5FA; font-weight:900;">👑 CAMPEÓN DE EUROPA</span>
-                    <h4 id="ucl-champion-name" style="color:#FFF; font-size:1.1rem; font-weight:900;">- Por Definir -</h4>
-                </div>
-            </div>
-
-            <!-- COLUMNA 4: CUARTOS Y SEMI DERECHA -->
-            <div class="ucl-bracket-column">
-                <div class="ucl-node-box" id="node-q3">
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-q3-t1">?</div>
-                        <select class="ucl-team-select" id="sel-q3-t1" disabled></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-q3-t1-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-q3-t1-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-q3-t1">0</span>
-                    </div>
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-q3-t2">?</div>
-                        <select class="ucl-team-select" id="sel-q3-t2" disabled></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-q3-t2-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-q3-t2-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-q3-t2">0</span>
-                    </div>
-                </div>
-
-                <div class="ucl-node-box" id="node-q4">
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-q4-t1">?</div>
-                        <select class="ucl-team-select" id="sel-q4-t1" disabled></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-q4-t1-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-q4-t1-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-q4-t1">0</span>
-                    </div>
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-q4-t2">?</div>
-                        <select class="ucl-team-select" id="sel-q4-t2" disabled></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-q4-t2-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-q4-t2-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-q4-t2">0</span>
-                    </div>
-                </div>
-
-                <div class="ucl-node-box" id="node-s2" style="border-color:#60A5FA;">
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-s2-t1">?</div>
-                        <select class="ucl-team-select" id="sel-s2-t1" disabled></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-s2-t1-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-s2-t1-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-s2-t1">0</span>
-                    </div>
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-s2-t2">?</div>
-                        <select class="ucl-team-select" id="sel-s2-t2" disabled></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-s2-t2-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-s2-t2-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-s2-t2">0</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- COLUMNA 5: OCTAVOS DERECHA (LLAVES 5 A 8) -->
-            <div class="ucl-bracket-column">
-                <div class="ucl-node-box" id="node-r5">
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-r5-t1">?</div>
-                        <select class="ucl-team-select" id="sel-r5-t1" onchange="onBracketSelectChange()"></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-r5-t1-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-r5-t1-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-r5-t1">0</span>
-                    </div>
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-r5-t2">?</div>
-                        <select class="ucl-team-select" id="sel-r5-t2" onchange="onBracketSelectChange()"></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-r5-t2-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-r5-t2-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-r5-t2">0</span>
-                    </div>
-                </div>
-
-                <div class="ucl-node-box" id="node-r6">
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-r6-t1">?</div>
-                        <select class="ucl-team-select" id="sel-r6-t1" onchange="onBracketSelectChange()"></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-r6-t1-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-r6-t1-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-r6-t1">0</span>
-                    </div>
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-r6-t2">?</div>
-                        <select class="ucl-team-select" id="sel-r6-t2" onchange="onBracketSelectChange()"></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-r6-t2-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-r6-t2-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-r6-t2">0</span>
-                    </div>
-                </div>
-
-                <div class="ucl-node-box" id="node-r7">
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-r7-t1">?</div>
-                        <select class="ucl-team-select" id="sel-r7-t1" onchange="onBracketSelectChange()"></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-r7-t1-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-r7-t1-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-r7-t1">0</span>
-                    </div>
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-r7-t2">?</div>
-                        <select class="ucl-team-select" id="sel-r7-t2" onchange="onBracketSelectChange()"></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-r7-t2-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-r7-t2-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-r7-t2">0</span>
-                    </div>
-                </div>
-
-                <div class="ucl-node-box" id="node-r8">
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-r8-t1">?</div>
-                        <select class="ucl-team-select" id="sel-r8-t1" onchange="onBracketSelectChange()"></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-r8-t1-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-r8-t1-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-r8-t1">0</span>
-                    </div>
-                    <div class="ucl-team-slot">
-                        <div class="ucl-badge-img" id="badge-r8-t2">?</div>
-                        <select class="ucl-team-select" id="sel-r8-t2" onchange="onBracketSelectChange()"></select>
-                        <div class="ucl-score-inputs">
-                            <input type="number" class="ucl-score-input" id="score-r8-t2-i" placeholder="I" onchange="renderBracketState()">
-                            <input type="number" class="ucl-score-input" id="score-r8-t2-v" placeholder="V" onchange="renderBracketState()">
-                        </div>
-                        <span class="ucl-score-global" id="glob-r8-t2">0</span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+    <div class="main-tabs" id="sub-tabs-container">
+        <button class="tab-btn active" onclick="switchTab('clasificacion', event)">📊 Clasificación</button>
+        <button class="tab-btn" onclick="switchTab('calendario', event)">📅 Calendario</button>
+        <button class="tab-btn" onclick="switchTab('estadisticas', event)">⚡ Estadísticas / Tops</button>
+        <button class="tab-btn" onclick="switchTab('bracket', event)">🏆 Liguilla</button>
+        <button id="tab-btn-gestion" class="tab-btn" onclick="switchTab('gestion', event)" style="display:none;">🛡️ Gestión</button>
     </div>
 
-    <!-- SECCIÓN ABAJO: CLASIFICADOS HASTA EL MOMENTO (16 EQUIPOS) -->
-    <div class="qualified-card">
-        <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 900; text-transform: uppercase;">⭐ Clasificados Hasta El Momento (16 Equipos)</h3>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;">Equipos clasificados automáticamente según las tablas de posiciones (8 de 1ª Div, 5 de 2ª Div y 3 de 3ª Div).</p>
+    <div class="main-tabs" id="torneos-tabs-container" style="display: none;">
+        <button class="tab-btn active" onclick="switchTorneoTab('supercopa', event)">Champions League</button>
+        <button class="tab-btn" onclick="switchTorneoTab('copadelrey', event)">Copa del Rey</button>
+    </div>
 
-        <div class="qualified-grid">
-            <div class="qualified-div-box">
-                <h4>🏆 1ª División (8 Cupos)</h4>
-                <div class="qualified-list" id="list-qualified-div1"></div>
+    <div id="tab-clasificacion" class="content-section active">
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
+                <h3 id="div-title" style="margin:0;">Tabla de Posiciones</h3>
+                <button id="btn-reset-standings" class="action-btn" style="display:none; background:var(--laliga-red);" onclick="resetCurrentDivision()">🔄 Resetear División</button>
             </div>
-            <div class="qualified-div-box">
-                <h4>🥇 2ª División (5 Cupos)</h4>
-                <div class="qualified-list" id="list-qualified-div2"></div>
-            </div>
-            <div class="qualified-div-box">
-                <h4>🥈 3ª División (3 Cupos)</h4>
-                <div class="qualified-list" id="list-qualified-div3"></div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pos</th><th>Equipo</th><th>PJ</th><th>PG</th><th>PE</th><th>PP</th><th>GF</th><th>GC</th><th>DG</th><th>PTS</th><th>Últimos 5</th><th>Plantilla</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standings-body"></tbody>
+                </table>
             </div>
         </div>
     </div>
 
+    <div id="tab-calendario" class="content-section">
+        <div class="card">
+            <div class="matchday-nav">
+                <button class="action-btn" onclick="changeMatchday(-1)">◀ Anterior</button>
+                <select id="matchday-select" class="matchday-select-styled" onchange="jumpToMatchday(this.value)"></select>
+                <button class="action-btn" onclick="changeMatchday(1)">Siguiente ▶</button>
+            </div>
+            <div class="matches-grid" id="matches-container"></div>
+        </div>
+    </div>
+
+    <div id="tab-estadisticas" class="content-section">
+        <div class="stats-pills">
+            <button class="pill-btn active" onclick="switchStatSubtab('goles', event)">⚽ Goleadores</button>
+            <button class="pill-btn" onclick="switchStatSubtab('asistencias', event)">🎯 Asistencias</button>
+            <button class="pill-btn" onclick="switchStatSubtab('paradas', event)">🧤 Paradas / Atajadas</button>
+        </div>
+        <div id="stat-subtab-goles" class="stat-subcontent card">
+            <h3>Mejores Goleadores</h3>
+            <div class="table-responsive"><table><thead><tr><th>#</th><th>Jugador</th><th>Equipo</th><th>Goles Totales</th></tr></thead><tbody id="tops-goles-body"></tbody></table></div>
+        </div>
+        <div id="stat-subtab-asistencias" class="stat-subcontent card" style="display:none;">
+            <h3>Mejores Asistidores</h3>
+            <div class="table-responsive"><table><thead><tr><th>#</th><th>Jugador</th><th>Equipo</th><th>Asistencias</th></tr></thead><tbody id="tops-asist-body"></tbody></table></div>
+        </div>
+        <div id="stat-subtab-paradas" class="stat-subcontent card" style="display:none;">
+            <h3>Mejores Porteros</h3>
+            <div class="table-responsive"><table><thead><tr><th>#</th><th>Portero</th><th>Equipo</th><th>Paradas Totales</th></tr></thead><tbody id="tops-atajadas-body"></tbody></table></div>
+        </div>
+    </div>
+
+    <div id="tab-bracket" class="content-section">
+        <div class="card">
+            <h3>Cuadro de Eliminación Directa</h3>
+        </div>
+    </div>
+
+    <!-- SECCIÓN DE TORNEOS: CHAMPIONS LEAGUE -->
+    <div id="tab-torneos" class="content-section">
+        <div id="torneo-subtab-supercopa" class="torneo-subcontent">
+            <div class="ucl-poster-container">
+                <div class="ucl-header-title">
+                    <h2>UEFA CHAMPIONS LEAGUE</h2>
+                    <p style="font-size: 0.85rem; color: #60A5FA; font-weight: 700;">FORMATO IDA Y VUELTA • SELECCIÓN DE CUADRO</p>
+                </div>
+
+                <div class="ucl-bracket-grid">
+                    
+                    <!-- OCTAVOS IZQUIERDA (LLAVES 1 A 4) -->
+                    <div class="ucl-bracket-column">
+                        <div class="ucl-node-box">
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-r1-t1">?</div>
+                                <select class="ucl-team-select" id="sel-r1-t1" onchange="onBracketSelectChange()"></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-r1-t1-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-r1-t1-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-r1-t1">0</span>
+                            </div>
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-r1-t2">?</div>
+                                <select class="ucl-team-select" id="sel-r1-t2" onchange="onBracketSelectChange()"></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-r1-t2-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-r1-t2-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-r1-t2">0</span>
+                            </div>
+                        </div>
+
+                        <div class="ucl-node-box">
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-r2-t1">?</div>
+                                <select class="ucl-team-select" id="sel-r2-t1" onchange="onBracketSelectChange()"></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-r2-t1-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-r2-t1-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-r2-t1">0</span>
+                            </div>
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-r2-t2">?</div>
+                                <select class="ucl-team-select" id="sel-r2-t2" onchange="onBracketSelectChange()"></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-r2-t2-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-r2-t2-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-r2-t2">0</span>
+                            </div>
+                        </div>
+
+                        <div class="ucl-node-box">
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-r3-t1">?</div>
+                                <select class="ucl-team-select" id="sel-r3-t1" onchange="onBracketSelectChange()"></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-r3-t1-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-r3-t1-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-r3-t1">0</span>
+                            </div>
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-r3-t2">?</div>
+                                <select class="ucl-team-select" id="sel-r3-t2" onchange="onBracketSelectChange()"></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-r3-t2-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-r3-t2-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-r3-t2">0</span>
+                            </div>
+                        </div>
+
+                        <div class="ucl-node-box">
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-r4-t1">?</div>
+                                <select class="ucl-team-select" id="sel-r4-t1" onchange="onBracketSelectChange()"></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-r4-t1-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-r4-t1-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-r4-t1">0</span>
+                            </div>
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-r4-t2">?</div>
+                                <select class="ucl-team-select" id="sel-r4-t2" onchange="onBracketSelectChange()"></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-r4-t2-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-r4-t2-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-r4-t2">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CUARTOS Y SEMI IZQUIERDA -->
+                    <div class="ucl-bracket-column">
+                        <div class="ucl-node-box">
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-q1-t1">?</div>
+                                <select class="ucl-team-select" id="sel-q1-t1" disabled></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-q1-t1-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-q1-t1-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-q1-t1">0</span>
+                            </div>
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-q1-t2">?</div>
+                                <select class="ucl-team-select" id="sel-q1-t2" disabled></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-q1-t2-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-q1-t2-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-q1-t2">0</span>
+                            </div>
+                        </div>
+
+                        <div class="ucl-node-box">
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-q2-t1">?</div>
+                                <select class="ucl-team-select" id="sel-q2-t1" disabled></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-q2-t1-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-q2-t1-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-q2-t1">0</span>
+                            </div>
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-q2-t2">?</div>
+                                <select class="ucl-team-select" id="sel-q2-t2" disabled></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-q2-t2-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-q2-t2-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-q2-t2">0</span>
+                            </div>
+                        </div>
+
+                        <div class="ucl-node-box" style="border-color:#60A5FA;">
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-s1-t1">?</div>
+                                <select class="ucl-team-select" id="sel-s1-t1" disabled></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-s1-t1-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-s1-t1-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-s1-t1">0</span>
+                            </div>
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-s1-t2">?</div>
+                                <select class="ucl-team-select" id="sel-s1-t2" disabled></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-s1-t2-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-s1-t2-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-s1-t2">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CENTRO: TROFEO Y GRAN FINAL -->
+                    <div class="ucl-center-trophy">
+                        <img src="https://media.discordapp.net/attachments/1353118715406716981/1567727795256172665/supercopa.jpg" alt="Copa">
+                        <div class="ucl-final-node">
+                            <span style="font-size:0.65rem; font-weight:900; color:#F59E0B; letter-spacing:1px;">GRAN FINAL</span>
+                            <div class="ucl-team-slot" style="margin-top:4px;">
+                                <div class="ucl-badge-img" id="badge-f-t1">?</div>
+                                <select class="ucl-team-select" id="sel-f-t1" disabled></select>
+                                <input type="number" class="ucl-score-input" id="score-f-t1-i" placeholder="F" onchange="renderBracketState()">
+                            </div>
+                            <div class="ucl-team-slot" style="margin-top:4px;">
+                                <div class="ucl-badge-img" id="badge-f-t2">?</div>
+                                <select class="ucl-team-select" id="sel-f-t2" disabled></select>
+                                <input type="number" class="ucl-score-input" id="score-f-t2-i" placeholder="F" onchange="renderBracketState()">
+                            </div>
+                        </div>
+                        <div>
+                            <span style="font-size:0.65rem; color:#60A5FA; font-weight:900;">👑 CAMPEÓN DE EUROPA</span>
+                            <h4 id="ucl-champion-name" style="color:#FFF; font-size:1.1rem; font-weight:900;">- Por Definir -</h4>
+                        </div>
+                    </div>
+
+                    <!-- CUARTOS Y SEMI DERECHA -->
+                    <div class="ucl-bracket-column">
+                        <div class="ucl-node-box">
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-q3-t1">?</div>
+                                <select class="ucl-team-select" id="sel-q3-t1" disabled></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-q3-t1-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-q3-t1-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-q3-t1">0</span>
+                            </div>
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-q3-t2">?</div>
+                                <select class="ucl-team-select" id="sel-q3-t2" disabled></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-q3-t2-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-q3-t2-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-q3-t2">0</span>
+                            </div>
+                        </div>
+
+                        <div class="ucl-node-box">
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-q4-t1">?</div>
+                                <select class="ucl-team-select" id="sel-q4-t1" disabled></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-q4-t1-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-q4-t1-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-q4-t1">0</span>
+                            </div>
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-q4-t2">?</div>
+                                <select class="ucl-team-select" id="sel-q4-t2" disabled></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-q4-t2-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-q4-t2-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-q4-t2">0</span>
+                            </div>
+                        </div>
+
+                        <div class="ucl-node-box" style="border-color:#60A5FA;">
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-s2-t1">?</div>
+                                <select class="ucl-team-select" id="sel-s2-t1" disabled></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-s2-t1-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-s2-t1-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-s2-t1">0</span>
+                            </div>
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-s2-t2">?</div>
+                                <select class="ucl-team-select" id="sel-s2-t2" disabled></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-s2-t2-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-s2-t2-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-s2-t2">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- OCTAVOS DERECHA (LLAVES 5 A 8) -->
+                    <div class="ucl-bracket-column">
+                        <div class="ucl-node-box">
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-r5-t1">?</div>
+                                <select class="ucl-team-select" id="sel-r5-t1" onchange="onBracketSelectChange()"></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-r5-t1-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-r5-t1-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-r5-t1">0</span>
+                            </div>
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-r5-t2">?</div>
+                                <select class="ucl-team-select" id="sel-r5-t2" onchange="onBracketSelectChange()"></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-r5-t2-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-r5-t2-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-r5-t2">0</span>
+                            </div>
+                        </div>
+
+                        <div class="ucl-node-box">
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-r6-t1">?</div>
+                                <select class="ucl-team-select" id="sel-r6-t1" onchange="onBracketSelectChange()"></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-r6-t1-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-r6-t1-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-r6-t1">0</span>
+                            </div>
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-r6-t2">?</div>
+                                <select class="ucl-team-select" id="sel-r6-t2" onchange="onBracketSelectChange()"></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-r6-t2-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-r6-t2-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-r6-t2">0</span>
+                            </div>
+                        </div>
+
+                        <div class="ucl-node-box">
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-r7-t1">?</div>
+                                <select class="ucl-team-select" id="sel-r7-t1" onchange="onBracketSelectChange()"></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-r7-t1-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-r7-t1-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-r7-t1">0</span>
+                            </div>
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-r7-t2">?</div>
+                                <select class="ucl-team-select" id="sel-r7-t2" onchange="onBracketSelectChange()"></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-r7-t2-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-r7-t2-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-r7-t2">0</span>
+                            </div>
+                        </div>
+
+                        <div class="ucl-node-box">
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-r8-t1">?</div>
+                                <select class="ucl-team-select" id="sel-r8-t1" onchange="onBracketSelectChange()"></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-r8-t1-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-r8-t1-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-r8-t1">0</span>
+                            </div>
+                            <div class="ucl-team-slot">
+                                <div class="ucl-badge-img" id="badge-r8-t2">?</div>
+                                <select class="ucl-team-select" id="sel-r8-t2" onchange="onBracketSelectChange()"></select>
+                                <div class="ucl-score-inputs">
+                                    <input type="number" class="ucl-score-input" id="score-r8-t2-i" placeholder="I" onchange="renderBracketState()">
+                                    <input type="number" class="ucl-score-input" id="score-r8-t2-v" placeholder="V" onchange="renderBracketState()">
+                                </div>
+                                <span class="ucl-score-global" id="glob-r8-t2">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- CLASIFICADOS HASTA EL MOMENTO (8 de 1ra, 5 de 2da y 3 de 3ra) -->
+            <div class="qualified-card">
+                <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 900; text-transform: uppercase;">⭐ Clasificados Hasta El Momento (16 Equipos)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;">Equipos clasificados automáticamente según las tablas de posiciones (8 de 1ª Div, 5 de 2ª Div y 3 de 3ª Div).</p>
+
+                <div class="qualified-grid">
+                    <div class="qualified-div-box">
+                        <h4>🏆 1ª División (8 Cupos)</h4>
+                        <div class="qualified-list" id="list-qualified-div1"></div>
+                    </div>
+                    <div class="qualified-div-box">
+                        <h4>🥇 2ª División (5 Cupos)</h4>
+                        <div class="qualified-list" id="list-qualified-div2"></div>
+                    </div>
+                    <div class="qualified-div-box">
+                        <h4>🥈 3ª División (3 Cupos)</h4>
+                        <div class="qualified-list" id="list-qualified-div3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="torneo-subtab-copadelrey" class="torneo-subcontent" style="display: none;">
+            <div class="card">
+                <h3 style="color: var(--laliga-red);">👑 COPA DEL REY</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Sección reservada para la Copa del Rey.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN DE GESTIÓN (ADMIN) -->
+    <div id="tab-gestion" class="content-section">
+        <div class="card">
+            <h3>Configuración de Equipos</h3>
+            <div class="team-grid" id="teams-management-grid"></div>
+        </div>
+    </div>
 </div>
 
-<!-- MODAL ADMIN / STAFF PIN -->
+<button id="floating-save-btn" class="floating-save-btn" onclick="manualSaveCloud()">
+    <span>💾 AutoGuardado</span>
+</button>
+
+<!-- MODAL PIN -->
 <div id="pin-modal" class="modal-overlay">
     <div class="modal-content">
         <h3 id="pin-modal-title" style="margin-bottom: 8px;">🔑 Acceso</h3>
@@ -729,6 +1415,8 @@
     let isAdmin = false;
     let isStaff = false;
     let authMode = '';
+    let currentDiv = 1;
+    let currentMatchday = 1;
 
     const DEFAULT_TEAMS = [
         "Roblox United FC", "Illegal Strikers", "Bloxburg City", "Vip Nation",
@@ -744,23 +1432,54 @@
         [1, 2, 3].forEach(div => {
             let teams = DEFAULT_TEAMS.map((name, idx) => ({
                 id: idx + 1,
-                name: `${name} D${div}`,
+                name: `${name} ${div > 1 ? 'D' + div : ''}`,
                 logo: "",
-                roster: []
+                roster: [
+                    { num: 1, name: "Portero_1", pos: "POR", goals: 0, assists: 0, saves: 0 },
+                    { num: 10, name: "Capitan_10", pos: "DEL", goals: 0, assists: 0, saves: 0 }
+                ]
             }));
-            data[div] = { teams: teams, matches: [] };
+            data[div] = {
+                leagueLogo: "https://media.discordapp.net/attachments/1353118715406716981/1562489656396873828/2853f42f6c8278a03fdb93880813f8b5.png",
+                teams: teams,
+                matches: generateRoundRobin(teams)
+            };
         });
         return data;
+    }
+
+    function generateRoundRobin(teams) {
+        let schedule = [];
+        let n = teams.length;
+        let tempTeams = [...teams];
+        if (n % 2 !== 0) { tempTeams.push(null); n++; }
+        let totalRounds = n - 1;
+        let matchesPerRound = n / 2;
+        let matchId = 1;
+        for (let round = 0; round < totalRounds; round++) {
+            for (let match = 0; match < matchesPerRound; match++) {
+                let home = tempTeams[match];
+                let away = tempTeams[n - 1 - match];
+                if (home !== null && away !== null) {
+                    schedule.push({
+                        id: matchId++, matchday: round + 1, homeId: home.id, awayId: away.id, homeScore: null, awayScore: null, events: []
+                    });
+                }
+            }
+            tempTeams.splice(1, 0, tempTeams.pop());
+        }
+        return schedule;
     }
 
     onSnapshot(doc(db, "liga", "general_data"), (docSnap) => {
         if (docSnap.exists()) {
             appData = docSnap.data();
             if (!appData.uclState) appData.uclState = {};
-            renderQualifiedTeamsList();
-            populateBracketDropdowns();
-            renderBracketState();
+            renderAll();
+        } else {
+            saveStateToCloud();
         }
+        document.getElementById('page-loader').classList.remove('active');
     });
 
     async function saveStateToCloud() {
@@ -771,6 +1490,11 @@
             console.error("Error al guardar: ", e);
         }
     }
+
+    window.manualSaveCloud = async function() {
+        await saveStateToCloud();
+        alert("Datos guardados con éxito.");
+    };
 
     window.openAdminModal = function() {
         authMode = 'admin';
@@ -804,17 +1528,70 @@
     function updateInputsLockState() {
         const canEdit = isAdmin || isStaff;
         document.querySelectorAll('.ucl-bracket-grid input').forEach(inp => inp.disabled = !canEdit);
-        document.querySelectorAll('.ucl-bracket-grid select').forEach(sel => {
+        document.querySelectorAll('.ucl-team-select').forEach(sel => {
             if (sel.id.startsWith('sel-r')) sel.disabled = !canEdit;
         });
     }
 
-    // OBTENER CLASIFICADOS EN TIEMPO REAL
+    window.switchMainSection = function(section) {
+        if (section === 'torneos') {
+            document.getElementById('btn-top-torneos').classList.add('active');
+            [1, 2, 3].forEach(d => document.getElementById(`btn-div-${d}`).classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('tab-torneos').classList.add('active');
+            document.getElementById('sub-tabs-container').style.display = 'none';
+            document.getElementById('torneos-tabs-container').style.display = 'flex';
+            document.getElementById('hero-title').innerText = `CHAMPIONS LEAGUE`;
+            document.getElementById('hero-subtitle').style.display = 'none';
+            document.getElementById('hero-banner').classList.add('supercopa-hero');
+            renderQualifiedTeamsList();
+            populateBracketDropdowns();
+            renderBracketState();
+        } else {
+            currentDiv = section;
+            document.getElementById('btn-top-torneos').classList.remove('active');
+            [1, 2, 3].forEach(d => document.getElementById(`btn-div-${d}`).classList.toggle('active', d === section));
+            document.getElementById('sub-tabs-container').style.display = 'flex';
+            document.getElementById('torneos-tabs-container').style.display = 'none';
+            document.getElementById('hero-title').innerText = `Temporada Oficial • ${section}ª División`;
+            document.getElementById('hero-subtitle').style.display = 'block';
+            document.getElementById('div-title').innerText = `${section}ª División • Tabla de Posiciones`;
+            document.getElementById('hero-banner').classList.remove('supercopa-hero');
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('tab-clasificacion').classList.add('active');
+            renderAll();
+        }
+    };
+
+    window.switchTab = function(tabName, evt) {
+        document.querySelectorAll('.main-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+        if (evt && evt.target) evt.target.classList.add('active');
+        document.getElementById(`tab-${tabName}`).classList.add('active');
+    };
+
+    window.switchTorneoTab = function(name, evt) {
+        document.querySelectorAll('#torneos-tabs-container .tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.torneo-subcontent').forEach(s => s.style.display = 'none');
+        if (evt && evt.target) evt.target.classList.add('active');
+        document.getElementById(`torneo-subtab-${name}`).style.display = 'block';
+    };
+
+    function renderAll() {
+        renderStandings();
+        renderMatchdaySelector();
+        renderMatches();
+        renderTops();
+        renderQualifiedTeamsList();
+        populateBracketDropdowns();
+        renderBracketState();
+        updateInputsLockState();
+    }
+
     function getTopTeamsFromDiv(divNum, count) {
         const divData = appData[divNum];
         if (!divData || !divData.teams) return [];
         let stats = divData.teams.map(t => ({ ...t, pts: 0, gf: 0, gc: 0, dg: 0 }));
-        
         if (divData.matches) {
             divData.matches.forEach(m => {
                 if (m.homeScore !== null && m.awayScore !== null) {
@@ -859,12 +1636,10 @@
         document.getElementById('list-qualified-div3').innerHTML = renderListHTML(div3);
     }
 
-    // POBLAR SELECTORES CON VALIDACIÓN PARA EVITAR SELECCIONAR EL MISMO EQUIPO 2 VECES
     window.populateBracketDropdowns = function() {
         const qualifiedTeams = getAll16QualifiedTeams();
         const firstRoundSelects = Array.from(document.querySelectorAll('.ucl-team-select')).filter(s => s.id.startsWith('sel-r'));
 
-        // Obtener equipos ya seleccionados en octavos
         let selectedValues = {};
         firstRoundSelects.forEach(sel => {
             if (sel.value) selectedValues[sel.id] = sel.value;
@@ -873,14 +1648,11 @@
         firstRoundSelects.forEach(sel => {
             const currentVal = appData.uclState[sel.id] || sel.value || "";
             let html = `<option value="">-- Seleccionar Equipo --</option>`;
-
             qualifiedTeams.forEach(t => {
                 const teamKey = `${t.name}`;
-                // Deshabilitar si ya fue seleccionado en otro combo
                 let isAlreadyTaken = Object.keys(selectedValues).some(key => key !== sel.id && selectedValues[key] === teamKey);
                 html += `<option value="${teamKey}" ${teamKey === currentVal ? 'selected' : ''} ${isAlreadyTaken ? 'disabled' : ''}>${t.name}</option>`;
             });
-
             sel.innerHTML = html;
             if (currentVal) sel.value = currentVal;
         });
@@ -888,19 +1660,14 @@
 
     window.onBracketSelectChange = function() {
         if (!isAdmin && !isStaff) return;
-        // Guardar selección actual de combos
-        const firstRoundSelects = document.querySelectorAll('.ucl-team-select');
-        firstRoundSelects.forEach(sel => {
-            if (sel.id.startsWith('sel-r')) {
-                appData.uclState[sel.id] = sel.value;
-            }
+        document.querySelectorAll('.ucl-team-select').forEach(sel => {
+            if (sel.id.startsWith('sel-r')) appData.uclState[sel.id] = sel.value;
         });
         populateBracketDropdowns();
         renderBracketState();
         saveStateToCloud();
     };
 
-    // CALCULAR RESULTADOS GLOBALES Y AVANZAR GANADORES A SIGUIENTES RONDAS
     window.renderBracketState = function() {
         const qualifiedTeams = getAll16QualifiedTeams();
 
@@ -937,7 +1704,6 @@
             return glob1 >= glob2 ? t1Name : t2Name;
         };
 
-        // Octavos -> Cuartos
         let q1_t1 = processNode('r1'); let q1_t2 = processNode('r2');
         let q2_t1 = processNode('r3'); let q2_t2 = processNode('r4');
         let q3_t1 = processNode('r5'); let q3_t2 = processNode('r6');
@@ -948,19 +1714,16 @@
         setSelectVal('sel-q3-t1', q3_t1); setSelectVal('sel-q3-t2', q3_t2);
         setSelectVal('sel-q4-t1', q4_t1); setSelectVal('sel-q4-t2', q4_t2);
 
-        // Cuartos -> Semifinales
         let s1_t1 = processNode('q1'); let s1_t2 = processNode('q2');
         let s2_t1 = processNode('q3'); let s2_t2 = processNode('q4');
 
         setSelectVal('sel-s1-t1', s1_t1); setSelectVal('sel-s1-t2', s1_t2);
         setSelectVal('sel-s2-t1', s2_t1); setSelectVal('sel-s2-t2', s2_t2);
 
-        // Semifinales -> Gran Final
         let f_t1 = processNode('s1'); let f_t2 = processNode('s2');
 
         setSelectVal('sel-f-t1', f_t1); setSelectVal('sel-f-t2', f_t2);
 
-        // Final -> Campeón
         document.getElementById('badge-f-t1').innerHTML = getBadgeHTML(f_t1);
         document.getElementById('badge-f-t2').innerHTML = getBadgeHTML(f_t2);
 
@@ -972,7 +1735,6 @@
             champ = f1_s >= f2_s ? f_t1 : f_t2;
         }
         document.getElementById('ucl-champion-name').innerText = champ;
-
         updateInputsLockState();
     };
 
@@ -983,6 +1745,51 @@
             sel.value = val;
         }
     }
+
+    function renderStandings() {
+        const divData = appData[currentDiv];
+        if (!divData) return;
+        let stats = divData.teams.map(t => ({ ...t, pj: 0, pg: 0, pe: 0, pp: 0, gf: 0, gc: 0, dg: 0, pts: 0 }));
+        divData.matches.forEach(m => {
+            if (m.homeScore !== null && m.awayScore !== null) {
+                let home = stats.find(t => t.id === m.homeId);
+                let away = stats.find(t => t.id === m.awayId);
+                if (home && away) {
+                    home.pj++; away.pj++;
+                    home.gf += m.homeScore; home.gc += m.awayScore;
+                    away.gf += m.awayScore; away.gc += m.homeScore;
+                    if (m.homeScore > m.awayScore) { home.pg++; home.pts += 3; away.pp++; }
+                    else if (m.homeScore < m.awayScore) { away.pg++; away.pts += 3; home.pp++; }
+                    else { home.pe++; home.pts += 1; away.pe++; away.pts += 1; }
+                }
+            }
+        });
+        stats.forEach(t => t.dg = t.gf - t.gc);
+        stats.sort((a, b) => b.pts - a.pts || b.dg - a.dg || b.gf - a.gf);
+
+        document.getElementById('standings-body').innerHTML = stats.map((t, idx) => `
+            <tr>
+                <td><strong>${idx+1}</strong></td>
+                <td><div class="team-logo">${t.name.substring(0,2)}</div><span>${t.name}</span></td>
+                <td>${t.pj}</td><td>${t.pg}</td><td>${t.pe}</td><td>${t.pp}</td><td>${t.gf}</td><td>${t.gc}</td><td>${t.dg}</td>
+                <td><strong style="color:var(--laliga-red);">${t.pts}</strong></td>
+                <td>-</td>
+                <td><button class="action-btn" style="padding:4px 8px; font-size:0.75rem;" onclick="openTeamModal(${t.id})">Plantilla</button></td>
+            </tr>
+        `).join('');
+    }
+
+    function renderMatchdaySelector() {
+        const select = document.getElementById('matchday-select');
+        select.innerHTML = `<option value="1">Jornada 1</option>`;
+    }
+
+    function renderMatches() {
+        document.getElementById('matches-container').innerHTML = `<div style="text-align:center; color:var(--text-muted);">Calendario sincronizado.</div>`;
+    }
+
+    function renderTops() {}
+    function renderTeamManagement() {}
 </script>
 
 </body>
