@@ -423,13 +423,15 @@
             margin-bottom: 16px;
         }
 
+        /* CARD ESPECIAL SUPERCOPA */
         .supercup-card {
             position: relative;
-            background: linear-gradient(rgba(11, 15, 25, 0.78), rgba(11, 15, 25, 0.88)), url('https://media.discordapp.net/attachments/1353118715406716981/1567727795256172665/supercopa.jpg') !important;
+            background: linear-gradient(rgba(11, 15, 25, 0.85), rgba(11, 15, 25, 0.92)), url('https://media.discordapp.net/attachments/1353118715406716981/1567727795256172665/supercopa.jpg') !important;
             background-size: cover !important;
             background-position: center center !important;
             color: #FFF;
             border: 2px solid var(--accent-gold);
+            padding: 28px;
         }
 
         .supercup-card h3, .supercup-card h4 {
@@ -437,21 +439,98 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
 
-        .supercup-card .bracket-match {
-            background: rgba(15, 23, 42, 0.82);
-            backdrop-filter: blur(6px);
-            border-color: rgba(245, 158, 11, 0.4);
-        }
-
-        .supercup-card .bracket-team-select, .supercup-card .score-input {
+        .supercup-card .score-input {
             background: rgba(11, 15, 25, 0.95);
             color: #FFF;
             border-color: rgba(245, 158, 11, 0.5);
         }
 
-        .supercup-card p {
-            color: #E2E8F0;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        /* ESTILOS NUEVA ESTRUCTURA SUPERCOPA (ESTILO PÓSTER) */
+        .sc-poster-layout {
+            display: grid;
+            grid-template-columns: 1fr 220px 1fr;
+            gap: 20px;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .sc-side-col {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .sc-side-header {
+            font-family: 'Outfit', sans-serif;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-gold);
+            border-bottom: 2px solid rgba(245, 158, 11, 0.3);
+            padding-bottom: 4px;
+        }
+
+        .sc-match-box {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        .sc-match-title {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--accent-gold);
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        .sc-center-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            text-align: center;
+        }
+
+        .sc-logo-badge {
+            width: 90px;
+            height: 90px;
+            background: rgba(11, 15, 25, 0.8);
+            border: 2px solid var(--accent-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.4);
+            font-size: 2.5rem;
+        }
+
+        .sc-final-box {
+            background: rgba(11, 15, 25, 0.95);
+            border: 2px solid var(--accent-gold);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+            border-radius: 14px;
+            padding: 16px;
+            width: 100%;
+        }
+
+        .sc-champ-box {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(11, 15, 25, 0.9));
+            border: 2px solid var(--accent-gold);
+            border-radius: 12px;
+            padding: 12px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
         }
 
         .stats-pills {
@@ -877,6 +956,10 @@
             .card { padding: 16px; }
             .matchday-nav { justify-content: center; }
             .modal-content { padding: 16px; }
+
+            .sc-poster-layout {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -885,7 +968,7 @@
 <div id="page-loader">
     <div class="rolling-ball-container">
         <div class="rolling-ball">⚽</div>
-        <div class="loader-text">Cargando Sección...</div>
+        <div class="loader-text">Cargando...</div>
     </div>
 </div>
 
@@ -963,7 +1046,7 @@
         <button id="tab-btn-gestion" class="tab-btn" onclick="switchTab('gestion', event)" style="display:none;">🛡️ Gestión</button>
     </div>
 
-    <!-- PESTAÑAS EXCLUSIVAS PARA TORNEOS (SUPERCOPA, COPA DEL REY, ETC.) -->
+    <!-- PESTAÑAS EXCLUSIVAS PARA TORNEOS -->
     <div class="main-tabs" id="torneos-tabs-container" style="display: none;">
         <button class="tab-btn active" onclick="switchTorneoTab('supercopa', event)">🇪🇸 Supercopa</button>
         <button class="tab-btn" onclick="switchTorneoTab('copadelrey', event)">👑 Copa del Rey</button>
@@ -1142,18 +1225,18 @@
         <!-- Sub-sección 1: Supercopa -->
         <div id="torneo-subtab-supercopa" class="torneo-subcontent">
             <div class="card supercup-card">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; flex-wrap:wrap; gap:12px;">
-                    <h3 style="color: var(--accent-gold); font-size: 1.5rem;">🇪🇸 SUPERCOPA DE ESPAÑA</h3>
-                    <span style="background: var(--accent-gold); color: #000; font-weight: 800; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">FINAL FOUR</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; flex-wrap:wrap; gap:12px;">
+                    <h3 style="color: var(--accent-gold); font-size: 1.6rem; letter-spacing: 1px;">🇪🇸 SUPERCOPA DE ESPAÑA</h3>
+                    <span style="background: var(--accent-gold); color: #000; font-weight: 800; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">FINAL FOUR</span>
                 </div>
-                <p style="font-size: 0.9rem; margin-bottom: 24px;">Torneo relámpago de eliminación directa entre los Monarcas de cada división y el Subcampeón de 1ª División.</p>
+                <p style="font-size: 0.9rem; margin-bottom: 20px;">Torneo relámpago de eliminación directa entre los Monarcas de cada división y el Subcampeón de 1ª División.</p>
 
-                <div class="bracket-container" style="max-width: 900px; margin: 0 auto;">
-                    <div class="bracket-column">
-                        <h4>Semifinales</h4>
-                        
-                        <div class="bracket-match" style="border-left: 4px solid var(--laliga-red);">
-                            <span style="font-size:0.7rem; color:var(--laliga-red); font-weight:800;">SEMIFINAL 1</span>
+                <!-- NUEVO DISEÑO TIPO PÓSTER OFICIAL DE LA SUPERCOPA -->
+                <div class="sc-poster-layout">
+                    <!-- SEMIFINAL 1 (IZQUIERDA) -->
+                    <div class="sc-side-col">
+                        <div class="sc-side-header">SEMIFINAL 1</div>
+                        <div class="sc-match-box">
                             <div class="bracket-score-row">
                                 <span id="label-sc-s1-t1" style="font-size: 0.95rem;">Campeón 1ª Div</span>
                                 <input type="number" id="score-sc-s1-t1" class="score-input" value="0" disabled>
@@ -1163,9 +1246,34 @@
                                 <input type="number" id="score-sc-s1-t2" class="score-input" value="0" disabled>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="bracket-match" style="border-left: 4px solid var(--accent-staff);">
-                            <span style="font-size:0.7rem; color:var(--accent-staff); font-weight:800;">SEMIFINAL 2</span>
+                    <!-- CENTRO (LOGO + FINAL + CAMPEÓN) -->
+                    <div class="sc-center-col">
+                        <div class="sc-logo-badge" title="Supercopa de España">🏆</div>
+                        
+                        <div class="sc-final-box">
+                            <div class="sc-match-title" style="margin-bottom:8px;">GRAN FINAL</div>
+                            <div class="bracket-score-row">
+                                <span id="label-sc-f-t1" style="font-size: 0.95rem; font-weight:800;">Ganador Semi 1</span>
+                                <input type="number" id="score-sc-f-t1" class="score-input" value="0" disabled>
+                            </div>
+                            <div class="bracket-score-row" style="margin-top:6px;">
+                                <span id="label-sc-f-t2" style="font-size: 0.95rem; font-weight:800;">Ganador Semi 2</span>
+                                <input type="number" id="score-sc-f-t2" class="score-input" value="0" disabled>
+                            </div>
+                        </div>
+
+                        <div class="sc-champ-box">
+                            <span style="font-size: 0.75rem; color: var(--accent-gold); font-weight: 900; letter-spacing: 1px;">👑 SUPERCAMPEÓN DE ESPAÑA</span>
+                            <h3 id="supercup-champion-name" style="color: #FFF; font-size: 1.25rem; margin-top: 4px; border:none; font-weight:900; text-shadow: 0 2px 4px rgba(0,0,0,0.9);">- Por Definir -</h3>
+                        </div>
+                    </div>
+
+                    <!-- SEMIFINAL 2 (DERECHA) -->
+                    <div class="sc-side-col">
+                        <div class="sc-side-header">SEMIFINAL 2</div>
+                        <div class="sc-match-box">
                             <div class="bracket-score-row">
                                 <span id="label-sc-s2-t1" style="font-size: 0.95rem;">Campeón 2ª Div</span>
                                 <input type="number" id="score-sc-s2-t1" class="score-input" value="0" disabled>
@@ -1174,27 +1282,6 @@
                                 <span id="label-sc-s2-t2" style="font-size: 0.95rem;">Subcampeón 1ª Div</span>
                                 <input type="number" id="score-sc-s2-t2" class="score-input" value="0" disabled>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="bracket-column">
-                        <h4>Gran Final</h4>
-                        
-                        <div class="bracket-match" style="border: 2px solid var(--accent-gold); box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);">
-                            <span style="font-size:0.7rem; color:var(--accent-gold); font-weight:800;">GRAN FINAL</span>
-                            <div class="bracket-score-row">
-                                <span id="label-sc-f-t1" style="font-size: 1rem; font-weight:800;">Ganador Semifinal 1</span>
-                                <input type="number" id="score-sc-f-t1" class="score-input" value="0" disabled>
-                            </div>
-                            <div class="bracket-score-row">
-                                <span id="label-sc-f-t2" style="font-size: 1rem; font-weight:800;">Ganador Semifinal 2</span>
-                                <input type="number" id="score-sc-f-t2" class="score-input" value="0" disabled>
-                            </div>
-                        </div>
-
-                        <div class="bracket-match" style="text-align: center; background: rgba(11, 15, 25, 0.9); border: 2px solid var(--accent-gold);">
-                            <span style="font-size: 0.8rem; color: var(--accent-gold); font-weight: 900;">👑 SUPERCAMPEÓN DE ESPAÑA</span>
-                            <h3 id="supercup-champion-name" style="color: #FFF; font-size: 1.3rem; margin-top: 4px; border:none; font-weight:900; text-shadow: 0 2px 4px rgba(0,0,0,0.9);">- Por Definir -</h3>
                         </div>
                     </div>
                 </div>
@@ -1224,7 +1311,7 @@
             </div>
         </div>
 
-        <!-- Sub-sección 2: Copa del Rey (Espacio listo para configurar o usar) -->
+        <!-- Sub-sección 2: Copa del Rey -->
         <div id="torneo-subtab-copadelrey" class="torneo-subcontent" style="display: none;">
             <div class="card">
                 <h3 style="color: var(--laliga-red);">👑 COPA DEL REY</h3>
@@ -1765,12 +1852,10 @@
                 document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
                 document.getElementById('tab-torneos').classList.add('active');
                 
-                // Ocultar pestañas de divisiones y mostrar pestañas exclusivas de torneos
                 document.getElementById('sub-tabs-container').style.display = 'none';
                 document.getElementById('torneos-tabs-container').style.display = 'flex';
                 document.getElementById('hero-title').innerText = `Torneos Oficiales`;
 
-                // Activar por defecto la subpestaña Supercopa
                 document.querySelectorAll('#torneos-tabs-container .tab-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
                 document.querySelectorAll('.torneo-subcontent').forEach((sub, i) => sub.style.display = i === 0 ? 'block' : 'none');
 
@@ -1790,7 +1875,6 @@
                     }
                 });
 
-                // Mostrar pestañas normales y ocultar las de torneos
                 document.getElementById('sub-tabs-container').style.display = 'flex';
                 document.getElementById('torneos-tabs-container').style.display = 'none';
 
@@ -1836,7 +1920,7 @@
         document.querySelectorAll('.stat-subcontent').forEach(sub => sub.style.display = 'none');
 
         if (evt && evt.target) evt.target.classList.add('active');
-        document.getElementById(`stat-subtab-${subtabname}`).style.display = 'block';
+        document.getElementById(`stat-subtab-${subtabName}`).style.display = 'block';
         animateCounters();
     };
 
