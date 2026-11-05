@@ -689,9 +689,9 @@
         }
         .input-group { display: flex; flex-direction: column; gap: 6px; }
         .input-group label { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; }
-        input[type="text"], input[type="number"], select {
+        input[type="text"], input[type="number"], input[type="password"], select {
             background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main);
-            padding: 9px 12px; border-radius: 8px; font-size: 0.9rem;
+            padding: 9px 12px; border-radius: 8px; font-size: 0.9rem; outline: none;
         }
 
         .bracket-container { display: flex; justify-content: space-between; gap: 16px; overflow-x: auto; padding: 10px 0; }
@@ -756,6 +756,12 @@
         }
         .modal-close { position: absolute; top: 16px; right: 16px; background: transparent; color: var(--text-muted); font-size: 1.6rem; cursor: pointer; }
         
+        .pin-modal-content {
+            max-width: 380px !important;
+            text-align: center;
+            padding: 30px 24px !important;
+        }
+
         .roster-list { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
         .roster-item { 
             display: flex; 
@@ -875,8 +881,8 @@
             <svg viewBox="0 0 448 512"><path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.3V178.4A162.55,162.55,0,1,1,185,15.88V145.28a65,65,0,1,0,35.24,57.7v-205h46.23a163,163,0,0,0,91.3,77.58,160.84,160.84,0,0,0,90.2,8.85Z"/></svg>
             TikTok
         </a>
-        <button id="btn-admin-toggle" class="btn-div btn-admin" onclick="toggleAdminMode()">🔑 Admin</button>
-        <button id="btn-staff-toggle" class="btn-div btn-staff" onclick="toggleStaffMode()">🛡️ Staff</button>
+        <button id="btn-admin-toggle" class="btn-div btn-admin" onclick="openAdminPinModal()">🔑 Admin</button>
+        <button id="btn-staff-toggle" class="btn-div btn-staff" onclick="openStaffPinModal()">🛡️ Staff</button>
         <button id="btn-reset-top" class="btn-div btn-reset" onclick="resetCurrentDivision()">🔄 Reset</button>
     </div>
 </div>
@@ -1109,6 +1115,32 @@
 <button id="floating-save-btn" class="floating-save-btn" onclick="manualSaveCloud()">
     <span>💾 AutoGuardado</span>
 </button>
+
+<!-- MODAL PARA PIN DE ADMIN -->
+<div id="admin-pin-modal" class="modal-overlay">
+    <div class="modal-content pin-modal-content">
+        <button class="modal-close" onclick="closeAdminPinModal()">&times;</button>
+        <h3 style="margin-bottom: 8px;">🔑 Acceso de Administrador</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Ingresa la contraseña de administrador:</p>
+        <input type="password" id="admin-pin-input" placeholder="Contraseña..." style="width: 100%; text-align: center; font-size: 1.1rem; font-weight: 700; margin-bottom: 20px;" onkeydown="if(event.key==='Enter') verifyAdminPin()">
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button class="action-btn" style="background: #10B981; width: 100%;" onclick="verifyAdminPin()">Entrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL PARA PIN DE STAFF -->
+<div id="staff-pin-modal" class="modal-overlay">
+    <div class="modal-content pin-modal-content">
+        <button class="modal-close" onclick="closeStaffPinModal()">&times;</button>
+        <h3 style="margin-bottom: 8px;">🛡️ Acceso de Staff</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Ingresa la contraseña de staff:</p>
+        <input type="password" id="staff-pin-input" placeholder="Contraseña..." style="width: 100%; text-align: center; font-size: 1.1rem; font-weight: 700; margin-bottom: 20px;" onkeydown="if(event.key==='Enter') verifyStaffPin()">
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button class="action-btn" style="background: var(--accent-staff); width: 100%;" onclick="verifyStaffPin()">Entrar</button>
+        </div>
+    </div>
+</div>
 
 <div id="team-modal" class="modal-overlay">
     <div class="modal-content">
@@ -1363,31 +1395,12 @@
         });
     }
 
-    window.toggleAdminMode = function() {
+    // Funciones de Modales de PIN personalizados
+    window.openAdminPinModal = function() {
         if (!isAdmin) {
-            let pass = prompt('Ingresa el PIN de Administrador:');
-            if (pass === ADMIN_PIN) {
-                isAdmin = true;
-                isStaff = false;
-                document.getElementById('btn-admin-toggle').innerText = "🔓 Admin: Activo";
-                document.getElementById('btn-admin-toggle').style.background = "#10B981";
-                document.getElementById('btn-admin-toggle').style.color = "#FFF";
-
-                document.getElementById('btn-staff-toggle').innerText = "🛡️ Staff";
-                document.getElementById('btn-staff-toggle').style.background = "var(--accent-staff)";
-                document.getElementById('btn-staff-toggle').style.color = "#FFF";
-                
-                document.getElementById('tab-btn-gestion').style.display = 'inline-block';
-                document.getElementById('floating-save-btn').style.display = 'flex';
-                document.getElementById('btn-reset-top').style.display = 'inline-block';
-                document.getElementById('btn-reset-standings').style.display = 'inline-block';
-
-                updateBracketInputsState();
-                alert('¡Modo Administrador Activado!');
-                renderAll();
-            } else if (pass !== null) {
-                alert('PIN Incorrecto.');
-            }
+            document.getElementById('admin-pin-input').value = '';
+            document.getElementById('admin-pin-modal').classList.add('active');
+            setTimeout(() => document.getElementById('admin-pin-input').focus(), 100);
         } else {
             if (confirm('¿Cerrar sesión de Administrador?')) {
                 isAdmin = false;
@@ -1408,31 +1421,44 @@
         }
     };
 
-    window.toggleStaffMode = function() {
+    window.closeAdminPinModal = function() {
+        document.getElementById('admin-pin-modal').classList.remove('active');
+    };
+
+    window.verifyAdminPin = function() {
+        let pass = document.getElementById('admin-pin-input').value;
+        if (pass === ADMIN_PIN) {
+            isAdmin = true;
+            isStaff = false;
+            closeAdminPinModal();
+            document.getElementById('btn-admin-toggle').innerText = "🔓 Admin: Activo";
+            document.getElementById('btn-admin-toggle').style.background = "#10B981";
+            document.getElementById('btn-admin-toggle').style.color = "#FFF";
+
+            document.getElementById('btn-staff-toggle').innerText = "🛡️ Staff";
+            document.getElementById('btn-staff-toggle').style.background = "var(--accent-staff)";
+            document.getElementById('btn-staff-toggle').style.color = "#FFF";
+            
+            document.getElementById('tab-btn-gestion').style.display = 'inline-block';
+            document.getElementById('floating-save-btn').style.display = 'flex';
+            document.getElementById('btn-reset-top').style.display = 'inline-block';
+            document.getElementById('btn-reset-standings').style.display = 'inline-block';
+
+            updateBracketInputsState();
+            alert('¡Modo Administrador Activado!');
+            renderAll();
+        } else {
+            alert('PIN Incorrecto.');
+            document.getElementById('admin-pin-input').value = '';
+            document.getElementById('admin-pin-input').focus();
+        }
+    };
+
+    window.openStaffPinModal = function() {
         if (!isStaff) {
-            let pass = prompt('Ingresa el PIN de Staff:');
-            if (pass === STAFF_PIN) {
-                isStaff = true;
-                isAdmin = false;
-                document.getElementById('btn-staff-toggle').innerText = "🔓 Staff: Activo";
-                document.getElementById('btn-staff-toggle').style.background = "#10B981";
-                document.getElementById('btn-staff-toggle').style.color = "#FFF";
-
-                document.getElementById('btn-admin-toggle').innerText = "🔑 Admin";
-                document.getElementById('btn-admin-toggle').style.background = "var(--accent-gold)";
-                document.getElementById('btn-admin-toggle').style.color = "#02040A";
-                
-                document.getElementById('tab-btn-gestion').style.display = 'none';
-                document.getElementById('floating-save-btn').style.display = 'flex';
-                document.getElementById('btn-reset-top').style.display = 'none';
-                document.getElementById('btn-reset-standings').style.display = 'none';
-
-                updateBracketInputsState();
-                alert('¡Modo Staff Activado! (Puedes editar resultados y jornadas)');
-                renderAll();
-            } else if (pass !== null) {
-                alert('PIN Incorrecto.');
-            }
+            document.getElementById('staff-pin-input').value = '';
+            document.getElementById('staff-pin-modal').classList.add('active');
+            setTimeout(() => document.getElementById('staff-pin-input').focus(), 100);
         } else {
             if (confirm('¿Cerrar sesión de Staff?')) {
                 isStaff = false;
@@ -1445,6 +1471,39 @@
                 alert('Modo Staff Cerrado.');
                 renderAll();
             }
+        }
+    };
+
+    window.closeStaffPinModal = function() {
+        document.getElementById('staff-pin-modal').classList.remove('active');
+    };
+
+    window.verifyStaffPin = function() {
+        let pass = document.getElementById('staff-pin-input').value;
+        if (pass === STAFF_PIN) {
+            isStaff = true;
+            isAdmin = false;
+            closeStaffPinModal();
+            document.getElementById('btn-staff-toggle').innerText = "🔓 Staff: Activo";
+            document.getElementById('btn-staff-toggle').style.background = "#10B981";
+            document.getElementById('btn-staff-toggle').style.color = "#FFF";
+
+            document.getElementById('btn-admin-toggle').innerText = "🔑 Admin";
+            document.getElementById('btn-admin-toggle').style.background = "var(--accent-gold)";
+            document.getElementById('btn-admin-toggle').style.color = "#02040A";
+            
+            document.getElementById('tab-btn-gestion').style.display = 'none';
+            document.getElementById('floating-save-btn').style.display = 'flex';
+            document.getElementById('btn-reset-top').style.display = 'none';
+            document.getElementById('btn-reset-standings').style.display = 'none';
+
+            updateBracketInputsState();
+            alert('¡Modo Staff Activado! (Puedes editar resultados y jornadas)');
+            renderAll();
+        } else {
+            alert('PIN Incorrecto.');
+            document.getElementById('staff-pin-input').value = '';
+            document.getElementById('staff-pin-input').focus();
         }
     };
 
