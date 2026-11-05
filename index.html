@@ -331,7 +331,6 @@
             font-weight: 800;
         }
 
-        /* FRANJA ROJA ESTÁNDAR PARA DIVISIONES */
         .laliga-hero {
             background-color: var(--laliga-red);
             color: #FFF;
@@ -341,7 +340,6 @@
             transition: background-color 0.8s ease, box-shadow 0.8s ease;
         }
 
-        /* ANIMACIÓN DE TRANSICIÓN DE COLORES EN EL BANNER DE CHAMPIONS LEAGUE */
         .laliga-hero.supercopa-hero {
             position: sticky;
             top: 73px;
@@ -452,7 +450,6 @@
             margin-bottom: 16px;
         }
 
-        /* CARD ESPECIAL CHAMPIONS LEAGUE (COLOR AZUL #0833A2) CON ANIMACIÓN DE TRANSICIÓN */
         .supercup-card {
             position: relative;
             background-color: #0833A2 !important;
@@ -483,7 +480,6 @@
             border-color: rgba(4, 4, 226, 0.6);
         }
 
-        /* TÍTULO CHAMPIONS LEAGUE CON SOMBRA NEGRA Y NUEVA IMAGEN AL LADO */
         .supercup-title-container {
             display: flex;
             align-items: center;
@@ -504,7 +500,6 @@
             box-shadow: none !important;
         }
 
-        /* DISEÑO TIPO PÓSTER OFICIAL DE LA CHAMPIONS */
         .sc-poster-layout {
             display: grid;
             grid-template-columns: 1fr 220px 1fr;
@@ -560,7 +555,6 @@
             text-align: center;
         }
 
-        /* IMAGEN CENTRAL CON SU ILUMINACIÓN ORIGINAL, SIN CÍRCULO */
         .sc-logo-badge-nocircle {
             width: 100px;
             height: 100px;
@@ -1092,7 +1086,6 @@
     <div class="ticker-items" id="ticker-clubs-container"></div>
 </div>
 
-<!-- FRANJA HERO DINÁMICA -->
 <div id="hero-banner" class="laliga-hero">
     <div class="laliga-hero-content">
         <div>
@@ -1104,7 +1097,6 @@
 </div>
 
 <div class="container">
-    <!-- PESTAÑAS PARA DIVISIONES -->
     <div class="main-tabs" id="sub-tabs-container">
         <button class="tab-btn active" onclick="switchTab('clasificacion', event)">📊 Clasificación</button>
         <button class="tab-btn" onclick="switchTab('calendario', event)">📅 Calendario</button>
@@ -1113,7 +1105,6 @@
         <button id="tab-btn-gestion" class="tab-btn" onclick="switchTab('gestion', event)" style="display:none;">🛡️ Gestión</button>
     </div>
 
-    <!-- PESTAÑAS EXCLUSIVAS PARA TORNEOS -->
     <div class="main-tabs" id="torneos-tabs-container" style="display: none;">
         <button class="tab-btn active" onclick="switchTorneoTab('supercopa', event)">Champions League</button>
         <button class="tab-btn" onclick="switchTorneoTab('copadelrey', event)">Copa del Rey</button>
@@ -1287,13 +1278,10 @@
         </div>
     </div>
 
-    <!-- SECCIÓN DE TORNEOS -->
     <div id="tab-torneos" class="content-section">
-        <!-- Sub-sección 1: Champions League -->
         <div id="torneo-subtab-supercopa" class="torneo-subcontent">
             <div class="card supercup-card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; flex-wrap:wrap; gap:12px;">
-                    <!-- TÍTULO CHAMPIONS LEAGUE CON SOMBRA NEGRA Y NUEVA IMAGEN OFICIAL -->
                     <div class="supercup-title-container">
                         <h3 class="glowing-supercopa-title">CHAMPIONS LEAGUE</h3>
                         <img src="https://www.fifplay.com/img/public/ucl-logo.png" alt="Champions Logo" class="supercopa-inline-logo-clean">
@@ -1301,9 +1289,7 @@
                     <span style="background: #0404E2; color: #FFF; font-weight: 800; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">FINAL FOUR</span>
                 </div>
 
-                <!-- DISEÑO TIPO PÓSTER OFICIAL DE LA CHAMPIONS LEAGUE -->
                 <div class="sc-poster-layout">
-                    <!-- SEMIFINAL 1 (IZQUIERDA) -->
                     <div class="sc-side-col">
                         <div class="sc-side-header">SEMIFINAL 1</div>
                         <div class="sc-match-box">
@@ -1318,7 +1304,6 @@
                         </div>
                     </div>
 
-                    <!-- CENTRO (IMAGEN ORIGINAL CON LUZ Y SOMBRA AZUL, SIN CÍRCULO) -->
                     <div class="sc-center-col">
                         <div class="sc-logo-badge-nocircle" title="Champions League">
                             <img src="https://media.discordapp.net/attachments/1353118715406716981/1567727795256172665/supercopa.jpg" alt="Trofeo Central">
@@ -1342,7 +1327,6 @@
                         </div>
                     </div>
 
-                    <!-- SEMIFINAL 2 (DERECHA) -->
                     <div class="sc-side-col">
                         <div class="sc-side-header">SEMIFINAL 2</div>
                         <div class="sc-match-box">
@@ -1383,7 +1367,6 @@
             </div>
         </div>
 
-        <!-- Sub-sección 2: Copa del Rey -->
         <div id="torneo-subtab-copadelrey" class="torneo-subcontent" style="display: none;">
             <div class="card">
                 <h3 style="color: var(--laliga-red);">👑 COPA DEL REY</h3>
@@ -1433,7 +1416,6 @@
     <span>💾 AutoGuardado</span>
 </button>
 
-<!-- MODAL PARA PIN DE ADMIN -->
 <div id="admin-pin-modal" class="modal-overlay">
     <div class="modal-content pin-modal-content">
         <button class="modal-close" onclick="closeAdminPinModal()">&times;</button>
@@ -1446,7 +1428,6 @@
     </div>
 </div>
 
-<!-- MODAL PARA PIN DE STAFF -->
 <div id="staff-pin-modal" class="modal-overlay">
     <div class="modal-content pin-modal-content">
         <button class="modal-close" onclick="closeStaffPinModal()">&times;</button>
