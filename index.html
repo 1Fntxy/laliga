@@ -331,13 +331,18 @@
             font-weight: 800;
         }
 
-        /* DEGRADADO SOLICITADO: ROJO A NEGRO */
+        /* FRANJA ROJA ESTÁNDAR PARA DIVISIONES (ROJO SÓLIDO ORIGINAL)[cite: 10] */
         .laliga-hero {
-            background: linear-gradient(90deg, #EE1D23 0%, #3B0A0C 45%, #0B0F19 100%);
+            background-color: var(--laliga-red);
             color: #FFF;
             padding: 24px;
             box-shadow: 0 10px 25px rgba(238, 29, 35, 0.3);
             margin-bottom: 24px;
+        }
+
+        /* FRANJA DEGRADADA EXCLUSIVA PARA SUPERCOPA (MÁS ROJO QUE NEGRO)[cite: 11] */
+        .laliga-hero.supercopa-hero {
+            background: linear-gradient(90deg, #EE1D23 0%, #EE1D23 60%, #8A1014 85%, #250406 100%);
         }
 
         .laliga-hero-content {
@@ -1030,9 +1035,11 @@
     <div class="ticker-items" id="ticker-clubs-container"></div>
 </div>
 
-<div class="laliga-hero">
+<!-- LA CLASE SE ACTUALIZA DINÁMICAMENTE SEGÚN LA SECCIÓN -->
+<div id="hero-banner" class="laliga-hero">
     <div class="laliga-hero-content">
-        <h2 id="hero-title">SUPERCOPA</h2>
+        <h2 id="hero-title">Temporada Oficial • 1ª División</h2>
+        <p id="hero-subtitle">Estadísticas en tiempo real, clasificación y calendario sincronizados</p>
     </div>
 </div>
 
@@ -1230,7 +1237,7 @@
                     <span style="background: var(--accent-gold); color: #000; font-weight: 800; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">FINAL FOUR</span>
                 </div>
 
-                <!-- NUEVO DISEÑO TIPO PÓSTER OFICIAL DE LA SUPERCOPA -->
+                <!-- DISEÑO TIPO PÓSTER OFICIAL DE LA SUPERCOPA -->
                 <div class="sc-poster-layout">
                     <!-- SEMIFINAL 1 (IZQUIERDA) -->
                     <div class="sc-side-col">
@@ -1841,6 +1848,7 @@
         const loader = document.getElementById('page-loader');
         loader.classList.add('active');
         setTimeout(() => {
+            const heroBanner = document.getElementById('hero-banner');
             if (section === 'torneos') {
                 document.getElementById('btn-top-torneos').classList.add('active');
                 [1, 2, 3].forEach(d => {
@@ -1854,6 +1862,10 @@
                 document.getElementById('sub-tabs-container').style.display = 'none';
                 document.getElementById('torneos-tabs-container').style.display = 'flex';
                 document.getElementById('hero-title').innerText = `SUPERCOPA`;
+                document.getElementById('hero-subtitle').style.display = 'none';
+                
+                // Aplicar degradado exclusivo a la Supercopa
+                if (heroBanner) heroBanner.classList.add('supercopa-hero');
 
                 document.querySelectorAll('#torneos-tabs-container .tab-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
                 document.querySelectorAll('.torneo-subcontent').forEach((sub, i) => sub.style.display = i === 0 ? 'block' : 'none');
@@ -1878,8 +1890,12 @@
                 document.getElementById('torneos-tabs-container').style.display = 'none';
 
                 document.getElementById('hero-title').innerText = `Temporada Oficial • ${section}ª División`;
+                document.getElementById('hero-subtitle').style.display = 'block';
                 document.getElementById('div-title').innerText = `${section}ª División • Tabla de Posiciones`;
                 
+                // Restaurar rojo sólido original para divisiones[cite: 10]
+                if (heroBanner) heroBanner.classList.remove('supercopa-hero');
+
                 document.querySelectorAll('.main-tabs .tab-btn').forEach((btn, idx) => {
                     btn.classList.toggle('active', idx === 0);
                 });
