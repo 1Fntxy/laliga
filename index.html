@@ -571,7 +571,6 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Botón general ubicado exactamente en el espacio central que señalaste */
         .match-details-toggle-btn {
             background: var(--bg-subcard);
             color: var(--text-muted);
@@ -655,7 +654,6 @@
         }
         .match-events-body.show { display: flex; flex-direction: column; }
 
-        /* Fila EXACTA por jugador: [Equipo] | [Jugador] | ⚽ Goles [ ] | 🎯 Asistencias [ ] | 🧤 Paradas [ ] */
         .match-player-stat-row {
             display: flex;
             gap: 8px;
@@ -1016,48 +1014,48 @@
                 <div class="bracket-column">
                     <h4>Cuartos de Final</h4>
                     <div class="bracket-match">
-                        <select id="q1-t1" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
-                        <div class="bracket-score-row"><span id="label-q1-t1">Eq 1</span><input type="number" id="score-q1-t1" class="score-input" value="0"></div>
-                        <div class="bracket-score-row"><span id="label-q1-t2">Eq 2</span><input type="number" id="score-q1-t2" class="score-input" value="0"></div>
-                        <select id="q1-t2" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
+                        <select id="q1-t1" class="bracket-team-select" disabled onchange="updateBracketDisplay()"></select>
+                        <div class="bracket-score-row"><span id="label-q1-t1">Eq 1</span><input type="number" id="score-q1-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row"><span id="label-q1-t2">Eq 2</span><input type="number" id="score-q1-t2" class="score-input" value="0" disabled></div>
+                        <select id="q1-t2" class="bracket-team-select" disabled onchange="updateBracketDisplay()"></select>
                     </div>
                     <div class="bracket-match">
-                        <select id="q2-t1" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
-                        <div class="bracket-score-row"><span id="label-q2-t1">Eq 3</span><input type="number" id="score-q2-t1" class="score-input" value="0"></div>
-                        <div class="bracket-score-row"><span id="label-q2-t2">Eq 4</span><input type="number" id="score-q2-t2" class="score-input" value="0"></div>
-                        <select id="q2-t2" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
+                        <select id="q2-t1" class="bracket-team-select" disabled onchange="updateBracketDisplay()"></select>
+                        <div class="bracket-score-row"><span id="label-q2-t1">Eq 3</span><input type="number" id="score-q2-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row"><span id="label-q2-t2">Eq 4</span><input type="number" id="score-q2-t2" class="score-input" value="0" disabled></div>
+                        <select id="q2-t2" class="bracket-team-select" disabled onchange="updateBracketDisplay()"></select>
                     </div>
                     <div class="bracket-match">
-                        <select id="q3-t1" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
-                        <div class="bracket-score-row"><span id="label-q3-t1">Eq 5</span><input type="number" id="score-q3-t1" class="score-input" value="0"></div>
-                        <div class="bracket-score-row"><span id="label-q3-t2">Eq 6</span><input type="number" id="score-q3-t2" class="score-input" value="0"></div>
-                        <select id="q3-t2" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
+                        <select id="q3-t1" class="bracket-team-select" disabled onchange="updateBracketDisplay()"></select>
+                        <div class="bracket-score-row"><span id="label-q3-t1">Eq 5</span><input type="number" id="score-q3-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row"><span id="label-q3-t2">Eq 6</span><input type="number" id="score-q3-t2" class="score-input" value="0" disabled></div>
+                        <select id="q3-t2" class="bracket-team-select" disabled onchange="updateBracketDisplay()"></select>
                     </div>
                     <div class="bracket-match">
-                        <select id="q4-t1" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
-                        <div class="bracket-score-row"><span id="label-q4-t1">Eq 7</span><input type="number" id="score-q4-t1" class="score-input" value="0"></div>
-                        <div class="bracket-score-row"><span id="label-q4-t2">Eq 8</span><input type="number" id="score-q4-t2" class="score-input" value="0"></div>
-                        <select id="q4-t2" class="bracket-team-select" onchange="updateBracketDisplay()"></select>
+                        <select id="q4-t1" class="bracket-team-select" disabled onchange="updateBracketDisplay()"></select>
+                        <div class="bracket-score-row"><span id="label-q4-t1">Eq 7</span><input type="number" id="score-q4-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row"><span id="label-q4-t2">Eq 8</span><input type="number" id="score-q4-t2" class="score-input" value="0" disabled></div>
+                        <select id="q4-t2" class="bracket-team-select" disabled onchange="updateBracketDisplay()"></select>
                     </div>
                 </div>
 
                 <div class="bracket-column">
                     <h4>Semifinales</h4>
                     <div class="bracket-match">
-                        <div class="bracket-score-row"><span id="label-s1-t1">Ganador Q1</span><input type="number" id="score-s1-t1" class="score-input" value="0"></div>
-                        <div class="bracket-score-row"><span id="label-s1-t2">Ganador Q2</span><input type="number" id="score-s1-t2" class="score-input" value="0"></div>
+                        <div class="bracket-score-row"><span id="label-s1-t1">Ganador Q1</span><input type="number" id="score-s1-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row"><span id="label-s1-t2">Ganador Q2</span><input type="number" id="score-s1-t2" class="score-input" value="0" disabled></div>
                     </div>
                     <div class="bracket-match">
-                        <div class="bracket-score-row"><span id="label-s2-t1">Ganador Q3</span><input type="number" id="score-s2-t1" class="score-input" value="0"></div>
-                        <div class="bracket-score-row"><span id="label-s2-t2">Ganador Q4</span><input type="number" id="score-s2-t2" class="score-input" value="0"></div>
+                        <div class="bracket-score-row"><span id="label-s2-t1">Ganador Q3</span><input type="number" id="score-s2-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row"><span id="label-s2-t2">Ganador Q4</span><input type="number" id="score-s2-t2" class="score-input" value="0" disabled></div>
                     </div>
                 </div>
 
                 <div class="bracket-column">
                     <h4>Gran Final</h4>
                     <div class="bracket-match" style="border-color: var(--accent-gold);">
-                        <div class="bracket-score-row"><span id="label-f-t1">Finalista 1</span><input type="number" id="score-f-t1" class="score-input" value="0"></div>
-                        <div class="bracket-score-row"><span id="label-f-t2">Finalista 2</span><input type="number" id="score-f-t2" class="score-input" value="0"></div>
+                        <div class="bracket-score-row"><span id="label-f-t1">Finalista 1</span><input type="number" id="score-f-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row"><span id="label-f-t2">Finalista 2</span><input type="number" id="score-f-t2" class="score-input" value="0" disabled></div>
                     </div>
                     <div class="bracket-match" style="text-align: center; background: var(--bg-card); border: 2px solid var(--accent-gold);">
                         <span style="font-size: 0.75rem; color: var(--accent-gold); font-weight: 800;">🏆 CAMPEÓN</span>
@@ -1352,6 +1350,13 @@
         downloadAnchor.remove();
     };
 
+    function updateBracketInputsState() {
+        const bracketInputs = document.querySelectorAll('#tab-bracket input, #tab-bracket select');
+        bracketInputs.forEach(el => {
+            el.disabled = !isAdmin;
+        });
+    }
+
     window.toggleAdminMode = function() {
         if (!isAdmin) {
             let pass = prompt('Ingresa el PIN de Administrador:');
@@ -1366,6 +1371,7 @@
                 document.getElementById('btn-reset-top').style.display = 'inline-block';
                 document.getElementById('btn-reset-standings').style.display = 'inline-block';
 
+                updateBracketInputsState();
                 alert('¡Modo Administrador Activado!');
                 renderAll();
             } else if (pass !== null) {
@@ -1383,6 +1389,7 @@
                 document.getElementById('btn-reset-top').style.display = 'none';
                 document.getElementById('btn-reset-standings').style.display = 'none';
                 
+                updateBracketInputsState();
                 switchTab('clasificacion', null);
                 alert('Modo Administrador Cerrado.');
                 renderAll();
@@ -1528,6 +1535,7 @@
         renderTeamManagement();
         renderBracketSelectors();
         loadBracketData();
+        updateBracketInputsState();
     }
 
     function calculatePositionsForMatches(matchesLimit) {
@@ -1891,7 +1899,6 @@
                         <div class="score-inputs">
                             <input type="number" class="score-input" value="${m.homeScore !== null ? m.homeScore : ''}" ${!isAdmin ? 'disabled' : ''} onchange="updateScore(${m.id}, 'home', this.value)">
                             
-                            <!-- Botón de resumen movido exactamente al espacio central entre los marcadores -->
                             <button class="match-details-toggle-btn" onclick="toggleMatchDetailsBox(${m.id})" id="details-btn-${m.id}">
                                 ${detailsBtnText}
                             </button>
@@ -1921,7 +1928,6 @@
         }).join('');
     }
 
-    // Detector de clics fuera de las cajas de registro de incidencias para cerrarlas y guardarlas automáticamente
     window.addEventListener('click', function(e) {
         if (!isAdmin) return;
         for (let matchId in openMatchEventsBoxes) {
@@ -2308,8 +2314,8 @@
     }
 
     document.querySelectorAll('#tab-bracket input, #tab-bracket select').forEach(inp => {
-        inp.addEventListener('input', updateBracketDisplay);
-        inp.addEventListener('change', updateBracketDisplay);
+        inp.addEventListener('input', () => { if (isAdmin) updateBracketDisplay(); });
+        inp.addEventListener('change', () => { if (isAdmin) updateBracketDisplay(); });
     });
 </script>
 
