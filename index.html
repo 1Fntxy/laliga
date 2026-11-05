@@ -842,7 +842,7 @@
 <div id="page-loader">
     <div class="rolling-ball-container">
         <div class="rolling-ball">⚽</div>
-        <div class="loader-text">Cargando División...</div>
+        <div class="loader-text">Cargando Sección...</div>
     </div>
 </div>
 
@@ -911,6 +911,7 @@
         <button class="tab-btn" onclick="switchTab('calendario', event)">📅 Calendario</button>
         <button class="tab-btn" onclick="switchTab('estadisticas', event)">⚡ Estadísticas / Tops</button>
         <button class="tab-btn" onclick="switchTab('bracket', event)">🏆 Liguilla</button>
+        <button class="tab-btn" onclick="switchTab('supercopa', event)">🇪🇸 Supercopa</button>
         <button id="tab-btn-gestion" class="tab-btn" onclick="switchTab('gestion', event)" style="display:none;">🛡️ Gestión</button>
     </div>
 
@@ -1082,6 +1083,72 @@
         </div>
     </div>
 
+    <!-- PESTAÑA SUPERCOPA DE ESPAÑA -->
+    <div id="tab-supercopa" class="content-section">
+        <div class="card" style="border-color: var(--accent-gold); background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-subcard) 100%);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; flex-wrap:wrap; gap:12px;">
+                <h3 style="color: var(--accent-gold); font-size: 1.5rem;">🇪🇸 SUPERCOPA DE ESPAÑA</h3>
+                <span style="background: var(--accent-gold); color: #000; font-weight: 800; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem;">FINAL FOUR</span>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">Torneo relámpago de eliminación directa entre los Monarcas de cada división y el Subcampeón de 1ª División.</p>
+
+            <div class="bracket-container" style="max-width: 900px; margin: 0 auto;">
+                <div class="bracket-column">
+                    <h4>Semifinales</h4>
+                    
+                    <!-- Semifinal 1 -->
+                    <div class="bracket-match" style="border-left: 4px solid var(--laliga-red);">
+                        <span style="font-size:0.7rem; color:var(--laliga-red); font-weight:800;">SEMIFINAL 1</span>
+                        <div class="bracket-score-row">
+                            <span id="label-sc-s1-t1" style="font-size: 0.95rem;">Campeón 1ª Div</span>
+                            <input type="number" id="score-sc-s1-t1" class="score-input" value="0" disabled>
+                        </div>
+                        <div class="bracket-score-row">
+                            <span id="label-sc-s1-t2" style="font-size: 0.95rem;">Campeón 3ª Div</span>
+                            <input type="number" id="score-sc-s1-t2" class="score-input" value="0" disabled>
+                        </div>
+                    </div>
+
+                    <!-- Semifinal 2 -->
+                    <div class="bracket-match" style="border-left: 4px solid var(--accent-staff);">
+                        <span style="font-size:0.7rem; color:var(--accent-staff); font-weight:800;">SEMIFINAL 2</span>
+                        <div class="bracket-score-row">
+                            <span id="label-sc-s2-t1" style="font-size: 0.95rem;">Campeón 2ª Div</span>
+                            <input type="number" id="score-sc-s2-t1" class="score-input" value="0" disabled>
+                        </div>
+                        <div class="bracket-score-row">
+                            <span id="label-sc-s2-t2" style="font-size: 0.95rem;">Subcampeón 1ª Div</span>
+                            <input type="number" id="score-sc-s2-t2" class="score-input" value="0" disabled>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bracket-column">
+                    <h4>Gran Final</h4>
+                    
+                    <!-- Final -->
+                    <div class="bracket-match" style="border: 2px solid var(--accent-gold); box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);">
+                        <span style="font-size:0.7rem; color:var(--accent-gold); font-weight:800;">GRAN FINAL</span>
+                        <div class="bracket-score-row">
+                            <span id="label-sc-f-t1" style="font-size: 1rem; font-weight:800;">Ganador Semifinal 1</span>
+                            <input type="number" id="score-sc-f-t1" class="score-input" value="0" disabled>
+                        </div>
+                        <div class="bracket-score-row">
+                            <span id="label-sc-f-t2" style="font-size: 1rem; font-weight:800;">Ganador Semifinal 2</span>
+                            <input type="number" id="score-sc-f-t2" class="score-input" value="0" disabled>
+                        </div>
+                    </div>
+
+                    <!-- Campeón -->
+                    <div class="bracket-match" style="text-align: center; background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(238, 29, 35, 0.15) 100%); border: 2px solid var(--accent-gold);">
+                        <span style="font-size: 0.8rem; color: var(--accent-gold); font-weight: 900;">👑 SUPERCAMPEÓN DE ESPAÑA</span>
+                        <h3 id="supercup-champion-name" style="color: var(--text-main); font-size: 1.3rem; margin-top: 4px; border:none; font-weight:900;">- Por Definir -</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="tab-gestion" class="content-section">
         <div class="card" style="margin-bottom: 24px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
@@ -1096,6 +1163,30 @@
                 <div class="input-group">
                     <label>Enlace de TikTok:</label>
                     <input type="text" id="admin-tiktok-url" placeholder="https://www.tiktok.com/@..." onchange="updateSocialLinksFromInput()">
+                </div>
+            </div>
+        </div>
+
+        <!-- GESTIÓN DE SUPERCOPA -->
+        <div class="card" style="margin-bottom: 24px; border-color: var(--accent-gold); background: var(--bg-subcard);">
+            <h3 style="color: var(--accent-gold);">🇪🇸 Selección de Participantes Supercopa</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Elige a los 4 equipos clasificados para la Supercopa (puedes seleccionar de cualquiera de las 3 divisiones):</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+                <div class="input-group">
+                    <label>Campeón 1ª Div (Semi 1):</label>
+                    <select id="sc-select-s1-t1" onchange="updateSupercupDisplay()"></select>
+                </div>
+                <div class="input-group">
+                    <label>Campeón 3ª Div (Semi 1):</label>
+                    <select id="sc-select-s1-t2" onchange="updateSupercupDisplay()"></select>
+                </div>
+                <div class="input-group">
+                    <label>Campeón 2ª Div (Semi 2):</label>
+                    <select id="sc-select-s2-t1" onchange="updateSupercupDisplay()"></select>
+                </div>
+                <div class="input-group">
+                    <label>Subcampeón 1ª Div (Semi 2):</label>
+                    <select id="sc-select-s2-t2" onchange="updateSupercupDisplay()"></select>
                 </div>
             </div>
         </div>
@@ -1236,7 +1327,8 @@
     function getInitialData() {
         let data = {
             socialDiscord: "https://discord.gg/tu-enlace-de-discord",
-            socialTiktok: "https://www.tiktok.com/@tu-usuario-tiktok"
+            socialTiktok: "https://www.tiktok.com/@tu-usuario-tiktok",
+            supercup: {}
         };
         [1, 2, 3].forEach(div => {
             let teams = DEFAULT_TEAMS.map((name, idx) => ({
@@ -1297,6 +1389,7 @@
             appData = docSnap.data();
             if (!appData.socialDiscord) appData.socialDiscord = "https://discord.gg/tu-enlace-de-discord";
             if (!appData.socialTiktok) appData.socialTiktok = "https://www.tiktok.com/@tu-usuario-tiktok";
+            if (!appData.supercup) appData.supercup = {};
             
             [1, 2, 3].forEach(div => {
                 if (appData[div] && appData[div].teams) {
@@ -1396,9 +1489,9 @@
     };
 
     function updateBracketInputsState() {
-        const bracketInputs = document.querySelectorAll('#tab-bracket input, #tab-bracket select');
+        const bracketInputs = document.querySelectorAll('#tab-bracket input, #tab-bracket select, #tab-supercopa input, #tab-supercopa select, #sc-select-s1-t1, #sc-select-s1-t2, #sc-select-s2-t1, #sc-select-s2-t2');
         bracketInputs.forEach(el => {
-            el.disabled = !isAdmin;
+            el.disabled = !(isAdmin || isStaff);
         });
     }
 
@@ -1658,6 +1751,8 @@
         renderTeamManagement();
         renderBracketSelectors();
         loadBracketData();
+        renderSupercupSelectors();
+        loadSupercupData();
         updateBracketInputsState();
     }
 
@@ -2371,6 +2466,18 @@
         }
     };
 
+    function getAllTeamsAcrossDivisions() {
+        let all = [];
+        [1, 2, 3].forEach(d => {
+            if (appData[d] && appData[d].teams) {
+                appData[d].teams.forEach(t => {
+                    all.push({ id: `${d}-${t.id}`, name: `${t.name} (${d}ª Div)` });
+                });
+            }
+        });
+        return all;
+    }
+
     function renderBracketSelectors() {
         const divData = appData[currentDiv];
         if (!divData) return;
@@ -2381,6 +2488,70 @@
             document.getElementById(`q${i}-t1`).innerHTML = optionsHTML;
             document.getElementById(`q${i}-t2`).innerHTML = optionsHTML;
         }
+    }
+
+    function renderSupercupSelectors() {
+        const allTeams = getAllTeamsAcrossDivisions();
+        const optionsHTML = `<option value="">-- Seleccionar Equipo --</option>` + 
+            allTeams.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+
+        ['sc-select-s1-t1', 'sc-select-s1-t2', 'sc-select-s2-t1', 'sc-select-s2-t2'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = optionsHTML;
+        });
+    }
+
+    window.updateSupercupDisplay = function() {
+        const getTeamNameFromFullId = (fullId) => {
+            if (!fullId) return 'Por Definir';
+            const parts = fullId.split('-');
+            const d = parts[0];
+            const tId = parts[1];
+            if (appData[d] && appData[d].teams) {
+                const team = appData[d].teams.find(x => x.id == tId);
+                return team ? team.name : 'Por Definir';
+            }
+            return 'Por Definir';
+        };
+
+        let s1_1_id = document.getElementById('sc-select-s1-t1').value;
+        let s1_2_id = document.getElementById('sc-select-s1-t2').value;
+        let s2_1_id = document.getElementById('sc-select-s2-t1').value;
+        let s2_2_id = document.getElementById('sc-select-s2-t2').value;
+
+        document.getElementById('label-sc-s1-t1').innerText = getTeamNameFromFullId(s1_1_id);
+        document.getElementById('label-sc-s1-t2').innerText = getTeamNameFromFullId(s1_2_id);
+        document.getElementById('label-sc-s2-t1').innerText = getTeamNameFromFullId(s2_1_id);
+        document.getElementById('label-sc-s2-t2').innerText = getTeamNameFromFullId(s2_2_id);
+
+        let f1 = getWinnerFromLabels('label-sc-s1-t1', 'label-sc-s1-t2', 'score-sc-s1-t1', 'score-sc-s1-t2');
+        let f2 = getWinnerFromLabels('label-sc-s2-t1', 'label-sc-s2-t2', 'score-sc-s2-t1', 'score-sc-s2-t2');
+
+        document.getElementById('label-sc-f-t1').innerText = f1;
+        document.getElementById('label-sc-f-t2').innerText = f2;
+
+        let superChampion = getWinnerFromLabels('label-sc-f-t1', 'label-sc-f-t2', 'score-sc-f-t1', 'score-sc-f-t2');
+        document.getElementById('supercup-champion-name').innerText = superChampion;
+
+        saveSupercupToMemory();
+    };
+
+    function saveSupercupToMemory() {
+        if ((!isAdmin && !isStaff) || isInitialLoading) return;
+        let supercupData = {};
+        let inputs = document.querySelectorAll('#tab-supercopa input, #sc-select-s1-t1, #sc-select-s1-t2, #sc-select-s2-t1, #sc-select-s2-t2');
+        inputs.forEach(input => { supercupData[input.id] = input.value; });
+        appData.supercup = supercupData;
+        triggerAutoSave();
+    }
+
+    function loadSupercupData() {
+        let supercupData = appData.supercup || {};
+        Object.keys(supercupData).forEach(id => {
+            let el = document.getElementById(id);
+            if (el) el.value = supercupData[id];
+        });
+        updateSupercupDisplay();
     }
 
     window.updateBracketDisplay = function() {
@@ -2469,6 +2640,11 @@
     document.querySelectorAll('#tab-bracket input, #tab-bracket select').forEach(inp => {
         inp.addEventListener('input', () => { if (isAdmin) updateBracketDisplay(); });
         inp.addEventListener('change', () => { if (isAdmin) updateBracketDisplay(); });
+    });
+
+    document.querySelectorAll('#tab-supercopa input').forEach(inp => {
+        inp.addEventListener('input', () => { if (isAdmin || isStaff) updateSupercupDisplay(); });
+        inp.addEventListener('change', () => { if (isAdmin || isStaff) updateSupercupDisplay(); });
     });
 </script>
 
