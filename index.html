@@ -388,7 +388,7 @@
 
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1400px; /* Ampliado ligeramente para dar más espacio a las llaves */
             margin: 0 auto;
             padding: 0 20px;
         }
@@ -458,7 +458,7 @@
             background-position: center center !important;
             color: #FFF;
             border: 2px solid #0404E2;
-            padding: 28px;
+            padding: 32px;
             box-shadow: 0 10px 30px rgba(8, 51, 162, 0.4);
             animation: colorShiftCard 8s ease infinite alternate;
         }
@@ -493,38 +493,32 @@
             font-size: 1.6rem;
         }
 
-        .supercopa-inline-logo-clean {
-            height: 38px;
-            object-fit: contain;
-            filter: none !important;
-            box-shadow: none !important;
-        }
-
-        /* ESTILOS NUEVOS PARA LLAVES DE 16 EQUIPOS (IDA Y VUELTA + GLOBAL) */
+        /* ESTILOS DE LLAVES DE 16 EQUIPOS AMPLIADOS Y REORGANIZADOS */
         .ucl-bracket-container {
             display: flex;
             justify-content: space-between;
-            gap: 15px;
+            gap: 22px; /* Más espacio entre columnas para amplitud */
             overflow-x: auto;
-            padding: 10px 0;
+            padding: 15px 0;
+            align-items: flex-start;
         }
 
         .ucl-column {
             flex: 1;
-            min-width: 230px;
+            min-width: 270px; /* Columnas más anchas */
             display: flex;
             flex-direction: column;
             justify-content: space-around;
-            gap: 12px;
+            gap: 16px;
         }
 
         .ucl-column h4 {
             font-family: 'Outfit', sans-serif;
             text-align: center;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: #60A5FA;
             border-bottom: 2px solid rgba(4, 4, 226, 0.5);
-            padding-bottom: 6px;
+            padding-bottom: 8px;
             font-weight: 800;
             text-transform: uppercase;
         }
@@ -534,10 +528,10 @@
             backdrop-filter: blur(8px);
             border: 1px solid rgba(4, 4, 226, 0.6);
             border-radius: 12px;
-            padding: 10px;
+            padding: 12px 14px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
 
@@ -545,8 +539,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 6px;
-            font-size: 0.8rem;
+            gap: 8px;
+            font-size: 0.85rem;
             font-weight: 700;
         }
 
@@ -556,8 +550,8 @@
             color: #FFF;
             border: 1px solid rgba(4, 4, 226, 0.5);
             border-radius: 6px;
-            padding: 4px 6px;
-            font-size: 0.75rem;
+            padding: 6px 8px;
+            font-size: 0.8rem;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -566,14 +560,14 @@
         .ucl-scores-group {
             display: flex;
             align-items: center;
-            gap: 3px;
+            gap: 4px;
         }
 
         .ucl-score-input {
-            width: 32px;
-            height: 26px;
+            width: 36px;
+            height: 28px;
             text-align: center;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 800;
             background: rgba(2, 6, 23, 0.9);
             color: #FFF;
@@ -581,15 +575,16 @@
             border-radius: 4px;
         }
 
+        /* Badge global limpio sin la "G" */
         .ucl-global-badge {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             background: #020617;
             color: #60A5FA;
-            padding: 2px 5px;
+            padding: 3px 7px;
             border-radius: 4px;
             font-weight: 900;
             border: 1px solid #0404E2;
-            min-width: 26px;
+            min-width: 28px;
             text-align: center;
         }
 
@@ -903,16 +898,6 @@
             padding: 9px 12px; border-radius: 8px; font-size: 0.9rem; outline: none;
         }
 
-        .bracket-container { display: flex; justify-content: space-between; gap: 16px; overflow-x: auto; padding: 10px 0; }
-        .bracket-column { flex: 1; min-width: 240px; display: flex; flex-direction: column; justify-content: space-around; gap: 16px; }
-        .bracket-column h4 {
-            font-family: 'Outfit', sans-serif; text-align: center; font-size: 0.95rem; color: var(--laliga-red);
-            border-bottom: 2px solid var(--border-color); padding-bottom: 6px; font-weight: 800; text-transform: uppercase;
-        }
-        .bracket-match { background: var(--bg-subcard); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-        .bracket-team-select { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px; border-radius: 6px; font-size: 0.8rem; width: 100%; }
-        .bracket-score-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700; }
-
         .action-btn {
             background: var(--laliga-red); color: #FFF; padding: 10px 18px; border-radius: 10px; font-weight: 800; font-size: 0.9rem;
         }
@@ -1036,10 +1021,6 @@
             .card { padding: 16px; }
             .matchday-nav { justify-content: center; }
             .modal-content { padding: 16px; }
-
-            .sc-poster-layout {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
@@ -1129,7 +1110,7 @@
     </div>
 
     <div class="main-tabs" id="torneos-tabs-container" style="display: none;">
-        <button class="tab-btn active" onclick="switchTorneoTab('supercopa', event)">Champions League (16 Equipos)</button>
+        <button class="tab-btn active" onclick="switchTorneoTab('supercopa', event)">Champions League</button>
         <button class="tab-btn" onclick="switchTorneoTab('copadelrey', event)">Copa del Rey</button>
     </div>
 
@@ -1245,54 +1226,54 @@
             </div>
             <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">Selecciona a los clasificados para Cuartos de Final y define marcadores.</p>
 
-            <div class="bracket-container">
-                <div class="bracket-column">
-                    <h4>Cuartos de Final</h4>
-                    <div class="bracket-match">
-                        <select id="q1-t1" class="bracket-team-select" disabled onchange="updateBracketDisplay()"></select>
-                        <div class="bracket-score-row"><span id="label-q1-t1">Eq 1</span><input type="number" id="score-q1-t1" class="score-input" value="0" disabled></div>
-                        <div class="bracket-score-row"><span id="label-q1-t2">Eq 2</span><input type="number" id="score-q1-t2" class="score-input" value="0" disabled></div>
-                        <select id="q1-t2" class="bracket-team-select" disabled onchange="updateBracketDisplay()"></select>
+            <div class="bracket-container" style="display: flex; justify-content: space-between; gap: 16px; overflow-x: auto; padding: 10px 0;">
+                <div class="bracket-column" style="flex: 1; min-width: 240px; display: flex; flex-direction: column; justify-content: space-around; gap: 16px;">
+                    <h4 style="font-family: 'Outfit', sans-serif; text-align: center; font-size: 0.95rem; color: var(--laliga-red); border-bottom: 2px solid var(--border-color); padding-bottom: 6px; font-weight: 800; text-transform: uppercase;">Cuartos de Final</h4>
+                    <div class="bracket-match" style="background: var(--bg-subcard); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+                        <select id="q1-t1" class="bracket-team-select" disabled onchange="updateBracketDisplay()" style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px; border-radius: 6px; font-size: 0.8rem; width: 100%;"></select>
+                        <div class="bracket-score-row" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700;"><span id="label-q1-t1">Eq 1</span><input type="number" id="score-q1-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700;"><span id="label-q1-t2">Eq 2</span><input type="number" id="score-q1-t2" class="score-input" value="0" disabled></div>
+                        <select id="q1-t2" class="bracket-team-select" disabled onchange="updateBracketDisplay()" style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px; border-radius: 6px; font-size: 0.8rem; width: 100%;"></select>
                     </div>
-                    <div class="bracket-match">
-                        <select id="q2-t1" class="bracket-team-select" disabled onchange="updateBracketDisplay()"></select>
-                        <div class="bracket-score-row"><span id="label-q2-t1">Eq 3</span><input type="number" id="score-q2-t1" class="score-input" value="0" disabled></div>
-                        <div class="bracket-score-row"><span id="label-q2-t2">Eq 4</span><input type="number" id="score-q2-t2" class="score-input" value="0" disabled></div>
-                        <select id="q2-t2" class="bracket-team-select" disabled onchange="updateBracketDisplay()"></select>
+                    <div class="bracket-match" style="background: var(--bg-subcard); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+                        <select id="q2-t1" class="bracket-team-select" disabled onchange="updateBracketDisplay()" style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px; border-radius: 6px; font-size: 0.8rem; width: 100%;"></select>
+                        <div class="bracket-score-row" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700;"><span id="label-q2-t1">Eq 3</span><input type="number" id="score-q2-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700;"><span id="label-q2-t2">Eq 4</span><input type="number" id="score-q2-t2" class="score-input" value="0" disabled></div>
+                        <select id="q2-t2" class="bracket-team-select" disabled onchange="updateBracketDisplay()" style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px; border-radius: 6px; font-size: 0.8rem; width: 100%;"></select>
                     </div>
-                    <div class="bracket-match">
-                        <select id="q3-t1" class="bracket-team-select" disabled onchange="updateBracketDisplay()"></select>
-                        <div class="bracket-score-row"><span id="label-q3-t1">Eq 5</span><input type="number" id="score-q3-t1" class="score-input" value="0" disabled></div>
-                        <div class="bracket-score-row"><span id="label-q3-t2">Eq 6</span><input type="number" id="score-q3-t2" class="score-input" value="0" disabled></div>
-                        <select id="q3-t2" class="bracket-team-select" disabled onchange="updateBracketDisplay()"></select>
+                    <div class="bracket-match" style="background: var(--bg-subcard); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+                        <select id="q3-t1" class="bracket-team-select" disabled onchange="updateBracketDisplay()" style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px; border-radius: 6px; font-size: 0.8rem; width: 100%;"></select>
+                        <div class="bracket-score-row" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700;"><span id="label-q3-t1">Eq 5</span><input type="number" id="score-q3-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700;"><span id="label-q3-t2">Eq 6</span><input type="number" id="score-q3-t2" class="score-input" value="0" disabled></div>
+                        <select id="q3-t2" class="bracket-team-select" disabled onchange="updateBracketDisplay()" style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px; border-radius: 6px; font-size: 0.8rem; width: 100%;"></select>
                     </div>
-                    <div class="bracket-match">
-                        <select id="q4-t1" class="bracket-team-select" disabled onchange="updateBracketDisplay()"></select>
-                        <div class="bracket-score-row"><span id="label-q4-t1">Eq 7</span><input type="number" id="score-q4-t1" class="score-input" value="0" disabled></div>
-                        <div class="bracket-score-row"><span id="label-q4-t2">Eq 8</span><input type="number" id="score-q4-t2" class="score-input" value="0" disabled></div>
-                        <select id="q4-t2" class="bracket-team-select" disabled onchange="updateBracketDisplay()"></select>
-                    </div>
-                </div>
-
-                <div class="bracket-column">
-                    <h4>Semifinales</h4>
-                    <div class="bracket-match">
-                        <div class="bracket-score-row"><span id="label-s1-t1">Ganador Q1</span><input type="number" id="score-s1-t1" class="score-input" value="0" disabled></div>
-                        <div class="bracket-score-row"><span id="label-s1-t2">Ganador Q2</span><input type="number" id="score-s1-t2" class="score-input" value="0" disabled></div>
-                    </div>
-                    <div class="bracket-match">
-                        <div class="bracket-score-row"><span id="label-s2-t1">Ganador Q3</span><input type="number" id="score-s2-t1" class="score-input" value="0" disabled></div>
-                        <div class="bracket-score-row"><span id="label-s2-t2">Ganador Q4</span><input type="number" id="score-s2-t2" class="score-input" value="0" disabled></div>
+                    <div class="bracket-match" style="background: var(--bg-subcard); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+                        <select id="q4-t1" class="bracket-team-select" disabled onchange="updateBracketDisplay()" style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px; border-radius: 6px; font-size: 0.8rem; width: 100%;"></select>
+                        <div class="bracket-score-row" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700;"><span id="label-q4-t1">Eq 7</span><input type="number" id="score-q4-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700;"><span id="label-q4-t2">Eq 8</span><input type="number" id="score-q4-t2" class="score-input" value="0" disabled></div>
+                        <select id="q4-t2" class="bracket-team-select" disabled onchange="updateBracketDisplay()" style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px; border-radius: 6px; font-size: 0.8rem; width: 100%;"></select>
                     </div>
                 </div>
 
-                <div class="bracket-column">
-                    <h4>Gran Final</h4>
-                    <div class="bracket-match" style="border-color: var(--laliga-red);">
-                        <div class="bracket-score-row"><span id="label-f-t1">Finalista 1</span><input type="number" id="score-f-t1" class="score-input" value="0" disabled></div>
-                        <div class="bracket-score-row"><span id="label-f-t2">Finalista 2</span><input type="number" id="score-f-t2" class="score-input" value="0" disabled></div>
+                <div class="bracket-column" style="flex: 1; min-width: 240px; display: flex; flex-direction: column; justify-content: space-around; gap: 16px;">
+                    <h4 style="font-family: 'Outfit', sans-serif; text-align: center; font-size: 0.95rem; color: var(--laliga-red); border-bottom: 2px solid var(--border-color); padding-bottom: 6px; font-weight: 800; text-transform: uppercase;">Semifinales</h4>
+                    <div class="bracket-match" style="background: var(--bg-subcard); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+                        <div class="bracket-score-row" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700;"><span id="label-s1-t1">Ganador Q1</span><input type="number" id="score-s1-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700;"><span id="label-s1-t2">Ganador Q2</span><input type="number" id="score-s1-t2" class="score-input" value="0" disabled></div>
                     </div>
-                    <div class="bracket-match" style="text-align: center; background: var(--bg-card); border: 2px solid var(--laliga-red);">
+                    <div class="bracket-match" style="background: var(--bg-subcard); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+                        <div class="bracket-score-row" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700;"><span id="label-s2-t1">Ganador Q3</span><input type="number" id="score-s2-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700;"><span id="label-s2-t2">Ganador Q4</span><input type="number" id="score-s2-t2" class="score-input" value="0" disabled></div>
+                    </div>
+                </div>
+
+                <div class="bracket-column" style="flex: 1; min-width: 240px; display: flex; flex-direction: column; justify-content: space-around; gap: 16px;">
+                    <h4 style="font-family: 'Outfit', sans-serif; text-align: center; font-size: 0.95rem; color: var(--laliga-red); border-bottom: 2px solid var(--border-color); padding-bottom: 6px; font-weight: 800; text-transform: uppercase;">Gran Final</h4>
+                    <div class="bracket-match" style="background: var(--bg-subcard); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px; border-color: var(--laliga-red);">
+                        <div class="bracket-score-row" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700;"><span id="label-f-t1">Finalista 1</span><input type="number" id="score-f-t1" class="score-input" value="0" disabled></div>
+                        <div class="bracket-score-row" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700;"><span id="label-f-t2">Finalista 2</span><input type="number" id="score-f-t2" class="score-input" value="0" disabled></div>
+                    </div>
+                    <div class="bracket-match" style="text-align: center; background: var(--bg-card); border: 2px solid var(--laliga-red); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
                         <span style="font-size: 0.75rem; color: #FF6B70; font-weight: 800;">🏆 CAMPEÓN</span>
                         <h4 id="champion-name" style="color: var(--text-main); font-size: 1.1rem; margin-top: 4px; border:none;">- Por Definir -</h4>
                     </div>
@@ -1301,14 +1282,13 @@
         </div>
     </div>
 
-    <!-- SECCIÓN DE TORNEOS (CHAMPIONS LEAGUE 16 EQUIPOS) -->
+    <!-- SECCIÓN DE TORNEOS (CHAMPIONS LEAGUE MODIFICADA SEGÚN TUS INDICACIONES) -->
     <div id="tab-torneos" class="content-section">
         <div id="torneo-subtab-supercopa" class="torneo-subcontent">
             <div class="card supercup-card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; flex-wrap:wrap; gap:12px;">
                     <div class="supercup-title-container">
-                        <h3 class="glowing-supercopa-title">CHAMPIONS LEAGUE (16 EQUIPOS)</h3>
-                        <img src="https://www.fifplay.com/img/public/ucl-logo.png" alt="Champions Logo" class="supercopa-inline-logo-clean">
+                        <h3 class="glowing-supercopa-title">CHAMPIONS LEAGUE</h3>
                     </div>
                     <div style="display:flex; gap:10px; align-items:center;">
                         <button id="ucl-random-btn" class="action-btn" style="background:#0404E2; display:none; font-size:0.75rem; padding:6px 12px;" onclick="randomizeUCLBracket()">🎲 Sorteo Aleatorio (Draft)</button>
@@ -1316,7 +1296,7 @@
                     </div>
                 </div>
 
-                <!-- LLAVES COMPLETAS DE 16 EQUIPOS (OCTAVOS -> CUARTOS -> SEMI -> FINAL) -->
+                <!-- LLAVES COMPLETAS DE 16 EQUIPOS (OCTAVOS -> CUARTOS -> SEMI -> FINAL ABAJO) -->
                 <div class="ucl-bracket-container">
                     
                     <!-- COLUMNA 1: OCTAVOS DE FINAL (8 PARTIDOS) -->
@@ -1329,15 +1309,15 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-o1-t1-i" class="ucl-score-input" value="0" placeholder="Ida" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-o1-t1-v" class="ucl-score-input" value="0" placeholder="Vuelta" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o1-t1" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-o1-t1" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                             <div class="ucl-team-row">
                                 <span id="ucl-lbl-o1-t2" class="ucl-team-name-lbl">Eq 2</span>
                                 <div class="ucl-scores-group">
-                                    <input type="number" id="ucl-s-o1-t2-i" class="ucl-score-input" value="0" placeholder="Ida" disabled oninput="updateUCLDisplay()">
-                                    <input type="number" id="ucl-s-o1-t2-v" class="ucl-score-input" value="0" placeholder="Vuelta" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o1-t2" class="ucl-global-badge">G:0</span>
+                                    <input type="number" id="ucl-s-o1-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                    <input type="number" id="ucl-s-o1-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
+                                    <span id="ucl-gl-o1-t2" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                         </div>
@@ -1348,7 +1328,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-o2-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-o2-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o2-t1" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-o2-t1" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                             <div class="ucl-team-row">
@@ -1356,7 +1336,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-o2-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-o2-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o2-t2" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-o2-t2" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                         </div>
@@ -1367,7 +1347,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-o3-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-o3-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o3-t1" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-o3-t1" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                             <div class="ucl-team-row">
@@ -1375,7 +1355,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-o3-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-o3-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o3-t2" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-o3-t2" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                         </div>
@@ -1386,7 +1366,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-o4-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-o4-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o4-t1" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-o4-t1" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                             <div class="ucl-team-row">
@@ -1394,7 +1374,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-o4-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-o4-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o4-t2" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-o4-t2" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                         </div>
@@ -1405,7 +1385,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-o5-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-o5-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o5-t1" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-o5-t1" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                             <div class="ucl-team-row">
@@ -1413,7 +1393,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-o5-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-o5-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o5-t2" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-o5-t2" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                         </div>
@@ -1424,7 +1404,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-o6-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-o6-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o6-t1" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-o6-t1" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                             <div class="ucl-team-row">
@@ -1432,7 +1412,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-o6-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-o6-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o6-t2" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-o6-t2" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                         </div>
@@ -1443,7 +1423,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-o7-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-o7-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o7-t1" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-o7-t1" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                             <div class="ucl-team-row">
@@ -1451,7 +1431,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-o7-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-o7-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o7-t2" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-o7-t2" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                         </div>
@@ -1462,7 +1442,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-o8-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-o8-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o8-t1" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-o8-t1" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                             <div class="ucl-team-row">
@@ -1470,7 +1450,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-o8-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-o8-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-o8-t2" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-o8-t2" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                         </div>
@@ -1486,7 +1466,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-c1-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-c1-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-c1-t1" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-c1-t1" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                             <div class="ucl-team-row">
@@ -1494,7 +1474,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-c1-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-c1-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-c1-t2" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-c1-t2" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                         </div>
@@ -1505,7 +1485,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-c2-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-c2-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-c2-t1" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-c2-t1" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                             <div class="ucl-team-row">
@@ -1513,7 +1493,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-c2-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-c2-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-c2-t2" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-c2-t2" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                         </div>
@@ -1524,7 +1504,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-c3-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-c3-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-c3-t1" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-c3-t1" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                             <div class="ucl-team-row">
@@ -1532,7 +1512,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-c3-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-c3-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-c3-t2" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-c3-t2" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                         </div>
@@ -1543,7 +1523,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-c4-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-c4-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-c4-t1" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-c4-t1" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                             <div class="ucl-team-row">
@@ -1551,7 +1531,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-c4-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-c4-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-c4-t2" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-c4-t2" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                         </div>
@@ -1567,7 +1547,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-s1-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-s1-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-s1-t1" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-s1-t1" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                             <div class="ucl-team-row">
@@ -1575,7 +1555,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-s1-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-s1-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-s1-t2" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-s1-t2" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                         </div>
@@ -1586,7 +1566,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-s2-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-s2-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-s2-t1" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-s2-t1" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                             <div class="ucl-team-row">
@@ -1594,14 +1574,14 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-s2-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-s2-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-s2-t2" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-s2-t2" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- COLUMNA 4: GRAN FINAL Y CAMPEÓN -->
-                    <div class="ucl-column">
+                    <!-- COLUMNA 4: GRAN FINAL Y CAMPEÓN (MOVIDA ABAJO A LA DERECHA SEGÚN TU SEÑALAMIENTO) -->
+                    <div class="ucl-column" style="justify-content: flex-end;">
                         <h4>Gran Final</h4>
                         <div class="ucl-match-box" style="border-color: var(--laliga-red);">
                             <div class="ucl-team-row">
@@ -1609,7 +1589,7 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-f-t1-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-f-t1-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-f-t1" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-f-t1" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                             <div class="ucl-team-row" style="margin-top:6px;">
@@ -1617,12 +1597,12 @@
                                 <div class="ucl-scores-group">
                                     <input type="number" id="ucl-s-f-t2-i" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
                                     <input type="number" id="ucl-s-f-t2-v" class="ucl-score-input" value="0" disabled oninput="updateUCLDisplay()">
-                                    <span id="ucl-gl-f-t2" class="ucl-global-badge">G:0</span>
+                                    <span id="ucl-gl-f-t2" class="ucl-global-badge">0</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="sc-champ-box" style="margin-top: auto;">
+                        <div class="sc-champ-box" style="margin-top: 15px; background: rgba(4, 18, 56, 0.95); border: 1px solid #0404E2; padding: 12px; border-radius: 12px; text-align: center;">
                             <span style="font-size: 0.7rem; color: #60A5FA; font-weight: 900; letter-spacing: 1px;">👑 CAMPEÓN DE EUROPA</span>
                             <h3 id="ucl-champion-name" style="color: #FFF; font-size: 1.1rem; margin-top: 4px; border:none; font-weight:900; text-shadow: 0 2px 4px rgba(0,0,0,0.9);">- Por Definir -</h3>
                         </div>
@@ -3078,7 +3058,6 @@
             return;
         }
 
-        // Filtramos por divisiones según regla: 8 de 1ª, 5 de 2ª, 3 de 3ª
         let t1 = allTeams.filter(t => t.div === 1).sort(() => 0.5 - Math.random()).slice(0, 8);
         let t2 = allTeams.filter(t => t.div === 2).sort(() => 0.5 - Math.random()).slice(0, 5);
         let t3 = allTeams.filter(t => t.div === 3).sort(() => 0.5 - Math.random()).slice(0, 3);
@@ -3114,7 +3093,7 @@
 
         if (g1 > g2) return { winner: t1Name, g1, g2 };
         if (g2 > g1) return { winner: t2Name, g1, g2 };
-        return { winner: `${t1Name} (Penales)`, g1, g2 }; // En empate global definen penales o gana el primero por defecto
+        return { winner: `${t1Name} (Penales)`, g1, g2 };
     }
 
     window.updateUCLDisplay = function() {
@@ -3125,7 +3104,6 @@
             teamNames.push(getTeamNameByFullId(val));
         }
 
-        // Asignar a Octavos (8 partidos, del O1 al O8)
         let oWinners = [];
         for (let match = 1; match <= 8; match++) {
             let t1 = teamNames[(match - 1) * 2] || 'Por Definir';
@@ -3140,12 +3118,11 @@
             let v2 = document.getElementById(`ucl-s-o${match}-t2-v`).value;
 
             let res = calculateWinnerGlobal(t1, t2, i1, v1, i2, v2);
-            document.getElementById(`ucl-gl-o${match}-t1`).innerText = `G:${res.g1}`;
-            document.getElementById(`ucl-gl-o${match}-t2`).innerText = `G:${res.g2}`;
+            document.getElementById(`ucl-gl-o${match}-t1`).innerText = `${res.g1}`;
+            document.getElementById(`ucl-gl-o${match}-t2`).innerText = `${res.g2}`;
             oWinners.push(res.winner);
         }
 
-        // Cuartos de Final (4 partidos, del C1 al C4)
         let cWinners = [];
         for (let match = 1; match <= 4; match++) {
             let t1 = oWinners[(match - 1) * 2] || 'Por Definir';
@@ -3160,12 +3137,11 @@
             let v2 = document.getElementById(`ucl-s-c${match}-t2-v`).value;
 
             let res = calculateWinnerGlobal(t1, t2, i1, v1, i2, v2);
-            document.getElementById(`ucl-gl-c${match}-t1`).innerText = `G:${res.g1}`;
-            document.getElementById(`ucl-gl-c${match}-t2`).innerText = `G:${res.g2}`;
+            document.getElementById(`ucl-gl-c${match}-t1`).innerText = `${res.g1}`;
+            document.getElementById(`ucl-gl-c${match}-t2`).innerText = `${res.g2}`;
             cWinners.push(res.winner);
         }
 
-        // Semifinales (2 partidos, S1 y S2)
         let sWinners = [];
         for (let match = 1; match <= 2; match++) {
             let t1 = cWinners[(match - 1) * 2] || 'Por Definir';
@@ -3180,12 +3156,11 @@
             let v2 = document.getElementById(`ucl-s-s${match}-t2-v`).value;
 
             let res = calculateWinnerGlobal(t1, t2, i1, v1, i2, v2);
-            document.getElementById(`ucl-gl-s${match}-t1`).innerText = `G:${res.g1}`;
-            document.getElementById(`ucl-gl-s${match}-t2`).innerText = `G:${res.g2}`;
+            document.getElementById(`ucl-gl-s${match}-t1`).innerText = `${res.g1}`;
+            document.getElementById(`ucl-gl-s${match}-t2`).innerText = `${res.g2}`;
             sWinners.push(res.winner);
         }
 
-        // Gran Final
         let f1 = sWinners[0] || 'Por Definir';
         let f2 = sWinners[1] || 'Por Definir';
         document.getElementById('ucl-lbl-f1').innerText = f1;
@@ -3197,11 +3172,10 @@
         let fv2 = document.getElementById('ucl-s-f-t2-v').value;
 
         let finalRes = calculateWinnerGlobal(f1, f2, fi1, fv1, fi2, fv2);
-        document.getElementById('ucl-gl-f-t1').innerText = `G:${finalRes.g1}`;
-        document.getElementById('ucl-gl-f-t2').innerText = `G:${finalRes.g2}`;
+        document.getElementById(`ucl-gl-f-t1`).innerText = `${finalRes.g1}`;
+        document.getElementById(`ucl-gl-f-t2`).innerText = `${finalRes.g2}`;
         document.getElementById('ucl-champion-name').innerText = finalRes.winner;
 
-        // Renderizar sección de clasificados al momento
         renderUCLQualifiedLive(oWinners, cWinners, sWinners, finalRes.winner);
         saveUCLToMemory();
     };
