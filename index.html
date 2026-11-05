@@ -248,6 +248,19 @@
             box-shadow: 0 0 15px rgba(238, 29, 35, 0.5);
         }
 
+        /* Estilo especial para el botón superior de Torneos */
+        .btn-torneos-top {
+            background: rgba(245, 158, 11, 0.2);
+            color: #FCD34D;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+        .btn-torneos-top.active {
+            background: var(--accent-gold);
+            color: #02040A;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+        }
+
         .btn-social {
             padding: 8px 14px;
             border-radius: 8px;
@@ -879,6 +892,7 @@
 </div>
 
 <div class="top-bar">
+    <!-- Divisiones a la izquierda -->
     <div class="header-controls-left desktop-only">
         <button class="btn-div active" onclick="switchDivision(1)">🏆 1ª DIV</button>
         <button class="btn-div" onclick="switchDivision(2)">🥇 2ª DIV</button>
@@ -896,6 +910,15 @@
                 <button class="dropdown-item" onclick="selectMobileDivision(3)">🥈 3ª División</button>
             </div>
         </div>
+    </div>
+
+    <!-- BOTÓN NUEVO DE TORNEOS (UBICADO ARRIBA DONDE PEDISTE) -->
+    <div class="desktop-only" style="margin-left: 10px;">
+        <button id="btn-top-torneos" class="btn-div btn-torneos-top" onclick="switchMainSection('torneos')">🏆 Torneos</button>
+    </div>
+    
+    <div class="mobile-only" style="width: 100%;">
+        <button class="btn-div btn-torneos-top" style="width: 100%;" onclick="switchMainSection('torneos')">🏆 Torneos (Supercopa)</button>
     </div>
 
     <div class="brand-container">
@@ -938,12 +961,11 @@
 </div>
 
 <div class="container">
-    <div class="main-tabs">
+    <div class="main-tabs" id="sub-tabs-container">
         <button class="tab-btn active" onclick="switchTab('clasificacion', event)">📊 Clasificación</button>
         <button class="tab-btn" onclick="switchTab('calendario', event)">📅 Calendario</button>
         <button class="tab-btn" onclick="switchTab('estadisticas', event)">⚡ Estadísticas / Tops</button>
         <button class="tab-btn" onclick="switchTab('bracket', event)">🏆 Liguilla</button>
-        <button class="tab-btn" onclick="switchTab('supercopa', event)">🇪🇸 Supercopa</button>
         <button id="tab-btn-gestion" class="tab-btn" onclick="switchTab('gestion', event)" style="display:none;">🛡️ Gestión</button>
     </div>
 
@@ -1115,8 +1137,8 @@
         </div>
     </div>
 
-    <!-- PESTAÑA SUPERCOPA DE ESPAÑA (CON FONDO DIRECTO Y LIMPIO) -->
-    <div id="tab-supercopa" class="content-section">
+    <!-- SECCIÓN DE TORNEOS (SUPERCOPA) -->
+    <div id="tab-torneos" class="content-section">
         <div class="card supercup-card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; flex-wrap:wrap; gap:12px;">
                 <h3 style="color: var(--accent-gold); font-size: 1.5rem;">🇪🇸 SUPERCOPA DE ESPAÑA</h3>
@@ -1179,30 +1201,11 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div id="tab-gestion" class="content-section">
-        <div class="card" style="margin-bottom: 24px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
-                <h3>Enlaces de Redes Sociales</h3>
-                <button class="action-btn" onclick="manualSaveCloud()">💾 Guardar Datos</button>
-            </div>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
-                <div class="input-group">
-                    <label>Enlace de Discord:</label>
-                    <input type="text" id="admin-discord-url" placeholder="https://discord.gg/..." onchange="updateSocialLinksFromInput()">
-                </div>
-                <div class="input-group">
-                    <label>Enlace de TikTok:</label>
-                    <input type="text" id="admin-tiktok-url" placeholder="https://www.tiktok.com/@..." onchange="updateSocialLinksFromInput()">
-                </div>
-            </div>
-        </div>
-
-        <!-- GESTIÓN DE SUPERCOPA -->
-        <div class="card" style="margin-bottom: 24px; border-color: var(--accent-gold); background: var(--bg-subcard);">
-            <h3 style="color: var(--accent-gold);">🇪🇸 Selección de Participantes Supercopa</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Elige a los 4 equipos clasificados para la Supercopa (puedes seleccionar de cualquiera de las 3 divisiones):</p>
+        <!-- SELECCIÓN DE PARTICIPANTES DE SUPERCOPA (VISIBLE EN GESTIÓN O DENTRO DE TORNEOS) -->
+        <div class="card" style="margin-top: 24px; border-color: var(--accent-gold); background: var(--bg-subcard);">
+            <h3 style="color: var(--accent-gold);">🇪🇸 Configuración de Participantes Supercopa</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Elige a los 4 equipos clasificados para la Supercopa (requiere modo Admin o Staff):</p>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
                 <div class="input-group">
                     <label>Campeón 1ª Div (Semi 1):</label>
@@ -1219,6 +1222,25 @@
                 <div class="input-group">
                     <label>Subcampeón 1ª Div (Semi 2):</label>
                     <select id="sc-select-s2-t2" onchange="updateSupercupDisplay()"></select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-gestion" class="content-section">
+        <div class="card" style="margin-bottom: 24px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
+                <h3>Enlaces de Redes Sociales</h3>
+                <button class="action-btn" onclick="manualSaveCloud()">💾 Guardar Datos</button>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                <div class="input-group">
+                    <label>Enlace de Discord:</label>
+                    <input type="text" id="admin-discord-url" placeholder="https://discord.gg/..." onchange="updateSocialLinksFromInput()">
+                </div>
+                <div class="input-group">
+                    <label>Enlace de TikTok:</label>
+                    <input type="text" id="admin-tiktok-url" placeholder="https://www.tiktok.com/@..." onchange="updateSocialLinksFromInput()">
                 </div>
             </div>
         </div>
@@ -1521,7 +1543,7 @@
     };
 
     function updateBracketInputsState() {
-        const bracketInputs = document.querySelectorAll('#tab-bracket input, #tab-bracket select, #tab-supercopa input, #tab-supercopa select, #sc-select-s1-t1, #sc-select-s1-t2, #sc-select-s2-t1, #sc-select-s2-t2');
+        const bracketInputs = document.querySelectorAll('#tab-bracket input, #tab-bracket select, #tab-torneos input, #tab-torneos select, #sc-select-s1-t1, #sc-select-s1-t2, #sc-select-s2-t1, #sc-select-s2-t2');
         bracketInputs.forEach(el => {
             el.disabled = !(isAdmin || isStaff);
         });
@@ -1545,7 +1567,7 @@
                 document.getElementById('btn-reset-standings').style.display = 'none';
                 
                 updateBracketInputsState();
-                switchTab('clasificacion', null);
+                switchMainSection(1);
                 alert('Modo Administrador Cerrado.');
                 renderAll();
             }
@@ -1711,27 +1733,51 @@
         document.querySelectorAll('#mobile-division-menu .dropdown-item').forEach((item, idx) => {
             item.classList.toggle('active', idx + 1 === divNum);
         });
-        switchDivision(divNum);
+        switchMainSection(divNum);
     };
 
-    window.switchDivision = function(div) {
+    window.switchMainSection = function(section) {
         const loader = document.getElementById('page-loader');
         loader.classList.add('active');
         setTimeout(() => {
-            currentDiv = div;
-            currentMatchday = 1;
-            openMatchEventsBoxes = {};
-            openMatchDetailsBoxes = {};
-            document.querySelectorAll('.desktop-only .btn-div').forEach((btn, idx) => {
-                btn.classList.toggle('active', idx + 1 === div);
-            });
-            document.getElementById('hero-title').innerText = `Temporada Oficial • ${div}ª División`;
-            document.getElementById('div-title').innerText = `${div}ª División • Tabla de Posiciones`;
-            renderAll();
+            if (section === 'torneos') {
+                // Activar pestaña Torneos arriba
+                document.getElementById('btn-top-torneos').classList.add('active');
+                document.querySelectorAll('.desktop-only .btn-div:not(#btn-top-torneos)').forEach(b => b.classList.remove('active'));
+                
+                document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+                document.getElementById('tab-torneos').classList.add('active');
+                document.getElementById('sub-tabs-container').style.display = 'none';
+                document.getElementById('hero-title').innerText = `Torneos Oficiales • Supercopa`;
+            } else {
+                // Es una división (1, 2 o 3)
+                currentDiv = section;
+                currentMatchday = 1;
+                openMatchEventsBoxes = {};
+                openMatchDetailsBoxes = {};
+
+                document.getElementById('btn-top-torneos').classList.remove('active');
+                document.querySelectorAll('.desktop-only .btn-div:not(#btn-top-torneos)').forEach((btn, idx) => {
+                    btn.classList.toggle('active', idx + 1 === section);
+                });
+
+                document.getElementById('sub-tabs-container').style.display = 'flex';
+                document.getElementById('hero-title').innerText = `Temporada Oficial • ${section}ª División`;
+                document.getElementById('div-title').innerText = `${section}ª División • Tabla de Posiciones`;
+                
+                // Activar por defecto la pestaña de clasificación
+                document.querySelectorAll('.main-tabs .tab-btn').forEach((btn, idx) => {
+                    btn.classList.toggle('active', idx === 0);
+                });
+                document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+                document.getElementById('tab-clasificacion').classList.add('active');
+
+                renderAll();
+            }
             setTimeout(() => {
                 loader.classList.remove('active');
             }, 200);
-        }, 500);
+        }, 300);
     };
 
     window.switchTab = function(tabName, evt) {
@@ -2571,7 +2617,7 @@
     function saveSupercupToMemory() {
         if ((!isAdmin && !isStaff) || isInitialLoading) return;
         let supercupData = {};
-        let inputs = document.querySelectorAll('#tab-supercopa input, #sc-select-s1-t1, #sc-select-s1-t2, #sc-select-s2-t1, #sc-select-s2-t2');
+        let inputs = document.querySelectorAll('#tab-torneos input, #sc-select-s1-t1, #sc-select-s1-t2, #sc-select-s2-t1, #sc-select-s2-t2');
         inputs.forEach(input => { supercupData[input.id] = input.value; });
         appData.supercup = supercupData;
         triggerAutoSave();
@@ -2602,7 +2648,7 @@
         }
 
         let s1_1 = getWinner('q1-t1', 'q1-t2', 'score-q1-t1', 'score-q1-t2');
-        let s1_2 = getWinner('q2-t1', 'q2-t2', 'score-q1-t2', 'score-q2-t2'); // Corregido índice
+        let s1_2 = getWinner('q2-t1', 'q2-t2', 'score-q2-t1', 'score-q2-t2');
         let s2_1 = getWinner('q3-t1', 'q3-t2', 'score-q3-t1', 'score-q3-t2');
         let s2_2 = getWinner('q4-t1', 'q4-t2', 'score-q4-t1', 'score-q4-t2');
 
@@ -2674,7 +2720,7 @@
         inp.addEventListener('change', () => { if (isAdmin) updateBracketDisplay(); });
     });
 
-    document.querySelectorAll('#tab-supercopa input').forEach(inp => {
+    document.querySelectorAll('#tab-torneos input').forEach(inp => {
         inp.addEventListener('input', () => { if (isAdmin || isStaff) updateSupercupDisplay(); });
         inp.addEventListener('change', () => { if (isAdmin || isStaff) updateSupercupDisplay(); });
     });
