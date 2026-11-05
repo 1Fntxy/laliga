@@ -19,6 +19,7 @@
             --border-color: #E2E8F0;
             --accent-green: #10B981;
             --accent-gold: #F59E0B;
+            --accent-staff: #3B82F6;
             --accent-discord: #5865F2;
             --accent-tiktok: #FE2C55;
             --topbar-bg: #0B0F19;
@@ -263,6 +264,7 @@
         .btn-tiktok { background: var(--accent-tiktok); }
         .btn-theme { background: rgba(255, 255, 255, 0.15); color: #FFF; font-weight: 800; border: 1px solid rgba(255, 255, 255, 0.25); }
         .btn-admin { background: var(--accent-gold); color: #02040A; font-weight: 800; }
+        .btn-staff { background: var(--accent-staff); color: #FFF; font-weight: 800; }
         .btn-reset { background: rgba(239, 68, 68, 0.2); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.4); display: none; }
 
         .clubs-ticker-bar {
@@ -874,6 +876,7 @@
             TikTok
         </a>
         <button id="btn-admin-toggle" class="btn-div btn-admin" onclick="toggleAdminMode()">🔑 Admin</button>
+        <button id="btn-staff-toggle" class="btn-div btn-staff" onclick="toggleStaffMode()">🛡️ Staff</button>
         <button id="btn-reset-top" class="btn-div btn-reset" onclick="resetCurrentDivision()">🔄 Reset</button>
     </div>
 </div>
@@ -1146,8 +1149,11 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const ADMIN_PIN = "021126";
+    const ADMIN_PIN = "L4L1G4_2026@88";
+    const STAFF_PIN = "ST4FFLIGARBLX";
+    
     let isAdmin = false;
+    let isStaff = false;
     let autoSaveTimer = null;
     let isInitialLoading = true;
     let openMatchEventsBoxes = {}; 
@@ -1280,7 +1286,7 @@
     });
 
     async function saveStateToCloud() {
-        if (!isAdmin) return false;
+        if (!isAdmin && !isStaff) return false;
         try {
             await setDoc(doc(db, "liga", "general_data"), appData);
             return true;
@@ -1291,7 +1297,7 @@
     }
 
     window.triggerAutoSave = function() {
-        if (!isAdmin || isInitialLoading) return;
+        if ((!isAdmin && !isStaff) || isInitialLoading) return;
         
         const btn = document.getElementById('floating-save-btn');
         const span = btn ? btn.querySelector('span') : null;
@@ -1323,7 +1329,7 @@
     };
 
     window.manualSaveCloud = async function() {
-        if (!isAdmin) return;
+        if (!isAdmin && !isStaff) return;
         const btn = document.getElementById('floating-save-btn');
         const span = btn ? btn.querySelector('span') : null;
         if (span) span.innerText = "⏳ Guardando...";
@@ -1362,9 +1368,14 @@
             let pass = prompt('Ingresa el PIN de Administrador:');
             if (pass === ADMIN_PIN) {
                 isAdmin = true;
+                isStaff = false;
                 document.getElementById('btn-admin-toggle').innerText = "🔓 Admin: Activo";
                 document.getElementById('btn-admin-toggle').style.background = "#10B981";
                 document.getElementById('btn-admin-toggle').style.color = "#FFF";
+
+                document.getElementById('btn-staff-toggle').innerText = "🛡️ Staff";
+                document.getElementById('btn-staff-toggle').style.background = "var(--accent-staff)";
+                document.getElementById('btn-staff-toggle').style.color = "#FFF";
                 
                 document.getElementById('tab-btn-gestion').style.display = 'inline-block';
                 document.getElementById('floating-save-btn').style.display = 'flex';
@@ -1392,6 +1403,46 @@
                 updateBracketInputsState();
                 switchTab('clasificacion', null);
                 alert('Modo Administrador Cerrado.');
+                renderAll();
+            }
+        }
+    };
+
+    window.toggleStaffMode = function() {
+        if (!isStaff) {
+            let pass = prompt('Ingresa el PIN de Staff:');
+            if (pass === STAFF_PIN) {
+                isStaff = true;
+                isAdmin = false;
+                document.getElementById('btn-staff-toggle').innerText = "🔓 Staff: Activo";
+                document.getElementById('btn-staff-toggle').style.background = "#10B981";
+                document.getElementById('btn-staff-toggle').style.color = "#FFF";
+
+                document.getElementById('btn-admin-toggle').innerText = "🔑 Admin";
+                document.getElementById('btn-admin-toggle').style.background = "var(--accent-gold)";
+                document.getElementById('btn-admin-toggle').style.color = "#02040A";
+                
+                document.getElementById('tab-btn-gestion').style.display = 'none';
+                document.getElementById('floating-save-btn').style.display = 'flex';
+                document.getElementById('btn-reset-top').style.display = 'none';
+                document.getElementById('btn-reset-standings').style.display = 'none';
+
+                updateBracketInputsState();
+                alert('¡Modo Staff Activado! (Puedes editar resultados y jornadas)');
+                renderAll();
+            } else if (pass !== null) {
+                alert('PIN Incorrecto.');
+            }
+        } else {
+            if (confirm('¿Cerrar sesión de Staff?')) {
+                isStaff = false;
+                document.getElementById('btn-staff-toggle').innerText = "🛡️ Staff";
+                document.getElementById('btn-staff-toggle').style.background = "var(--accent-staff)";
+                document.getElementById('btn-staff-toggle').style.color = "#FFF";
+                
+                document.getElementById('floating-save-btn').style.display = 'none';
+                updateBracketInputsState();
+                alert('Modo Staff Cerrado.');
                 renderAll();
             }
         }
@@ -1849,8 +1900,10 @@
             let homeSideHTML = getGroupedTeamEventsHTML(homeEventsList, home.id);
             let awaySideHTML = getGroupedTeamEventsHTML(awayEventsList, away.id);
 
+            let canEditMatches = isAdmin || isStaff;
             let adminEventsEditor = '';
-            if (isAdmin) {
+            
+            if (canEditMatches) {
                 let eventRowsHTML = m.events.map((ev, evIdx) => {
                     let teamObj = divData.teams.find(t => t.id == ev.teamId);
                     let playersOpts = teamObj && teamObj.roster ? teamObj.roster.map(p => `<option value="${p.name}" ${p.name === ev.playerName ? 'selected' : ''}>${p.name}</option>`).join('') : '';
@@ -1876,7 +1929,7 @@
 
                 adminEventsEditor = `
                     <div class="match-events-section match-events-wrapper-${m.id}">
-                        <button class="match-events-toggle-btn match-events-btn-${m.id}" onclick="toggleMatchEventsBox(event, ${m.id})">⚙️ Registrar Incidencias por Jugador (Admin)</button>
+                        <button class="match-events-toggle-btn match-events-btn-${m.id}" onclick="toggleMatchEventsBox(event, ${m.id})">⚙️ Registrar Incidencias por Jugador (${isAdmin ? 'Admin' : 'Staff'})</button>
                         <div id="match-events-box-${m.id}" class="match-events-body ${isBoxOpen}">
                             <div style="font-size:0.8rem; font-weight:700; color:var(--text-main);">Jugadores con acciones en el partido:</div>
                             ${eventRowsHTML}
@@ -1897,13 +1950,13 @@
                             <span>${home.name}</span>
                         </div>
                         <div class="score-inputs">
-                            <input type="number" class="score-input" value="${m.homeScore !== null ? m.homeScore : ''}" ${!isAdmin ? 'disabled' : ''} onchange="updateScore(${m.id}, 'home', this.value)">
+                            <input type="number" class="score-input" value="${m.homeScore !== null ? m.homeScore : ''}" ${!canEditMatches ? 'disabled' : ''} onchange="updateScore(${m.id}, 'home', this.value)">
                             
                             <button class="match-details-toggle-btn" onclick="toggleMatchDetailsBox(${m.id})" id="details-btn-${m.id}">
                                 ${detailsBtnText}
                             </button>
 
-                            <input type="number" class="score-input" value="${m.awayScore !== null ? m.awayScore : ''}" ${!isAdmin ? 'disabled' : ''} onchange="updateScore(${m.id}, 'away', this.value)">
+                            <input type="number" class="score-input" value="${m.awayScore !== null ? m.awayScore : ''}" ${!canEditMatches ? 'disabled' : ''} onchange="updateScore(${m.id}, 'away', this.value)">
                         </div>
                         <div class="match-team away">
                             <span>${away.name}</span>
@@ -1929,7 +1982,7 @@
     }
 
     window.addEventListener('click', function(e) {
-        if (!isAdmin) return;
+        if (!isAdmin && !isStaff) return;
         for (let matchId in openMatchEventsBoxes) {
             if (openMatchEventsBoxes[matchId]) {
                 const wrapper = document.querySelector(`.match-events-wrapper-${matchId}`);
@@ -1967,7 +2020,7 @@
     };
 
     window.addMatchEvent = function(matchId, defaultTeamId) {
-        if (!isAdmin) return;
+        if (!isAdmin && !isStaff) return;
         const divData = appData[currentDiv];
         const match = divData.matches.find(m => m.id === matchId);
         if (match) {
@@ -1989,7 +2042,7 @@
     };
 
     window.updateMatchEventField = function(matchId, evIdx, field, val) {
-        if (!isAdmin) return;
+        if (!isAdmin && !isStaff) return;
         const divData = appData[currentDiv];
         const match = divData.matches.find(m => m.id === matchId);
         if (match && match.events[evIdx]) {
@@ -2003,7 +2056,7 @@
     };
 
     window.updateMatchEventNumSilent = function(matchId, evIdx, field, val) {
-        if (!isAdmin) return;
+        if (!isAdmin && !isStaff) return;
         const divData = appData[currentDiv];
         const match = divData.matches.find(m => m.id === matchId);
         if (match && match.events[evIdx]) {
@@ -2016,7 +2069,7 @@
     };
 
     window.removeMatchEvent = function(matchId, evIdx) {
-        if (!isAdmin) return;
+        if (!isAdmin && !isStaff) return;
         const divData = appData[currentDiv];
         const match = divData.matches.find(m => m.id === matchId);
         if (match && match.events[evIdx]) {
@@ -2030,7 +2083,7 @@
     };
 
     window.updateScore = function(matchId, type, val) {
-        if (!isAdmin) return;
+        if (!isAdmin && !isStaff) return;
         const divData = appData[currentDiv];
         const match = divData.matches.find(m => m.id === matchId);
         if (match) {
@@ -2115,7 +2168,7 @@
     window.closeTeamModal = function() {
         const modal = document.getElementById('team-modal');
         modal.classList.remove('active');
-        if (isAdmin) {
+        if (isAdmin || isStaff) {
             triggerAutoSave();
         }
         renderTops();
