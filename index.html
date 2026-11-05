@@ -346,7 +346,7 @@
             top: 73px;
             z-index: 998;
             background: linear-gradient(90deg, #EE1D23 0%, #B51318 45%, #590407 75%, #150102 100%);
-            padding: 18px 24px; /* Más delgada como pediste */
+            padding: 16px 24px; /* Franja estática más delgada */
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         }
 
@@ -359,8 +359,8 @@
             position: relative;
         }
 
-        .hero-banner-logo {
-            height: 95px; /* Imagen superior derecha más grande */
+        .supercopa-original-logo {
+            height: 95px; /* Imagen de la esquina superior derecha más grande */
             object-fit: contain;
             filter: drop-shadow(0 4px 12px rgba(0,0,0,0.7));
         }
@@ -467,7 +467,7 @@
             border-color: rgba(238, 29, 35, 0.6);
         }
 
-        /* TÍTULO SUPERCOPA CON LA NUEVA IMAGEN AL LADO Y BRILLO ROJO */
+        /* TÍTULO SUPERCOPA CON LA NUEVA IMAGEN AL LADO (LIMPIA, SIN SOMBRA NI LUZ) Y BRILLO EN EL TEXTO */
         .supercup-title-container {
             display: flex;
             align-items: center;
@@ -481,10 +481,11 @@
             font-size: 1.6rem;
         }
 
-        .supercopa-inline-logo {
-            height: 48px;
+        .supercopa-inline-logo-clean {
+            height: 38px;
             object-fit: contain;
-            filter: drop-shadow(0 0 8px rgba(238, 29, 35, 0.8));
+            filter: none !important;
+            box-shadow: none !important;
         }
 
         /* DISEÑO TIPO PÓSTER OFICIAL DE LA SUPERCOPA */
@@ -543,7 +544,7 @@
             text-align: center;
         }
 
-        /* SIN CÍRCULO, PERO CON ILUMINACIÓN ROJA EN LA IMAGEN DE EN MEDIO */
+        /* IMAGEN CENTRAL CON SU ILUMINACIÓN ORIGINAL, SIN CÍRCULO */
         .sc-logo-badge-nocircle {
             width: 100px;
             height: 100px;
@@ -1082,7 +1083,7 @@
             <h2 id="hero-title">Temporada Oficial • 1ª División</h2>
             <p id="hero-subtitle">Estadísticas en tiempo real, clasificación y calendario sincronizados</p>
         </div>
-        <img id="hero-right-img" src="" alt="" style="display: none;" class="hero-banner-logo">
+        <img id="hero-right-img" src="" alt="" style="display: none;" class="supercopa-original-logo">
     </div>
 </div>
 
@@ -1276,10 +1277,10 @@
         <div id="torneo-subtab-supercopa" class="torneo-subcontent">
             <div class="card supercup-card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; flex-wrap:wrap; gap:12px;">
-                    <!-- TÍTULO SUPERCOPA CON LA NUEVA IMAGEN AL LADO Y BRILLO -->
+                    <!-- TÍTULO SUPERCOPA CON LA NUEVA IMAGEN AL LADO (LIMPIA, SIN SOMBRA NI LUZ) -->
                     <div class="supercup-title-container">
                         <h3 class="glowing-supercopa-title">SUPERCOPA</h3>
-                        <img src="https://media.discordapp.net/attachments/1353118715406716981/1567753284717117540/image.png?ex=6aed5386&is=6aec0206&hm=b76a5f8d810da55a9136c6426bdd77ae211b0204e3b7a65dc36a30d200be976e&=&format=webp&quality=lossless" alt="Supercopa Logo" class="supercopa-inline-logo">
+                        <img src="https://media.discordapp.net/attachments/1353118715406716981/1567753284717117540/image.png?ex=6aed5386&is=6aec0206&hm=b76a5f8d810da55a9136c6426bdd77ae211b0204e3b7a65dc36a30d200be976e&=&format=webp&quality=lossless" alt="Supercopa Logo" class="supercopa-inline-logo-clean">
                     </div>
                     <span style="background: var(--laliga-red); color: #FFF; font-weight: 800; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">FINAL FOUR</span>
                 </div>
@@ -1301,10 +1302,10 @@
                         </div>
                     </div>
 
-                    <!-- CENTRO (IMAGEN DE SUPERCOPA SIN CÍRCULO PERO CON ILUMINACIÓN) -->
+                    <!-- CENTRO (IMAGEN ORIGINAL CON LUZ Y SOMBRA, SIN CÍRCULO) -->
                     <div class="sc-center-col">
                         <div class="sc-logo-badge-nocircle" title="Supercopa">
-                            <img src="https://media.discordapp.net/attachments/1353118715406716981/1567753284717117540/image.png?ex=6aed5386&is=6aec0206&hm=b76a5f8d810da55a9136c6426bdd77ae211b0204e3b7a65dc36a30d200be976e&=&format=webp&quality=lossless" alt="Supercopa">
+                            <img src="https://media.discordapp.net/attachments/1353118715406716981/1567727795256172665/supercopa.jpg" alt="Supercopa">
                         </div>
                         
                         <div class="sc-final-box">
@@ -1917,7 +1918,7 @@
                 
                 if (heroBanner) heroBanner.classList.add('supercopa-hero');
                 if (heroRightImg) {
-                    heroRightImg.src = "https://media.discordapp.net/attachments/1353118715406716981/1567753284717117540/image.png?ex=6aed5386&is=6aec0206&hm=b76a5f8d810da55a9136c6426bdd77ae211b0204e3b7a65dc36a30d200be976e&=&format=webp&quality=lossless";
+                    heroRightImg.src = "https://media.discordapp.net/attachments/1353118715406716981/1567727795256172665/supercopa.jpg";
                     heroRightImg.style.display = 'block';
                 }
 
