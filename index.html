@@ -1531,7 +1531,7 @@
         const divData = appData[currentDiv] || {};
         const container = document.getElementById('league-logo-container');
         const logoUrl = divData.leagueLogo || "https://media.discordapp.net/attachments/1353118715406716981/1562489656396873828/2853f42f6c8278a03fdb93880813f8b5.png";
-        container.innerHTML = `<img src="${logoUrl}" alt="Logo">`;
+        container.innerHTML = `<img src="${logoUrl}" alt="Logo" onerror="this.outerHTML='LIG'">`;
         const input = document.getElementById('league-logo-input');
         if (input && input.value !== logoUrl) input.value = divData.leagueLogo || "";
     }
@@ -1541,11 +1541,18 @@
         if (!divData || !divData.teams) return;
         const container = document.getElementById('ticker-clubs-container');
         
-        container.innerHTML = divData.teams.map(t => `
-            <div class="club-ticker-item" title="${t.name}" onclick="openTeamModal(${t.id})">
-                ${t.logo ? `<img src="${t.logo}" alt="${t.name}">` : `<span class="club-ticker-fallback">${t.name.substring(0,2).toUpperCase()}</span>`}
-            </div>
-        `).join('');
+        container.innerHTML = divData.teams.map(t => {
+            const initials = t.name ? t.name.substring(0, 2).toUpperCase() : "LG";
+            const logoContent = (t.logo && t.logo.trim() !== "") 
+                ? `<img src="${t.logo}" alt="${t.name}" onerror="this.outerHTML='<span class=\'club-ticker-fallback\'>${initials}</span>'">` 
+                : `<span class="club-ticker-fallback">${initials}</span>`;
+            
+            return `
+                <div class="club-ticker-item" title="${t.name}" onclick="openTeamModal(${t.id})">
+                    ${logoContent}
+                </div>
+            `;
+        }).join('');
     }
 
     window.updateSocialLinksFromInput = function() {
@@ -1762,6 +1769,11 @@
                 }
             }
 
+            const initials = t.name ? t.name.substring(0, 2).toUpperCase() : "LG";
+            const logoHTML = (t.logo && t.logo.trim() !== "") 
+                ? `<div class="team-logo"><img src="${t.logo}" alt="${t.name}" onerror="this.outerHTML='${initials}'"></div>` 
+                : `<div class="team-logo">${initials}</div>`;
+
             return `
                 <tr>
                     <td>
@@ -1772,7 +1784,7 @@
                     </td>
                     <td>
                         <div class="team-cell">
-                            ${t.logo ? `<img src="${t.logo}" class="team-logo">` : `<div class="team-logo">${t.name.substring(0, 2).toUpperCase()}</div>`}
+                            ${logoHTML}
                             <span>${t.name}</span>
                         </div>
                     </td>
@@ -2007,11 +2019,22 @@
             let isDetailsOpen = openMatchDetailsBoxes[m.id] ? 'show' : '';
             let detailsBtnText = openMatchDetailsBoxes[m.id] ? '▲ Ocultar resumen' : '▼ Ver resumen';
 
+            const homeInitials = home.name ? home.name.substring(0, 2).toUpperCase() : "HG";
+            const awayInitials = away.name ? away.name.substring(0, 2).toUpperCase() : "AG";
+
+            const homeLogoHTML = (home.logo && home.logo.trim() !== "") 
+                ? `<div class="team-logo"><img src="${home.logo}" alt="${home.name}" onerror="this.outerHTML='${homeInitials}'"></div>` 
+                : `<div class="team-logo">${homeInitials}</div>`;
+
+            const awayLogoHTML = (away.logo && away.logo.trim() !== "") 
+                ? `<div class="team-logo"><img src="${away.logo}" alt="${away.name}" onerror="this.outerHTML='${awayInitials}'"></div>` 
+                : `<div class="team-logo">${awayInitials}</div>`;
+
             return `
                 <div class="match-card">
                     <div class="match-main-row">
                         <div class="match-team">
-                            ${home.logo ? `<img src="${home.logo}" class="team-logo">` : `<div class="team-logo">${home.name.substring(0,2).toUpperCase()}</div>`}
+                            ${homeLogoHTML}
                             <span>${home.name}</span>
                         </div>
                         <div class="score-inputs">
@@ -2025,7 +2048,7 @@
                         </div>
                         <div class="match-team away">
                             <span>${away.name}</span>
-                            ${away.logo ? `<img src="${away.logo}" class="team-logo">` : `<div class="team-logo">${away.name.substring(0,2).toUpperCase()}</div>`}
+                            ${awayLogoHTML}
                         </div>
                     </div>
 
@@ -2162,25 +2185,32 @@
         if (!divData) return;
         const grid = document.getElementById('teams-management-grid');
 
-        grid.innerHTML = divData.teams.map((t, index) => `
-            <div class="team-card">
-                <div style="display:flex; align-items:center; justify-content:space-between;">
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        ${t.logo ? `<img src="${t.logo}" class="team-logo">` : `<div class="team-logo">${t.name.substring(0,2).toUpperCase()}</div>`}
-                        <strong>Equipo ${index + 1}</strong>
+        grid.innerHTML = divData.teams.map((t, index) => {
+            const initials = t.name ? t.name.substring(0, 2).toUpperCase() : "TM";
+            const logoHTML = (t.logo && t.logo.trim() !== "") 
+                ? `<div class="team-logo"><img src="${t.logo}" alt="${t.name}" onerror="this.outerHTML='${initials}'"></div>` 
+                : `<div class="team-logo">${initials}</div>`;
+
+            return `
+                <div class="team-card">
+                    <div style="display:flex; align-items:center; justify-content:space-between;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            ${logoHTML}
+                            <strong>Equipo ${index + 1}</strong>
+                        </div>
+                        <button class="action-btn" style="font-size:0.75rem; padding:6px 10px;" onclick="openTeamModal(${t.id})">Plantilla</button>
                     </div>
-                    <button class="action-btn" style="font-size:0.75rem; padding:6px 10px;" onclick="openTeamModal(${t.id})">Plantilla</button>
+                    <div class="input-group">
+                        <label>Nombre del Equipo</label>
+                        <input type="text" value="${t.name}" ${!isAdmin ? 'disabled' : ''} onchange="updateTeamName(${t.id}, this.value)">
+                    </div>
+                    <div class="input-group">
+                        <label>Escudo / Logo (URL de imagen)</label>
+                        <input type="text" value="${t.logo || ''}" placeholder="https://ejemplo.com/escudo.png" ${!isAdmin ? 'disabled' : ''} onchange="updateTeamLogoUrl(${t.id}, this.value)">
+                    </div>
                 </div>
-                <div class="input-group">
-                    <label>Nombre del Equipo</label>
-                    <input type="text" value="${t.name}" ${!isAdmin ? 'disabled' : ''} onchange="updateTeamName(${t.id}, this.value)">
-                </div>
-                <div class="input-group">
-                    <label>Escudo / Logo (URL de imagen)</label>
-                    <input type="text" value="${t.logo || ''}" placeholder="https://ejemplo.com/escudo.png" ${!isAdmin ? 'disabled' : ''} onchange="updateTeamLogoUrl(${t.id}, this.value)">
-                </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     window.updateTeamName = function(id, val) {
@@ -2213,8 +2243,13 @@
 
         if (!team.roster) team.roster = [];
 
+        const initials = team.name ? team.name.substring(0, 2).toUpperCase() : "TM";
+        const modalLogoHTML = (team.logo && team.logo.trim() !== "") 
+            ? `<div style="width:50px; height:50px; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; background:var(--bg-subcard); border:1px solid var(--border-color);"><img src="${team.logo}" style="width:100%; height:100%; object-fit:cover;" onerror="this.outerHTML='${initials}'"></div>` 
+            : `<div class="team-logo" style="width:50px; height:50px;">${initials}</div>`;
+
         document.getElementById('modal-header').innerHTML = `
-            ${team.logo ? `<img src="${team.logo}" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">` : `<div class="team-logo" style="width:50px; height:50px;">${team.name.substring(0,2).toUpperCase()}</div>`}
+            ${modalLogoHTML}
             <div>
                 <h3 style="margin:0;">${team.name}</h3>
                 <span style="color:var(--text-muted); font-size:0.8rem;">División ${currentDiv}</span>
