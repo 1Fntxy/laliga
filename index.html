@@ -694,6 +694,33 @@
             object-fit: cover;
         }
 
+        /* RACHA DE ÚLTIMOS PARTIDOS */
+        .form-streak {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        .streak-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: #FFF;
+        }
+        .streak-w { background-color: #10B981; }
+        .streak-d { background-color: #94A3B8; }
+        .streak-l { background-color: #EF4444; }
+        .streak-none { background-color: #334155; opacity: 0.3; }
+
+        /* TENDENCIA / FLECHAS TABLA */
+        .trend-up { color: #10B981; font-weight: 800; }
+        .trend-down { color: #EF4444; font-weight: 800; }
+        .trend-same { color: var(--text-muted); font-weight: 800; }
+
         .matchday-nav {
             display: flex;
             align-items: center;
@@ -757,25 +784,6 @@
         }
         .action-btn:hover { background: var(--laliga-red-hover); }
 
-        .floating-save-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--topbar-bg);
-            color: #FFF;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.78rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
-            z-index: 999;
-            display: none;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            border: 1px solid var(--border-color);
-        }
-
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); z-index: 1000;
@@ -786,8 +794,16 @@
             background: var(--bg-card); border-radius: 16px; width: 100%; max-width: 380px; padding: 24px; text-align: center;
         }
 
-        .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+        /* GESTIÓN DE PLANTILLAS Y JUGADORES */
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
         .team-card { background: var(--bg-subcard); border: 1px solid var(--border-color); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+        .input-group { display: flex; flex-direction: column; gap: 4px; }
+        .input-group label { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; }
+        .input-group input, .input-group select {
+            background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color);
+            padding: 8px; border-radius: 8px; font-size: 0.9rem; outline: none;
+        }
+        .player-row { display: flex; gap: 6px; align-items: center; margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -870,6 +886,7 @@
         <button class="tab-btn" onclick="switchTorneoTab('copadelrey', event)">Copa del Rey</button>
     </div>
 
+    <!-- TAB CLASIFICACIÓN CON TENDENCIAS Y RACHA -->
     <div id="tab-clasificacion" class="content-section active">
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
@@ -879,7 +896,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Pos</th><th>Equipo</th><th>PJ</th><th>PG</th><th>PE</th><th>PP</th><th>GF</th><th>GC</th><th>DG</th><th>PTS</th>
+                            <th>Pos</th><th>Equipo</th><th>PJ</th><th>PG</th><th>PE</th><th>PP</th><th>GF</th><th>GC</th><th>DG</th><th>PTS</th><th>Últimos 5</th>
                         </tr>
                     </thead>
                     <tbody id="standings-body"></tbody>
@@ -888,6 +905,7 @@
         </div>
     </div>
 
+    <!-- TAB CALENDARIO -->
     <div id="tab-calendario" class="content-section">
         <div class="card">
             <div class="matchday-nav">
@@ -1248,7 +1266,7 @@
                 </div>
             </div>
 
-            <!-- CLASIFICADOS HASTA EL MOMENTO (8 de 1ra, 5 de 2da y 3 de 3ra) -->
+            <!-- CLASIFICADOS HASTA EL MOMENTO -->
             <div class="qualified-card">
                 <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 900; text-transform: uppercase;">⭐ Clasificados Hasta El Momento (16 Equipos)</h3>
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;">Equipos clasificados automáticamente según las tablas de posiciones (8 de 1ª Div, 5 de 2ª Div y 3 de 3ª Div).</p>
@@ -1278,9 +1296,10 @@
         </div>
     </div>
 
+    <!-- TAB GESTIÓN DE PLANTILLAS Y EQUIPOS -->
     <div id="tab-gestion" class="content-section">
         <div class="card">
-            <h3>Gestión de Equipos y Plantillas</h3>
+            <h3 style="margin-bottom: 16px;">Gestión de Equipos y Plantillas</h3>
             <div class="team-grid" id="teams-management-grid"></div>
         </div>
     </div>
@@ -1439,6 +1458,7 @@
         renderStandings();
         renderMatchdaySelector();
         renderMatches();
+        renderTeamsManagement();
         renderQualifiedTeamsList();
         populateBracketDropdowns();
         renderBracketState();
@@ -1633,9 +1653,15 @@
     function renderStandings() {
         const divData = appData[currentDiv];
         if (!divData || !divData.teams) return;
-        let stats = divData.teams.map(t => ({ ...t, pj: 0, pg: 0, pe: 0, pp: 0, gf: 0, gc: 0, dg: 0, pts: 0 }));
+        
+        let stats = divData.teams.map(t => ({ 
+            ...t, pj: 0, pg: 0, pe: 0, pp: 0, gf: 0, gc: 0, dg: 0, pts: 0, form: [] 
+        }));
+
         if (divData.matches) {
-            divData.matches.forEach(m => {
+            // Ordenar partidos por jornada para calcular la racha y el orden correcto
+            let sortedMatches = [...divData.matches].sort((a,b) => a.matchday - b.matchday);
+            sortedMatches.forEach(m => {
                 if (m.homeScore !== null && m.awayScore !== null) {
                     let home = stats.find(t => t.id === m.homeId);
                     let away = stats.find(t => t.id === m.awayId);
@@ -1643,29 +1669,63 @@
                         home.pj++; away.pj++;
                         home.gf += m.homeScore; home.gc += m.awayScore;
                         away.gf += m.awayScore; away.gc += m.homeScore;
-                        if (m.homeScore > m.awayScore) { home.pg++; home.pts += 3; away.pp++; }
-                        else if (m.homeScore < m.awayScore) { away.pg++; away.pts += 3; home.pp++; }
-                        else { home.pe++; home.pts += 1; away.pe++; away.pts += 1; }
+                        
+                        if (m.homeScore > m.awayScore) { 
+                            home.pg++; home.pts += 3; away.pp++;
+                            home.form.push('W'); away.form.push('L');
+                        } else if (m.homeScore < m.awayScore) { 
+                            away.pg++; away.pts += 3; home.pp++;
+                            home.form.push('L'); away.form.push('W');
+                        } else { 
+                            home.pe++; home.pts += 1; away.pe++; away.pts += 1;
+                            home.form.push('D'); away.form.push('D');
+                        }
                     }
                 }
             });
         }
+
         stats.forEach(t => t.dg = t.gf - t.gc);
+        
+        // Guardar orden previo simulado para la tendencia (flechitas)
+        let oldPositions = divData.lastPositions || {};
         stats.sort((a, b) => b.pts - a.pts || b.dg - a.dg || b.gf - a.gf);
 
-        document.getElementById('standings-body').innerHTML = stats.map((t, idx) => `
-            <tr>
-                <td><strong>${idx+1}</strong></td>
-                <td>
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <div class="team-logo">${t.logo ? `<img src="${t.logo}" alt="">` : t.name.substring(0,2)}</div>
-                        <span>${t.name}</span>
-                    </div>
-                </td>
-                <td>${t.pj}</td><td>${t.pg}</td><td>${t.pe}</td><td>${t.pp}</td><td>${t.gf}</td><td>${t.gc}</td><td>${t.dg}</td>
-                <td><strong style="color:var(--laliga-red);">${t.pts}</strong></td>
-            </tr>
-        `).join('');
+        document.getElementById('standings-body').innerHTML = stats.map((t, idx) => {
+            let currentPos = idx + 1;
+            let oldPos = oldPositions[t.id] || currentPos;
+            let trendHTML = '<span class="trend-same">-</span>';
+            if (oldPos > currentPos) trendHTML = '<span class="trend-up">▲</span>';
+            else if (oldPos < currentPos) trendHTML = '<span class="trend-down">▼</span>';
+
+            // Últimos 5 partidos
+            let last5 = t.form.slice(-5);
+            let streakHTML = '';
+            for(let i=0; i<5; i++) {
+                if(i < last5.length) {
+                    let res = last5[i];
+                    let cls = res === 'W' ? 'streak-w' : (res === 'D' ? 'streak-d' : 'streak-l');
+                    streakHTML += `<span class="streak-dot ${cls}">${res}</span>`;
+                } else {
+                    streakHTML += `<span class="streak-dot streak-none">-</span>`;
+                }
+            }
+
+            return `
+                <tr>
+                    <td><strong>${currentPos}</strong> ${trendHTML}</td>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div class="team-logo">${t.logo ? `<img src="${t.logo}" alt="">` : t.name.substring(0,2)}</div>
+                            <span>${t.name}</span>
+                        </div>
+                    </td>
+                    <td>${t.pj}</td><td>${t.pg}</td><td>${t.pe}</td><td>${t.pp}</td><td>${t.gf}</td><td>${t.gc}</td><td>${t.dg}</td>
+                    <td><strong style="color:var(--laliga-red);">${t.pts}</strong></td>
+                    <td><div class="form-streak">${streakHTML}</div></td>
+                </tr>
+            `;
+        }).join('');
     }
 
     function renderMatchdaySelector() {
@@ -1715,7 +1775,7 @@
                             <span>${homeTeam.name}</span>
                         </div>
                         <div class="score-inputs">
-                            <input type="number" class="score-input" value="${m.homeScore !== null ? m.homeScore : ''}" onchange="updateMatchScore(${m.id}, this.value, document.getElementById('away-score-${m.id}').value)">
+                            <input type="number" class="score-input" id="home-score-${m.id}" value="${m.homeScore !== null ? m.homeScore : ''}" onchange="updateMatchScore(${m.id}, this.value, document.getElementById('away-score-${m.id}').value)">
                             <span>-</span>
                             <input type="number" class="score-input" id="away-score-${m.id}" value="${m.awayScore !== null ? m.awayScore : ''}" onchange="updateMatchScore(${m.id}, document.getElementById('home-score-${m.id}').value, this.value)">
                         </div>
@@ -1741,6 +1801,94 @@
             match.awayScore = awayVal !== "" ? parseInt(awayVal) : null;
             saveStateToCloud();
             renderStandings();
+        }
+    };
+
+    function renderTeamsManagement() {
+        const divData = appData[currentDiv];
+        if (!divData || !divData.teams) return;
+        const container = document.getElementById('teams-management-grid');
+        if (!container) return;
+
+        const canEdit = isAdmin || isStaff;
+
+        container.innerHTML = divData.teams.map((t, idx) => `
+            <div class="team-card">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <div class="team-logo">${t.logo ? `<img src="${t.logo}" alt="">` : t.name.substring(0,2)}</div>
+                    <div style="flex:1;">
+                        <input type="text" value="${t.name}" ${!canEdit ? 'disabled' : ''} onchange="updateTeamName(${t.id}, this.value)" style="width:100%; font-weight:800; background:var(--bg-card); border:1px solid var(--border-color); padding:4px 8px; border-radius:6px; color:var(--text-main);">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Logo (URL)</label>
+                    <input type="text" value="${t.logo || ''}" ${!canEdit ? 'disabled' : ''} placeholder="https://..." onchange="updateTeamLogo(${t.id}, this.value)">
+                </div>
+                <div class="input-group">
+                    <label>Plantilla de Jugadores</label>
+                    <div id="players-list-${t.id}">
+                        ${(t.players || []).map((p, pIdx) => `
+                            <div class="player-row">
+                                <input type="text" value="${p.name}" ${!canEdit ? 'disabled' : ''} onchange="updatePlayerName(${t.id}, ${pIdx}, this.value)" style="flex:1;">
+                                <input type="number" value="${p.goals || 0}" ${!canEdit ? 'disabled' : ''} onchange="updatePlayerGoals(${t.id}, ${pIdx}, this.value)" style="width:60px; text-align:center;" title="Goles">
+                                ${canEdit ? `<button onclick="removePlayer(${t.id}, ${pIdx})" style="background:#EF4444; color:#FFF; padding:6px 10px; border-radius:6px; font-weight:800;">✕</button>` : ''}
+                            </div>
+                        `).join('') || '<span style="font-size:0.8rem; color:var(--text-muted);">Sin jugadores registrados.</span>'}
+                    </div>
+                    ${canEdit ? `<button onclick="addNewPlayer(${t.id})" style="margin-top:8px; background:var(--accent-staff); color:#FFF; padding:6px 12px; border-radius:6px; font-size:0.8rem; font-weight:700;">+ Agregar Jugador</button>` : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    window.updateTeamName = function(teamId, val) {
+        if (!isAdmin && !isStaff) return;
+        let team = appData[currentDiv].teams.find(t => t.id === teamId);
+        if (team) { team.name = val; saveStateToCloud(); renderAll(); }
+    };
+
+    window.updateTeamLogo = function(teamId, val) {
+        if (!isAdmin && !isStaff) return;
+        let team = appData[currentDiv].teams.find(t => t.id === teamId);
+        if (team) { team.logo = val; saveStateToCloud(); renderAll(); }
+    };
+
+    window.updatePlayerName = function(teamId, pIdx, val) {
+        if (!isAdmin && !isStaff) return;
+        let team = appData[currentDiv].teams.find(t => t.id === teamId);
+        if (team && team.players && team.players[pIdx]) {
+            team.players[pIdx].name = val;
+            saveStateToCloud();
+        }
+    };
+
+    window.updatePlayerGoals = function(teamId, pIdx, val) {
+        if (!isAdmin && !isStaff) return;
+        let team = appData[currentDiv].teams.find(t => t.id === teamId);
+        if (team && team.players && team.players[pIdx]) {
+            team.players[pIdx].goals = parseInt(val) || 0;
+            saveStateToCloud();
+        }
+    };
+
+    window.addNewPlayer = function(teamId) {
+        if (!isAdmin && !isStaff) return;
+        let team = appData[currentDiv].teams.find(t => t.id === teamId);
+        if (team) {
+            if (!team.players) team.players = [];
+            team.players.push({ name: "Nuevo Jugador", goals: 0 });
+            saveStateToCloud();
+            renderTeamsManagement();
+        }
+    };
+
+    window.removePlayer = function(teamId, pIdx) {
+        if (!isAdmin && !isStaff) return;
+        let team = appData[currentDiv].teams.find(t => t.id === teamId);
+        if (team && team.players) {
+            team.players.splice(pIdx, 1);
+            saveStateToCloud();
+            renderTeamsManagement();
         }
     };
 </script>
