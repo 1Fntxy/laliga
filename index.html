@@ -411,35 +411,36 @@
             margin-bottom: 16px;
         }
 
-        /* ESTILOS DE FONDO PARA LA SUPERCOPA */
+        /* FONDO DIRECTO ASEGURADO PARA LA SUPERCOPA */
         .supercup-card {
             position: relative;
-            background: linear-gradient(rgba(11, 15, 25, 0.85), rgba(11, 15, 25, 0.92)), url('https://media.discordapp.net/attachments/1353118715406716981/1567727795256172665/supercopa.jpg?ex=6aed3bc9&is=6aebea49&hm=3c1f59831d2be529b0b6dc10b6bef47b0f023328b0d66c9735cf92a909218b2d&=&format=webp&width=1381&height=777') no-repeat center center;
-            background-size: cover;
+            background: linear-gradient(rgba(11, 15, 25, 0.78), rgba(11, 15, 25, 0.88)), url('https://media.discordapp.net/attachments/1353118715406716981/1567727795256172665/supercopa.jpg') !important;
+            background-size: cover !important;
+            background-position: center center !important;
             color: #FFF;
             border: 2px solid var(--accent-gold);
         }
 
         .supercup-card h3, .supercup-card h4 {
             color: #FFF;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
 
         .supercup-card .bracket-match {
-            background: rgba(30, 41, 59, 0.85);
+            background: rgba(15, 23, 42, 0.82);
             backdrop-filter: blur(6px);
-            border-color: rgba(245, 158, 11, 0.3);
-        }
-
-        .supercup-card .bracket-team-select, .supercup-card .score-input {
-            background: rgba(15, 23, 42, 0.9);
-            color: #FFF;
             border-color: rgba(245, 158, 11, 0.4);
         }
 
+        .supercup-card .bracket-team-select, .supercup-card .score-input {
+            background: rgba(11, 15, 25, 0.95);
+            color: #FFF;
+            border-color: rgba(245, 158, 11, 0.5);
+        }
+
         .supercup-card p {
-            color: #CBD5E1;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            color: #E2E8F0;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
         }
 
         .stats-pills {
@@ -1114,11 +1115,11 @@
         </div>
     </div>
 
-    <!-- PESTAÑA SUPERCOPA DE ESPAÑA (CON FONDO PERSONALIZADO) -->
+    <!-- PESTAÑA SUPERCOPA DE ESPAÑA (CON FONDO DIRECTO Y LIMPIO) -->
     <div id="tab-supercopa" class="content-section">
-        <div class="card supercopa-card">
+        <div class="card supercup-card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; flex-wrap:wrap; gap:12px;">
-                <h3 style="color: var(--accent-gold); font-size: 1.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">🇪🇸 SUPERCOPA DE ESPAÑA</h3>
+                <h3 style="color: var(--accent-gold); font-size: 1.5rem;">🇪🇸 SUPERCOPA DE ESPAÑA</h3>
                 <span style="background: var(--accent-gold); color: #000; font-weight: 800; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">FINAL FOUR</span>
             </div>
             <p style="font-size: 0.9rem; margin-bottom: 24px;">Torneo relámpago de eliminación directa entre los Monarcas de cada división y el Subcampeón de 1ª División.</p>
@@ -1158,7 +1159,7 @@
                     <h4>Gran Final</h4>
                     
                     <!-- Final -->
-                    <div class="bracket-match" style="border: 2px solid var(--accent-gold); box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);">
+                    <div class="bracket-match" style="border: 2px solid var(--accent-gold); box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);">
                         <span style="font-size:0.7rem; color:var(--accent-gold); font-weight:800;">GRAN FINAL</span>
                         <div class="bracket-score-row">
                             <span id="label-sc-f-t1" style="font-size: 1rem; font-weight:800;">Ganador Semifinal 1</span>
@@ -1171,9 +1172,9 @@
                     </div>
 
                     <!-- Campeón -->
-                    <div class="bracket-match" style="text-align: center; background: rgba(15, 23, 42, 0.9); border: 2px solid var(--accent-gold);">
+                    <div class="bracket-match" style="text-align: center; background: rgba(11, 15, 25, 0.9); border: 2px solid var(--accent-gold);">
                         <span style="font-size: 0.8rem; color: var(--accent-gold); font-weight: 900;">👑 SUPERCAMPEÓN DE ESPAÑA</span>
-                        <h3 id="supercup-champion-name" style="color: #FFF; font-size: 1.3rem; margin-top: 4px; border:none; font-weight:900; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">- Por Definir -</h3>
+                        <h3 id="supercup-champion-name" style="color: #FFF; font-size: 1.3rem; margin-top: 4px; border:none; font-weight:900; text-shadow: 0 2px 4px rgba(0,0,0,0.9);">- Por Definir -</h3>
                     </div>
                 </div>
             </div>
@@ -2601,7 +2602,7 @@
         }
 
         let s1_1 = getWinner('q1-t1', 'q1-t2', 'score-q1-t1', 'score-q1-t2');
-        let s1_2 = getWinner('q2-t1', 'q2-t2', 'score-q2-t1', 'score-q2-t2');
+        let s1_2 = getWinner('q2-t1', 'q2-t2', 'score-q1-t2', 'score-q2-t2'); // Corregido índice
         let s2_1 = getWinner('q3-t1', 'q3-t2', 'score-q3-t1', 'score-q3-t2');
         let s2_2 = getWinner('q4-t1', 'q4-t2', 'score-q4-t1', 'score-q4-t2');
 
@@ -2611,7 +2612,7 @@
         document.getElementById(`label-s2-t2`).innerText = s2_2;
 
         let f1 = getWinnerFromLabels('label-s1-t1', 'label-s1-t2', 'score-s1-t1', 'score-s1-t2');
-        let f2 = getWinnerFromLabels('label-s2-t1', 'label-s2-t2', 'score-s1-t2', 'score-s2-t2');
+        let f2 = getWinnerFromLabels('label-s2-t1', 'label-s2-t2', 'score-s2-t1', 'score-s2-t2');
 
         document.getElementById(`label-f-t1`).innerText = f1;
         document.getElementById(`label-f-t2`).innerText = f2;
