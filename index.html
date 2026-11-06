@@ -450,6 +450,21 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Transición de desvanecimiento suave para sub-pestañas de torneos */
+        .torneo-subcontent {
+            display: none;
+            animation: torneoFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .torneo-subcontent.active-torneo {
+            display: block;
+        }
+
+        @keyframes torneoFadeIn {
+            from { opacity: 0; transform: scale(0.99) translateY(6px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -1629,7 +1644,7 @@
     </div>
 
     <div id="tab-torneos" class="content-section">
-        <div id="torneo-subtab-supercopa" class="torneo-subcontent">
+        <div id="torneo-subtab-supercopa" class="torneo-subcontent active-torneo">
             <div class="card supercup-card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
                     <div class="supercopa-title-container">
@@ -1906,7 +1921,7 @@
                                     <div class="el-match-box">
                                         <div class="ucl-team-row" id="el-row-c${c}-t1">
                                             <div class="el-team-badge" id="el-badge-c${c}-t1">🛡️</div>
-                                            <div class="el-team-name-lbl">
+                                            <div class="ucl-team-name-lbl">
                                                 <select id="el-c${c}-t1" class="el-select-team" onchange="updateELCascade(); saveELToMemory();">
                                                     <option value="">-- Seleccionar Equipo --</option>
                                                 </select>
@@ -1915,7 +1930,7 @@
                                         </div>
                                         <div class="ucl-team-row" id="el-row-c${c}-t2">
                                             <div class="el-team-badge" id="el-badge-c${c}-t2">🛡️</div>
-                                            <div class="el-team-name-lbl">
+                                            <div class="ucl-team-name-lbl">
                                                 <select id="el-c${c}-t2" class="el-select-team" onchange="updateELCascade(); saveELToMemory();">
                                                     <option value="">-- Seleccionar Equipo --</option>
                                                 </select>
@@ -1946,7 +1961,7 @@
                                     <div class="el-match-box" style="border-color: #FFB366;">
                                         <div class="ucl-team-row" id="el-row-s${s}-t1">
                                             <div class="el-team-badge" id="el-badge-s${s}-t1">🛡️</div>
-                                            <div class="el-team-name-lbl">
+                                            <div class="ucl-team-name-lbl">
                                                 <select id="el-s${s}-t1" class="el-select-team" onchange="updateELCascade(); saveELToMemory();">
                                                     <option value="">-- Seleccionar Equipo --</option>
                                                 </select>
@@ -1955,7 +1970,7 @@
                                         </div>
                                         <div class="ucl-team-row" id="el-row-s${s}-t2">
                                             <div class="el-team-badge" id="el-badge-s${s}-t2">🛡️</div>
-                                            <div class="el-team-name-lbl">
+                                            <div class="ucl-team-name-lbl">
                                                 <select id="el-s${s}-t2" class="el-select-team" onchange="updateELCascade(); saveELToMemory();">
                                                     <option value="">-- Seleccionar Equipo --</option>
                                                 </select>
@@ -1982,7 +1997,7 @@
                         <div class="el-match-box" style="border-color: var(--accent-gold); width: 100%;">
                             <div class="ucl-team-row" id="el-row-f1">
                                 <div class="el-team-badge" id="el-badge-f1">🛡️</div>
-                                <div class="el-team-name-lbl">
+                                <div class="ucl-team-name-lbl">
                                     <select id="el-f1" class="el-select-team" onchange="updateELCascade(); saveELToMemory();">
                                         <option value="">-- Seleccionar Equipo --</option>
                                     </select>
@@ -1991,7 +2006,7 @@
                             </div>
                             <div class="ucl-team-row" id="el-row-f2" style="margin-top:8px;">
                                 <div class="el-team-badge" id="el-badge-f2">🛡️</div>
-                                <div class="el-team-name-lbl">
+                                <div class="ucl-team-name-lbl">
                                     <select id="el-f2" class="el-select-team" onchange="updateELCascade(); saveELToMemory();">
                                         <option value="">-- Seleccionar Equipo --</option>
                                     </select>
@@ -2673,21 +2688,31 @@
             
             document.getElementById('sub-tabs-container').style.display = 'none';
             document.getElementById('torneos-tabs-container').style.display = 'flex';
-            document.getElementById('hero-title').innerText = `CHAMPIONS LEAGUE & EUROPA LEAGUE`;
             document.getElementById('hero-subtitle').style.display = 'none';
             
-            if (heroBanner) {
-                heroBanner.classList.remove('supercopa-hero');
-                heroBanner.classList.add('europaleague-hero');
+            // Inicializar por defecto en Champions League
+            const activeTorneoBtn = document.querySelector('#torneos-tabs-container .tab-btn.active') || document.querySelector('#torneos-tabs-container .tab-btn');
+            const isELActive = activeTorneoBtn && activeTorneoBtn.innerText.includes('Europa');
+            
+            if (isELActive) {
+                document.getElementById('hero-title').innerText = `EUROPA LEAGUE`;
+                if (heroBanner) {
+                    heroBanner.classList.remove('supercopa-hero');
+                    heroBanner.classList.add('europaleague-hero');
+                }
+            } else {
+                document.getElementById('hero-title').innerText = `CHAMPIONS LEAGUE`;
+                if (heroBanner) {
+                    heroBanner.classList.remove('europaleague-hero');
+                    heroBanner.classList.add('supercopa-hero');
+                }
             }
+
             if (heroRightImg) {
                 heroRightImg.src = "https://www.fifplay.com/img/public/ucl-logo.png";
                 heroRightImg.style.display = 'block';
             }
 
-            document.querySelectorAll('#torneos-tabs-container .tab-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
-            document.querySelectorAll('.torneo-subcontent').forEach((sub, i) => sub.style.display = i === 0 ? 'block' : 'none');
-            
             populateUCLSelects();
             populateELSelects();
             renderLiveQualifiedPanel();
@@ -2749,14 +2774,23 @@
 
     window.switchTorneoTab = function(torneoName, evt) {
         document.querySelectorAll('#torneos-tabs-container .tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.torneo-subcontent').forEach(sub => sub.style.display = 'none');
+        document.querySelectorAll('.torneo-subcontent').forEach(sub => {
+            sub.style.display = 'none';
+            sub.classList.remove('active-torneo');
+        });
 
         if (evt && evt.target) evt.target.classList.add('active');
         const targetSub = document.getElementById(`torneo-subtab-${torneoName}`);
-        if (targetSub) targetSub.style.display = 'block';
+        if (targetSub) {
+            targetSub.style.display = 'block';
+            // Forzar reflow para reiniciar la animación de desvanecimiento suave
+            void targetSub.offsetWidth;
+            targetSub.classList.add('active-torneo');
+        }
         
         const heroBanner = document.getElementById('hero-banner');
         if (torneoName === 'supercopa') {
+            document.getElementById('hero-title').innerText = `CHAMPIONS LEAGUE`;
             if (heroBanner) {
                 heroBanner.classList.remove('europaleague-hero');
                 heroBanner.classList.add('supercopa-hero');
@@ -2766,6 +2800,7 @@
             renderUCLTops();
             updateUCLCascade();
         } else if (torneoName === 'copadelrey') {
+            document.getElementById('hero-title').innerText = `EUROPA LEAGUE`;
             if (heroBanner) {
                 heroBanner.classList.remove('supercopa-hero');
                 heroBanner.classList.add('europaleague-hero');
