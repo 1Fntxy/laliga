@@ -79,7 +79,7 @@
             opacity: 1;
             visibility: visible;
             pointer-events: auto;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
         }
 
         #page-loader.fade-out {
@@ -488,7 +488,7 @@
             font-size: 1.7rem;
         }
 
-        /* --- ÁRBOL DE CHAMPIONS LEAGUE ESCALONADO EXACTO (SEGÚN TU NUEVA REFERENCIA) --- */
+        /* --- ÁRBOL DE CHAMPIONS LEAGUE ESCALONADO EXACTO (SEGÚN TU INDICACIÓN) --- */
         .ucl-single-tree {
             display: flex;
             justify-content: space-between;
@@ -511,28 +511,28 @@
             gap: 12px;
         }
 
-        /* Cuartos de final: Escalones exactos alineados con los pares de octavos */
+        /* Cuartos de final: Escalones ajustados exactamente a tu nueva marca */
         .ucl-tree-col.cuartos-col {
             flex: 1.2;
             justify-content: space-between;
             padding-top: 52px;
-            gap: 90px;
+            gap: 96px;
         }
 
-        /* Semifinales: Escalones exactos alineados con cuartos de final */
+        /* Semifinales: Escalones ajustados exactamente a tu nueva marca */
         .ucl-tree-col.semis-col {
             flex: 1.2;
             justify-content: space-between;
-            padding-top: 165px;
-            gap: 295px;
+            padding-top: 172px;
+            gap: 308px;
         }
 
-        /* Gran Final: Centrada y alineada con las semifinales */
+        /* Gran Final: Centrada y alineada con las semifinales según tu marca */
         .ucl-tree-col.final-col {
             flex: 1.2;
             align-items: center;
             justify-content: flex-start;
-            padding-top: 290px;
+            padding-top: 305px;
             gap: 25px;
         }
 
@@ -1451,7 +1451,7 @@
                         </script>
                     </div>
 
-                    <!-- Cuartos de Final (Escalonado perfecto alineado con tu nueva referencia) -->
+                    <!-- Cuartos de Final (Escalonado perfecto alineado con tu nueva marca) -->
                     <div class="ucl-tree-col cuartos-col">
                         <h5>Cuartos de Final</h5>
                         <script>
@@ -1485,7 +1485,7 @@
                         </script>
                     </div>
 
-                    <!-- Semifinales (Escalonado perfecto alineado con tu nueva referencia) -->
+                    <!-- Semifinales (Escalonado perfecto alineado con tu nueva marca) -->
                     <div class="ucl-tree-col semis-col">
                         <h5>Semifinales</h5>
                         <script>
@@ -1519,7 +1519,7 @@
                         </script>
                     </div>
 
-                    <!-- Gran Final (Centrada y alineada con las semifinales) -->
+                    <!-- Gran Final (Centrada y alineada con las semifinales según tu marca) -->
                     <div class="ucl-tree-col final-col">
                         <h5>Gran Final</h5>
                         <div class="ucl-match-box" style="border-color: var(--accent-gold); width: 100%;">
@@ -2140,13 +2140,7 @@
 
     window.selectMobileDivision = function(divNum) {
         toggleDivisionMenu();
-        if (divNum === 'torneos') {
-            document.getElementById('mobile-current-div-label').innerText = `Torneos`;
-            switchMainSection('torneos');
-        } else {
-            document.getElementById('mobile-current-div-label').innerText = `${divNum}ª DIV`;
-            switchMainSection(divNum);
-        }
+        showLoaderAndSwitch(divNum);
         document.querySelectorAll('#mobile-division-menu .dropdown-item').forEach((item, idx) => {
             if (divNum === 'torneos') {
                 item.classList.toggle('active', idx === 3);
@@ -2157,6 +2151,22 @@
     };
 
     window.switchMainSection = function(section) {
+        showLoaderAndSwitch(section);
+    };
+
+    function showLoaderAndSwitch(section) {
+        const loader = document.getElementById('page-loader');
+        if (loader) loader.classList.remove('fade-out');
+
+        setTimeout(() => {
+            executeSwitchSection(section);
+            setTimeout(() => {
+                if (loader) loader.classList.add('fade-out');
+            }, 250);
+        }, 300);
+    }
+
+    function executeSwitchSection(section) {
         const heroBanner = document.getElementById('hero-banner');
         const heroRightImg = document.getElementById('hero-right-img');
 
@@ -2223,7 +2233,7 @@
 
             renderAll();
         }
-    };
+    }
 
     window.switchTab = function(tabName, evt) {
         document.querySelectorAll('.main-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -3206,7 +3216,6 @@
             match.events[evIdx][field] = parseInt(val) || 0;
             openMatchEventsBoxes[matchId] = true; 
             recalculateAllPlayerStats();
-            renderMatches();
             renderTops();
             triggerAutoSave();
         }
