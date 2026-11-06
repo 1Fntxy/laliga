@@ -488,45 +488,46 @@
         }
 
         /* ========================================================= */
-        /*   ESTILOS DE CHAMPIONS LEAGUE (8 OCTAVOS -> 16 EQUIPOS)   */
+        /*   ESTILOS DE CHAMPIONS LEAGUE MEJORADOS                   */
         /* ========================================================= */
         .ucl-single-tree {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            gap: 15px;
+            align-items: flex-start;
+            gap: 20px;
             overflow-x: auto;
-            padding: 15px 0;
+            padding: 20px 0;
             width: 100%;
-            min-width: 1300px;
+            min-width: 1400px;
         }
 
         .ucl-tree-col {
             display: flex;
             flex-direction: column;
-            justify-content: space-around;
+            justify-content: flex-start;
             flex: 1;
-            gap: 10px;
+            gap: 16px; /* Mayor separación vertical en llaves */
         }
 
         .ucl-tree-col.octavos-col {
-            flex: 1.2;
+            flex: 1.3;
+            gap: 18px;
         }
 
         .ucl-tree-col.center-final-col {
             flex: 1.2;
             align-items: center;
             justify-content: center;
-            gap: 15px;
+            gap: 20px;
         }
 
         .ucl-tree-col h5 {
             font-family: 'Outfit', sans-serif;
             text-align: center;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: #60A5FA;
             border-bottom: 1px solid rgba(4, 4, 226, 0.5);
-            padding-bottom: 3px;
+            padding-bottom: 5px;
             margin-bottom: 6px;
             font-weight: 800;
             text-transform: uppercase;
@@ -536,11 +537,11 @@
             background: rgba(8, 51, 162, 0.9);
             backdrop-filter: blur(8px);
             border: 1px solid rgba(4, 4, 226, 0.7);
-            border-radius: 8px;
-            padding: 6px 8px;
+            border-radius: 10px;
+            padding: 10px 12px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             width: 100%;
         }
@@ -549,14 +550,14 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 6px;
-            font-size: 0.75rem;
+            gap: 8px;
+            font-size: 0.8rem;
             font-weight: 700;
         }
 
         .ucl-team-badge {
-            width: 22px;
-            height: 22px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             background: rgba(2, 6, 23, 0.8);
             border: 1px solid rgba(4, 4, 226, 0.6);
@@ -565,7 +566,7 @@
             justify-content: center;
             overflow: hidden;
             flex-shrink: 0;
-            font-size: 0.55rem;
+            font-size: 0.6rem;
             color: #FFF;
             font-weight: 800;
         }
@@ -583,7 +584,7 @@
             border: 1px solid rgba(4, 4, 226, 0.5);
             border-radius: 6px;
             padding: 3px 6px;
-            font-size: 0.72rem;
+            font-size: 0.75rem;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -598,16 +599,17 @@
             gap: 4px;
         }
 
+        /* Marcadores un poco más grandes */
         .ucl-score-input {
-            width: 34px;
-            height: 26px;
+            width: 44px;
+            height: 34px;
             text-align: center;
-            font-size: 0.8rem;
+            font-size: 1rem;
             font-weight: 800;
             background: rgba(2, 6, 23, 0.95);
             color: #FFF;
             border: 1px solid rgba(4, 4, 226, 0.9);
-            border-radius: 6px;
+            border-radius: 8px;
         }
 
         .ucl-select-team {
@@ -615,11 +617,29 @@
             color: #FFF;
             border: 1px solid rgba(4, 4, 226, 0.8);
             border-radius: 6px;
-            padding: 3px 6px;
-            font-size: 0.72rem;
+            padding: 5px 8px;
+            font-size: 0.78rem;
             width: 100%;
             outline: none;
             font-weight: 700;
+        }
+
+        /* Botón de incidencias específico para partidos de Champions */
+        .ucl-match-events-toggle {
+            background: rgba(4, 18, 56, 0.8);
+            color: #93C5FD;
+            border: 1px solid rgba(4, 4, 226, 0.5);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 4px;
+        }
+        .ucl-match-events-toggle:hover {
+            background: #0404E2;
+            color: #FFF;
         }
 
         .ucl-qualified-grid {
@@ -1338,7 +1358,7 @@
         </div>
     </div>
 
-    <!-- SECCIÓN DE TORNEOS (CHAMPIONS LEAGUE CON 8 OCTAVOS Y PANEL DE CLASIFICADOS EN TIEMPO REAL) -->
+    <!-- SECCIÓN DE TORNEOS (CHAMPIONS LEAGUE CON BOTÓN DE SORTEO, SELECTS, INCIDENCIAS Y TOPS TOP 5) -->
     <div id="tab-torneos" class="content-section">
         <div id="torneo-subtab-supercopa" class="torneo-subcontent">
             <div class="card supercup-card">
@@ -1347,30 +1367,44 @@
                         <h3 class="glowing-supercopa-title">CHAMPIONS LEAGUE</h3>
                     </div>
                     <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                        <button class="action-btn" style="background:#10B981; font-size:0.8rem; padding:8px 16px;" onclick="sortearOctavosUCL()">🎲 Sortear Octavos (16 Clasificados)</button>
                         <button id="ucl-clear-btn" class="action-btn" style="background:#EF4444; display:none; font-size:0.75rem; padding:8px 14px;" onclick="clearUCLBracket()">🗑️ Borrar Resultados</button>
                     </div>
                 </div>
 
-                <!-- LLAVE UNIFICADA CON 8 OCTAVOS (16 EQUIPOS) -->
+                <!-- LLAVE UNIFICADA CON 8 OCTAVOS Y SELECTS DINÁMICOS -->
                 <div class="ucl-single-tree">
                     
                     <!-- COLUMNA 1: 8 PARTIDOS DE OCTAVOS DE FINAL -->
                     <div class="ucl-tree-col octavos-col">
                         <h5>Octavos de Final (16 Equipos)</h5>
-                        
                         <script>
-                            // Generador dinámico de los 8 partidos de octavos en HTML
                             let octavosHTML = '';
                             for(let o = 1; o <= 8; o++) {
                                 octavosHTML += `
                                     <div class="ucl-match-box">
                                         <div class="ucl-team-row">
-                                            <div class="ucl-team-name-lbl"><input type="text" id="ucl-o${o}-t1" class="ucl-select-team" placeholder="Octavo O${o} - Eq 1" oninput="saveUCLToMemory()"></div>
-                                            <div class="ucl-scores-group"><input type="number" id="ucl-so${o}-t1" class="ucl-score-input" value="0" disabled oninput="saveUCLToMemory()"></div>
+                                            <div class="ucl-team-badge" id="ucl-badge-o${o}-t1">🛡️</div>
+                                            <div class="ucl-team-name-lbl">
+                                                <select id="ucl-o${o}-t1" class="ucl-select-team" onchange="updateUCLMatchDisplay(); saveUCLToMemory();">
+                                                    <option value="">-- Octavo O${o} (Eq 1) --</option>
+                                                </select>
+                                            </div>
+                                            <div class="ucl-scores-group"><input type="number" id="ucl-so${o}-t1" class="ucl-score-input" value="0" oninput="saveUCLToMemory()"></div>
                                         </div>
                                         <div class="ucl-team-row">
-                                            <div class="ucl-team-name-lbl"><input type="text" id="ucl-o${o}-t2" class="ucl-select-team" placeholder="Octavo O${o} - Eq 2" oninput="saveUCLToMemory()"></div>
-                                            <div class="ucl-scores-group"><input type="number" id="ucl-so${o}-t2" class="ucl-score-input" value="0" disabled oninput="saveUCLToMemory()"></div>
+                                            <div class="ucl-team-badge" id="ucl-badge-o${o}-t2">🛡️</div>
+                                            <div class="ucl-team-name-lbl">
+                                                <select id="ucl-o${o}-t2" class="ucl-select-team" onchange="updateUCLMatchDisplay(); saveUCLToMemory();">
+                                                    <option value="">-- Octavo O${o} (Eq 2) --</option>
+                                                </select>
+                                            </div>
+                                            <div class="ucl-scores-group"><input type="number" id="ucl-so${o}-t2" class="ucl-score-input" value="0" oninput="saveUCLToMemory()"></div>
+                                        </div>
+                                        <div class="ucl-match-events-toggle" onclick="toggleUCLMatchEvents(${o})">⚙️ Incidencias Partido O${o}</div>
+                                        <div id="ucl-match-events-body-${o}" style="display:none; flex-direction:column; gap:6px; margin-top:6px; background:rgba(2,6,23,0.7); padding:8px; border-radius:6px;">
+                                            <div id="ucl-events-list-o${o}" style="display:flex; flex-direction:column; gap:4px; font-size:0.75rem;"></div>
+                                            <button class="action-btn" style="font-size:0.7rem; padding:4px 8px;" onclick="addUCLEvent(${o})">+ Registrar Goles/Asistencias</button>
                                         </div>
                                     </div>
                                 `;
@@ -1388,12 +1422,14 @@
                                 cuartosHTML += `
                                     <div class="ucl-match-box">
                                         <div class="ucl-team-row">
+                                            <div class="ucl-team-badge" id="ucl-badge-c${c}-t1">🛡️</div>
                                             <div class="ucl-team-name-lbl"><input type="text" id="ucl-c${c}-t1" class="ucl-select-team" placeholder="Cuarto C${c} - Eq 1" oninput="saveUCLToMemory()"></div>
-                                            <div class="ucl-scores-group"><input type="number" id="ucl-sc${c}-t1" class="ucl-score-input" value="0" disabled oninput="saveUCLToMemory()"></div>
+                                            <div class="ucl-scores-group"><input type="number" id="ucl-sc${c}-t1" class="ucl-score-input" value="0" oninput="saveUCLToMemory()"></div>
                                         </div>
                                         <div class="ucl-team-row">
+                                            <div class="ucl-team-badge" id="ucl-badge-c${c}-t2">🛡️</div>
                                             <div class="ucl-team-name-lbl"><input type="text" id="ucl-c${c}-t2" class="ucl-select-team" placeholder="Cuarto C${c} - Eq 2" oninput="saveUCLToMemory()"></div>
-                                            <div class="ucl-scores-group"><input type="number" id="ucl-sc${c}-t2" class="ucl-score-input" value="0" disabled oninput="saveUCLToMemory()"></div>
+                                            <div class="ucl-scores-group"><input type="number" id="ucl-sc${c}-t2" class="ucl-score-input" value="0" oninput="saveUCLToMemory()"></div>
                                         </div>
                                     </div>
                                 `;
@@ -1409,14 +1445,16 @@
                             let semisHTML = '';
                             for(let s = 1; s <= 2; s++) {
                                 semisHTML += `
-                                    <div class="ucl-match-box" style="border-color: #60A5FA; margin-bottom: ${s === 1 ? '40px' : '0'};">
+                                    <div class="ucl-match-box" style="border-color: #60A5FA; margin-bottom: ${s === 1 ? '50px' : '0'};">
                                         <div class="ucl-team-row">
+                                            <div class="ucl-team-badge" id="ucl-badge-s${s}-t1">🛡️</div>
                                             <div class="ucl-team-name-lbl"><input type="text" id="ucl-s${s}-t1" class="ucl-select-team" placeholder="Semifinal S${s} - Eq 1" oninput="saveUCLToMemory()"></div>
-                                            <div class="ucl-scores-group"><input type="number" id="ucl-ss${s}-t1" class="ucl-score-input" value="0" disabled oninput="saveUCLToMemory()"></div>
+                                            <div class="ucl-scores-group"><input type="number" id="ucl-ss${s}-t1" class="ucl-score-input" value="0" oninput="saveUCLToMemory()"></div>
                                         </div>
                                         <div class="ucl-team-row">
+                                            <div class="ucl-team-badge" id="ucl-badge-s${s}-t2">🛡️</div>
                                             <div class="ucl-team-name-lbl"><input type="text" id="ucl-s${s}-t2" class="ucl-select-team" placeholder="Semifinal S${s} - Eq 2" oninput="saveUCLToMemory()"></div>
-                                            <div class="ucl-scores-group"><input type="number" id="ucl-ss${s}-t2" class="ucl-score-input" value="0" disabled oninput="saveUCLToMemory()"></div>
+                                            <div class="ucl-scores-group"><input type="number" id="ucl-ss${s}-t2" class="ucl-score-input" value="0" oninput="saveUCLToMemory()"></div>
                                         </div>
                                     </div>
                                 `;
@@ -1430,12 +1468,14 @@
                         <h5>Gran Final</h5>
                         <div class="ucl-match-box" style="border-color: var(--accent-gold); width: 100%;">
                             <div class="ucl-team-row">
+                                <div class="ucl-team-badge" id="ucl-badge-f1">🛡️</div>
                                 <div class="ucl-team-name-lbl"><input type="text" id="ucl-f1" class="ucl-select-team" placeholder="Finalista 1" oninput="saveUCLToMemory()"></div>
-                                <div class="ucl-scores-group"><input type="number" id="ucl-sf1" class="ucl-score-input" value="0" disabled oninput="saveUCLToMemory()"></div>
+                                <div class="ucl-scores-group"><input type="number" id="ucl-sf1" class="ucl-score-input" value="0" oninput="saveUCLToMemory()"></div>
                             </div>
                             <div class="ucl-team-row" style="margin-top:8px;">
+                                <div class="ucl-team-badge" id="ucl-badge-f2">🛡️</div>
                                 <div class="ucl-team-name-lbl"><input type="text" id="ucl-f2" class="ucl-select-team" placeholder="Finalista 2" oninput="saveUCLToMemory()"></div>
-                                <div class="ucl-scores-group"><input type="number" id="ucl-sf2" class="ucl-score-input" value="0" disabled oninput="saveUCLToMemory()"></div>
+                                <div class="ucl-scores-group"><input type="number" id="ucl-sf2" class="ucl-score-input" value="0" oninput="saveUCLToMemory()"></div>
                             </div>
                         </div>
 
@@ -1448,20 +1488,52 @@
                 </div>
             </div>
 
-            <!-- PANEL DE CLASIFICADOS AL MOMENTO (EN TIEMPO REAL SEGÚN LAS TABLAS) -->
+            <!-- TABLAS DE TOPS TOP 5 DE CHAMPIONS LEAGUE -->
+            <div class="card" style="margin-top: 24px; border-color: #0404E2; background: var(--bg-subcard);">
+                <h3 style="color: #60A5FA;">⚡ Top 5 • Estadísticas de Champions League</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 16px;">
+                    <div class="ucl-qualified-card">
+                        <h4>⚽ Top 5 Goleadores</h4>
+                        <div class="table-responsive" style="margin-top:8px;">
+                            <table>
+                                <thead><tr><th>#</th><th>Jugador</th><th>Equipo</th><th>Goles</th></tr></thead>
+                                <tbody id="ucl-tops-goles"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="ucl-qualified-card">
+                        <h4>🎯 Top 5 Asistidores</h4>
+                        <div class="table-responsive" style="margin-top:8px;">
+                            <table>
+                                <thead><tr><th>#</th><th>Jugador</th><th>Equipo</th><th>Asist.</th></tr></thead>
+                                <tbody id="ucl-tops-asist"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="ucl-qualified-card">
+                        <h4>🧤 Top 5 Porteros (Paradas)</h4>
+                        <div class="table-responsive" style="margin-top:8px;">
+                            <table>
+                                <thead><tr><th>#</th><th>Portero</th><th>Equipo</th><th>Paradas</th></tr></thead>
+                                <tbody id="ucl-tops-paradas"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL DE CLASIFICADOS AL MOMENTO -->
             <div class="card" style="margin-top: 24px; border-color: #0404E2; background: var(--bg-subcard);">
                 <h3 style="color: #60A5FA;">📊 Clasificados al Momento (En Tiempo Real)</h3>
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Listado automático basado en las tablas de posiciones actuales (1.° a 8.° de 1.ª Div, 1.° a 5.° de 2.ª Div y 1.° a 3.° de 3.ª Div):</p>
-                <div class="ucl-qualified-grid" id="ucl-live-qualified-container">
-                    <!-- Se llena dinámicamente con JS -->
-                </div>
+                <div class="ucl-qualified-grid" id="ucl-live-qualified-container"></div>
             </div>
         </div>
 
         <div id="torneo-subtab-copadelrey" class="torneo-subcontent" style="display: none;">
             <div class="card">
                 <h3 style="color: var(--laliga-red);">👑 COPA DEL REY</h3>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Sección reservada para la Copa del Rey. Aquí puedes configurar próximamente sus enfrentamientos o formato.</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Sección reservada para la Copa del Rey.</p>
             </div>
         </div>
     </div>
@@ -2016,7 +2088,10 @@
                 document.querySelectorAll('#torneos-tabs-container .tab-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
                 document.querySelectorAll('.torneo-subcontent').forEach((sub, i) => sub.style.display = i === 0 ? 'block' : 'none');
                 
+                populateUCLQualifiedSelects();
                 renderLiveQualifiedPanel();
+                renderUCLTops();
+                updateUCLMatchDisplay();
 
             } else {
                 currentDiv = section;
@@ -2077,7 +2152,10 @@
         const targetSub = document.getElementById(`torneo-subtab-${torneoName}`);
         if (targetSub) targetSub.style.display = 'block';
         if (torneoName === 'supercopa') {
+            populateUCLQualifiedSelects();
             renderLiveQualifiedPanel();
+            renderUCLTops();
+            updateUCLMatchDisplay();
         }
     };
 
@@ -2120,7 +2198,10 @@
         renderBracketSelectors();
         loadBracketData();
         loadUCLData();
+        populateUCLQualifiedSelects();
         renderLiveQualifiedPanel();
+        renderUCLTops();
+        updateUCLMatchDisplay();
         updateBracketInputsState();
     }
 
@@ -2151,6 +2232,175 @@
         return stats;
     }
 
+    function getAllQualifiedTeams() {
+        let div1Teams = getSortedDivisionTeams(1);
+        let div2Teams = getSortedDivisionTeams(2);
+        let div3Teams = getSortedDivisionTeams(3);
+
+        let qualified = [];
+        div1Teams.slice(0, 8).forEach(t => qualified.push({ ...t, sourceDiv: '1ª Div' }));
+        div2Teams.slice(0, 5).forEach(t => qualified.push({ ...t, sourceDiv: '2ª Div' }));
+        div3Teams.slice(0, 3).forEach(t => qualified.push({ ...t, sourceDiv: '3ª Div' }));
+        return qualified;
+    }
+
+    function populateUCLQualifiedSelects() {
+        let qualified = getAllQualifiedTeams();
+        let optionsHTML = `<option value="">-- Seleccionar Equipo --</option>` +
+            qualified.map(t => `<option value="${t.name}">${t.name} (${t.sourceDiv})</option>`).join('');
+
+        for (let o = 1; o <= 8; o++) {
+            let s1 = document.getElementById(`ucl-o${o}-t1`);
+            let s2 = document.getElementById(`ucl-o${o}-t2`);
+            if (s1 && s1.options.length <= 1) s1.innerHTML = optionsHTML;
+            if (s2 && s2.options.length <= 1) s2.innerHTML = optionsHTML;
+        }
+    }
+
+    window.sortearOctavosUCL = function() {
+        let qualified = getAllQualifiedTeams();
+        if (qualified.length < 16) {
+            alert('Se necesitan al menos 16 equipos clasificados (Top 8 de 1ª, Top 5 de 2ª y Top 3 de 3ª).');
+        }
+
+        let shuffled = [...qualified].sort(() => Math.random() - 0.5);
+        for (let o = 1; o <= 8; o++) {
+            let s1 = document.getElementById(`ucl-o${o}-t1`);
+            let s2 = document.getElementById(`ucl-o${o}-t2`);
+            if (s1 && shuffled[(o - 1) * 2]) s1.value = shuffled[(o - 1) * 2].name;
+            if (s2 && shuffled[(o - 1) * 2 + 1]) s2.value = shuffled[(o - 1) * 2 + 1].name;
+        }
+        updateUCLMatchDisplay();
+        saveUCLToMemory();
+        alert('¡Sorteo de Octavos realizado con éxito!');
+    };
+
+    function findTeamLogoByName(teamName) {
+        if (!teamName) return "";
+        for (let d of [1, 2, 3]) {
+            if (appData[d] && appData[d].teams) {
+                let found = appData[d].teams.find(t => t.name === teamName);
+                if (found && found.logo) return found.logo;
+            }
+        }
+        return "";
+    }
+
+    window.updateUCLMatchDisplay = function() {
+        let qualified = getAllQualifiedTeams();
+        for (let o = 1; o <= 8; o++) {
+            let t1Name = document.getElementById(`ucl-o${o}-t1`)?.value;
+            let t2Name = document.getElementById(`ucl-o${o}-t2`)?.value;
+
+            let badge1 = document.getElementById(`ucl-badge-o${o}-t1`);
+            let badge2 = document.getElementById(`ucl-badge-o${o}-t2`);
+
+            if (badge1) {
+                let logo1 = findTeamLogoByName(t1Name);
+                let initials1 = t1Name ? t1Name.substring(0, 2).toUpperCase() : "EQ";
+                badge1.innerHTML = logo1 ? `<img src="${logo1}" alt="" onerror="this.outerHTML='${initials1}'">` : initials1;
+            }
+            if (badge2) {
+                let logo2 = findTeamLogoByName(t2Name);
+                let initials2 = t2Name ? t2Name.substring(0, 2).toUpperCase() : "EQ";
+                badge2.innerHTML = logo2 ? `<img src="${logo2}" alt="" onerror="this.outerHTML='${initials2}'">` : initials2;
+            }
+        }
+    };
+
+    window.toggleUCLMatchEvents = function(oNum) {
+        let body = document.getElementById(`ucl-match-events-body-${oNum}`);
+        if (body) {
+            body.style.display = body.style.display === 'none' ? 'flex' : 'none';
+        }
+    };
+
+    window.addUCLEvent = function(oNum) {
+        if (!appData.supercup) appData.supercup = {};
+        if (!appData.supercup.events) appData.supercup.events = {};
+        if (!appData.supercup.events[oNum]) appData.supercup.events[oNum] = [];
+
+        let playerName = prompt("Nombre del jugador en Roblox:");
+        let teamName = prompt("Equipo del jugador:");
+        let goals = parseInt(prompt("Goles anotados:", "0")) || 0;
+        let assists = parseInt(prompt("Asistencias:", "0")) || 0;
+        let saves = parseInt(prompt("Paradas / Atajadas (Portero):", "0")) || 0;
+
+        if (playerName && teamName) {
+            appData.supercup.events[oNum].renderMatchEventsEventsList = appData.supercup.events[oNum] || [];
+            appData.supercup.events[oNum].push({ playerName, teamName, goals, assists, saves });
+            renderUCLEventsList(oNum);
+            renderUCLTops();
+            triggerAutoSave();
+        }
+    };
+
+    window.removeUCLEvent = function(oNum, evIdx) {
+        if (appData.supercup && appData.supercup.events && appData.supercup.events[oNum]) {
+            appData.supercup.events[oNum].splice(evIdx, 1);
+            renderUCLEventsList(oNum);
+            renderUCLTops();
+            triggerAutoSave();
+        }
+    };
+
+    function renderUCLEventsList(oNum) {
+        let listContainer = document.getElementById(`ucl-events-list-o${oNum}`);
+        if (!listContainer) return;
+        let events = (appData.supercup && appData.supercup.events && appData.supercup.events[oNum]) ? appData.supercup.events[oNum] : [];
+        
+        listContainer.innerHTML = events.map((ev, idx) => `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(4,18,56,0.9); padding:4px 8px; border-radius:4px;">
+                <span><b>${ev.playerName}</b> (${ev.teamName}) - ⚽:${ev.goals} 🎯:${ev.assists} 🧤:${ev.saves}</span>
+                <button onclick="removeUCLEvent(${oNum}, ${idx})" style="background:transparent; border:none; color:#EF4444; font-weight:bold; cursor:pointer;">&times;</button>
+            </div>
+        `).join('') || `<span style="color:var(--text-muted);">Sin incidencias</span>`;
+    }
+
+    function renderUCLTops() {
+        let playerStats = {};
+        if (appData.supercup && appData.supercup.events) {
+            Object.values(appData.supercup.events).forEach(matchEvents => {
+                if (Array.isArray(matchEvents)) {
+                    matchEvents.forEach(ev => {
+                        let key = `${ev.playerName}_${ev.teamName}`;
+                        if (!playerStats[key]) {
+                            playerStats[key] = { playerName: ev.playerName, teamName: ev.teamName, goals: 0, assists: 0, saves: 0 };
+                        }
+                        playerStats[key].goals += ev.goals;
+                        playerStats[key].assists += ev.assists;
+                        playerStats[key].saves += ev.saves;
+                    });
+                }
+            });
+        }
+
+        let playersList = Object.values(playerStats);
+        let topGoles = [...playersList].sort((a, b) => b.goals - a.goals).slice(0, 5);
+        let topAsist = [...playersList].sort((a, b) => b.assists - a.assists).slice(0, 5);
+        let topParadas = [...playersList].sort((a, b) => b.saves - a.saves).slice(0, 5);
+
+        let renderTableRows = (list, type) => {
+            if (list.length === 0) return `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin registros</td></tr>`;
+            return list.map((p, i) => `
+                <tr>
+                    <td><strong>#${i+1}</strong></td>
+                    <td>${p.playerName}</td>
+                    <td style="color:var(--text-muted);">${p.teamName}</td>
+                    <td><strong style="color:#60A5FA;">${p[type]}</strong></td>
+                </tr>
+            `).join('');
+        };
+
+        let tg = document.getElementById('ucl-tops-goles');
+        let ta = document.getElementById('ucl-tops-asist');
+        let tp = document.getElementById('ucl-tops-paradas');
+
+        if (tg) tg.innerHTML = renderTableRows(topGoles, 'goals');
+        if (ta) ta.innerHTML = renderTableRows(topAsist, 'assists');
+        if (tp) tp.innerHTML = renderTableRows(topParadas, 'saves');
+    }
+
     function renderLiveQualifiedPanel() {
         const container = document.getElementById('ucl-live-qualified-container');
         if (!container) return;
@@ -2163,7 +2413,7 @@
         let d2Top5 = div2Teams.slice(0, 5);
         let d3Top3 = div3Teams.slice(0, 3);
 
-        let buildListHTML = (list, divName) => {
+        let buildListHTML = (list) => {
             if (list.length === 0) return `<div class="ucl-qualified-item"><span style="color:var(--text-muted);">Sin equipos</span></div>`;
             return list.map((t, idx) => `
                 <div class="ucl-qualified-item">
@@ -2176,21 +2426,15 @@
         container.innerHTML = `
             <div class="ucl-qualified-card">
                 <h4>🏆 1.ª División (Del 1.° al 8.°)</h4>
-                <div class="ucl-qualified-list">
-                    ${buildListHTML(d1Top8, '1.ª Div')}
-                </div>
+                <div class="ucl-qualified-list">${buildListHTML(d1Top8)}</div>
             </div>
             <div class="ucl-qualified-card">
                 <h4>🥇 2.ª División (Del 1.° al 5.°)</h4>
-                <div class="ucl-qualified-list">
-                    ${buildListHTML(d2Top5, '2.ª Div')}
-                </div>
+                <div class="ucl-qualified-list">${buildListHTML(d2Top5)}</div>
             </div>
             <div class="ucl-qualified-card">
                 <h4>🥈 3.ª División (Del 1.° al 3.°)</h4>
-                <div class="ucl-qualified-list">
-                    ${buildListHTML(d3Top3, '3.ª Div')}
-                </div>
+                <div class="ucl-qualified-list">${buildListHTML(d3Top3)}</div>
             </div>
         `;
     }
@@ -2457,7 +2701,7 @@
         });
     }
 
-    function getGroupedTeamEventsHTML(eventsList, teamId) {
+    function getGroupedTeamEventsHTML(eventsList) {
         if (!eventsList || eventsList.length === 0) {
             return `<span style="font-size:0.75rem; color:var(--text-muted); font-style:italic;">Sin incidencias registradas</span>`;
         }
@@ -2508,8 +2752,8 @@
             let homeEventsList = m.events.filter(ev => ev.teamId == home.id);
             let awayEventsList = m.events.filter(ev => ev.teamId == away.id);
 
-            let homeSideHTML = getGroupedTeamEventsHTML(homeEventsList, home.id);
-            let awaySideHTML = getGroupedTeamEventsHTML(awayEventsList, away.id);
+            let homeSideHTML = getGroupedTeamEventsHTML(homeEventsList);
+            let awaySideHTML = getGroupedTeamEventsHTML(awayEventsList);
 
             let canEditMatches = isAdmin || isStaff;
             let adminEventsEditor = '';
@@ -2540,7 +2784,7 @@
 
                 adminEventsEditor = `
                     <div class="match-events-section match-events-wrapper-${m.id}">
-                        <button class="match-events-toggle-btn match-events-btn-${m.id}" onclick="toggleMatchEventsBox(event, ${m.id})">⚙️ Registrar Incidencias por Jugador (${isAdmin ? 'Admin' : 'Staff'})</button>
+                        <button class="match-events-toggle-btn match-events-btn-${m.id}" onclick="toggleMatchEventsBox(event, ${m.id})">⚙️ Registrar Incidencias por Jugador</button>
                         <div id="match-events-box-${m.id}" class="match-events-body ${isBoxOpen}">
                             <div style="font-size:0.8rem; font-weight:700; color:var(--text-main);">Jugadores con acciones en el partido:</div>
                             ${eventRowsHTML}
@@ -2588,12 +2832,8 @@
 
                     <div id="match-details-content-${m.id}" class="match-details-content ${isDetailsOpen}">
                         <div class="match-side-events-container">
-                            <div class="team-events-side">
-                                ${homeSideHTML}
-                            </div>
-                            <div class="team-events-side away-side">
-                                ${awaySideHTML}
-                            </div>
+                            <div class="team-events-side">${homeSideHTML}</div>
+                            <div class="team-events-side away-side">${awaySideHTML}</div>
                         </div>
                     </div>
                     
@@ -2916,6 +3156,9 @@
                 if (inp.type === 'number') inp.value = 0;
                 if (inp.type === 'text') inp.value = '';
             });
+            if (appData.supercup) appData.supercup.events = {};
+            for(let o=1; o<=8; o++) renderUCLEventsList(o);
+            renderUCLTops();
             saveUCLToMemory();
             alert('¡Resultados de la Champions League restablecidos correctamente!');
         }
@@ -2923,7 +3166,7 @@
 
     window.saveUCLToMemory = function() {
         if ((!isAdmin && !isStaff) || isInitialLoading) return;
-        let supercupData = {};
+        let supercupData = appData.supercup || { events: {} };
         let inputs = document.querySelectorAll('#tab-torneos input, #tab-torneos select');
         inputs.forEach(input => { supercupData[input.id] = input.value; });
         appData.supercup = supercupData;
@@ -2933,9 +3176,16 @@
     function loadUCLData() {
         let supercupData = appData.supercup || {};
         Object.keys(supercupData).forEach(id => {
-            let el = document.getElementById(id);
-            if (el) el.value = supercupData[id];
+            if (id !== 'events') {
+                let el = document.getElementById(id);
+                if (el) el.value = supercupData[id];
+            }
         });
+        for (let o = 1; o <= 8; o++) {
+            renderUCLEventsList(o);
+        }
+        renderUCLTops();
+        updateUCLMatchDisplay();
     }
 
     window.renderBracketSelectors = function() {
