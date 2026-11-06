@@ -77,14 +77,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s ease;
-        }
-
-        #page-loader.active {
             opacity: 1;
             pointer-events: auto;
+            transition: opacity 0.3s ease;
+        }
+
+        #page-loader.fade-out {
+            opacity: 0;
+            pointer-events: none;
         }
 
         .rolling-ball-container {
@@ -487,9 +487,6 @@
             font-size: 1.7rem;
         }
 
-        /* ========================================================= */
-        /*   ESTILOS DE CHAMPIONS LEAGUE MEJORADOS (LLAVES Y ELIMINACIÓN) */
-        /* ========================================================= */
         .ucl-single-tree {
             display: flex;
             justify-content: space-between;
@@ -558,7 +555,6 @@
             transition: opacity 0.3s ease, background 0.3s ease;
         }
 
-        /* ESTILO PARA EQUIPO ELIMINADO (OSCURECIDO) */
         .ucl-team-row.eliminated {
             opacity: 0.35;
             filter: grayscale(80%);
@@ -649,7 +645,6 @@
             color: #FFF;
         }
 
-        /* MODAL DE INCIDENCIAS ESTILO PLANTILLA */
         .ucl-modal-overlay {
             display: none;
             position: fixed;
@@ -1218,7 +1213,6 @@
         <button id="tab-btn-gestion" class="tab-btn" onclick="switchTab('gestion', event)" style="display:none;">🛡️ Gestión</button>
     </div>
 
-    <!-- PESTAÑAS DE TORNEOS CON EL BOTÓN AZUL EXACTO QUE PEDISTE -->
     <div class="main-tabs" id="torneos-tabs-container" style="display: none;">
         <button class="tab-btn active" style="background: #0404E2 !important; color: #FFF !important;" onclick="switchTorneoTab('supercopa', event)">Champions League</button>
         <button class="tab-btn" onclick="switchTorneoTab('copadelrey', event)">Copa del Rey</button>
@@ -1392,7 +1386,6 @@
         </div>
     </div>
 
-    <!-- SECCIÓN DE TORNEOS (CHAMPIONS LEAGUE CON LLAVES DISTRIBUIDAS SEGÚN TU DISEÑO, PASE AUTOMÁTICO, PERDEDORES OSCURECIDOS E INCIDENCIAS FILTRADAS) -->
     <div id="tab-torneos" class="content-section">
         <div id="torneo-subtab-supercopa" class="torneo-subcontent">
             <div class="card supercup-card">
@@ -1406,10 +1399,8 @@
                     </div>
                 </div>
 
-                <!-- LLAVE UNIFICADA CON ESCALONAMIENTO EXACTO Y DISTRIBUCIÓN SOLICITADA -->
                 <div class="ucl-single-tree">
                     
-                    <!-- COLUMNA 1: 8 PARTIDOS DE OCTAVOS -->
                     <div class="ucl-tree-col octavos-col">
                         <h5>Octavos de Final (16 Equipos)</h5>
                         <script>
@@ -1443,7 +1434,6 @@
                         </script>
                     </div>
 
-                    <!-- COLUMNA 2: 4 PARTIDOS DE CUARTOS (CON ESPACIADO VERTICAL SEGÚN TU DIBUJO) -->
                     <div class="ucl-tree-col" style="margin-top: 45px;">
                         <h5>Cuartos de Final</h5>
                         <script>
@@ -1477,7 +1467,6 @@
                         </script>
                     </div>
 
-                    <!-- COLUMNA 3: 2 PARTIDOS DE SEMIFINALES -->
                     <div class="ucl-tree-col" style="margin-top: 130px;">
                         <h5>Semifinales</h5>
                         <script>
@@ -1511,7 +1500,6 @@
                         </script>
                     </div>
 
-                    <!-- COLUMNA 4: GRAN FINAL Y CAMPEÓN -->
                     <div class="ucl-tree-col center-final-col" style="margin-top: 220px;">
                         <h5>Gran Final</h5>
                         <div class="ucl-match-box" style="border-color: var(--accent-gold); width: 100%;">
@@ -1545,7 +1533,6 @@
                 </div>
             </div>
 
-            <!-- TABLAS DE TOPS TOP 5 DE CHAMPIONS LEAGUE -->
             <div class="card" style="margin-top: 24px; border-color: #0404E2; background: var(--bg-subcard);">
                 <h3 style="color: #60A5FA;">⚡ Top 5 • Estadísticas de Champions League</h3>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 16px;">
@@ -1579,7 +1566,6 @@
                 </div>
             </div>
 
-            <!-- PANEL DE CLASIFICADOS AL MOMENTO -->
             <div class="card" style="margin-top: 24px; border-color: #0404E2; background: var(--bg-subcard);">
                 <h3 style="color: #60A5FA;">📊 Clasificados al Momento (En Tiempo Real)</h3>
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Listado automático basado en las tablas de posiciones actuales (1.° al 8.° de 1.ª Div, 1.° al 5.° de 2.ª Div y 1.° al 3.° de 3.ª Div):</p>
@@ -1632,7 +1618,6 @@
     </div>
 </div>
 
-<!-- MODAL DE INCIDENCIAS DE CHAMPIONS LEAGUE ESTILO PLANTILLA (CON EQUIPOS FILTRADOS AL PARTIDO) -->
 <div id="ucl-match-modal" class="ucl-modal-overlay">
     <div class="ucl-modal-content">
         <button class="modal-close" onclick="closeUCLMatchModal()">&times;</button>
@@ -1856,6 +1841,12 @@
             saveStateToCloud();
         }
         isInitialLoading = false;
+        
+        // Quitar la pantalla de carga correctamente en cuanto llega la data
+        const loader = document.getElementById('page-loader');
+        if (loader) {
+            loader.classList.add('fade-out');
+        }
     });
 
     async function saveStateToCloud() {
@@ -2136,79 +2127,72 @@
     };
 
     window.switchMainSection = function(section) {
-        const loader = document.getElementById('page-loader');
-        loader.classList.add('active');
-        setTimeout(() => {
-            const heroBanner = document.getElementById('hero-banner');
-            const heroRightImg = document.getElementById('hero-right-img');
+        const heroBanner = document.getElementById('hero-banner');
+        const heroRightImg = document.getElementById('hero-right-img');
 
-            if (section === 'torneos') {
-                document.getElementById('btn-top-torneos').classList.add('active');
-                [1, 2, 3].forEach(d => {
-                    const b = document.getElementById(`btn-div-${d}`);
-                    if (b) b.classList.remove('active');
-                });
-                
-                document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
-                document.getElementById('tab-torneos').classList.add('active');
-                
-                document.getElementById('sub-tabs-container').style.display = 'none';
-                document.getElementById('torneos-tabs-container').style.display = 'flex';
-                document.getElementById('hero-title').innerText = `CHAMPIONS LEAGUE`;
-                document.getElementById('hero-subtitle').style.display = 'none';
-                
-                if (heroBanner) heroBanner.classList.add('supercopa-hero');
-                if (heroRightImg) {
-                    heroRightImg.src = "https://www.fifplay.com/img/public/ucl-logo.png";
-                    heroRightImg.style.display = 'block';
-                }
-
-                document.querySelectorAll('#torneos-tabs-container .tab-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
-                document.querySelectorAll('.torneo-subcontent').forEach((sub, i) => sub.style.display = i === 0 ? 'block' : 'none');
-                
-                populateUCLSelects();
-                renderLiveQualifiedPanel();
-                renderUCLTops();
-                updateUCLCascade();
-
-            } else {
-                currentDiv = section;
-                currentMatchday = 1;
-                openMatchEventsBoxes = {};
-                openMatchDetailsBoxes = {};
-
-                const torneosBtn = document.getElementById('btn-top-torneos');
-                if (torneosBtn) torneosBtn.classList.remove('active');
-
-                [1, 2, 3].forEach(d => {
-                    const b = document.getElementById(`btn-div-${d}`);
-                    if (b) {
-                        b.classList.toggle('active', d === section);
-                    }
-                });
-
-                document.getElementById('sub-tabs-container').style.display = 'flex';
-                document.getElementById('torneos-tabs-container').style.display = 'none';
-
-                document.getElementById('hero-title').innerText = `Temporada Oficial • ${section}ª División`;
-                document.getElementById('hero-subtitle').style.display = 'block';
-                document.getElementById('div-title').innerText = `${section}ª División • Tabla de Posiciones`;
-                
-                if (heroBanner) heroBanner.classList.remove('supercopa-hero');
-                if (heroRightImg) heroRightImg.style.display = 'none';
-
-                document.querySelectorAll('.main-tabs .tab-btn').forEach((btn, idx) => {
-                    btn.classList.toggle('active', idx === 0);
-                });
-                document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
-                document.getElementById('tab-clasificacion').classList.add('active');
-
-                renderAll();
+        if (section === 'torneos') {
+            document.getElementById('btn-top-torneos').classList.add('active');
+            [1, 2, 3].forEach(d => {
+                const b = document.getElementById(`btn-div-${d}`);
+                if (b) b.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('tab-torneos').classList.add('active');
+            
+            document.getElementById('sub-tabs-container').style.display = 'none';
+            document.getElementById('torneos-tabs-container').style.display = 'flex';
+            document.getElementById('hero-title').innerText = `CHAMPIONS LEAGUE`;
+            document.getElementById('hero-subtitle').style.display = 'none';
+            
+            if (heroBanner) heroBanner.classList.add('supercopa-hero');
+            if (heroRightImg) {
+                heroRightImg.src = "https://www.fifplay.com/img/public/ucl-logo.png";
+                heroRightImg.style.display = 'block';
             }
-            setTimeout(() => {
-                loader.classList.remove('active');
-            }, 200);
-        }, 300);
+
+            document.querySelectorAll('#torneos-tabs-container .tab-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+            document.querySelectorAll('.torneo-subcontent').forEach((sub, i) => sub.style.display = i === 0 ? 'block' : 'none');
+            
+            populateUCLSelects();
+            renderLiveQualifiedPanel();
+            renderUCLTops();
+            updateUCLCascade();
+
+        } else {
+            currentDiv = section;
+            currentMatchday = 1;
+            openMatchEventsBoxes = {};
+            openMatchDetailsBoxes = {};
+
+            const torneosBtn = document.getElementById('btn-top-torneos');
+            if (torneosBtn) torneosBtn.classList.remove('active');
+
+            [1, 2, 3].forEach(d => {
+                const b = document.getElementById(`btn-div-${d}`);
+                if (b) {
+                    b.classList.toggle('active', d === section);
+                }
+            });
+
+            document.getElementById('sub-tabs-container').style.display = 'flex';
+            document.getElementById('torneos-tabs-container').style.display = 'none';
+
+            document.getElementById('hero-title').innerText = `Temporada Oficial • ${section}ª División`;
+            document.getElementById('hero-subtitle').style.display = 'block';
+            document.getElementById('div-title').innerText = `${section}ª División • Tabla de Posiciones`;
+            
+            if (heroBanner) heroBanner.classList.remove('supercopa-hero');
+            if (heroRightImg) heroRightImg.style.display = 'none';
+
+            document.querySelectorAll('.main-tabs .tab-btn').forEach((btn, idx) => {
+                btn.classList.toggle('active', idx === 0);
+            });
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('tab-clasificacion').classList.add('active');
+
+            renderAll();
+        }
     };
 
     window.switchTab = function(tabName, evt) {
@@ -2322,16 +2306,6 @@
         return qualified;
     }
 
-    function getAllLeagueTeams() {
-        let all = [];
-        [1, 2, 3].forEach(d => {
-            if (appData[d] && appData[d].teams) {
-                appData[d].teams.forEach(t => all.push({ ...t, sourceDiv: `${d}ª Div` }));
-            }
-        });
-        return all;
-    }
-
     function populateUCLSelects() {
         let qualified = getAllQualifiedTeams();
         let qualOptions = `<option value="">-- Seleccionar Equipo --</option>` +
@@ -2386,41 +2360,17 @@
         return [];
     }
 
-    // LÓGICA DE PASE AUTOMÁTICO, OSCURECIMIENTO DE PERDEDORES Y CASCADA EN TIEMPO REAL
     window.updateUCLCascade = function() {
-        // Función auxiliar para calcular ganador de un partido y actualizar filas/selects
-        function evaluateMatch(t1Val, score1, t2Val, score2, nextSelectId, nextTeamSlot) {
-            let winner = "";
-            let loser = "";
-
-            let row1 = document.getElementById(`ucl-row-${t1Val ? getTeamRowKey(t1Val) : ''}`);
-            // Evaluar ganador
-            if (score1 !== "" && score2 !== "" && !isNaN(score1) && !isNaN(score2)) {
-                let s1 = parseInt(score1);
-                let s2 = parseInt(score2);
-                if (s1 > s2) { winner = t1Val; loser = t2Val; }
-                else if (s2 > s1) { winner = t2Val; loser = t1Val; }
-            }
-
-            // Aplicar efectos visuales de atenuación al perdedor
-            // Buscamos las filas correspondientes
-            return winner;
-        }
-
-        // Actualizar badges e iluminación / oscurecimiento
         const updateMatchVisuals = (prefix, num, isFinal = false) => {
             let idT1 = isFinal ? 'ucl-f1' : `ucl-${prefix}${num}-t1`;
             let idT2 = isFinal ? 'ucl-f2' : `ucl-${prefix}${num}-t2`;
-            let idS1 = isFinal ? 'ucl-sf1' : `ucl-s${prefix}${num}-t1`; // marcador
-            let idS2 = isFinal ? 'ucl-sf2' : `ucl-s${prefix}${num}-t2`; // marcador
-
+            
             let valT1 = document.getElementById(idT1)?.value || "";
             let valT2 = document.getElementById(idT2)?.value || "";
             
             let scoreInput1 = document.getElementById(isFinal ? 'ucl-sf1' : `ucl-s${prefix}${num}-t1` );
             let scoreInput2 = document.getElementById(isFinal ? 'ucl-sf2' : `ucl-s${prefix}${num}-t2` );
             
-            // Ajustar nombres en badges
             let badge1 = document.getElementById(isFinal ? 'ucl-badge-f1' : `ucl-badge-${prefix}${num}-t1`);
             let badge2 = document.getElementById(isFinal ? 'ucl-badge-f2' : `ucl-badge-${prefix}${num}-t2`);
 
@@ -2459,7 +2409,6 @@
             return winner;
         };
 
-        // Procesar octavos -> cuartos
         let c1_t1 = updateMatchVisuals('o', 1);
         let c1_t2 = updateMatchVisuals('o', 2);
         let c2_t1 = updateMatchVisuals('o', 3);
@@ -2469,7 +2418,6 @@
         let c4_t1 = updateMatchVisuals('o', 7);
         let c4_t2 = updateMatchVisuals('o', 8);
 
-        // Asignar ganadores de octavos a cuartos si los selects están vacíos o automatizados
         setTeamToSelectIfEmpty('ucl-c1-t1', c1_t1);
         setTeamToSelectIfEmpty('ucl-c1-t2', c1_t2);
         setTeamToSelectIfEmpty('ucl-c2-t1', c2_t1);
@@ -2479,9 +2427,6 @@
         setTeamToSelectIfEmpty('ucl-c4-t1', c4_t1);
         setTeamToSelectIfEmpty('ucl-c4-t2', c4_t2);
 
-        // Actualizar opciones de selects de cuartos para que solo muestren los 2 equipos del enfrentamiento
-        updateMatchSelectOptions('c', 1, `ucl-o1-t1`, `ucl-o1-t2`, `ucl-o2-t1`, `ucl-o2-t2`); // Ejemplo de cruce o directo
-        // Simplificado: poblar selects de cuartos con los ganadores correspondientes de octavos (O1 vs O2 -> C1)
         updateDirectPairSelect('ucl-c1-t1', 'ucl-o1-t1', 'ucl-o1-t2', 'ucl-so1-t1', 'ucl-so1-t2');
         updateDirectPairSelect('ucl-c1-t2', 'ucl-o2-t1', 'ucl-o2-t2', 'ucl-so2-t1', 'ucl-so2-t2');
         
@@ -2494,7 +2439,6 @@
         updateDirectPairSelect('ucl-c4-t1', 'ucl-o7-t1', 'ucl-o7-t2', 'ucl-so7-t1', 'ucl-so7-t2');
         updateDirectPairSelect('ucl-c4-t2', 'ucl-o8-t1', 'ucl-o8-t2', 'ucl-so8-t1', 'ucl-so8-t2');
 
-        // Procesar cuartos -> semis
         let s1_t1 = updateMatchVisuals('c', 1);
         let s1_t2 = updateMatchVisuals('c', 2);
         let s2_t1 = updateMatchVisuals('c', 3);
@@ -2506,14 +2450,12 @@
         updateDirectPairSelect('ucl-s2-t1', 'ucl-c3-t1', 'ucl-c3-t2', 'ucl-sc3-t1', 'ucl-sc3-t2');
         updateDirectPairSelect('ucl-s2-t2', 'ucl-c4-t1', 'ucl-c4-t2', 'ucl-sc4-t1', 'ucl-sc4-t2');
 
-        // Procesar semis -> final
         let f_t1 = updateMatchVisuals('s', 1);
         let f_t2 = updateMatchVisuals('s', 2);
 
         updateDirectPairSelect('ucl-f1', 'ucl-s1-t1', 'ucl-s1-t2', 'ucl-ss1-t1', 'ucl-ss1-t2');
         updateDirectPairSelect('ucl-f2', 'ucl-s2-t1', 'ucl-s2-t2', 'ucl-ss2-t1', 'ucl-ss2-t2');
 
-        // Procesar final -> campeón
         let champ = updateMatchVisuals('f', 1, true);
         let champDisplay = document.getElementById('ucl-champion-display');
         if (champDisplay) {
@@ -2524,7 +2466,6 @@
     function setTeamToSelectIfEmpty(selectId, teamName) {
         let sel = document.getElementById(selectId);
         if (sel && teamName) {
-            // Asegurar que la opción exista
             let exists = Array.from(sel.options).some(opt => opt.value === teamName);
             if (!exists) {
                 let opt = document.createElement('option');
@@ -2554,7 +2495,6 @@
         
         targetSel.innerHTML = optionsHTML;
 
-        // Autoseleccionar ganador si hay marcador
         let winner = "";
         if (t1 && t2 && !isNaN(s1) && !isNaN(s2)) {
             if (s1 > s2) winner = t1;
@@ -2568,7 +2508,6 @@
         }
     }
 
-    // GESTIÓN DEL MODAL ESTILO PLANTILLA PARA INCIDENCIAS DE CHAMPIONS (SOLO LOS 2 EQUIPOS DEL PARTIDO)
     window.openUCLMatchModal = function(prefix, num) {
         activeUCLMatchKey = `${prefix}_${num}`;
         
@@ -2602,7 +2541,6 @@
         let events = appData.supercup.events[activeUCLMatchKey];
         let container = document.getElementById('ucl-modal-events-list');
 
-        // SOLO LOS DOS EQUIPOS QUE JUEGAN ESTE PARTIDO
         let matchTeams = [];
         if (t1Name) matchTeams.push(t1Name);
         if (t2Name && t2Name !== t1Name) matchTeams.push(t2Name);
