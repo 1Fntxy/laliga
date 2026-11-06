@@ -351,10 +351,26 @@
             box-shadow: 0 10px 25px rgba(4, 4, 226, 0.5);
         }
 
+        .laliga-hero.europaleague-hero {
+            position: sticky;
+            top: 73px;
+            z-index: 998;
+            background-color: #F05B21 !important;
+            padding: 16px 24px;
+            animation: colorShiftBannerEL 6s ease infinite alternate;
+            box-shadow: 0 10px 25px rgba(240, 91, 33, 0.5);
+        }
+
         @keyframes colorShiftBanner {
             0% { background-color: #0404E2; box-shadow: 0 10px 25px rgba(4, 4, 226, 0.5); }
             50% { background-color: #0833A2; box-shadow: 0 10px 25px rgba(8, 51, 162, 0.7); }
             100% { background-color: #020288; box-shadow: 0 10px 25px rgba(2, 2, 136, 0.5); }
+        }
+
+        @keyframes colorShiftBannerEL {
+            0% { background-color: #F05B21; box-shadow: 0 10px 25px rgba(240, 91, 33, 0.5); }
+            50% { background-color: #C23E0A; box-shadow: 0 10px 25px rgba(194, 62, 10, 0.7); }
+            100% { background-color: #000000; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7); }
         }
 
         .laliga-hero-content {
@@ -464,13 +480,32 @@
             animation: colorShiftCard 8s ease infinite alternate;
         }
 
+        .europaleague-card {
+            position: relative;
+            background-color: #F05B21 !important;
+            background-image: linear-gradient(rgba(240, 91, 33, 0.95), rgba(10, 10, 10, 0.98)) !important;
+            background-size: cover !important;
+            background-position: center center !important;
+            color: #FFF;
+            border: 2px solid #F05B21;
+            padding: 28px;
+            box-shadow: 0 10px 30px rgba(240, 91, 33, 0.4);
+            animation: colorShiftCardEL 8s ease infinite alternate;
+        }
+
         @keyframes colorShiftCard {
             0% { border-color: #0404E2; box-shadow: 0 10px 30px rgba(4, 4, 226, 0.4); }
             50% { border-color: #3B82F6; box-shadow: 0 10px 30px rgba(59, 130, 246, 0.6); }
             100% { border-color: #1D4ED8; box-shadow: 0 10px 30px rgba(29, 78, 216, 0.4); }
         }
 
-        .supercup-card h3, .supercup-card h4 {
+        @keyframes colorShiftCardEL {
+            0% { border-color: #F05B21; box-shadow: 0 10px 30px rgba(240, 91, 33, 0.4); }
+            50% { border-color: #FF8C42; box-shadow: 0 10px 30px rgba(255, 140, 66, 0.6); }
+            100% { border-color: #111111; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); }
+        }
+
+        .supercup-card h3, .supercup-card h4, .europaleague-card h3, .europaleague-card h4 {
             color: #FFF;
             text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
@@ -488,7 +523,14 @@
             font-size: 1.7rem;
         }
 
-        /* --- ÁRBOL DE CHAMPIONS LEAGUE ESCALONADO CON NUEVOS AJUSTES FINALES --- */
+        .glowing-europaleague-title {
+            color: #FFB366;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.95), 0 0 20px rgba(240, 91, 33, 0.9);
+            letter-spacing: 1.5px;
+            font-size: 1.7rem;
+        }
+
+        /* --- ÁRBOL DE CHAMPIONS LEAGUE / EUROPA LEAGUE ESCALONADO --- */
         .ucl-single-tree {
             display: flex;
             justify-content: space-between;
@@ -511,7 +553,6 @@
             gap: 12px;
         }
 
-        /* Cuartos de final */
         .ucl-tree-col.cuartos-col {
             flex: 1.2;
             justify-content: space-between;
@@ -519,7 +560,6 @@
             gap: 96px;
         }
 
-        /* Semifinales (S1 y S2 ajustados: S2 subido considerablemente) */
         .ucl-tree-col.semis-col {
             flex: 1.2;
             justify-content: space-between;
@@ -527,7 +567,6 @@
             gap: 275px;
         }
 
-        /* Gran Final (Bajada aún más) */
         .ucl-tree-col.final-col {
             flex: 1.2;
             align-items: center;
@@ -548,9 +587,33 @@
             text-transform: uppercase;
         }
 
+        .el-tree-col h5 {
+            font-family: 'Outfit', sans-serif;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #FFB366;
+            border-bottom: 1px solid rgba(240, 91, 33, 0.5);
+            padding-bottom: 5px;
+            margin-bottom: 6px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
         .ucl-match-box {
             background: rgba(8, 51, 162, 0.95);
             border: 1px solid rgba(4, 4, 226, 0.8);
+            border-radius: 10px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            width: 100%;
+        }
+
+        .el-match-box {
+            background: rgba(30, 20, 15, 0.95);
+            border: 1px solid rgba(240, 91, 33, 0.8);
             border-radius: 10px;
             padding: 10px 12px;
             display: flex;
@@ -593,7 +656,23 @@
             font-weight: 800;
         }
 
-        .ucl-team-badge img {
+        .el-team-badge {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid rgba(240, 91, 33, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+            font-size: 0.6rem;
+            color: #FFF;
+            font-weight: 800;
+        }
+
+        .ucl-team-badge img, .el-team-badge img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -604,6 +683,22 @@
             background: rgba(4, 18, 56, 0.95);
             color: #FFF;
             border: 1px solid rgba(4, 4, 226, 0.5);
+            border-radius: 6px;
+            padding: 3px 6px;
+            font-size: 0.75rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .el-team-name-lbl {
+            flex: 1;
+            background: rgba(20, 10, 5, 0.95);
+            color: #FFF;
+            border: 1px solid rgba(240, 91, 33, 0.5);
             border-radius: 6px;
             padding: 3px 6px;
             font-size: 0.75rem;
@@ -633,10 +728,34 @@
             border-radius: 8px;
         }
 
+        .el-score-input {
+            width: 44px;
+            height: 34px;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 800;
+            background: rgba(10, 10, 10, 0.95);
+            color: #FFF;
+            border: 1px solid rgba(240, 91, 33, 0.9);
+            border-radius: 8px;
+        }
+
         .ucl-select-team {
             background: rgba(4, 18, 56, 0.95);
             color: #FFF;
             border: 1px solid rgba(4, 4, 226, 0.8);
+            border-radius: 6px;
+            padding: 5px 8px;
+            font-size: 0.78rem;
+            width: 100%;
+            outline: none;
+            font-weight: 700;
+        }
+
+        .el-select-team {
+            background: rgba(20, 10, 5, 0.95);
+            color: #FFF;
+            border: 1px solid rgba(240, 91, 33, 0.8);
             border-radius: 6px;
             padding: 5px 8px;
             font-size: 0.78rem;
@@ -656,14 +775,31 @@
             cursor: pointer;
             text-align: center;
             margin-top: 4px;
-            display: none; /* Solo visible para Admin / Staff */
+            display: none;
         }
         .ucl-match-events-toggle:hover {
             background: #0404E2;
             color: #FFF;
         }
 
-        /* Botón de despliegue de resumen visible para todos en cada partido de Champions */
+        .el-match-events-toggle {
+            background: rgba(30, 15, 10, 0.85);
+            color: #FFB366;
+            border: 1px solid rgba(240, 91, 33, 0.5);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 4px;
+            display: none;
+        }
+        .el-match-events-toggle:hover {
+            background: #F05B21;
+            color: #FFF;
+        }
+
         .ucl-details-toggle-btn {
             background: rgba(4, 18, 56, 0.85);
             color: #93C5FD;
@@ -685,6 +821,27 @@
             color: #FFF;
         }
 
+        .el-details-toggle-btn {
+            background: rgba(30, 15, 10, 0.85);
+            color: #FFB366;
+            border: 1px solid rgba(240, 91, 33, 0.5);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 4px;
+            width: 100%;
+        }
+        .el-details-toggle-btn:hover {
+            background: #F05B21;
+            color: #FFF;
+        }
+
         .ucl-details-content {
             display: none;
             flex-direction: column;
@@ -694,6 +851,16 @@
             margin-top: 4px;
         }
         .ucl-details-content.show { display: flex; }
+
+        .el-details-content {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            border-top: 1px dashed rgba(240, 91, 33, 0.5);
+            padding-top: 8px;
+            margin-top: 4px;
+        }
+        .el-details-content.show { display: flex; }
 
         .ucl-modal-overlay {
             display: none;
@@ -733,12 +900,29 @@
             padding: 14px;
         }
 
+        .el-qualified-card {
+            background: rgba(30, 15, 10, 0.85);
+            border: 1px solid rgba(240, 91, 33, 0.5);
+            border-radius: 12px;
+            padding: 14px;
+        }
+
         .ucl-qualified-card h4 {
             font-family: 'Outfit', sans-serif;
             font-size: 0.95rem;
             color: #FCD34D;
             margin-bottom: 10px;
             border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+            padding-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .el-qualified-card h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            color: #FFB366;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(240, 91, 33, 0.3);
             padding-bottom: 6px;
             text-transform: uppercase;
         }
@@ -759,6 +943,16 @@
             padding: 5px 10px;
             border-radius: 6px;
             border: 1px solid rgba(4, 4, 226, 0.3);
+        }
+
+        .el-qualified-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 5, 2, 0.6);
+            padding: 5px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(240, 91, 33, 0.3);
         }
 
         .stats-pills {
@@ -1263,7 +1457,7 @@
 
     <div class="main-tabs" id="torneos-tabs-container" style="display: none;">
         <button class="tab-btn active" style="background: #0404E2 !important; color: #FFF !important;" onclick="switchTorneoTab('supercopa', event)">Champions League</button>
-        <button class="tab-btn" onclick="switchTorneoTab('copadelrey', event)">Copa del Rey</button>
+        <button class="tab-btn" style="background: #F05B21 !important; color: #FFF !important;" onclick="switchTorneoTab('copadelrey', event)">Europa League</button>
     </div>
 
     <div id="tab-clasificacion" class="content-section active">
@@ -1447,10 +1641,8 @@
                     </div>
                 </div>
 
-                <!-- ÁRBOL DE CHAMPIONS LEAGUE ESCALONADO CON TUS NUEVOS AJUSTES FINALES -->
                 <div class="ucl-single-tree">
                     
-                    <!-- Octavos de Final -->
                     <div class="ucl-tree-col octavos-col">
                         <h5>Octavos de Final (16 Equipos)</h5>
                         <script>
@@ -1491,7 +1683,6 @@
                         </script>
                     </div>
 
-                    <!-- Cuartos de Final -->
                     <div class="ucl-tree-col cuartos-col">
                         <h5>Cuartos de Final</h5>
                         <script>
@@ -1532,7 +1723,6 @@
                         </script>
                     </div>
 
-                    <!-- Semifinales (S1 y S2 ajustados: S2 subido y S1 alineado) -->
                     <div class="ucl-tree-col semis-col">
                         <h5>Semifinales</h5>
                         <script>
@@ -1573,7 +1763,6 @@
                         </script>
                     </div>
 
-                    <!-- Gran Final (Bajada aún más) -->
                     <div class="ucl-tree-col final-col">
                         <h5>Gran Final</h5>
                         <div class="ucl-match-box" style="border-color: var(--accent-gold); width: 100%;">
@@ -1655,9 +1844,216 @@
         </div>
 
         <div id="torneo-subtab-copadelrey" class="torneo-subcontent" style="display: none;">
-            <div class="card">
-                <h3 style="color: var(--laliga-red);">👑 COPA DEL REY</h3>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Sección reservada para la Copa del Rey.</p>
+            <div class="card europaleague-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; flex-wrap:wrap; gap:12px;">
+                    <div class="supercopa-title-container">
+                        <h3 class="glowing-europaleague-title">EUROPA LEAGUE</h3>
+                    </div>
+                    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                        <button id="el-sorteo-btn" class="action-btn" style="background:#10B981; display:none; font-size:0.8rem; padding:8px 16px;" onclick="sortearOctavosEL()">🎲 Sortear Octavos (16 Clasificados)</button>
+                        <button id="el-clear-btn" class="action-btn" style="background:#EF4444; display:none; font-size:0.75rem; padding:8px 14px;" onclick="clearELBracket()">🗑️ Borrar Resultados</button>
+                    </div>
+                </div>
+
+                <div class="ucl-single-tree">
+                    
+                    <div class="ucl-tree-col octavos-col">
+                        <h5>Octavos de Final (16 Equipos)</h5>
+                        <script>
+                            let elOctavosHTML = '';
+                            for(let o = 1; o <= 8; o++) {
+                                elOctavosHTML += `
+                                    <div class="el-match-box">
+                                        <div class="ucl-team-row" id="el-row-o${o}-t1">
+                                            <div class="el-team-badge" id="el-badge-o${o}-t1">🛡️</div>
+                                            <div class="el-team-name-lbl">
+                                                <select id="el-o${o}-t1" class="el-select-team" onchange="updateELCascade(); saveELToMemory();">
+                                                    <option value="">-- Octavo O${o} (Eq 1) --</option>
+                                                </select>
+                                            </div>
+                                            <div class="ucl-scores-group"><input type="number" id="el-so${o}-t1" class="el-score-input" value="0" oninput="updateELCascade(); saveELToMemory()"></div>
+                                        </div>
+                                        <div class="ucl-team-row" id="el-row-o${o}-t2">
+                                            <div class="el-team-badge" id="el-badge-o${o}-t2">🛡️</div>
+                                            <div class="el-team-name-lbl">
+                                                <select id="el-o${o}-t2" class="el-select-team" onchange="updateELCascade(); saveELToMemory();">
+                                                    <option value="">-- Octavo O${o} (Eq 2) --</option>
+                                                </select>
+                                            </div>
+                                            <div class="ucl-scores-group"><input type="number" id="el-so${o}-t2" class="el-score-input" value="0" oninput="updateELCascade(); saveELToMemory()"></div>
+                                        </div>
+                                        <button class="el-details-toggle-btn" onclick="toggleELDetailsBox('o_${o}')" id="el-details-btn-o_${o}">▼ Ver resumen</button>
+                                        <div id="el-details-content-o_${o}" class="el-details-content">
+                                            <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
+                                                <div id="el-side-events-o_${o}-t1" style="flex:1;"></div>
+                                                <div id="el-side-events-o_${o}-t2" style="flex:1; text-align:right;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="el-match-events-toggle el-admin-edit-btn" style="display:none;" onclick="openELMatchModal('o', ${o})">⚙️ Incidencias Partido O${o}</div>
+                                    </div>
+                                `;
+                            }
+                            document.write(elOctavosHTML);
+                        </script>
+                    </div>
+
+                    <div class="ucl-tree-col cuartos-col">
+                        <h5>Cuartos de Final</h5>
+                        <script>
+                            let elCuartosHTML = '';
+                            for(let c = 1; c <= 4; c++) {
+                                elCuartosHTML += `
+                                    <div class="el-match-box">
+                                        <div class="ucl-team-row" id="el-row-c${c}-t1">
+                                            <div class="el-team-badge" id="el-badge-c${c}-t1">🛡️</div>
+                                            <div class="el-team-name-lbl">
+                                                <select id="el-c${c}-t1" class="el-select-team" onchange="updateELCascade(); saveELToMemory();">
+                                                    <option value="">-- Seleccionar Equipo --</option>
+                                                </select>
+                                            </div>
+                                            <div class="ucl-scores-group"><input type="number" id="el-sc${c}-t1" class="el-score-input" value="0" oninput="updateELCascade(); saveELToMemory()"></div>
+                                        </div>
+                                        <div class="ucl-team-row" id="el-row-c${c}-t2">
+                                            <div class="el-team-badge" id="el-badge-c${c}-t2">🛡️</div>
+                                            <div class="el-team-name-lbl">
+                                                <select id="el-c${c}-t2" class="el-select-team" onchange="updateELCascade(); saveELToMemory();">
+                                                    <option value="">-- Seleccionar Equipo --</option>
+                                                </select>
+                                            </div>
+                                            <div class="ucl-scores-group"><input type="number" id="el-sc${c}-t2" class="el-score-input" value="0" oninput="updateELCascade(); saveELToMemory()"></div>
+                                        </div>
+                                        <button class="el-details-toggle-btn" onclick="toggleELDetailsBox('c_${c}')" id="el-details-btn-c_${c}">▼ Ver resumen</button>
+                                        <div id="el-details-content-c_${c}" class="el-details-content">
+                                            <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
+                                                <div id="el-side-events-c_${c}-t1" style="flex:1;"></div>
+                                                <div id="el-side-events-c_${c}-t2" style="flex:1; text-align:right;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="el-match-events-toggle el-admin-edit-btn" style="display:none;" onclick="openELMatchModal('c', ${c})">⚙️ Incidencias Partido C${c}</div>
+                                    </div>
+                                `;
+                            }
+                            document.write(elCuartosHTML);
+                        </script>
+                    </div>
+
+                    <div class="ucl-tree-col semis-col">
+                        <h5>Semifinales</h5>
+                        <script>
+                            let elSemisHTML = '';
+                            for(let s = 1; s <= 2; s++) {
+                                elSemisHTML += `
+                                    <div class="el-match-box" style="border-color: #FFB366;">
+                                        <div class="ucl-team-row" id="el-row-s${s}-t1">
+                                            <div class="el-team-badge" id="el-badge-s${s}-t1">🛡️</div>
+                                            <div class="el-team-name-lbl">
+                                                <select id="el-s${s}-t1" class="el-select-team" onchange="updateELCascade(); saveELToMemory();">
+                                                    <option value="">-- Seleccionar Equipo --</option>
+                                                </select>
+                                            </div>
+                                            <div class="ucl-scores-group"><input type="number" id="el-ss${s}-t1" class="el-score-input" value="0" oninput="updateELCascade(); saveELToMemory()"></div>
+                                        </div>
+                                        <div class="ucl-team-row" id="el-row-s${s}-t2">
+                                            <div class="el-team-badge" id="el-badge-s${s}-t2">🛡️</div>
+                                            <div class="el-team-name-lbl">
+                                                <select id="el-s${s}-t2" class="el-select-team" onchange="updateELCascade(); saveELToMemory();">
+                                                    <option value="">-- Seleccionar Equipo --</option>
+                                                </select>
+                                            </div>
+                                            <div class="ucl-scores-group"><input type="number" id="el-ss${s}-t2" class="el-score-input" value="0" oninput="updateELCascade(); saveELToMemory()"></div>
+                                        </div>
+                                        <button class="el-details-toggle-btn" onclick="toggleELDetailsBox('s_${s}')" id="el-details-btn-s_${s}">▼ Ver resumen</button>
+                                        <div id="el-details-content-s_${s}" class="el-details-content">
+                                            <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
+                                                <div id="el-side-events-s_${s}-t1" style="flex:1;"></div>
+                                                <div id="el-side-events-s_${s}-t2" style="flex:1; text-align:right;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="el-match-events-toggle el-admin-edit-btn" style="display:none;" onclick="openELMatchModal('s', ${s})">⚙️ Incidencias Partido S${s}</div>
+                                    </div>
+                                `;
+                            }
+                            document.write(elSemisHTML);
+                        </script>
+                    </div>
+
+                    <div class="ucl-tree-col final-col">
+                        <h5>Gran Final</h5>
+                        <div class="el-match-box" style="border-color: var(--accent-gold); width: 100%;">
+                            <div class="ucl-team-row" id="el-row-f1">
+                                <div class="el-team-badge" id="el-badge-f1">🛡️</div>
+                                <div class="el-team-name-lbl">
+                                    <select id="el-f1" class="el-select-team" onchange="updateELCascade(); saveELToMemory();">
+                                        <option value="">-- Seleccionar Equipo --</option>
+                                    </select>
+                                </div>
+                                <div class="ucl-scores-group"><input type="number" id="el-sf1" class="el-score-input" value="0" oninput="updateELCascade(); saveELToMemory()"></div>
+                            </div>
+                            <div class="ucl-team-row" id="el-row-f2" style="margin-top:8px;">
+                                <div class="el-team-badge" id="el-badge-f2">🛡️</div>
+                                <div class="el-team-name-lbl">
+                                    <select id="el-f2" class="el-select-team" onchange="updateELCascade(); saveELToMemory();">
+                                        <option value="">-- Seleccionar Equipo --</option>
+                                    </select>
+                                </div>
+                                <div class="ucl-scores-group"><input type="number" id="el-sf2" class="el-score-input" value="0" oninput="updateELCascade(); saveELToMemory()"></div>
+                            </div>
+                            <button class="el-details-toggle-btn" onclick="toggleELDetailsBox('f_1')" id="el-details-btn-f_1">▼ Ver resumen</button>
+                            <div id="el-details-content-f_1" class="el-details-content">
+                                <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
+                                    <div id="el-side-events-f_1-t1" style="flex:1;"></div>
+                                    <div id="el-side-events-f_1-t2" style="flex:1; text-align:right;"></div>
+                                </div>
+                            </div>
+                            <div class="el-match-events-toggle el-admin-edit-btn" style="display:none;" onclick="openELMatchModal('f', 1)">⚙️ Incidencias Gran Final</div>
+                        </div>
+
+                        <div style="margin-top: 15px; background: rgba(30, 15, 10, 0.95); border: 2px solid var(--accent-gold); padding: 12px; border-radius: 12px; text-align: center; width: 100%;">
+                            <span style="font-size: 0.75rem; color: var(--accent-gold); font-weight: 900; letter-spacing: 1px;">👑 CAMPEÓN</span>
+                            <h4 id="el-champion-display" style="color: var(--text-main); font-size: 1.1rem; margin-top: 4px; border:none; color: #FFB366;">- Por Definir -</h4>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 24px; border-color: #F05B21; background: var(--bg-subcard);">
+                <h3 style="color: #FFB366;">⚡ Top 5 • Estadísticas de Europa League</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 16px;">
+                    <div class="el-qualified-card">
+                        <h4>⚽ Top 5 Goleadores</h4>
+                        <div class="table-responsive" style="margin-top:8px;">
+                            <table>
+                                <thead><tr><th>#</th><th>Jugador</th><th>Equipo</th><th>Goles</th></tr></thead>
+                                <tbody id="el-tops-goles"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="el-qualified-card">
+                        <h4>🎯 Top 5 Asistidores</h4>
+                        <div class="table-responsive" style="margin-top:8px;">
+                            <table>
+                                <thead><tr><th>#</th><th>Jugador</th><th>Equipo</th><th>Asist.</th></tr></thead>
+                                <tbody id="el-tops-asist"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="el-qualified-card">
+                        <h4>🧤 Top 5 Porteros (Paradas)</h4>
+                        <div class="table-responsive" style="margin-top:8px;">
+                            <table>
+                                <thead><tr><th>#</th><th>Portero</th><th>Equipo</th><th>Paradas</th></tr></thead>
+                                <tbody id="el-tops-paradas"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 24px; border-color: #F05B21; background: var(--bg-subcard);">
+                <h3 style="color: #FFB366;">📊 Clasificados al Momento (En Tiempo Real)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Listado automático basado en las tablas de posiciones actuales (9.° al 13.° de 1.ª Div, 6.° al 11.° de 2.ª Div y 4.° al 8.° de 3.ª Div):</p>
+                <div class="ucl-qualified-grid" id="el-live-qualified-container"></div>
             </div>
         </div>
     </div>
@@ -1714,6 +2110,25 @@
 
         <div style="margin-top:24px; text-align:right;">
             <button class="action-btn" onclick="closeUCLMatchModal()">Guardar y Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<div id="el-match-modal" class="ucl-modal-overlay">
+    <div class="ucl-modal-content">
+        <button class="modal-close" onclick="closeELMatchModal()">&times;</button>
+        <h3 id="el-modal-title" style="margin-bottom: 6px;">Incidencias del Partido</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Registra las acciones de los jugadores para este encuentro (Goles, Asistencias, Paradas)</p>
+        
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h4 style="font-weight: 700; font-size:0.95rem;">Acciones de Jugadores (⚽ Goles | 🎯 Asist. | 🧤 Paradas)</h4>
+            <button class="action-btn" style="font-size:0.8rem; padding:6px 12px;" onclick="addELMatchPlayerEvent()">+ Agregar Jugador</button>
+        </div>
+
+        <div class="roster-list" id="el-modal-events-list"></div>
+
+        <div style="margin-top:24px; text-align:right;">
+            <button class="action-btn" onclick="closeELMatchModal()">Guardar y Cerrar</button>
         </div>
     </div>
 </div>
@@ -1795,7 +2210,9 @@
     let openMatchEventsBoxes = {}; 
     let openMatchDetailsBoxes = {}; 
     let openUCLDetailsBoxes = {};
+    let openELDetailsBoxes = {};
     let activeUCLMatchKey = null;
+    let activeELMatchKey = null;
 
     window.toggleTheme = function() {
         const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -1836,7 +2253,8 @@
         let data = {
             socialDiscord: "https://discord.gg/tu-enlace-de-discord",
             socialTiktok: "https://www.tiktok.com/@tu-usuario-tiktok",
-            supercup: {}
+            supercup: {},
+            europaleague: {}
         };
         [1, 2, 3].forEach(div => {
             let teams = DEFAULT_TEAMS.map((name, idx) => ({
@@ -1898,6 +2316,7 @@
             if (!appData.socialDiscord) appData.socialDiscord = "https://discord.gg/tu-enlace-de-discord";
             if (!appData.socialTiktok) appData.socialTiktok = "https://www.tiktok.com/@tu-usuario-tiktok";
             if (!appData.supercup) appData.supercup = {};
+            if (!appData.europaleague) appData.europaleague = {};
             
             [1, 2, 3].forEach(div => {
                 if (appData[div] && appData[div].teams) {
@@ -1957,7 +2376,7 @@
         const span = btn ? btn.querySelector('span') : null;
 
         if (span) span.innerText = "⏳ Guardando...";
-        if (btn) btn.style.borderColor = "#0404E2";
+        if (btn) btn.style.borderColor = "#F05B21";
 
         clearTimeout(autoSaveTimer);
         autoSaveTimer = setTimeout(async () => {
@@ -1971,7 +2390,7 @@
                         span.innerText = "💾 AutoGuardado";
                     }, 2500);
                 } else {
-                    btn.style.borderColor = "#0404E2";
+                    btn.style.borderColor = "#F05B21";
                     span.innerText = "❌ Error";
                     setTimeout(() => {
                         btn.style.borderColor = "var(--border-color)";
@@ -2018,10 +2437,15 @@
         });
         const clearBtn = document.getElementById('ucl-clear-btn');
         const sorteoBtn = document.getElementById('ucl-sorteo-btn');
+        const elClearBtn = document.getElementById('el-clear-btn');
+        const elSorteoBtn = document.getElementById('el-sorteo-btn');
+
         if (clearBtn) clearBtn.style.display = isAdmin ? 'inline-block' : 'none';
         if (sorteoBtn) sorteoBtn.style.display = isAdmin ? 'inline-block' : 'none';
+        if (elClearBtn) elClearBtn.style.display = isAdmin ? 'inline-block' : 'none';
+        if (elSorteoBtn) elSorteoBtn.style.display = isAdmin ? 'inline-block' : 'none';
 
-        const adminEditBtns = document.querySelectorAll('.ucl-admin-edit-btn');
+        const adminEditBtns = document.querySelectorAll('.ucl-admin-edit-btn, .el-admin-edit-btn');
         adminEditBtns.forEach(btn => {
             btn.style.display = canEdit ? 'block' : 'none';
         });
@@ -2249,10 +2673,13 @@
             
             document.getElementById('sub-tabs-container').style.display = 'none';
             document.getElementById('torneos-tabs-container').style.display = 'flex';
-            document.getElementById('hero-title').innerText = `CHAMPIONS LEAGUE`;
+            document.getElementById('hero-title').innerText = `CHAMPIONS LEAGUE & EUROPA LEAGUE`;
             document.getElementById('hero-subtitle').style.display = 'none';
             
-            if (heroBanner) heroBanner.classList.add('supercopa-hero');
+            if (heroBanner) {
+                heroBanner.classList.remove('supercopa-hero');
+                heroBanner.classList.add('europaleague-hero');
+            }
             if (heroRightImg) {
                 heroRightImg.src = "https://www.fifplay.com/img/public/ucl-logo.png";
                 heroRightImg.style.display = 'block';
@@ -2262,9 +2689,13 @@
             document.querySelectorAll('.torneo-subcontent').forEach((sub, i) => sub.style.display = i === 0 ? 'block' : 'none');
             
             populateUCLSelects();
+            populateELSelects();
             renderLiveQualifiedPanel();
+            renderELLiveQualifiedPanel();
             renderUCLTops();
+            renderELTops();
             updateUCLCascade();
+            updateELCascade();
 
         } else {
             currentDiv = section;
@@ -2289,7 +2720,10 @@
             document.getElementById('hero-subtitle').style.display = 'block';
             document.getElementById('div-title').innerText = `${section}ª División • Tabla de Posiciones`;
             
-            if (heroBanner) heroBanner.classList.remove('supercopa-hero');
+            if (heroBanner) {
+                heroBanner.classList.remove('supercopa-hero');
+                heroBanner.classList.remove('europaleague-hero');
+            }
             if (heroRightImg) heroRightImg.style.display = 'none';
 
             document.querySelectorAll('.main-tabs .tab-btn').forEach((btn, idx) => {
@@ -2320,11 +2754,26 @@
         if (evt && evt.target) evt.target.classList.add('active');
         const targetSub = document.getElementById(`torneo-subtab-${torneoName}`);
         if (targetSub) targetSub.style.display = 'block';
+        
+        const heroBanner = document.getElementById('hero-banner');
         if (torneoName === 'supercopa') {
+            if (heroBanner) {
+                heroBanner.classList.remove('europaleague-hero');
+                heroBanner.classList.add('supercopa-hero');
+            }
             populateUCLSelects();
             renderLiveQualifiedPanel();
             renderUCLTops();
             updateUCLCascade();
+        } else if (torneoName === 'copadelrey') {
+            if (heroBanner) {
+                heroBanner.classList.remove('supercopa-hero');
+                heroBanner.classList.add('europaleague-hero');
+            }
+            populateELSelects();
+            renderELLiveQualifiedPanel();
+            renderELTops();
+            updateELCascade();
         }
     };
 
@@ -2367,10 +2816,15 @@
         renderBracketSelectors();
         loadBracketData();
         loadUCLData();
+        loadELData();
         populateUCLSelects();
+        populateELSelects();
         renderLiveQualifiedPanel();
+        renderELLiveQualifiedPanel();
         renderUCLTops();
+        renderELTops();
         updateUCLCascade();
+        updateELCascade();
         updateBracketInputsState();
     }
 
@@ -2413,6 +2867,21 @@
         return qualified;
     }
 
+    function getAllELQualifiedTeams() {
+        let div1Teams = getSortedDivisionTeams(1);
+        let div2Teams = getSortedDivisionTeams(2);
+        let div3Teams = getSortedDivisionTeams(3);
+
+        let qualified = [];
+        // 9 al 13 de primera (índices 8 al 12)
+        div1Teams.slice(8, 13).forEach(t => qualified.push({ ...t, sourceDiv: '1ª Div' }));
+        // 6 al 11 de segunda (índices 5 al 11)
+        div2Teams.slice(5, 11).forEach(t => qualified.push({ ...t, sourceDiv: '2ª Div' }));
+        // 4 al 8 de tercera (índices 3 al 8)
+        div3Teams.slice(3, 8).forEach(t => qualified.push({ ...t, sourceDiv: '3ª Div' }));
+        return qualified;
+    }
+
     function populateUCLSelects() {
         let qualified = getAllQualifiedTeams();
         let qualOptions = `<option value="">-- Seleccionar Equipo --</option>` +
@@ -2421,6 +2890,19 @@
         for (let o = 1; o <= 8; o++) {
             let s1 = document.getElementById(`ucl-o${o}-t1`);
             let s2 = document.getElementById(`ucl-o${o}-t2`);
+            if (s1 && s1.options.length <= 1) s1.innerHTML = qualOptions;
+            if (s2 && s2.options.length <= 1) s2.innerHTML = qualOptions;
+        }
+    }
+
+    function populateELSelects() {
+        let qualified = getAllELQualifiedTeams();
+        let qualOptions = `<option value="">-- Seleccionar Equipo --</option>` +
+            qualified.map(t => `<option value="${t.name}">${t.name} (${t.sourceDiv})</option>`).join('');
+
+        for (let o = 1; o <= 8; o++) {
+            let s1 = document.getElementById(`el-o${o}-t1`);
+            let s2 = document.getElementById(`el-o${o}-t2`);
             if (s1 && s1.options.length <= 1) s1.innerHTML = qualOptions;
             if (s2 && s2.options.length <= 1) s2.innerHTML = qualOptions;
         }
@@ -2444,6 +2926,26 @@
         updateUCLCascade();
         saveUCLToMemory();
         alert('¡Sorteo de Octavos realizado con éxito!');
+    };
+
+    window.sortearOctavosEL = function() {
+        if (!isAdmin) return;
+        let qualified = getAllELQualifiedTeams();
+        if (qualified.length < 16) {
+            alert('Se necesitan al menos 16 equipos clasificados para Europa League.');
+            return;
+        }
+
+        let shuffled = [...qualified].sort(() => Math.random() - 0.5);
+        for (let o = 1; o <= 8; o++) {
+            let s1 = document.getElementById(`el-o${o}-t1`);
+            let s2 = document.getElementById(`el-o${o}-t2`);
+            if (s1 && shuffled[(o - 1) * 2]) s1.value = shuffled[(o - 1) * 2].name;
+            if (s2 && shuffled[(o - 1) * 2 + 1]) s2.value = shuffled[(o - 1) * 2 + 1].name;
+        }
+        updateELCascade();
+        saveELToMemory();
+        alert('¡Sorteo de Octavos de Europa League realizado con éxito!');
     };
 
     function findTeamLogoByName(teamName) {
@@ -2584,6 +3086,122 @@
         }
     };
 
+    window.updateELCascade = function() {
+        const updateMatchVisualsEL = (prefix, num, isFinal = false) => {
+            let idT1 = isFinal ? 'el-f1' : `el-${prefix}${num}-t1`;
+            let idT2 = isFinal ? 'el-f2' : `el-${prefix}${num}-t2`;
+            
+            let valT1 = document.getElementById(idT1)?.value || "";
+            let valT2 = document.getElementById(idT2)?.value || "";
+            
+            let scoreInput1 = document.getElementById(isFinal ? 'el-sf1' : `el-ss${num}-t1` );
+            let scoreInput2 = document.getElementById(isFinal ? 'el-sf2' : `el-ss${num}-t2` );
+            
+            let badge1 = document.getElementById(isFinal ? 'el-badge-f1' : `el-badge-${prefix}${num}-t1`);
+            let badge2 = document.getElementById(isFinal ? 'el-badge-f2' : `el-badge-${prefix}${num}-t2`);
+
+            if (badge1) {
+                let logo1 = findTeamLogoByName(valT1);
+                let init1 = valT1 ? valT1.substring(0, 2).toUpperCase() : "EQ";
+                badge1.innerHTML = logo1 ? `<img src="${logo1}" alt="" onerror="this.outerHTML='${init1}'">` : init1;
+            }
+            if (badge2) {
+                let logo2 = findTeamLogoByName(valT2);
+                let init2 = valT2 ? valT2.substring(0, 2).toUpperCase() : "EQ";
+                badge2.innerHTML = logo2 ? `<img src="${logo2}" alt="" onerror="this.outerHTML='${init2}'">` : init2;
+            }
+
+            let row1 = document.getElementById(isFinal ? 'el-row-f1' : `el-row-${prefix}${num}-t1`);
+            let row2 = document.getElementById(isFinal ? 'el-row-f2' : `el-row-${prefix}${num}-t2`);
+
+            if (row1) row1.classList.remove('eliminated');
+            if (row2) row2.classList.remove('eliminated');
+
+            let winner = "";
+            let s1 = scoreInput1?.value;
+            let s2 = scoreInput2?.value;
+
+            if (valT1 && valT2 && s1 !== "" && s2 !== "" && !isNaN(s1) && !isNaN(s2)) {
+                let numS1 = parseInt(s1);
+                let numS2 = parseInt(s2);
+                if (numS1 > numS2) {
+                    winner = valT1;
+                    if (row2) row2.classList.add('eliminated');
+                } else if (numS2 > numS1) {
+                    winner = valT2;
+                    if (row1) row1.classList.add('eliminated');
+                }
+            }
+
+            let matchKey = isFinal ? 'f_1' : `${prefix}_${num}`;
+            let eventsObj = appData.europaleague && appData.europaleague.events ? appData.europaleague.events[matchKey] || [] : [];
+            
+            let t1Events = eventsObj.filter(ev => ev.teamName === valT1);
+            let t2Events = eventsObj.filter(ev => ev.teamName === valT2);
+
+            let side1Container = document.getElementById(`el-side-events-${matchKey}-t1`);
+            let side2Container = document.getElementById(`el-side-events-${matchKey}-t2`);
+
+            if (side1Container) side1Container.innerHTML = getGroupedTeamEventsHTML(t1Events);
+            if (side2Container) side2Container.innerHTML = getGroupedTeamEventsHTML(t2Events);
+
+            return winner;
+        };
+
+        let c1_t1 = updateMatchVisualsEL('o', 1);
+        let c1_t2 = updateMatchVisualsEL('o', 2);
+        let c2_t1 = updateMatchVisualsEL('o', 3);
+        let c2_t2 = updateMatchVisualsEL('o', 4);
+        let c3_t1 = updateMatchVisualsEL('o', 5);
+        let c3_t2 = updateMatchVisualsEL('o', 6);
+        let c4_t1 = updateMatchVisualsEL('o', 7);
+        let c4_t2 = updateMatchVisualsEL('o', 8);
+
+        setTeamToSelectIfEmpty('el-c1-t1', c1_t1);
+        setTeamToSelectIfEmpty('el-c1-t2', c1_t2);
+        setTeamToSelectIfEmpty('el-c2-t1', c2_t1);
+        setTeamToSelectIfEmpty('el-c2-t2', c2_t2);
+        setTeamToSelectIfEmpty('el-c3-t1', c3_t1);
+        setTeamToSelectIfEmpty('el-c3-t2', c3_t2);
+        setTeamToSelectIfEmpty('el-c4-t1', c4_t1);
+        setTeamToSelectIfEmpty('el-c4-t2', c4_t2);
+
+        updateDirectPairSelectEL('el-c1-t1', 'el-o1-t1', 'el-o1-t2', 'el-so1-t1', 'el-so1-t2');
+        updateDirectPairSelectEL('el-c1-t2', 'el-o2-t1', 'el-o2-t2', 'el-so2-t1', 'el-so2-t2');
+        
+        updateDirectPairSelectEL('el-c2-t1', 'el-o3-t1', 'el-o3-t2', 'el-so3-t1', 'el-so3-t2');
+        updateDirectPairSelectEL('el-c2-t2', 'el-o4-t1', 'el-o4-t2', 'el-so4-t1', 'el-so4-t2');
+
+        updateDirectPairSelectEL('el-c3-t1', 'el-o5-t1', 'el-o5-t2', 'el-so5-t1', 'el-so5-t2');
+        updateDirectPairSelectEL('el-c3-t2', 'el-o6-t1', 'el-o6-t2', 'el-so6-t1', 'el-so6-t2');
+
+        updateDirectPairSelectEL('el-c4-t1', 'el-o7-t1', 'el-o7-t2', 'el-so7-t1', 'el-so7-t2');
+        updateDirectPairSelectEL('el-c4-t2', 'el-o8-t1', 'el-o8-t2', 'el-so8-t1', 'el-so8-t2');
+
+        let s1_t1 = updateMatchVisualsEL('c', 1);
+        let s1_t2 = updateMatchVisualsEL('c', 2);
+        let s2_t1 = updateMatchVisualsEL('c', 3);
+        let s2_t2 = updateMatchVisualsEL('c', 4);
+
+        updateDirectPairSelectEL('el-s1-t1', 'el-c1-t1', 'el-c1-t2', 'el-sc1-t1', 'el-sc1-t2');
+        updateDirectPairSelectEL('el-s1-t2', 'el-c2-t1', 'el-c2-t2', 'el-sc2-t1', 'el-sc2-t2');
+
+        updateDirectPairSelectEL('el-s2-t1', 'el-c3-t1', 'el-c3-t2', 'el-sc3-t1', 'el-sc3-t2');
+        updateDirectPairSelectEL('el-s2-t2', 'el-c4-t1', 'el-c4-t2', 'el-sc4-t1', 'el-sc4-t2');
+
+        let f_t1 = updateMatchVisualsEL('s', 1);
+        let f_t2 = updateMatchVisualsEL('s', 2);
+
+        updateDirectPairSelectEL('el-f1', 'el-s1-t1', 'el-s1-t2', 'el-ss1-t1', 'el-ss1-t2');
+        updateDirectPairSelectEL('el-f2', 'el-s2-t1', 'el-s2-t2', 'el-ss2-t1', 'el-ss2-t2');
+
+        let champ = updateMatchVisualsEL('f', 1, true);
+        let champDisplay = document.getElementById('el-champion-display');
+        if (champDisplay) {
+            champDisplay.innerText = champ ? champ : "- Por Definir -";
+        }
+    };
+
     window.toggleUCLDetailsBox = function(matchKey) {
         const content = document.getElementById(`ucl-details-content-${matchKey}`);
         const btn = document.getElementById(`ucl-details-btn-${matchKey}`);
@@ -2591,6 +3209,17 @@
             content.classList.toggle('show');
             let isOpen = content.classList.contains('show');
             openUCLDetailsBoxes[matchKey] = isOpen;
+            btn.innerText = isOpen ? '▲ Ocultar resumen' : '▼ Ver resumen';
+        }
+    };
+
+    window.toggleELDetailsBox = function(matchKey) {
+        const content = document.getElementById(`el-details-content-${matchKey}`);
+        const btn = document.getElementById(`el-details-btn-${matchKey}`);
+        if (content && btn) {
+            content.classList.toggle('show');
+            let isOpen = content.classList.contains('show');
+            openELDetailsBoxes[matchKey] = isOpen;
             btn.innerText = isOpen ? '▲ Ocultar resumen' : '▼ Ver resumen';
         }
     };
@@ -2640,6 +3269,35 @@
         }
     }
 
+    function updateDirectPairSelectEL(targetSelectId, team1SelId, team2SelId, score1Id, score2Id) {
+        let t1 = document.getElementById(team1SelId)?.value || "";
+        let t2 = document.getElementById(team2SelId)?.value || "";
+        let s1 = parseInt(document.getElementById(score1Id)?.value);
+        let s2 = parseInt(document.getElementById(score2Id)?.value);
+
+        let targetSel = document.getElementById(targetSelectId);
+        if (!targetSel) return;
+
+        let currentVal = targetSel.value;
+        let optionsHTML = `<option value="">-- Seleccionar Ganador --</option>`;
+        if (t1) optionsHTML += `<option value="${t1}">${t1}</option>`;
+        if (t2) optionsHTML += `<option value="${t2}">${t2}</option>`;
+        
+        targetSel.innerHTML = optionsHTML;
+
+        let winner = "";
+        if (t1 && t2 && !isNaN(s1) && !isNaN(s2)) {
+            if (s1 > s2) winner = t1;
+            else if (s2 > s1) winner = t2;
+        }
+
+        if (winner) {
+            targetSel.value = winner;
+        } else if (currentVal && (currentVal === t1 || currentVal === t2)) {
+            targetSel.value = currentVal;
+        }
+    }
+
     window.openUCLMatchModal = function(prefix, num) {
         if (!isAdmin && !isStaff) return;
         activeUCLMatchKey = `${prefix}_${num}`;
@@ -2660,11 +3318,38 @@
         document.getElementById('ucl-match-modal').classList.add('active');
     };
 
+    window.openELMatchModal = function(prefix, num) {
+        if (!isAdmin && !isStaff) return;
+        activeELMatchKey = `${prefix}_${num}`;
+        
+        let t1Name = "";
+        let t2Name = "";
+
+        if (prefix === 'f') {
+            t1Name = document.getElementById('el-f1')?.value || "";
+            t2Name = document.getElementById('el-f2')?.value || "";
+        } else {
+            t1Name = document.getElementById(`el-${prefix}${num}-t1`)?.value || "";
+            t2Name = document.getElementById(`el-${prefix}${num}-t2`)?.value || "";
+        }
+
+        document.getElementById('el-modal-title').innerText = `Incidencias Europa League • Partido ${prefix.toUpperCase()}${num} (${t1Name || 'Eq 1'} vs ${t2Name || 'Eq 2'})`;
+        renderELModalRosterList(t1Name, t2Name);
+        document.getElementById('el-match-modal').classList.add('active');
+    };
+
     window.closeUCLMatchModal = function() {
         document.getElementById('ucl-match-modal').classList.remove('active');
         saveUCLToMemory();
         renderUCLTops();
         updateUCLCascade();
+    };
+
+    window.closeELMatchModal = function() {
+        document.getElementById('el-match-modal').classList.remove('active');
+        saveELToMemory();
+        renderELTops();
+        updateELCascade();
     };
 
     function renderUCLModalRosterList(t1Name, t2Name) {
@@ -2702,6 +3387,41 @@
         }).join('') || `<div style="text-align:center; color:var(--text-muted); padding:10px;">Sin incidencias registradas en este partido.</div>`;
     }
 
+    function renderELModalRosterList(t1Name, t2Name) {
+        if (!appData.europaleague) appData.europaleague = {};
+        if (!appData.europaleague.events) appData.europaleague.events = {};
+        if (!appData.europaleague.events[activeELMatchKey]) appData.europaleague.events[activeELMatchKey] = [];
+
+        let events = appData.europaleague.events[activeELMatchKey];
+        let container = document.getElementById('el-modal-events-list');
+
+        let matchTeams = [];
+        if (t1Name) matchTeams.push(t1Name);
+        if (t2Name && t2Name !== t1Name) matchTeams.push(t2Name);
+
+        let teamOptions = `<option value="">-- Seleccionar Equipo --</option>` + matchTeams.map(t => `<option value="${t}">${t}</option>`).join('');
+
+        container.innerHTML = events.map((ev, idx) => {
+            let roster = findTeamRosterByName(ev.teamName);
+            let playerOptions = `<option value="">-- Jugador --</option>` + roster.map(p => `<option value="${p.name}" ${p.name === ev.playerName ? 'selected' : ''}>${p.name} (${p.pos})</option>`).join('');
+
+            return `
+                <div class="roster-item">
+                    <select class="name-input" style="flex:1.5;" onchange="updateELPlayerEventField(${idx}, 'teamName', this.value)">
+                        ${teamOptions.replace(`value="${ev.teamName}"`, `value="${ev.teamName}" selected`)}
+                    </select>
+                    <select class="name-input" style="flex:2;" onchange="updateELPlayerEventField(${idx}, 'playerName', this.value)">
+                        ${playerOptions}
+                    </select>
+                    <div class="stat-box-roster" title="Goles">⚽ <input type="number" class="stat-input-roster" value="${ev.goals || 0}" min="0" oninput="updateELPlayerEventNum(${idx}, 'goals', this.value)"></div>
+                    <div class="stat-box-roster" title="Asistencias">🎯 <input type="number" class="stat-input-roster" value="${ev.assists || 0}" min="0" oninput="updateELPlayerEventNum(${idx}, 'assists', this.value)"></div>
+                    <div class="stat-box-roster" title="Paradas">🧤 <input type="number" class="stat-input-roster" value="${ev.saves || 0}" min="0" oninput="updateELPlayerEventNum(${idx}, 'saves', this.value)"></div>
+                    <button style="background:transparent; border:none; color:var(--laliga-red); cursor:pointer; font-size:1.2rem; margin-left:4px;" onclick="removeELPlayerEvent('${t1Name}', '${t2Name}', ${idx})">&times;</button>
+                </div>
+            `;
+        }).join('') || `<div style="text-align:center; color:var(--text-muted); padding:10px;">Sin incidencias registradas en este partido.</div>`;
+    }
+
     window.addUCLMatchPlayerEvent = function() {
         if (!isAdmin && !isStaff) return;
         if (!appData.supercup.events[activeUCLMatchKey]) appData.supercup.events[activeUCLMatchKey] = [];
@@ -2713,6 +3433,19 @@
         let t1 = prefix === 'f' ? document.getElementById('ucl-f1')?.value : document.getElementById(`ucl-${prefix}${num}-t1`)?.value;
         let t2 = prefix === 'f' ? document.getElementById('ucl-f2')?.value : document.getElementById(`ucl-${prefix}${num}-t2`)?.value;
         renderUCLModalRosterList(t1, t2);
+    };
+
+    window.addELMatchPlayerEvent = function() {
+        if (!isAdmin && !isStaff) return;
+        if (!appData.europaleague.events[activeELMatchKey]) appData.europaleague.events[activeELMatchKey] = [];
+        appData.europaleague.events[activeELMatchKey].push({ teamName: "", playerName: "", goals: 0, assists: 0, saves: 0 });
+        
+        let parts = activeELMatchKey.split('_');
+        let prefix = parts[0];
+        let num = parts[1];
+        let t1 = prefix === 'f' ? document.getElementById('el-f1')?.value : document.getElementById(`el-${prefix}${num}-t1`)?.value;
+        let t2 = prefix === 'f' ? document.getElementById('el-f2')?.value : document.getElementById(`el-${prefix}${num}-t2`)?.value;
+        renderELModalRosterList(t1, t2);
     };
 
     window.updateUCLPlayerEventField = function(idx, field, val) {
@@ -2728,10 +3461,30 @@
         }
     };
 
+    window.updateELPlayerEventField = function(idx, field, val) {
+        if (!isAdmin && !isStaff) return;
+        if (appData.europaleague && appData.europaleague.events[activeELMatchKey]) {
+            appData.europaleague.events[activeELMatchKey][idx][field] = val;
+            let parts = activeELMatchKey.split('_');
+            let prefix = parts[0];
+            let num = parts[1];
+            let t1 = prefix === 'f' ? document.getElementById('el-f1')?.value : document.getElementById(`el-${prefix}${num}-t1`)?.value;
+            let t2 = prefix === 'f' ? document.getElementById('el-f2')?.value : document.getElementById(`el-${prefix}${num}-t2`)?.value;
+            renderELModalRosterList(t1, t2);
+        }
+    };
+
     window.updateUCLPlayerEventNum = function(idx, field, val) {
         if (!isAdmin && !isStaff) return;
         if (appData.supercup && appData.supercup.events[activeUCLMatchKey]) {
             appData.supercup.events[activeUCLMatchKey][idx][field] = parseInt(val) || 0;
+        }
+    };
+
+    window.updateELPlayerEventNum = function(idx, field, val) {
+        if (!isAdmin && !isStaff) return;
+        if (appData.europaleague && appData.europaleague.events[activeELMatchKey]) {
+            appData.europaleague.events[activeELMatchKey][idx][field] = parseInt(val) || 0;
         }
     };
 
@@ -2740,6 +3493,14 @@
         if (appData.supercup && appData.supercup.events[activeUCLMatchKey]) {
             appData.supercup.events[activeUCLMatchKey].splice(idx, 1);
             renderUCLModalRosterList(t1, t2);
+        }
+    };
+
+    window.removeELPlayerEvent = function(t1, t2, idx) {
+        if (!isAdmin && !isStaff) return;
+        if (appData.europaleague && appData.europaleague.events[activeELMatchKey]) {
+            appData.europaleague.events[activeELMatchKey].splice(idx, 1);
+            renderELModalRosterList(t1, t2);
         }
     };
 
@@ -2789,6 +3550,52 @@
         if (tp) tp.innerHTML = renderTableRows(topParadas, 'saves');
     }
 
+    function renderELTops() {
+        let playerStats = {};
+        if (appData.europaleague && appData.europaleague.events) {
+            Object.values(appData.europaleague.events).forEach(matchEvents => {
+                if (Array.isArray(matchEvents)) {
+                    matchEvents.forEach(ev => {
+                        if (ev.playerName && ev.teamName) {
+                            let key = `${ev.playerName}_${ev.teamName}`;
+                            if (!playerStats[key]) {
+                                playerStats[key] = { playerName: ev.playerName, teamName: ev.teamName, goals: 0, assists: 0, saves: 0 };
+                            }
+                            playerStats[key].goals += parseInt(ev.goals) || 0;
+                            playerStats[key].assists += parseInt(ev.assists) || 0;
+                            playerStats[key].saves += parseInt(ev.saves) || 0;
+                        }
+                    });
+                }
+            });
+        }
+
+        let playersList = Object.values(playerStats);
+        let topGoles = [...playersList].sort((a, b) => b.goals - a.goals).slice(0, 5);
+        let topAsist = [...playersList].sort((a, b) => b.assists - a.assists).slice(0, 5);
+        let topParadas = [...playersList].sort((a, b) => b.saves - a.saves).slice(0, 5);
+
+        let renderTableRows = (list, type) => {
+            if (list.length === 0) return `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin registros</td></tr>`;
+            return list.map((p, i) => `
+                <tr>
+                    <td><strong>#${i+1}</strong></td>
+                    <td>${p.playerName}</td>
+                    <td style="color:var(--text-muted);">${p.teamName}</td>
+                    <td><strong style="color:#FFB366;">${p[type]}</strong></td>
+                </tr>
+            `).join('');
+        };
+
+        let tg = document.getElementById('el-tops-goles');
+        let ta = document.getElementById('el-tops-asist');
+        let tp = document.getElementById('el-tops-paradas');
+
+        if (tg) tg.innerHTML = renderTableRows(topGoles, 'goals');
+        if (ta) ta.innerHTML = renderTableRows(topAsist, 'assists');
+        if (tp) tp.innerHTML = renderTableRows(topParadas, 'saves');
+    }
+
     function renderLiveQualifiedPanel() {
         const container = document.getElementById('ucl-live-qualified-container');
         if (!container) return;
@@ -2823,6 +3630,44 @@
             <div class="ucl-qualified-card">
                 <h4>🥈 3.ª División (Del 1.° al 3.°)</h4>
                 <div class="ucl-qualified-list">${buildListHTML(d3Top3)}</div>
+            </div>
+        `;
+    }
+
+    function renderELLiveQualifiedPanel() {
+        const container = document.getElementById('el-live-qualified-container');
+        if (!container) return;
+
+        let div1Teams = getSortedDivisionTeams(1);
+        let div2Teams = getSortedDivisionTeams(2);
+        let div3Teams = getSortedDivisionTeams(3);
+
+        let d1Range = div1Teams.slice(8, 13);
+        let d2Range = div2Teams.slice(5, 11);
+        let d3Range = div3Teams.slice(3, 8);
+
+        let buildListELHTML = (list, startPos) => {
+            if (list.length === 0) return `<div class="el-qualified-item"><span style="color:var(--text-muted);">Sin equipos</span></div>`;
+            return list.map((t, idx) => `
+                <div class="el-qualified-item">
+                    <span>${startPos + idx}. ${t.name}</span>
+                    <strong style="color:#FFB366;">${t.pts} PTS</strong>
+                </div>
+            `).join('');
+        };
+
+        container.innerHTML = `
+            <div class="el-qualified-card">
+                <h4>🏆 1.ª División (Del 9.° al 13.°)</h4>
+                <div class="ucl-qualified-list">${buildListELHTML(d1Range, 9)}</div>
+            </div>
+            <div class="el-qualified-card">
+                <h4>🥇 2.ª División (Del 6.° al 11.°)</h4>
+                <div class="ucl-qualified-list">${buildListELHTML(d2Range, 6)}</div>
+            </div>
+            <div class="el-qualified-card">
+                <h4>🥈 3.ª División (Del 4.° al 8.°)</h4>
+                <div class="ucl-qualified-list">${buildListELHTML(d3Range, 4)}</div>
             </div>
         `;
     }
@@ -3539,7 +4384,7 @@
             return;
         }
         if (confirm('¿Estás seguro de vaciar todos los marcadores y nombres de la Champions League?')) {
-            const inputs = document.querySelectorAll('#tab-torneos input');
+            const inputs = document.querySelectorAll('#torneo-subtab-supercopa input');
             inputs.forEach(inp => {
                 if (inp.type === 'number') inp.value = 0;
                 if (inp.type === 'text') inp.value = '';
@@ -3551,12 +4396,39 @@
         }
     };
 
+    window.clearELBracket = function() {
+        if (!isAdmin) {
+            alert('Acceso Denegado: Solo el Administrador puede borrar los resultados.');
+            return;
+        }
+        if (confirm('¿Estás seguro de vaciar todos los marcadores y nombres de la Europa League?')) {
+            const inputs = document.querySelectorAll('#torneo-subtab-copadelrey input');
+            inputs.forEach(inp => {
+                if (inp.type === 'number') inp.value = 0;
+                if (inp.type === 'text') inp.value = '';
+            });
+            if (appData.europaleague) appData.europaleague.events = {};
+            renderELTops();
+            saveELToMemory();
+            alert('¡Resultados de la Europa League restablecidos correctamente!');
+        }
+    };
+
     window.saveUCLToMemory = function() {
         if ((!isAdmin && !isStaff) || isInitialLoading) return;
         let supercupData = appData.supercup || { events: {} };
-        let inputs = document.querySelectorAll('#tab-torneos input, #tab-torneos select');
+        let inputs = document.querySelectorAll('#torneo-subtab-supercopa input, #torneo-subtab-supercopa select');
         inputs.forEach(input => { supercupData[input.id] = input.value; });
         appData.supercup = supercupData;
+        triggerAutoSave();
+    };
+
+    window.saveELToMemory = function() {
+        if ((!isAdmin && !isStaff) || isInitialLoading) return;
+        let elData = appData.europaleague || { events: {} };
+        let inputs = document.querySelectorAll('#torneo-subtab-copadelrey input, #torneo-subtab-copadelrey select');
+        inputs.forEach(input => { elData[input.id] = input.value; });
+        appData.europaleague = elData;
         triggerAutoSave();
     };
 
@@ -3570,6 +4442,18 @@
         });
         renderUCLTops();
         updateUCLCascade();
+    }
+
+    function loadELData() {
+        let elData = appData.europaleague || {};
+        Object.keys(elData).forEach(id => {
+            if (id !== 'events') {
+                let el = document.getElementById(id);
+                if (el) el.value = elData[id];
+            }
+        });
+        renderELTops();
+        updateELCascade();
     }
 
     window.renderBracketSelectors = function() {
@@ -3674,9 +4558,14 @@
         inp.addEventListener('change', () => { if (isAdmin) updateBracketDisplay(); });
     });
 
-    document.querySelectorAll('#tab-torneos input, #tab-torneos select').forEach(inp => {
+    document.querySelectorAll('#torneo-subtab-supercopa input, #torneo-subtab-supercopa select').forEach(inp => {
         inp.addEventListener('input', () => { if (isAdmin || isStaff) saveUCLToMemory(); });
         inp.addEventListener('change', () => { if (isAdmin || isStaff) saveUCLToMemory(); });
+    });
+
+    document.querySelectorAll('#torneo-subtab-copadelrey input, #torneo-subtab-copadelrey select').forEach(inp => {
+        inp.addEventListener('input', () => { if (isAdmin || isStaff) saveELToMemory(); });
+        inp.addEventListener('change', () => { if (isAdmin || isStaff) saveELToMemory(); });
     });
 </script>
 
