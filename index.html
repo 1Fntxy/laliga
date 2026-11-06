@@ -71,19 +71,21 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(11, 15, 25, 0.85);
-            backdrop-filter: blur(6px);
-            z-index: 9999;
+            background: rgba(11, 15, 25, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 99999;
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 1;
+            visibility: visible;
             pointer-events: auto;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
         }
 
         #page-loader.fade-out {
             opacity: 0;
+            visibility: hidden;
             pointer-events: none;
         }
 
@@ -474,7 +476,7 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
 
-        .supercup-title-container {
+        .supercopa-title-container {
             display: flex;
             align-items: center;
             gap: 15px;
@@ -487,6 +489,7 @@
             font-size: 1.7rem;
         }
 
+        /* --- LLAVES ESCALONADAS CORREGIDAS --- */
         .ucl-single-tree {
             display: flex;
             justify-content: space-between;
@@ -508,14 +511,36 @@
 
         .ucl-tree-col.octavos-col {
             flex: 1.3;
-            gap: 18px;
+            gap: 12px;
         }
 
-        .ucl-tree-col.center-final-col {
+        /* Columnas escalonadas correctamente para Cuartos, Semis y Final */
+        .ucl-tree-col.cuartos-col {
             flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            padding-top: 45px;
+            gap: 65px;
+        }
+
+        .ucl-tree-col.semis-col {
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            padding-top: 130px;
+            gap: 200px;
+        }
+
+        .ucl-tree-col.final-col {
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 20px;
+            justify-content: flex-start;
+            padding-top: 220px;
+            gap: 25px;
         }
 
         .ucl-tree-col h5 {
@@ -1399,8 +1424,10 @@
                     </div>
                 </div>
 
+                <!-- ÁRBOL DE CHAMPIONS LEAGUE ESCALONADO -->
                 <div class="ucl-single-tree">
                     
+                    <!-- Octavos de Final -->
                     <div class="ucl-tree-col octavos-col">
                         <h5>Octavos de Final (16 Equipos)</h5>
                         <script>
@@ -1434,13 +1461,14 @@
                         </script>
                     </div>
 
-                    <div class="ucl-tree-col" style="margin-top: 45px;">
+                    <!-- Cuartos de Final (Escalonado) -->
+                    <div class="ucl-tree-col cuartos-col">
                         <h5>Cuartos de Final</h5>
                         <script>
                             let cuartosHTML = '';
                             for(let c = 1; c <= 4; c++) {
                                 cuartosHTML += `
-                                    <div class="ucl-match-box" style="margin-bottom: 25px;">
+                                    <div class="ucl-match-box">
                                         <div class="ucl-team-row" id="ucl-row-c${c}-t1">
                                             <div class="ucl-team-badge" id="ucl-badge-c${c}-t1">🛡️</div>
                                             <div class="ucl-team-name-lbl">
@@ -1467,13 +1495,14 @@
                         </script>
                     </div>
 
-                    <div class="ucl-tree-col" style="margin-top: 130px;">
+                    <!-- Semifinales (Escalonado) -->
+                    <div class="ucl-tree-col semis-col">
                         <h5>Semifinales</h5>
                         <script>
                             let semisHTML = '';
                             for(let s = 1; s <= 2; s++) {
                                 semisHTML += `
-                                    <div class="ucl-match-box" style="border-color: #60A5FA; margin-bottom: 90px;">
+                                    <div class="ucl-match-box" style="border-color: #60A5FA;">
                                         <div class="ucl-team-row" id="ucl-row-s${s}-t1">
                                             <div class="ucl-team-badge" id="ucl-badge-s${s}-t1">🛡️</div>
                                             <div class="ucl-team-name-lbl">
@@ -1500,7 +1529,8 @@
                         </script>
                     </div>
 
-                    <div class="ucl-tree-col center-final-col" style="margin-top: 220px;">
+                    <!-- Gran Final (Centrado y Escalonado) -->
+                    <div class="ucl-tree-col final-col">
                         <h5>Gran Final</h5>
                         <div class="ucl-match-box" style="border-color: var(--accent-gold); width: 100%;">
                             <div class="ucl-team-row" id="ucl-row-f1">
@@ -1524,7 +1554,7 @@
                             <div class="ucl-match-events-toggle" onclick="openUCLMatchModal('f', 1)">⚙️ Incidencias Gran Final</div>
                         </div>
 
-                        <div style="margin-top: 25px; background: rgba(4, 18, 56, 0.95); border: 2px solid var(--accent-gold); padding: 12px; border-radius: 12px; text-align: center; width: 100%;">
+                        <div style="margin-top: 15px; background: rgba(4, 18, 56, 0.95); border: 2px solid var(--accent-gold); padding: 12px; border-radius: 12px; text-align: center; width: 100%;">
                             <span style="font-size: 0.75rem; color: var(--accent-gold); font-weight: 900; letter-spacing: 1px;">👑 CAMPEÓN</span>
                             <h4 id="ucl-champion-display" style="color: var(--text-main); font-size: 1.1rem; margin-top: 4px; border:none; color: #FCD34D;">- Por Definir -</h4>
                         </div>
@@ -1840,13 +1870,22 @@
         } else {
             saveStateToCloud();
         }
-        isInitialLoading = false;
         
-        // Quitar la pantalla de carga correctamente en cuanto llega la data
-        const loader = document.getElementById('page-loader');
-        if (loader) {
-            loader.classList.add('fade-out');
-        }
+        // Retraso controlado y elegante para retirar la pantalla de carga al terminar de renderizar
+        setTimeout(() => {
+            isInitialLoading = false;
+            const loader = document.getElementById('page-loader');
+            if (loader) {
+                loader.classList.add('fade-out');
+            }
+        }, 400);
+    }, (error) => {
+        console.error("Error en Firebase onSnapshot: ", error);
+        setTimeout(() => {
+            isInitialLoading = false;
+            const loader = document.getElementById('page-loader');
+            if (loader) loader.classList.add('fade-out');
+        }, 500);
     });
 
     async function saveStateToCloud() {
@@ -2368,8 +2407,8 @@
             let valT1 = document.getElementById(idT1)?.value || "";
             let valT2 = document.getElementById(idT2)?.value || "";
             
-            let scoreInput1 = document.getElementById(isFinal ? 'ucl-sf1' : `ucl-s${prefix}${num}-t1` );
-            let scoreInput2 = document.getElementById(isFinal ? 'ucl-sf2' : `ucl-s${prefix}${num}-t2` );
+            let scoreInput1 = document.getElementById(isFinal ? 'ucl-sf1' : `ucl-ss${num}-t1` );
+            let scoreInput2 = document.getElementById(isFinal ? 'ucl-sf2' : `ucl-ss${num}-t2` );
             
             let badge1 = document.getElementById(isFinal ? 'ucl-badge-f1' : `ucl-badge-${prefix}${num}-t1`);
             let badge2 = document.getElementById(isFinal ? 'ucl-badge-f2' : `ucl-badge-${prefix}${num}-t2`);
