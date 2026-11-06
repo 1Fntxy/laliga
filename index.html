@@ -488,7 +488,7 @@
         }
 
         /* ========================================================= */
-        /*   ESTILOS DE CHAMPIONS LEAGUE MEJORADOS                   */
+        /*   ESTILOS DE CHAMPIONS LEAGUE MEJORADOS (LLAVES Y ELIMINACIÓN) */
         /* ========================================================= */
         .ucl-single-tree {
             display: flex;
@@ -553,6 +553,15 @@
             gap: 8px;
             font-size: 0.8rem;
             font-weight: 700;
+            padding: 3px 6px;
+            border-radius: 6px;
+            transition: opacity 0.3s ease, background 0.3s ease;
+        }
+
+        /* ESTILO PARA EQUIPO ELIMINADO (OSCURECIDO) */
+        .ucl-team-row.eliminated {
+            opacity: 0.35;
+            filter: grayscale(80%);
         }
 
         .ucl-team-badge {
@@ -1209,8 +1218,9 @@
         <button id="tab-btn-gestion" class="tab-btn" onclick="switchTab('gestion', event)" style="display:none;">🛡️ Gestión</button>
     </div>
 
+    <!-- PESTAÑAS DE TORNEOS CON EL BOTÓN AZUL EXACTO QUE PEDISTE -->
     <div class="main-tabs" id="torneos-tabs-container" style="display: none;">
-        <button class="tab-btn active" onclick="switchTorneoTab('supercopa', event)">Champions League</button>
+        <button class="tab-btn active" style="background: #0404E2 !important; color: #FFF !important;" onclick="switchTorneoTab('supercopa', event)">Champions League</button>
         <button class="tab-btn" onclick="switchTorneoTab('copadelrey', event)">Copa del Rey</button>
     </div>
 
@@ -1382,7 +1392,7 @@
         </div>
     </div>
 
-    <!-- SECCIÓN DE TORNEOS (CHAMPIONS LEAGUE CON LLAVES DISTRIBUIDAS SEGÚN TU DISEÑO Y MODAL DE INCIDENCIAS ESTILO PLANTILLA) -->
+    <!-- SECCIÓN DE TORNEOS (CHAMPIONS LEAGUE CON LLAVES DISTRIBUIDAS SEGÚN TU DISEÑO, PASE AUTOMÁTICO, PERDEDORES OSCURECIDOS E INCIDENCIAS FILTRADAS) -->
     <div id="tab-torneos" class="content-section">
         <div id="torneo-subtab-supercopa" class="torneo-subcontent">
             <div class="card supercup-card">
@@ -1396,7 +1406,7 @@
                     </div>
                 </div>
 
-                <!-- LLAVE UNIFICADA CON ESCALONAMIENTO Y DISTRIBUCIÓN EXACTA -->
+                <!-- LLAVE UNIFICADA CON ESCALONAMIENTO EXACTO Y DISTRIBUCIÓN SOLICITADA -->
                 <div class="ucl-single-tree">
                     
                     <!-- COLUMNA 1: 8 PARTIDOS DE OCTAVOS -->
@@ -1407,23 +1417,23 @@
                             for(let o = 1; o <= 8; o++) {
                                 octavosHTML += `
                                     <div class="ucl-match-box">
-                                        <div class="ucl-team-row">
+                                        <div class="ucl-team-row" id="ucl-row-o${o}-t1">
                                             <div class="ucl-team-badge" id="ucl-badge-o${o}-t1">🛡️</div>
                                             <div class="ucl-team-name-lbl">
-                                                <select id="ucl-o${o}-t1" class="ucl-select-team" onchange="updateUCLMatchDisplay(); saveUCLToMemory();">
+                                                <select id="ucl-o${o}-t1" class="ucl-select-team" onchange="updateUCLCascade(); saveUCLToMemory();">
                                                     <option value="">-- Octavo O${o} (Eq 1) --</option>
                                                 </select>
                                             </div>
-                                            <div class="ucl-scores-group"><input type="number" id="ucl-so${o}-t1" class="ucl-score-input" value="0" oninput="saveUCLToMemory()"></div>
+                                            <div class="ucl-scores-group"><input type="number" id="ucl-so${o}-t1" class="ucl-score-input" value="0" oninput="updateUCLCascade(); saveUCLToMemory()"></div>
                                         </div>
-                                        <div class="ucl-team-row">
+                                        <div class="ucl-team-row" id="ucl-row-o${o}-t2">
                                             <div class="ucl-team-badge" id="ucl-badge-o${o}-t2">🛡️</div>
                                             <div class="ucl-team-name-lbl">
-                                                <select id="ucl-o${o}-t2" class="ucl-select-team" onchange="updateUCLMatchDisplay(); saveUCLToMemory();">
+                                                <select id="ucl-o${o}-t2" class="ucl-select-team" onchange="updateUCLCascade(); saveUCLToMemory();">
                                                     <option value="">-- Octavo O${o} (Eq 2) --</option>
                                                 </select>
                                             </div>
-                                            <div class="ucl-scores-group"><input type="number" id="ucl-so${o}-t2" class="ucl-score-input" value="0" oninput="saveUCLToMemory()"></div>
+                                            <div class="ucl-scores-group"><input type="number" id="ucl-so${o}-t2" class="ucl-score-input" value="0" oninput="updateUCLCascade(); saveUCLToMemory()"></div>
                                         </div>
                                         <div class="ucl-match-events-toggle" onclick="openUCLMatchModal('o', ${o})">⚙️ Incidencias Partido O${o}</div>
                                     </div>
@@ -1433,7 +1443,7 @@
                         </script>
                     </div>
 
-                    <!-- COLUMNA 2: 4 PARTIDOS DE CUARTOS -->
+                    <!-- COLUMNA 2: 4 PARTIDOS DE CUARTOS (CON ESPACIADO VERTICAL SEGÚN TU DIBUJO) -->
                     <div class="ucl-tree-col" style="margin-top: 45px;">
                         <h5>Cuartos de Final</h5>
                         <script>
@@ -1441,23 +1451,23 @@
                             for(let c = 1; c <= 4; c++) {
                                 cuartosHTML += `
                                     <div class="ucl-match-box" style="margin-bottom: 25px;">
-                                        <div class="ucl-team-row">
+                                        <div class="ucl-team-row" id="ucl-row-c${c}-t1">
                                             <div class="ucl-team-badge" id="ucl-badge-c${c}-t1">🛡️</div>
                                             <div class="ucl-team-name-lbl">
-                                                <select id="ucl-c${c}-t1" class="ucl-select-team" onchange="updateUCLMatchDisplay(); saveUCLToMemory();">
-                                                    <option value="">-- Cuarto C${c} (Eq 1) --</option>
+                                                <select id="ucl-c${c}-t1" class="ucl-select-team" onchange="updateUCLCascade(); saveUCLToMemory();">
+                                                    <option value="">-- Seleccionar Equipo --</option>
                                                 </select>
                                             </div>
-                                            <div class="ucl-scores-group"><input type="number" id="ucl-sc${c}-t1" class="ucl-score-input" value="0" oninput="saveUCLToMemory()"></div>
+                                            <div class="ucl-scores-group"><input type="number" id="ucl-sc${c}-t1" class="ucl-score-input" value="0" oninput="updateUCLCascade(); saveUCLToMemory()"></div>
                                         </div>
-                                        <div class="ucl-team-row">
+                                        <div class="ucl-team-row" id="ucl-row-c${c}-t2">
                                             <div class="ucl-team-badge" id="ucl-badge-c${c}-t2">🛡️</div>
                                             <div class="ucl-team-name-lbl">
-                                                <select id="ucl-c${c}-t2" class="ucl-select-team" onchange="updateUCLMatchDisplay(); saveUCLToMemory();">
-                                                    <option value="">-- Cuarto C${c} (Eq 2) --</option>
+                                                <select id="ucl-c${c}-t2" class="ucl-select-team" onchange="updateUCLCascade(); saveUCLToMemory();">
+                                                    <option value="">-- Seleccionar Equipo --</option>
                                                 </select>
                                             </div>
-                                            <div class="ucl-scores-group"><input type="number" id="ucl-sc${c}-t2" class="ucl-score-input" value="0" oninput="saveUCLToMemory()"></div>
+                                            <div class="ucl-scores-group"><input type="number" id="ucl-sc${c}-t2" class="ucl-score-input" value="0" oninput="updateUCLCascade(); saveUCLToMemory()"></div>
                                         </div>
                                         <div class="ucl-match-events-toggle" onclick="openUCLMatchModal('c', ${c})">⚙️ Incidencias Partido C${c}</div>
                                     </div>
@@ -1475,23 +1485,23 @@
                             for(let s = 1; s <= 2; s++) {
                                 semisHTML += `
                                     <div class="ucl-match-box" style="border-color: #60A5FA; margin-bottom: 90px;">
-                                        <div class="ucl-team-row">
+                                        <div class="ucl-team-row" id="ucl-row-s${s}-t1">
                                             <div class="ucl-team-badge" id="ucl-badge-s${s}-t1">🛡️</div>
                                             <div class="ucl-team-name-lbl">
-                                                <select id="ucl-s${s}-t1" class="ucl-select-team" onchange="updateUCLMatchDisplay(); saveUCLToMemory();">
-                                                    <option value="">-- Semifinal S${s} (Eq 1) --</option>
+                                                <select id="ucl-s${s}-t1" class="ucl-select-team" onchange="updateUCLCascade(); saveUCLToMemory();">
+                                                    <option value="">-- Seleccionar Equipo --</option>
                                                 </select>
                                             </div>
-                                            <div class="ucl-scores-group"><input type="number" id="ucl-ss${s}-t1" class="ucl-score-input" value="0" oninput="saveUCLToMemory()"></div>
+                                            <div class="ucl-scores-group"><input type="number" id="ucl-ss${s}-t1" class="ucl-score-input" value="0" oninput="updateUCLCascade(); saveUCLToMemory()"></div>
                                         </div>
-                                        <div class="ucl-team-row">
+                                        <div class="ucl-team-row" id="ucl-row-s${s}-t2">
                                             <div class="ucl-team-badge" id="ucl-badge-s${s}-t2">🛡️</div>
                                             <div class="ucl-team-name-lbl">
-                                                <select id="ucl-s${s}-t2" class="ucl-select-team" onchange="updateUCLMatchDisplay(); saveUCLToMemory();">
-                                                    <option value="">-- Semifinal S${s} (Eq 2) --</option>
+                                                <select id="ucl-s${s}-t2" class="ucl-select-team" onchange="updateUCLCascade(); saveUCLToMemory();">
+                                                    <option value="">-- Seleccionar Equipo --</option>
                                                 </select>
                                             </div>
-                                            <div class="ucl-scores-group"><input type="number" id="ucl-ss${s}-t2" class="ucl-score-input" value="0" oninput="saveUCLToMemory()"></div>
+                                            <div class="ucl-scores-group"><input type="number" id="ucl-ss${s}-t2" class="ucl-score-input" value="0" oninput="updateUCLCascade(); saveUCLToMemory()"></div>
                                         </div>
                                         <div class="ucl-match-events-toggle" onclick="openUCLMatchModal('s', ${s})">⚙️ Incidencias Partido S${s}</div>
                                     </div>
@@ -1505,30 +1515,30 @@
                     <div class="ucl-tree-col center-final-col" style="margin-top: 220px;">
                         <h5>Gran Final</h5>
                         <div class="ucl-match-box" style="border-color: var(--accent-gold); width: 100%;">
-                            <div class="ucl-team-row">
+                            <div class="ucl-team-row" id="ucl-row-f1">
                                 <div class="ucl-team-badge" id="ucl-badge-f1">🛡️</div>
                                 <div class="ucl-team-name-lbl">
-                                    <select id="ucl-f1" class="ucl-select-team" onchange="updateUCLMatchDisplay(); saveUCLToMemory();">
-                                        <option value="">-- Finalista 1 --</option>
+                                    <select id="ucl-f1" class="ucl-select-team" onchange="updateUCLCascade(); saveUCLToMemory();">
+                                        <option value="">-- Seleccionar Equipo --</option>
                                     </select>
                                 </div>
-                                <div class="ucl-scores-group"><input type="number" id="ucl-sf1" class="ucl-score-input" value="0" oninput="saveUCLToMemory()"></div>
+                                <div class="ucl-scores-group"><input type="number" id="ucl-sf1" class="ucl-score-input" value="0" oninput="updateUCLCascade(); saveUCLToMemory()"></div>
                             </div>
-                            <div class="ucl-team-row" style="margin-top:8px;">
+                            <div class="ucl-team-row" id="ucl-row-f2" style="margin-top:8px;">
                                 <div class="ucl-team-badge" id="ucl-badge-f2">🛡️</div>
                                 <div class="ucl-team-name-lbl">
-                                    <select id="ucl-f2" class="ucl-select-team" onchange="updateUCLMatchDisplay(); saveUCLToMemory();">
-                                        <option value="">-- Finalista 2 --</option>
+                                    <select id="ucl-f2" class="ucl-select-team" onchange="updateUCLCascade(); saveUCLToMemory();">
+                                        <option value="">-- Seleccionar Equipo --</option>
                                     </select>
                                 </div>
-                                <div class="ucl-scores-group"><input type="number" id="ucl-sf2" class="ucl-score-input" value="0" oninput="saveUCLToMemory()"></div>
+                                <div class="ucl-scores-group"><input type="number" id="ucl-sf2" class="ucl-score-input" value="0" oninput="updateUCLCascade(); saveUCLToMemory()"></div>
                             </div>
                             <div class="ucl-match-events-toggle" onclick="openUCLMatchModal('f', 1)">⚙️ Incidencias Gran Final</div>
                         </div>
 
                         <div style="margin-top: 25px; background: rgba(4, 18, 56, 0.95); border: 2px solid var(--accent-gold); padding: 12px; border-radius: 12px; text-align: center; width: 100%;">
                             <span style="font-size: 0.75rem; color: var(--accent-gold); font-weight: 900; letter-spacing: 1px;">👑 CAMPEÓN</span>
-                            <input type="text" id="ucl-champion-input" class="ucl-select-team" style="text-align: center; font-weight: 900; font-size: 1.1rem; margin-top: 4px;" placeholder="Nombre del Campeón" oninput="saveUCLToMemory()">
+                            <h4 id="ucl-champion-display" style="color: var(--text-main); font-size: 1.1rem; margin-top: 4px; border:none; color: #FCD34D;">- Por Definir -</h4>
                         </div>
                     </div>
 
@@ -1572,7 +1582,7 @@
             <!-- PANEL DE CLASIFICADOS AL MOMENTO -->
             <div class="card" style="margin-top: 24px; border-color: #0404E2; background: var(--bg-subcard);">
                 <h3 style="color: #60A5FA;">📊 Clasificados al Momento (En Tiempo Real)</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Listado automático basado en las tablas de posiciones actuales (1.° a 8.° de 1.ª Div, 1.° a 5.° de 2.ª Div y 1.° a 3.° de 3.ª Div):</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Listado automático basado en las tablas de posiciones actuales (1.° al 8.° de 1.ª Div, 1.° al 5.° de 2.ª Div y 1.° al 3.° de 3.ª Div):</p>
                 <div class="ucl-qualified-grid" id="ucl-live-qualified-container"></div>
             </div>
         </div>
@@ -1622,7 +1632,7 @@
     </div>
 </div>
 
-<!-- MODAL DE INCIDENCIAS DE CHAMPIONS LEAGUE ESTILO PLANTILLA -->
+<!-- MODAL DE INCIDENCIAS DE CHAMPIONS LEAGUE ESTILO PLANTILLA (CON EQUIPOS FILTRADOS AL PARTIDO) -->
 <div id="ucl-match-modal" class="ucl-modal-overlay">
     <div class="ucl-modal-content">
         <button class="modal-close" onclick="closeUCLMatchModal()">&times;</button>
@@ -2159,7 +2169,7 @@
                 populateUCLSelects();
                 renderLiveQualifiedPanel();
                 renderUCLTops();
-                updateUCLMatchDisplay();
+                updateUCLCascade();
 
             } else {
                 currentDiv = section;
@@ -2223,7 +2233,7 @@
             populateUCLSelects();
             renderLiveQualifiedPanel();
             renderUCLTops();
-            updateUCLMatchDisplay();
+            updateUCLCascade();
         }
     };
 
@@ -2269,7 +2279,7 @@
         populateUCLSelects();
         renderLiveQualifiedPanel();
         renderUCLTops();
-        updateUCLMatchDisplay();
+        updateUCLCascade();
         updateBracketInputsState();
     }
 
@@ -2324,41 +2334,15 @@
 
     function populateUCLSelects() {
         let qualified = getAllQualifiedTeams();
-        let allTeams = getAllLeagueTeams();
-
         let qualOptions = `<option value="">-- Seleccionar Equipo --</option>` +
             qualified.map(t => `<option value="${t.name}">${t.name} (${t.sourceDiv})</option>`).join('');
 
-        let allOptions = `<option value="">-- Seleccionar Equipo --</option>` +
-            allTeams.map(t => `<option value="${t.name}">${t.name} (${t.sourceDiv})</option>`).join('');
-
-        // Octavos con los 16 clasificados
         for (let o = 1; o <= 8; o++) {
             let s1 = document.getElementById(`ucl-o${o}-t1`);
             let s2 = document.getElementById(`ucl-o${o}-t2`);
             if (s1 && s1.options.length <= 1) s1.innerHTML = qualOptions;
             if (s2 && s2.options.length <= 1) s2.innerHTML = qualOptions;
         }
-
-        // Cuartos, Semis y Final con todos los equipos para avanzar libremente
-        for (let c = 1; c <= 4; c++) {
-            let s1 = document.getElementById(`ucl-c${c}-t1`);
-            let s2 = document.getElementById(`ucl-c${c}-t2`);
-            if (s1 && s1.options.length <= 1) s1.innerHTML = allOptions;
-            if (s2 && s2.options.length <= 1) s2.innerHTML = allOptions;
-        }
-
-        for (let s = 1; s <= 2; s++) {
-            let s1 = document.getElementById(`ucl-s${s}-t1`);
-            let s2 = document.getElementById(`ucl-s${s}-t2`);
-            if (s1 && s1.options.length <= 1) s1.innerHTML = allOptions;
-            if (s2 && s2.options.length <= 1) s2.innerHTML = allOptions;
-        }
-
-        let f1 = document.getElementById(`ucl-f1`);
-        let f2 = document.getElementById(`ucl-f2`);
-        if (f1 && f1.options.length <= 1) f1.innerHTML = allOptions;
-        if (f2 && f2.options.length <= 1) f2.innerHTML = allOptions;
     }
 
     window.sortearOctavosUCL = function() {
@@ -2375,7 +2359,7 @@
             if (s1 && shuffled[(o - 1) * 2]) s1.value = shuffled[(o - 1) * 2].name;
             if (s2 && shuffled[(o - 1) * 2 + 1]) s2.value = shuffled[(o - 1) * 2 + 1].name;
         }
-        updateUCLMatchDisplay();
+        updateUCLCascade();
         saveUCLToMemory();
         alert('¡Sorteo de Octavos realizado con éxito!');
     };
@@ -2402,41 +2386,205 @@
         return [];
     }
 
-    window.updateUCLMatchDisplay = function() {
-        // Actualizar badges de octavos, cuartos, semis y final
-        ['o1','o2','o3','o4','o5','o6','o7','o8', 'c1','c2','c3','c4', 's1','s2', 'f'].forEach(prefix => {
-            if(prefix.startsWith('f')) {
-                ['f1','f2'].forEach(id => {
-                    let val = document.getElementById(`ucl-${id}`)?.value;
-                    let badge = document.getElementById(`ucl-badge-${id}`);
-                    if(badge) {
-                        let logo = findTeamLogoByName(val);
-                        let initials = val ? val.substring(0, 2).toUpperCase() : "EQ";
-                        badge.innerHTML = logo ? `<img src="${logo}" alt="" onerror="this.outerHTML='${initials}'">` : initials;
-                    }
-                });
-            } else {
-                ['t1','t2'].forEach(t => {
-                    let val = document.getElementById(`ucl-${prefix}-${t}`)?.value;
-                    let badge = document.getElementById(`ucl-badge-${prefix}-${t}`);
-                    if(badge) {
-                        let logo = findTeamLogoByName(val);
-                        let initials = val ? val.substring(0, 2).toUpperCase() : "EQ";
-                        badge.innerHTML = logo ? `<img src="${logo}" alt="" onerror="this.outerHTML='${initials}'">` : initials;
-                    }
-                });
+    // LÓGICA DE PASE AUTOMÁTICO, OSCURECIMIENTO DE PERDEDORES Y CASCADA EN TIEMPO REAL
+    window.updateUCLCascade = function() {
+        // Función auxiliar para calcular ganador de un partido y actualizar filas/selects
+        function evaluateMatch(t1Val, score1, t2Val, score2, nextSelectId, nextTeamSlot) {
+            let winner = "";
+            let loser = "";
+
+            let row1 = document.getElementById(`ucl-row-${t1Val ? getTeamRowKey(t1Val) : ''}`);
+            // Evaluar ganador
+            if (score1 !== "" && score2 !== "" && !isNaN(score1) && !isNaN(score2)) {
+                let s1 = parseInt(score1);
+                let s2 = parseInt(score2);
+                if (s1 > s2) { winner = t1Val; loser = t2Val; }
+                else if (s2 > s1) { winner = t2Val; loser = t1Val; }
             }
-        });
+
+            // Aplicar efectos visuales de atenuación al perdedor
+            // Buscamos las filas correspondientes
+            return winner;
+        }
+
+        // Actualizar badges e iluminación / oscurecimiento
+        const updateMatchVisuals = (prefix, num, isFinal = false) => {
+            let idT1 = isFinal ? 'ucl-f1' : `ucl-${prefix}${num}-t1`;
+            let idT2 = isFinal ? 'ucl-f2' : `ucl-${prefix}${num}-t2`;
+            let idS1 = isFinal ? 'ucl-sf1' : `ucl-s${prefix}${num}-t1`; // marcador
+            let idS2 = isFinal ? 'ucl-sf2' : `ucl-s${prefix}${num}-t2`; // marcador
+
+            let valT1 = document.getElementById(idT1)?.value || "";
+            let valT2 = document.getElementById(idT2)?.value || "";
+            
+            let scoreInput1 = document.getElementById(isFinal ? 'ucl-sf1' : `ucl-s${prefix}${num}-t1` );
+            let scoreInput2 = document.getElementById(isFinal ? 'ucl-sf2' : `ucl-s${prefix}${num}-t2` );
+            
+            // Ajustar nombres en badges
+            let badge1 = document.getElementById(isFinal ? 'ucl-badge-f1' : `ucl-badge-${prefix}${num}-t1`);
+            let badge2 = document.getElementById(isFinal ? 'ucl-badge-f2' : `ucl-badge-${prefix}${num}-t2`);
+
+            if (badge1) {
+                let logo1 = findTeamLogoByName(valT1);
+                let init1 = valT1 ? valT1.substring(0, 2).toUpperCase() : "EQ";
+                badge1.innerHTML = logo1 ? `<img src="${logo1}" alt="" onerror="this.outerHTML='${init1}'">` : init1;
+            }
+            if (badge2) {
+                let logo2 = findTeamLogoByName(valT2);
+                let init2 = valT2 ? valT2.substring(0, 2).toUpperCase() : "EQ";
+                badge2.innerHTML = logo2 ? `<img src="${logo2}" alt="" onerror="this.outerHTML='${init2}'">` : init2;
+            }
+
+            let row1 = document.getElementById(isFinal ? 'ucl-row-f1' : `ucl-row-${prefix}${num}-t1`);
+            let row2 = document.getElementById(isFinal ? 'ucl-row-f2' : `ucl-row-${prefix}${num}-t2`);
+
+            if (row1) row1.classList.remove('eliminated');
+            if (row2) row2.classList.remove('eliminated');
+
+            let winner = "";
+            let s1 = scoreInput1?.value;
+            let s2 = scoreInput2?.value;
+
+            if (valT1 && valT2 && s1 !== "" && s2 !== "" && !isNaN(s1) && !isNaN(s2)) {
+                let numS1 = parseInt(s1);
+                let numS2 = parseInt(s2);
+                if (numS1 > numS2) {
+                    winner = valT1;
+                    if (row2) row2.classList.add('eliminated');
+                } else if (numS2 > numS1) {
+                    winner = valT2;
+                    if (row1) row1.classList.add('eliminated');
+                }
+            }
+            return winner;
+        };
+
+        // Procesar octavos -> cuartos
+        let c1_t1 = updateMatchVisuals('o', 1);
+        let c1_t2 = updateMatchVisuals('o', 2);
+        let c2_t1 = updateMatchVisuals('o', 3);
+        let c2_t2 = updateMatchVisuals('o', 4);
+        let c3_t1 = updateMatchVisuals('o', 5);
+        let c3_t2 = updateMatchVisuals('o', 6);
+        let c4_t1 = updateMatchVisuals('o', 7);
+        let c4_t2 = updateMatchVisuals('o', 8);
+
+        // Asignar ganadores de octavos a cuartos si los selects están vacíos o automatizados
+        setTeamToSelectIfEmpty('ucl-c1-t1', c1_t1);
+        setTeamToSelectIfEmpty('ucl-c1-t2', c1_t2);
+        setTeamToSelectIfEmpty('ucl-c2-t1', c2_t1);
+        setTeamToSelectIfEmpty('ucl-c2-t2', c2_t2);
+        setTeamToSelectIfEmpty('ucl-c3-t1', c3_t1);
+        setTeamToSelectIfEmpty('ucl-c3-t2', c3_t2);
+        setTeamToSelectIfEmpty('ucl-c4-t1', c4_t1);
+        setTeamToSelectIfEmpty('ucl-c4-t2', c4_t2);
+
+        // Actualizar opciones de selects de cuartos para que solo muestren los 2 equipos del enfrentamiento
+        updateMatchSelectOptions('c', 1, `ucl-o1-t1`, `ucl-o1-t2`, `ucl-o2-t1`, `ucl-o2-t2`); // Ejemplo de cruce o directo
+        // Simplificado: poblar selects de cuartos con los ganadores correspondientes de octavos (O1 vs O2 -> C1)
+        updateDirectPairSelect('ucl-c1-t1', 'ucl-o1-t1', 'ucl-o1-t2', 'ucl-so1-t1', 'ucl-so1-t2');
+        updateDirectPairSelect('ucl-c1-t2', 'ucl-o2-t1', 'ucl-o2-t2', 'ucl-so2-t1', 'ucl-so2-t2');
+        
+        updateDirectPairSelect('ucl-c2-t1', 'ucl-o3-t1', 'ucl-o3-t2', 'ucl-so3-t1', 'ucl-so3-t2');
+        updateDirectPairSelect('ucl-c2-t2', 'ucl-o4-t1', 'ucl-o4-t2', 'ucl-so4-t1', 'ucl-so4-t2');
+
+        updateDirectPairSelect('ucl-c3-t1', 'ucl-o5-t1', 'ucl-o5-t2', 'ucl-so5-t1', 'ucl-so5-t2');
+        updateDirectPairSelect('ucl-c3-t2', 'ucl-o6-t1', 'ucl-o6-t2', 'ucl-so6-t1', 'ucl-so6-t2');
+
+        updateDirectPairSelect('ucl-c4-t1', 'ucl-o7-t1', 'ucl-o7-t2', 'ucl-so7-t1', 'ucl-so7-t2');
+        updateDirectPairSelect('ucl-c4-t2', 'ucl-o8-t1', 'ucl-o8-t2', 'ucl-so8-t1', 'ucl-so8-t2');
+
+        // Procesar cuartos -> semis
+        let s1_t1 = updateMatchVisuals('c', 1);
+        let s1_t2 = updateMatchVisuals('c', 2);
+        let s2_t1 = updateMatchVisuals('c', 3);
+        let s2_t2 = updateMatchVisuals('c', 4);
+
+        updateDirectPairSelect('ucl-s1-t1', 'ucl-c1-t1', 'ucl-c1-t2', 'ucl-sc1-t1', 'ucl-sc1-t2');
+        updateDirectPairSelect('ucl-s1-t2', 'ucl-c2-t1', 'ucl-c2-t2', 'ucl-sc2-t1', 'ucl-sc2-t2');
+
+        updateDirectPairSelect('ucl-s2-t1', 'ucl-c3-t1', 'ucl-c3-t2', 'ucl-sc3-t1', 'ucl-sc3-t2');
+        updateDirectPairSelect('ucl-s2-t2', 'ucl-c4-t1', 'ucl-c4-t2', 'ucl-sc4-t1', 'ucl-sc4-t2');
+
+        // Procesar semis -> final
+        let f_t1 = updateMatchVisuals('s', 1);
+        let f_t2 = updateMatchVisuals('s', 2);
+
+        updateDirectPairSelect('ucl-f1', 'ucl-s1-t1', 'ucl-s1-t2', 'ucl-ss1-t1', 'ucl-ss1-t2');
+        updateDirectPairSelect('ucl-f2', 'ucl-s2-t1', 'ucl-s2-t2', 'ucl-ss2-t1', 'ucl-ss2-t2');
+
+        // Procesar final -> campeón
+        let champ = updateMatchVisuals('f', 1, true);
+        let champDisplay = document.getElementById('ucl-champion-display');
+        if (champDisplay) {
+            champDisplay.innerText = champ ? champ : "- Por Definir -";
+        }
     };
 
-    // GESTIÓN DEL MODAL ESTILO PLANTILLA PARA INCIDENCIAS DE CHAMPIONS
+    function setTeamToSelectIfEmpty(selectId, teamName) {
+        let sel = document.getElementById(selectId);
+        if (sel && teamName) {
+            // Asegurar que la opción exista
+            let exists = Array.from(sel.options).some(opt => opt.value === teamName);
+            if (!exists) {
+                let opt = document.createElement('option');
+                opt.value = teamName;
+                opt.text = teamName;
+                sel.add(opt);
+            }
+            if (!sel.value || sel.value === "") {
+                sel.value = teamName;
+            }
+        }
+    }
+
+    function updateDirectPairSelect(targetSelectId, team1SelId, team2SelId, score1Id, score2Id) {
+        let t1 = document.getElementById(team1SelId)?.value || "";
+        let t2 = document.getElementById(team2SelId)?.value || "";
+        let s1 = parseInt(document.getElementById(score1Id)?.value);
+        let s2 = parseInt(document.getElementById(score2Id)?.value);
+
+        let targetSel = document.getElementById(targetSelectId);
+        if (!targetSel) return;
+
+        let currentVal = targetSel.value;
+        let optionsHTML = `<option value="">-- Seleccionar Ganador --</option>`;
+        if (t1) optionsHTML += `<option value="${t1}">${t1}</option>`;
+        if (t2) optionsHTML += `<option value="${t2}">${t2}</option>`;
+        
+        targetSel.innerHTML = optionsHTML;
+
+        // Autoseleccionar ganador si hay marcador
+        let winner = "";
+        if (t1 && t2 && !isNaN(s1) && !isNaN(s2)) {
+            if (s1 > s2) winner = t1;
+            else if (s2 > s1) winner = t2;
+        }
+
+        if (winner) {
+            targetSel.value = winner;
+        } else if (currentVal && (currentVal === t1 || currentVal === t2)) {
+            targetSel.value = currentVal;
+        }
+    }
+
+    // GESTIÓN DEL MODAL ESTILO PLANTILLA PARA INCIDENCIAS DE CHAMPIONS (SOLO LOS 2 EQUIPOS DEL PARTIDO)
     window.openUCLMatchModal = function(prefix, num) {
         activeUCLMatchKey = `${prefix}_${num}`;
-        let t1Name = document.getElementById(`ucl-${prefix}${num === 1 && prefix==='f' ? '1' : (prefix==='f' ? '2' : num + '-t1')}`)?.value || (prefix==='f' ? document.getElementById('ucl-f1')?.value : document.getElementById(`ucl-${prefix}${num}-t1`)?.value);
-        let t2Name = document.getElementById(`ucl-${prefix}${num === 2 && prefix==='f' ? '2' : (prefix==='f' ? '2' : num + '-t2')}`)?.value || (prefix==='f' ? document.getElementById('ucl-f2')?.value : document.getElementById(`ucl-${prefix}${num}-t2`)?.value);
+        
+        let t1Name = "";
+        let t2Name = "";
 
-        document.getElementById('ucl-modal-title').innerText = `Incidencias • Partido ${prefix.toUpperCase()}${num}`;
-        renderUCLModalRosterList();
+        if (prefix === 'f') {
+            t1Name = document.getElementById('ucl-f1')?.value || "";
+            t2Name = document.getElementById('ucl-f2')?.value || "";
+        } else {
+            t1Name = document.getElementById(`ucl-${prefix}${num}-t1`)?.value || "";
+            t2Name = document.getElementById(`ucl-${prefix}${num}-t2`)?.value || "";
+        }
+
+        document.getElementById('ucl-modal-title').innerText = `Incidencias • Partido ${prefix.toUpperCase()}${num} (${t1Name || 'Eq 1'} vs ${t2Name || 'Eq 2'})`;
+        renderUCLModalRosterList(t1Name, t2Name);
         document.getElementById('ucl-match-modal').classList.add('active');
     };
 
@@ -2446,7 +2594,7 @@
         renderUCLTops();
     };
 
-    function renderUCLModalRosterList() {
+    function renderUCLModalRosterList(t1Name, t2Name) {
         if (!appData.supercup) appData.supercup = {};
         if (!appData.supercup.events) appData.supercup.events = {};
         if (!appData.supercup.events[activeUCLMatchKey]) appData.supercup.events[activeUCLMatchKey] = [];
@@ -2454,8 +2602,12 @@
         let events = appData.supercup.events[activeUCLMatchKey];
         let container = document.getElementById('ucl-modal-events-list');
 
-        let allTeams = getAllLeagueTeams();
-        let teamOptions = `<option value="">-- Seleccionar Equipo --</option>` + allTeams.map(t => `<option value="${t.name}">${t.name}</option>`).join('');
+        // SOLO LOS DOS EQUIPOS QUE JUEGAN ESTE PARTIDO
+        let matchTeams = [];
+        if (t1Name) matchTeams.push(t1Name);
+        if (t2Name && t2Name !== t1Name) matchTeams.push(t2Name);
+
+        let teamOptions = `<option value="">-- Seleccionar Equipo --</option>` + matchTeams.map(t => `<option value="${t}">${t}</option>`).join('');
 
         container.innerHTML = events.map((ev, idx) => {
             let roster = findTeamRosterByName(ev.teamName);
@@ -2472,7 +2624,7 @@
                     <div class="stat-box-roster" title="Goles">⚽ <input type="number" class="stat-input-roster" value="${ev.goals || 0}" min="0" oninput="updateUCLPlayerEventNum(${idx}, 'goals', this.value)"></div>
                     <div class="stat-box-roster" title="Asistencias">🎯 <input type="number" class="stat-input-roster" value="${ev.assists || 0}" min="0" oninput="updateUCLPlayerEventNum(${idx}, 'assists', this.value)"></div>
                     <div class="stat-box-roster" title="Paradas">🧤 <input type="number" class="stat-input-roster" value="${ev.saves || 0}" min="0" oninput="updateUCLPlayerEventNum(${idx}, 'saves', this.value)"></div>
-                    <button style="background:transparent; border:none; color:var(--laliga-red); cursor:pointer; font-size:1.2rem; margin-left:4px;" onclick="removeUCLPlayerEvent(${idx})">&times;</button>
+                    <button style="background:transparent; border:none; color:var(--laliga-red); cursor:pointer; font-size:1.2rem; margin-left:4px;" onclick="removeUCLPlayerEvent('${t1Name}', '${t2Name}', ${idx})">&times;</button>
                 </div>
             `;
         }).join('') || `<div style="text-align:center; color:var(--text-muted); padding:10px;">Sin incidencias registradas en este partido.</div>`;
@@ -2481,13 +2633,24 @@
     window.addUCLMatchPlayerEvent = function() {
         if (!appData.supercup.events[activeUCLMatchKey]) appData.supercup.events[activeUCLMatchKey] = [];
         appData.supercup.events[activeUCLMatchKey].push({ teamName: "", playerName: "", goals: 0, assists: 0, saves: 0 });
-        renderUCLModalRosterList();
+        
+        let parts = activeUCLMatchKey.split('_');
+        let prefix = parts[0];
+        let num = parts[1];
+        let t1 = prefix === 'f' ? document.getElementById('ucl-f1')?.value : document.getElementById(`ucl-${prefix}${num}-t1`)?.value;
+        let t2 = prefix === 'f' ? document.getElementById('ucl-f2')?.value : document.getElementById(`ucl-${prefix}${num}-t2`)?.value;
+        renderUCLModalRosterList(t1, t2);
     };
 
     window.updateUCLPlayerEventField = function(idx, field, val) {
         if (appData.supercup && appData.supercup.events[activeUCLMatchKey]) {
             appData.supercup.events[activeUCLMatchKey][idx][field] = val;
-            renderUCLModalRosterList();
+            let parts = activeUCLMatchKey.split('_');
+            let prefix = parts[0];
+            let num = parts[1];
+            let t1 = prefix === 'f' ? document.getElementById('ucl-f1')?.value : document.getElementById(`ucl-${prefix}${num}-t1`)?.value;
+            let t2 = prefix === 'f' ? document.getElementById('ucl-f2')?.value : document.getElementById(`ucl-${prefix}${num}-t2`)?.value;
+            renderUCLModalRosterList(t1, t2);
         }
     };
 
@@ -2497,10 +2660,10 @@
         }
     };
 
-    window.removeUCLPlayerEvent = function(idx) {
+    window.removeUCLPlayerEvent = function(t1, t2, idx) {
         if (appData.supercup && appData.supercup.events[activeUCLMatchKey]) {
             appData.supercup.events[activeUCLMatchKey].splice(idx, 1);
-            renderUCLModalRosterList();
+            renderUCLModalRosterList(t1, t2);
         }
     };
 
@@ -3330,7 +3493,7 @@
             }
         });
         renderUCLTops();
-        updateUCLMatchDisplay();
+        updateUCLCascade();
     }
 
     window.renderBracketSelectors = function() {
