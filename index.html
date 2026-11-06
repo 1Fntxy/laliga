@@ -488,7 +488,7 @@
             font-size: 1.7rem;
         }
 
-        /* --- ÁRBOL DE CHAMPIONS LEAGUE ESCALONADO CON NUEVOS AJUSTES --- */
+        /* --- ÁRBOL DE CHAMPIONS LEAGUE ESCALONADO CON NUEVOS AJUSTES FINALES --- */
         .ucl-single-tree {
             display: flex;
             justify-content: space-between;
@@ -519,20 +519,20 @@
             gap: 96px;
         }
 
-        /* Semifinales (S1 y S2 ajustados: S2 subido) */
+        /* Semifinales (S1 y S2 ajustados: S2 subido considerablemente) */
         .ucl-tree-col.semis-col {
             flex: 1.2;
             justify-content: space-between;
-            padding-top: 172px;
-            gap: 235px;
+            padding-top: 140px;
+            gap: 275px;
         }
 
-        /* Gran Final (Bajada aún más según tu solicitud) */
+        /* Gran Final (Bajada aún más) */
         .ucl-tree-col.final-col {
             flex: 1.2;
             align-items: center;
             justify-content: flex-start;
-            padding-top: 360px;
+            padding-top: 390px;
             gap: 25px;
         }
 
@@ -656,14 +656,14 @@
             cursor: pointer;
             text-align: center;
             margin-top: 4px;
-            display: none; /* Oculto por defecto para público general, se muestra con JS si es admin/staff */
+            display: none; /* Solo visible para Admin / Staff */
         }
         .ucl-match-events-toggle:hover {
             background: #0404E2;
             color: #FFF;
         }
 
-        /* Botón de despliegue de resumen para todos (similar al de divisiones) */
+        /* Botón de despliegue de resumen visible para todos en cada partido de Champions */
         .ucl-details-toggle-btn {
             background: rgba(4, 18, 56, 0.85);
             color: #93C5FD;
@@ -1447,7 +1447,7 @@
                     </div>
                 </div>
 
-                <!-- ÁRBOL DE CHAMPIONS LEAGUE ESCALONADO CON TUS NUEVOS AJUSTES -->
+                <!-- ÁRBOL DE CHAMPIONS LEAGUE ESCALONADO CON TUS NUEVOS AJUSTES FINALES -->
                 <div class="ucl-single-tree">
                     
                     <!-- Octavos de Final -->
@@ -1532,7 +1532,7 @@
                         </script>
                     </div>
 
-                    <!-- Semifinales (S1 y S2 ajustados) -->
+                    <!-- Semifinales (S1 y S2 ajustados: S2 subido y S1 alineado) -->
                     <div class="ucl-tree-col semis-col">
                         <h5>Semifinales</h5>
                         <script>
@@ -2021,7 +2021,6 @@
         if (clearBtn) clearBtn.style.display = isAdmin ? 'inline-block' : 'none';
         if (sorteoBtn) sorteoBtn.style.display = isAdmin ? 'inline-block' : 'none';
 
-        // Mostrar u ocultar botones de edición de incidencias en Champions League según permisos
         const adminEditBtns = document.querySelectorAll('.ucl-admin-edit-btn');
         adminEditBtns.forEach(btn => {
             btn.style.display = canEdit ? 'block' : 'none';
@@ -2130,7 +2129,7 @@
             document.getElementById('btn-reset-standings').style.display = 'none';
 
             updateBracketInputsState();
-            alert('¡Modo Staff Activado! (Puedes editar resultados, jornadas y Champions)');
+            alert('¡Modo Staff Activado!');
             renderAll();
         } else {
             alert('PIN Incorrecto.');
@@ -2516,7 +2515,6 @@
                 }
             }
 
-            // Actualizar resumen desplegable de incidencias
             let matchKey = isFinal ? 'f_1' : `${prefix}_${num}`;
             let eventsObj = appData.supercup && appData.supercup.events ? appData.supercup.events[matchKey] || [] : [];
             
