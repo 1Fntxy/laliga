@@ -488,7 +488,7 @@
             font-size: 1.7rem;
         }
 
-        /* --- ÁRBOL DE CHAMPIONS LEAGUE ESCALONADO EXACTO (SEGÚN TU INDICACIÓN) --- */
+        /* --- ÁRBOL DE CHAMPIONS LEAGUE ESCALONADO CON NUEVOS AJUSTES --- */
         .ucl-single-tree {
             display: flex;
             justify-content: space-between;
@@ -511,7 +511,7 @@
             gap: 12px;
         }
 
-        /* Cuartos de final: Escalones ajustados exactamente a tu nueva marca */
+        /* Cuartos de final */
         .ucl-tree-col.cuartos-col {
             flex: 1.2;
             justify-content: space-between;
@@ -519,20 +519,20 @@
             gap: 96px;
         }
 
-        /* Semifinales: Escalones ajustados exactamente a tu nueva marca */
+        /* Semifinales (S1 y S2 ajustados: S2 subido) */
         .ucl-tree-col.semis-col {
             flex: 1.2;
             justify-content: space-between;
             padding-top: 172px;
-            gap: 308px;
+            gap: 235px;
         }
 
-        /* Gran Final: Centrada y alineada con las semifinales según tu marca */
+        /* Gran Final (Bajada aún más según tu solicitud) */
         .ucl-tree-col.final-col {
             flex: 1.2;
             align-items: center;
             justify-content: flex-start;
-            padding-top: 305px;
+            padding-top: 360px;
             gap: 25px;
         }
 
@@ -656,11 +656,44 @@
             cursor: pointer;
             text-align: center;
             margin-top: 4px;
+            display: none; /* Oculto por defecto para público general, se muestra con JS si es admin/staff */
         }
         .ucl-match-events-toggle:hover {
             background: #0404E2;
             color: #FFF;
         }
+
+        /* Botón de despliegue de resumen para todos (similar al de divisiones) */
+        .ucl-details-toggle-btn {
+            background: rgba(4, 18, 56, 0.85);
+            color: #93C5FD;
+            border: 1px solid rgba(4, 4, 226, 0.5);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 4px;
+            width: 100%;
+        }
+        .ucl-details-toggle-btn:hover {
+            background: #0404E2;
+            color: #FFF;
+        }
+
+        .ucl-details-content {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            border-top: 1px dashed rgba(4, 4, 226, 0.5);
+            padding-top: 8px;
+            margin-top: 4px;
+        }
+        .ucl-details-content.show { display: flex; }
 
         .ucl-modal-overlay {
             display: none;
@@ -1414,7 +1447,7 @@
                     </div>
                 </div>
 
-                <!-- ÁRBOL DE CHAMPIONS LEAGUE ESCALONADO EXACTO -->
+                <!-- ÁRBOL DE CHAMPIONS LEAGUE ESCALONADO CON TUS NUEVOS AJUSTES -->
                 <div class="ucl-single-tree">
                     
                     <!-- Octavos de Final -->
@@ -1443,7 +1476,14 @@
                                             </div>
                                             <div class="ucl-scores-group"><input type="number" id="ucl-so${o}-t2" class="ucl-score-input" value="0" oninput="updateUCLCascade(); saveUCLToMemory()"></div>
                                         </div>
-                                        <div class="ucl-match-events-toggle" onclick="openUCLMatchModal('o', ${o})">⚙️ Incidencias Partido O${o}</div>
+                                        <button class="ucl-details-toggle-btn" onclick="toggleUCLDetailsBox('o_${o}')" id="ucl-details-btn-o_${o}">▼ Ver resumen</button>
+                                        <div id="ucl-details-content-o_${o}" class="ucl-details-content">
+                                            <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
+                                                <div id="ucl-side-events-o_${o}-t1" style="flex:1;"></div>
+                                                <div id="ucl-side-events-o_${o}-t2" style="flex:1; text-align:right;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="ucl-match-events-toggle ucl-admin-edit-btn" style="display:none;" onclick="openUCLMatchModal('o', ${o})">⚙️ Incidencias Partido O${o}</div>
                                     </div>
                                 `;
                             }
@@ -1451,7 +1491,7 @@
                         </script>
                     </div>
 
-                    <!-- Cuartos de Final (Escalonado perfecto alineado con tu nueva marca) -->
+                    <!-- Cuartos de Final -->
                     <div class="ucl-tree-col cuartos-col">
                         <h5>Cuartos de Final</h5>
                         <script>
@@ -1477,7 +1517,14 @@
                                             </div>
                                             <div class="ucl-scores-group"><input type="number" id="ucl-sc${c}-t2" class="ucl-score-input" value="0" oninput="updateUCLCascade(); saveUCLToMemory()"></div>
                                         </div>
-                                        <div class="ucl-match-events-toggle" onclick="openUCLMatchModal('c', ${c})">⚙️ Incidencias Partido C${c}</div>
+                                        <button class="ucl-details-toggle-btn" onclick="toggleUCLDetailsBox('c_${c}')" id="ucl-details-btn-c_${c}">▼ Ver resumen</button>
+                                        <div id="ucl-details-content-c_${c}" class="ucl-details-content">
+                                            <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
+                                                <div id="ucl-side-events-c_${c}-t1" style="flex:1;"></div>
+                                                <div id="ucl-side-events-c_${c}-t2" style="flex:1; text-align:right;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="ucl-match-events-toggle ucl-admin-edit-btn" style="display:none;" onclick="openUCLMatchModal('c', ${c})">⚙️ Incidencias Partido C${c}</div>
                                     </div>
                                 `;
                             }
@@ -1485,7 +1532,7 @@
                         </script>
                     </div>
 
-                    <!-- Semifinales (Escalonado perfecto alineado con tu nueva marca) -->
+                    <!-- Semifinales (S1 y S2 ajustados) -->
                     <div class="ucl-tree-col semis-col">
                         <h5>Semifinales</h5>
                         <script>
@@ -1511,7 +1558,14 @@
                                             </div>
                                             <div class="ucl-scores-group"><input type="number" id="ucl-ss${s}-t2" class="ucl-score-input" value="0" oninput="updateUCLCascade(); saveUCLToMemory()"></div>
                                         </div>
-                                        <div class="ucl-match-events-toggle" onclick="openUCLMatchModal('s', ${s})">⚙️ Incidencias Partido S${s}</div>
+                                        <button class="ucl-details-toggle-btn" onclick="toggleUCLDetailsBox('s_${s}')" id="ucl-details-btn-s_${s}">▼ Ver resumen</button>
+                                        <div id="ucl-details-content-s_${s}" class="ucl-details-content">
+                                            <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
+                                                <div id="ucl-side-events-s_${s}-t1" style="flex:1;"></div>
+                                                <div id="ucl-side-events-s_${s}-t2" style="flex:1; text-align:right;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="ucl-match-events-toggle ucl-admin-edit-btn" style="display:none;" onclick="openUCLMatchModal('s', ${s})">⚙️ Incidencias Partido S${s}</div>
                                     </div>
                                 `;
                             }
@@ -1519,7 +1573,7 @@
                         </script>
                     </div>
 
-                    <!-- Gran Final (Centrada y alineada con las semifinales según tu marca) -->
+                    <!-- Gran Final (Bajada aún más) -->
                     <div class="ucl-tree-col final-col">
                         <h5>Gran Final</h5>
                         <div class="ucl-match-box" style="border-color: var(--accent-gold); width: 100%;">
@@ -1541,7 +1595,14 @@
                                 </div>
                                 <div class="ucl-scores-group"><input type="number" id="ucl-sf2" class="ucl-score-input" value="0" oninput="updateUCLCascade(); saveUCLToMemory()"></div>
                             </div>
-                            <div class="ucl-match-events-toggle" onclick="openUCLMatchModal('f', 1)">⚙️ Incidencias Gran Final</div>
+                            <button class="ucl-details-toggle-btn" onclick="toggleUCLDetailsBox('f_1')" id="ucl-details-btn-f_1">▼ Ver resumen</button>
+                            <div id="ucl-details-content-f_1" class="ucl-details-content">
+                                <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
+                                    <div id="ucl-side-events-f_1-t1" style="flex:1;"></div>
+                                    <div id="ucl-side-events-f_1-t2" style="flex:1; text-align:right;"></div>
+                                </div>
+                            </div>
+                            <div class="ucl-match-events-toggle ucl-admin-edit-btn" style="display:none;" onclick="openUCLMatchModal('f', 1)">⚙️ Incidencias Gran Final</div>
                         </div>
 
                         <div style="margin-top: 15px; background: rgba(4, 18, 56, 0.95); border: 2px solid var(--accent-gold); padding: 12px; border-radius: 12px; text-align: center; width: 100%;">
@@ -1733,6 +1794,7 @@
     let isInitialLoading = true;
     let openMatchEventsBoxes = {}; 
     let openMatchDetailsBoxes = {}; 
+    let openUCLDetailsBoxes = {};
     let activeUCLMatchKey = null;
 
     window.toggleTheme = function() {
@@ -1958,6 +2020,12 @@
         const sorteoBtn = document.getElementById('ucl-sorteo-btn');
         if (clearBtn) clearBtn.style.display = isAdmin ? 'inline-block' : 'none';
         if (sorteoBtn) sorteoBtn.style.display = isAdmin ? 'inline-block' : 'none';
+
+        // Mostrar u ocultar botones de edición de incidencias en Champions League según permisos
+        const adminEditBtns = document.querySelectorAll('.ucl-admin-edit-btn');
+        adminEditBtns.forEach(btn => {
+            btn.style.display = canEdit ? 'block' : 'none';
+        });
     }
 
     window.openAdminPinModal = function() {
@@ -2447,6 +2515,20 @@
                     if (row1) row1.classList.add('eliminated');
                 }
             }
+
+            // Actualizar resumen desplegable de incidencias
+            let matchKey = isFinal ? 'f_1' : `${prefix}_${num}`;
+            let eventsObj = appData.supercup && appData.supercup.events ? appData.supercup.events[matchKey] || [] : [];
+            
+            let t1Events = eventsObj.filter(ev => ev.teamName === valT1);
+            let t2Events = eventsObj.filter(ev => ev.teamName === valT2);
+
+            let side1Container = document.getElementById(`ucl-side-events-${matchKey}-t1`);
+            let side2Container = document.getElementById(`ucl-side-events-${matchKey}-t2`);
+
+            if (side1Container) side1Container.innerHTML = getGroupedTeamEventsHTML(t1Events);
+            if (side2Container) side2Container.innerHTML = getGroupedTeamEventsHTML(t2Events);
+
             return winner;
         };
 
@@ -2504,6 +2586,17 @@
         }
     };
 
+    window.toggleUCLDetailsBox = function(matchKey) {
+        const content = document.getElementById(`ucl-details-content-${matchKey}`);
+        const btn = document.getElementById(`ucl-details-btn-${matchKey}`);
+        if (content && btn) {
+            content.classList.toggle('show');
+            let isOpen = content.classList.contains('show');
+            openUCLDetailsBoxes[matchKey] = isOpen;
+            btn.innerText = isOpen ? '▲ Ocultar resumen' : '▼ Ver resumen';
+        }
+    };
+
     function setTeamToSelectIfEmpty(selectId, teamName) {
         let sel = document.getElementById(selectId);
         if (sel && teamName) {
@@ -2550,6 +2643,7 @@
     }
 
     window.openUCLMatchModal = function(prefix, num) {
+        if (!isAdmin && !isStaff) return;
         activeUCLMatchKey = `${prefix}_${num}`;
         
         let t1Name = "";
@@ -2572,6 +2666,7 @@
         document.getElementById('ucl-match-modal').classList.remove('active');
         saveUCLToMemory();
         renderUCLTops();
+        updateUCLCascade();
     };
 
     function renderUCLModalRosterList(t1Name, t2Name) {
@@ -2610,6 +2705,7 @@
     }
 
     window.addUCLMatchPlayerEvent = function() {
+        if (!isAdmin && !isStaff) return;
         if (!appData.supercup.events[activeUCLMatchKey]) appData.supercup.events[activeUCLMatchKey] = [];
         appData.supercup.events[activeUCLMatchKey].push({ teamName: "", playerName: "", goals: 0, assists: 0, saves: 0 });
         
@@ -2622,6 +2718,7 @@
     };
 
     window.updateUCLPlayerEventField = function(idx, field, val) {
+        if (!isAdmin && !isStaff) return;
         if (appData.supercup && appData.supercup.events[activeUCLMatchKey]) {
             appData.supercup.events[activeUCLMatchKey][idx][field] = val;
             let parts = activeUCLMatchKey.split('_');
@@ -2634,12 +2731,14 @@
     };
 
     window.updateUCLPlayerEventNum = function(idx, field, val) {
+        if (!isAdmin && !isStaff) return;
         if (appData.supercup && appData.supercup.events[activeUCLMatchKey]) {
             appData.supercup.events[activeUCLMatchKey][idx][field] = parseInt(val) || 0;
         }
     };
 
     window.removeUCLPlayerEvent = function(t1, t2, idx) {
+        if (!isAdmin && !isStaff) return;
         if (appData.supercup && appData.supercup.events[activeUCLMatchKey]) {
             appData.supercup.events[activeUCLMatchKey].splice(idx, 1);
             renderUCLModalRosterList(t1, t2);
