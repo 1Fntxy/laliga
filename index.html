@@ -3605,6 +3605,115 @@ html:not([data-theme="dark"]) #tab-clasificacion thead th {
 #tab-amistosos .amis-incidence-row input{width:100%;padding:8px 4px;background:#1b293f;border:1px solid #45536c;border-radius:7px;color:white;text-align:center}
 @media(max-width:650px){#tab-amistosos .amis-admin-actions .amis-btn{flex:1;min-width:145px;width:auto}#tab-amistosos .amis-incidence-header,#tab-amistosos .amis-incidence-row{grid-template-columns:minmax(90px,1fr) repeat(3,53px);gap:5px}#tab-amistosos .amis-match-controls{justify-content:flex-start}#tab-amistosos .amis-inline-score input{width:36px}}
 </style>
+
+<style id="fix-tabs-torneos-visibilidad">
+/* Respeta la navegación existente: las pestañas de liga no aparecen en Torneos.
+   Corrige la regla anterior display:flex!important que anulaba el display:none de JS. */
+#sub-tabs-container[style*="display: none"],
+#torneos-tabs-container[style*="display: none"] { display: none !important; }
+</style>
+
+<style id="liga-menu-seleccion-roja-intensa">
+/* Resaltar claramente la división o Torneos seleccionados. */
+.top-bar #btn-div-1.active,
+.top-bar #btn-div-2.active,
+.top-bar #btn-div-3.active,
+.top-bar #btn-top-torneos.active {
+  background: linear-gradient(135deg, #ff304e 0%, #d50730 52%, #900920 100%) !important;
+  border: 1px solid #ff7185 !important;
+  color: #fff !important;
+  box-shadow: 0 0 0 1px rgba(255,80,105,.32), 0 0 19px rgba(255,18,63,.82), 0 0 34px rgba(220,0,48,.38), inset 0 1px 0 rgba(255,255,255,.24) !important;
+  text-shadow: 0 1px 5px rgba(0,0,0,.3);
+}
+.top-bar #btn-div-1:not(.active),
+.top-bar #btn-div-2:not(.active),
+.top-bar #btn-div-3:not(.active),
+.top-bar #btn-top-torneos:not(.active) {
+  background: linear-gradient(145deg,#222b40,#0c1223) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 2px 7px rgba(0,0,0,.22) !important;
+}
+</style>
+
+<!-- Ajustes exclusivos para pantallas pequeñas: no alteran escritorio ni Firebase -->
+<style id="liga-mobile-optimization-2026">
+@media (max-width: 767px) {
+  html,body {max-width:100%; overflow-x:clip;}
+  *,*::before,*::after {box-sizing:border-box;}
+  .container {width:100%!important;max-width:100%!important;padding-left:10px!important;padding-right:10px!important;margin-left:auto!important;margin-right:auto!important;}
+  .top-bar {padding:10px!important;gap:9px!important;}
+  .header-controls-left,.header-controls-right {max-width:100%;flex-wrap:wrap;gap:6px!important;}
+  .header-controls-right .btn-div,.header-controls-left .btn-div {min-height:36px;}
+  .brand-container {max-width:100%;}
+  .brand-title h1 {font-size:clamp(14px,4vw,20px)!important;}
+  .clubs-ticker-bar {max-width:100%;overflow:hidden;}
+  .laliga-hero {min-height:unset!important;}
+  .laliga-hero-content {padding:14px 12px!important;min-height:unset!important;gap:8px!important;}
+  #hero-title {font-size:clamp(15px,4.2vw,25px)!important;line-height:1.3!important;white-space:normal!important;}
+  #hero-title .division-label {display:inline-block;max-width:100%;}
+  #sub-tabs-container {display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;padding:8px!important;position:sticky!important;top:0;z-index:50;}
+  #sub-tabs-container>.tab-btn:not(#tab-btn-gestion) {width:100%!important;min-width:0!important;min-height:42px!important;white-space:normal!important;font-size:12px!important;padding:8px 4px!important;justify-content:center!important;}
+  #sub-tabs-container>.tab-btn .tab-vector-icon {width:15px!important;height:15px!important;flex-shrink:0;}
+  #torneos-tabs-container {flex-wrap:wrap!important;gap:7px!important;padding:8px!important;}
+  #torneos-tabs-container>.tab-btn {flex:1 1 135px!important;min-width:0!important;}
+  .content-section>.card {padding:12px!important;max-width:100%;min-width:0;}
+  .table-responsive {width:100%;max-width:100%;overflow-x:auto!important;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;}
+  #tab-clasificacion .table-responsive table {min-width:790px;}
+  #tab-clasificacion .table-responsive th,#tab-clasificacion .table-responsive td {white-space:nowrap;}
+  .matchday-nav {display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;align-items:center!important;}
+  .matchday-nav>.matchday-tabs-holder {grid-column:1/-1;grid-row:1;min-width:0;width:100%!important;max-width:100%!important;}
+  .matchday-nav>.action-btn {min-width:0!important;width:100%!important;min-height:40px;}
+  .match-main-row {gap:9px!important;min-width:0;}
+  .match-card {max-width:100%;min-width:0;overflow:hidden;}
+  .match-team {min-width:0!important;max-width:100%;overflow-wrap:anywhere;}
+  .match-center {min-width:0!important;max-width:100%;}
+  .match-score-divider {flex-shrink:0;}
+  #tab-estadisticas {padding:10px 6px 20px!important;}
+  #tab-estadisticas .stat-subcontent {width:100%!important;max-width:100%!important;margin-left:0!important;margin-right:0!important;padding:12px 8px!important;}
+  #tab-estadisticas .stats-pills {display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px!important;padding:6px!important;}
+  #tab-estadisticas .stats-pills .pill-btn {min-width:0!important;width:100%!important;font-size:11px!important;padding:9px 3px!important;white-space:normal!important;}
+  #tab-estadisticas .table-responsive {overflow-x:auto!important;}
+  #tab-estadisticas .table-responsive table {min-width:450px;}
+  #tab-amistosos>.card {padding:12px!important;}
+  #tab-amistosos .amis-head {align-items:stretch!important;gap:10px!important;}
+  #tab-amistosos .amis-admin-actions {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;width:100%;}
+  #tab-amistosos .amis-admin-actions:not(.allowed) {display:none;}
+  #tab-amistosos .amis-admin-actions .amis-btn {width:100%!important;min-width:0!important;min-height:42px;white-space:normal;line-height:1.2;font-size:11px;padding:8px 5px;}
+  #tab-amistosos .amis-filterbar {display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px!important;}
+  #tab-amistosos .amis-filter {width:100%!important;min-width:0!important;font-size:11px!important;padding:10px 3px!important;}
+  #tab-amistosos .amis-match-main {min-width:0;max-width:100%;}
+  #tab-amistosos .amis-team {min-width:0;overflow-wrap:anywhere;}
+  #tab-amistosos .amis-match-footer {gap:8px!important;}
+  #tab-amistosos .amis-match-controls {flex-wrap:wrap;gap:6px;}
+  #tab-amistosos .amis-match-controls button {min-height:34px;}
+  #tab-amistosos .amis-draw-modal {padding:12px!important;}
+  #tab-amistosos .amis-draw-dialog {width:min(100%,460px)!important;max-width:100%!important;max-height:85dvh;overflow-y:auto;}
+  #tab-amistosos .amis-fields {grid-template-columns:1fr!important;}
+  #tab-amistosos .amis-form input,#tab-amistosos .amis-form select {max-width:100%;}
+  #tab-amistosos .amis-incidence-dialog {overflow-x:auto;}
+  #tab-amistosos .amis-incidence-header,#tab-amistosos .amis-incidence-row {min-width:290px;}
+  .modal-content {width:calc(100vw - 24px)!important;max-width:100%!important;max-height:88dvh;overflow-y:auto;}
+  button,select,input {touch-action:manipulation;}
+}
+@media (max-width: 390px) {
+  #sub-tabs-container>.tab-btn:not(#tab-btn-gestion) {font-size:10px!important;}
+  #tab-amistosos .amis-admin-actions .amis-btn {font-size:10px;}
+  #tab-amistosos .amis-match-main {grid-template-columns:minmax(0,1fr) 62px minmax(0,1fr)!important;gap:3px!important;}
+  #tab-amistosos .amis-inline-score input {width:29px!important;}
+}
+</style>
+
+<style id="fix-torneo-subtabs-scroll-movil">
+/* En móvil, las pestañas Champions/Europa siguen el flujo normal: no quedan flotando sobre partidos. */
+@media (max-width: 650px) {
+  #torneos-tabs-container {
+    position: relative !important;
+    top: auto !important;
+    bottom: auto !important;
+    z-index: 1 !important;
+    transform: none !important;
+  }
+}
+</style>
 </head>
 <body>
 
@@ -3635,7 +3744,7 @@ html:not([data-theme="dark"]) #tab-clasificacion thead th {
                 <button class="dropdown-item active" onclick="selectMobileDivision(1)">🏆 1ª División</button>
                 <button class="dropdown-item" onclick="selectMobileDivision(2)">🥇 2ª División</button>
                 <button class="dropdown-item" onclick="selectMobileDivision(3)">🥈 3ª División</button>
-                <button class="dropdown-item" onclick="selectMobileDivision('torneos')">🇪🇸 Torneos</button>
+                <button class="dropdown-item" onclick="selectMobileDivision('torneos')">🏆 Torneos</button>
             </div>
         </div>
     </div>
@@ -4977,6 +5086,12 @@ html:not([data-theme="dark"]) #tab-clasificacion thead th {
     }
 
     function executeSwitchSection(section) {
+        // Mantener sincronizado el selector móvil con la sección real.
+        const mobileLabel = document.getElementById('mobile-current-div-label');
+        if (mobileLabel) mobileLabel.textContent = section === 'torneos' ? 'Torneos' : `${section}ª DIV`;
+        document.querySelectorAll('#mobile-division-menu .dropdown-item').forEach((item, idx) => {
+            item.classList.toggle('active', section === 'torneos' ? idx === 3 : idx === Number(section) - 1);
+        });
         const heroBanner = document.getElementById('hero-banner');
         const heroRightImg = document.getElementById('hero-right-img');
 
