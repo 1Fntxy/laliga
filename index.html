@@ -4410,8 +4410,11 @@ body:has(#tab-premios.active) .top-bar {
                         <h3 class="glowing-supercopa-title">CHAMPIONS LEAGUE</h3>
                     </div>
                     <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                        <button id="ucl-sorteo-btn" class="action-btn" style="background:#10B981; display:none; font-size:0.8rem; padding:8px 16px;" onclick="sortearOctavosUCL()">🎲 Sortear Octavos (16 Clasificados)</button>
-                        <button id="ucl-clear-btn" class="action-btn" style="background:#EF4444; display:none; font-size:0.75rem; padding:8px 14px;" onclick="clearUCLBracket()">🗑️ Borrar Resultados</button>
+                        <button id="ucl-sorteo-btn" class="action-btn" style="background:#0284C7; display:none; font-size:0.8rem; padding:8px 16px;" onclick="sortearOctavosUCL()">🎲 Sortear Octavos (16 Clasificados)</button>
+                        <button id="ucl-empty-teams-btn" class="action-btn" style="background:#1D4ED8; display:none; font-size:0.75rem; padding:8px 14px;" onclick="emptyUCLTeams()"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px; margin-right:5px;"><path d="m13 11 9-9"/><path d="M14.5 12.5 16 14"/><path d="M11 13 3 21"/><path d="M2 22h20"/><path d="M8 16 5 13"/></svg>Vaciar Llaves</button>
+                        <button id="ucl-clear-incidents-btn" class="action-btn" style="background:#2563EB; display:none; font-size:0.75rem; padding:8px 14px;" onclick="resetUCLIncidents()"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px; margin-right:5px;"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/></svg>Reiniciar Incidencias</button>
+                        <button id="ucl-manual-save-btn" class="action-btn" style="background:#1E3A8A; display:none; font-size:0.75rem; padding:8px 14px;" onclick="manualSaveTournament('UCL', this)"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px; margin-right:5px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg><span>Guardar Cambios</span></button>
+                        <button id="ucl-clear-btn" class="action-btn" style="background:#1E40AF; display:none; font-size:0.75rem; padding:8px 14px;" onclick="clearUCLBracket()">🗑️ Borrar Resultados</button>
                     </div>
                 </div>
 
@@ -4624,8 +4627,11 @@ body:has(#tab-premios.active) .top-bar {
                         <h3 class="glowing-europaleague-title">EUROPA LEAGUE</h3>
                     </div>
                     <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                        <button id="el-sorteo-btn" class="action-btn" style="background:#10B981; display:none; font-size:0.8rem; padding:8px 16px;" onclick="sortearOctavosEL()">🎲 Sortear Octavos (16 Clasificados)</button>
-                        <button id="el-clear-btn" class="action-btn" style="background:#EF4444; display:none; font-size:0.75rem; padding:8px 14px;" onclick="clearELBracket()">🗑️ Borrar Resultados</button>
+                        <button id="el-sorteo-btn" class="action-btn" style="background:#FB923C; display:none; font-size:0.8rem; padding:8px 16px;" onclick="sortearOctavosEL()">🎲 Sortear Octavos (16 Clasificados)</button>
+                        <button id="el-empty-teams-btn" class="action-btn" style="background:#EA580C; display:none; font-size:0.75rem; padding:8px 14px;" onclick="emptyELTeams()"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px; margin-right:5px;"><path d="m13 11 9-9"/><path d="M14.5 12.5 16 14"/><path d="M11 13 3 21"/><path d="M2 22h20"/><path d="M8 16 5 13"/></svg>Vaciar Llaves</button>
+                        <button id="el-clear-incidents-btn" class="action-btn" style="background:#F97316; display:none; font-size:0.75rem; padding:8px 14px;" onclick="resetELIncidents()"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px; margin-right:5px;"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/></svg>Reiniciar Incidencias</button>
+                        <button id="el-manual-save-btn" class="action-btn" style="background:#9A3412; display:none; font-size:0.75rem; padding:8px 14px;" onclick="manualSaveTournament('EL', this)"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px; margin-right:5px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg><span>Guardar Cambios</span></button>
+                        <button id="el-clear-btn" class="action-btn" style="background:#C2410C; display:none; font-size:0.75rem; padding:8px 14px;" onclick="clearELBracket()">🗑️ Borrar Resultados</button>
                     </div>
                 </div>
 
@@ -5311,6 +5317,31 @@ body:has(#tab-premios.active) .top-bar {
         }
     };
 
+    window.manualSaveTournament = async function(tournament, btn) {
+        if (!isAdmin || isInitialLoading || !['UCL', 'EL'].includes(tournament)) return;
+        if (btn.disabled) return;
+        const label = btn.querySelector('span');
+        btn.disabled = true;
+        if (label) label.textContent = 'Guardando...';
+        try {
+            // Sincronizar los campos visibles de esta competición antes de guardar.
+            if (tournament === 'UCL') saveUCLToMemory();
+            else saveELToMemory();
+            // Evitar que el autoguardado pendiente compita con este guardado manual.
+            clearTimeout(autoSaveTimer);
+            const ok = await saveStateToCloud();
+            if (label) label.textContent = ok ? 'Guardado ✓' : 'Error al guardar';
+            if (!ok) alert('No se pudieron guardar los cambios. Comprueba la conexión e inténtalo de nuevo.');
+        } catch (error) {
+            console.error('Error de guardado manual:', error);
+            if (label) label.textContent = 'Error al guardar';
+            alert('No se pudieron guardar los cambios.');
+        } finally {
+            btn.disabled = false;
+            setTimeout(() => { if (label) label.textContent = 'Guardar Cambios'; }, 2500);
+        }
+    };
+
     window.exportDataJSON = function() {
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
         const downloadAnchor = document.createElement('a');
@@ -5329,13 +5360,25 @@ body:has(#tab-premios.active) .top-bar {
             el.disabled = !canEdit;
         });
         const clearBtn = document.getElementById('ucl-clear-btn');
+        const uclManualSaveBtn = document.getElementById('ucl-manual-save-btn');
+        const emptyTeamsBtn = document.getElementById('ucl-empty-teams-btn');
+        const clearIncidentsBtn = document.getElementById('ucl-clear-incidents-btn');
         const sorteoBtn = document.getElementById('ucl-sorteo-btn');
         const elClearBtn = document.getElementById('el-clear-btn');
+        const elManualSaveBtn = document.getElementById('el-manual-save-btn');
+        const elEmptyTeamsBtn = document.getElementById('el-empty-teams-btn');
+        const elClearIncidentsBtn = document.getElementById('el-clear-incidents-btn');
         const elSorteoBtn = document.getElementById('el-sorteo-btn');
 
         if (clearBtn) clearBtn.style.display = isAdmin ? 'inline-block' : 'none';
+        if (uclManualSaveBtn) uclManualSaveBtn.style.display = isAdmin ? 'inline-block' : 'none';
+        if (emptyTeamsBtn) emptyTeamsBtn.style.display = isAdmin ? 'inline-block' : 'none';
+        if (clearIncidentsBtn) clearIncidentsBtn.style.display = isAdmin ? 'inline-block' : 'none';
         if (sorteoBtn) sorteoBtn.style.display = isAdmin ? 'inline-block' : 'none';
         if (elClearBtn) elClearBtn.style.display = isAdmin ? 'inline-block' : 'none';
+        if (elManualSaveBtn) elManualSaveBtn.style.display = isAdmin ? 'inline-block' : 'none';
+        if (elEmptyTeamsBtn) elEmptyTeamsBtn.style.display = isAdmin ? 'inline-block' : 'none';
+        if (elClearIncidentsBtn) elClearIncidentsBtn.style.display = isAdmin ? 'inline-block' : 'none';
         if (elSorteoBtn) elSorteoBtn.style.display = isAdmin ? 'inline-block' : 'none';
 
         const adminEditBtns = document.querySelectorAll('.ucl-admin-edit-btn, .el-admin-edit-btn');
@@ -5984,10 +6027,11 @@ body:has(#tab-premios.active) .top-bar {
         renderTeamManagement();
         renderBracketSelectors();
         loadBracketData();
-        loadUCLData();
-        loadELData();
+        // Preparar las opciones antes de restaurar los equipos guardados.
         populateUCLSelects();
         populateELSelects();
+        loadUCLData();
+        loadELData();
         renderLiveQualifiedPanel();
         renderELLiveQualifiedPanel();
         renderUCLTops();
@@ -7670,6 +7714,40 @@ body:has(#tab-premios.active) .top-bar {
         }
     };
 
+    window.emptyUCLTeams = function() {
+        if (!isAdmin) {
+            alert('Acceso denegado: solo el administrador puede vaciar las llaves.');
+            return;
+        }
+        if (!confirm('¿Vaciar únicamente los equipos de las llaves de Champions? Se conservarán los marcadores y las incidencias.')) return;
+        const section = document.getElementById('torneo-subtab-supercopa');
+        if (!section) return;
+        const data = appData.supercup || {};
+        section.querySelectorAll('select[id^="ucl-"]').forEach(sel => {
+            sel.value = '';
+            if (sel.value !== '') sel.selectedIndex = 0;
+            data[sel.id] = '';
+        });
+        appData.supercup = data;
+        // Actualizar escudos y clasificaciones sin modificar marcadores ni incidencias.
+        updateUCLCascade();
+        saveUCLToMemory();
+        alert('Se vaciaron los equipos de las llaves. Marcadores e incidencias conservados.');
+    };
+
+    window.resetUCLIncidents = function() {
+        if (!isAdmin) {
+            alert('Acceso denegado: solo el administrador puede reiniciar las incidencias.');
+            return;
+        }
+        if (!confirm('¿Reiniciar todas las incidencias de Champions? Los equipos y marcadores se conservarán.')) return;
+        if (!appData.supercup) appData.supercup = {};
+        appData.supercup.events = {};
+        renderUCLTops();
+        saveUCLToMemory();
+        alert('Incidencias de Champions reiniciadas. Equipos y marcadores conservados.');
+    };
+
     window.clearUCLBracket = function() {
         if (!isAdmin) {
             alert('Acceso Denegado: Solo el Administrador puede borrar los resultados.');
@@ -7686,6 +7764,33 @@ body:has(#tab-premios.active) .top-bar {
             saveUCLToMemory();
             alert('¡Resultados de la Champions League restablecidos correctamente!');
         }
+    };
+
+    window.emptyELTeams = function() {
+        if (!isAdmin) { alert('Acceso denegado: solo el administrador puede vaciar las llaves.'); return; }
+        if (!confirm('¿Vaciar únicamente los equipos de las llaves de Europa League? Se conservarán los marcadores y las incidencias.')) return;
+        const section = document.getElementById('torneo-subtab-copadelrey');
+        if (!section) return;
+        const data = appData.europaleague || {};
+        section.querySelectorAll('select[id^="el-"]').forEach(sel => {
+            sel.value = '';
+            if (sel.value !== '') sel.selectedIndex = 0;
+            data[sel.id] = '';
+        });
+        appData.europaleague = data;
+        updateELCascade();
+        saveELToMemory();
+        alert('Se vaciaron los equipos de Europa League. Marcadores e incidencias conservados.');
+    };
+
+    window.resetELIncidents = function() {
+        if (!isAdmin) { alert('Acceso denegado: solo el administrador puede reiniciar las incidencias.'); return; }
+        if (!confirm('¿Reiniciar todas las incidencias de Europa League? Los equipos y marcadores se conservarán.')) return;
+        if (!appData.europaleague) appData.europaleague = {};
+        appData.europaleague.events = {};
+        renderELTops();
+        saveELToMemory();
+        alert('Incidencias de Europa League reiniciadas. Equipos y marcadores conservados.');
     };
 
     window.clearELBracket = function() {
@@ -7729,7 +7834,14 @@ body:has(#tab-premios.active) .top-bar {
         Object.keys(supercupData).forEach(id => {
             if (id !== 'events') {
                 let el = document.getElementById(id);
-                if (el) el.value = supercupData[id];
+                if (el) {
+                    // Mantener visible el equipo guardado incluso si ya no figura entre los clasificados actuales.
+                    if (el.tagName === 'SELECT' && supercupData[id] &&
+                        !Array.from(el.options).some(option => option.value === String(supercupData[id]))) {
+                        el.add(new Option(String(supercupData[id]), String(supercupData[id])));
+                    }
+                    el.value = supercupData[id];
+                }
             }
         });
         renderUCLTops();
