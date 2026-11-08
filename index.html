@@ -5191,10 +5191,7 @@ body:has(#tab-premios.active) .top-bar {
                 name: `${name} ${div > 1 ? 'D' + div : ''}`,
                 logo: "",
                 manager: "",
-                roster: [
-                    { num: 1, name: "Portero_1", pos: "POR", goals: 0, assists: 0, saves: 0 },
-                    { num: 10, name: "Capitan_10", pos: "DEL", goals: 0, assists: 0, saves: 0 }
-                ]
+                roster: []
             }));
 
             data[div] = {
@@ -5239,6 +5236,48 @@ body:has(#tab-premios.active) .top-bar {
         return schedule;
     }
 
+    // Limpieza segura de registros de ejemplo ya existentes en Firebase.
+    // Solo los administradores la ejecutan; no modifica jugadores vinculados a Discord
+    // ni jugadores con estadísticas registradas.
+    const examplePlayerName = name => /^(?:Jugador_\d+|Portero_\d+|Capitan_\d+|Capitan_Roblox|Nuevo_Jugador)$/i.test(String(name || '').trim());
+    const isUnmodifiedExample = p => examplePlayerName(p?.name)
+        && !p.discordId && !p.playerId && !p.uid
+        && !(Number(p.goals) || Number(p.assists) || Number(p.saves));
+    let cleaningExamplePlayers = false;
+    let examplesCleanupCompleted = false;
+    async function cleanExamplePlayersFromFirebase() {
+        if (!isAdmin || cleaningExamplePlayers || examplesCleanupCompleted) return;
+        cleaningExamplePlayers = true;
+        try {
+            await runTransaction(db, async tx => {
+                const ref = doc(db, 'liga', 'general_data');
+                const snap = await tx.get(ref);
+                if (!snap.exists()) return;
+                const data = snap.data();
+                const updates = {};
+                for (const div of [1, 2, 3]) {
+                    const teams = data[div]?.teams;
+                    if (!Array.isArray(teams)) continue;
+                    let changed = false;
+                    const nextTeams = teams.map(team => {
+                        if (!Array.isArray(team.roster)) return team;
+                        const roster = team.roster.filter(p => !isUnmodifiedExample(p));
+                        if (roster.length === team.roster.length) return team;
+                        changed = true;
+                        return { ...team, roster };
+                    });
+                    if (changed) updates[`${div}.teams`] = nextTeams;
+                }
+                if (Object.keys(updates).length) tx.update(ref, updates);
+            });
+            examplesCleanupCompleted = true;
+        } catch (error) {
+            console.error('No se pudieron limpiar los jugadores de ejemplo:', error);
+        } finally {
+            cleaningExamplePlayers = false;
+        }
+    }
+
     onSnapshot(doc(db, "liga", "general_data"), (docSnap) => {
         if (docSnap.exists()) {
             appData = docSnap.data();
@@ -5267,6 +5306,11 @@ body:has(#tab-premios.active) .top-bar {
                 }
             });
 
+            // El administrador elimina ejemplos antiguos una sola vez; Firebase
+            // notifica el resultado a todos los visitantes mediante onSnapshot.
+            if (isAdmin && !examplesCleanupCompleted && !cleaningExamplePlayers) {
+                void cleanExamplePlayersFromFirebase();
+            }
             renderAll();
             renderFriendlies();
             if (document.getElementById('tab-premios')?.classList.contains('active')) renderPremiosOficiales();
@@ -7662,9 +7706,9 @@ body:has(#tab-premios.active) .top-bar {
         const team = appData[currentDiv].teams.find(t => t.id === activeTeamId);
         if (team) {
             if (!team.roster) team.roster = [];
-            team.roster.push({ num: team.roster.length + 1, name: "Nuevo_Jugador", pos: "MED", goals: 0, assists: 0, saves: 0 });
+            team.roster.push({ num: team.roster.length + 1, name: "", pos: "MED", goals: 0, assists: 0, saves: 0 });
             renderRosterList(team);
-            triggerAutoSave();
+            // El registro se guarda cuando el administrador escribe el nombre real.
         }
     };
 
