@@ -8122,7 +8122,7 @@ body:has(#tab-premios.active) .top-bar {
         const normal = value => String(value ?? '').trim().toLocaleLowerCase('es').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ');
         // Un ID persistente, cuando existe, tiene prioridad. Sin ID se agrupa por nombre
         // normalizado; nunca se suman dos veces los mismos eventos de torneo.
-        const playerIdentity = p => p?.uid != null ? `uid:${p.uid}` : p?.playerId != null ? `id:${p.playerId}` : `nombre:${normal(p?.name)}`;
+        const playerIdentity = p => p?.uid != null ? `uid:${p.uid}` : p?.playerId != null ? `id:${p.playerId}` : p?.discordId ? `id:discord:${p.discordId}` : `nombre:${normal(p?.name)}`;
         const ensurePlayer = (identity, name, team) => {
             if (!players.has(identity)) players.set(identity,{name,team:team.name,div:team.div,logo:team.logo,goals:0,assists:0,saves:0,pos:''});
             return players.get(identity);
@@ -8138,9 +8138,9 @@ body:has(#tab-premios.active) .top-bar {
                     if (!p.name || !p.name.trim()) continue;
                     const key = playerIdentity(p);
                     const obj = ensurePlayer(key,p.name,team);
-                    obj.goals += premiosNum(p.goals);
-                    obj.assists += premiosNum(p.assists);
-                    obj.saves += premiosNum(p.saves);
+                    obj.goals += Math.max(0, premiosNum(p.goals) - premiosNum(p.transferCarry?.goals));
+                    obj.assists += Math.max(0, premiosNum(p.assists) - premiosNum(p.transferCarry?.assists));
+                    obj.saves += Math.max(0, premiosNum(p.saves) - premiosNum(p.transferCarry?.saves));
                     if (p.pos) obj.pos=p.pos;
                     playerAliases.set(`${div}|${t.id}|${normal(p.name)}`,key);
                 }
