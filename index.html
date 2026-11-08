@@ -7612,7 +7612,8 @@ body:has(#tab-premios.active) .top-bar {
         container.innerHTML = team.roster.map((player, idx) => `
             <div class="roster-item" id="roster-row-${idx}">
                 <input type="number" class="num-input" value="${player.num}" placeholder="#" ${!isAdmin ? 'disabled' : ''} oninput="updateRosterFieldSilent(${idx}, 'num', this.value)">
-                <input type="text" class="name-input" value="${player.name}" placeholder="Roblox Username" ${!isAdmin ? 'disabled' : ''} oninput="updateRosterFieldSilent(${idx}, 'name', this.value)">
+                <input type="text" class="name-input" value="${!isAdmin && player.discordName ? `${player.discordName} (${player.name})` : player.name}" placeholder="Roblox Username" ${!isAdmin ? 'disabled' : ''} oninput="updateRosterFieldSilent(${idx}, 'name', this.value)">
+                ${isAdmin && player.discordName ? `<span style="font-size:0.72rem;color:var(--text-muted);white-space:nowrap;" title="Discord (Roblox)">${player.discordName} (${player.name})</span>` : ``}
                 <select class="pos-select" ${!isAdmin ? 'disabled' : ''} onchange="updateRosterFieldSilent(${idx}, 'pos', this.value)">
                     <option value="POR" ${player.pos==='POR'?'selected':''}>POR</option>
                     <option value="DEF" ${player.pos==='DEF'?'selected':''}>DEF</option>
