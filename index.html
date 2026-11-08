@@ -5254,7 +5254,9 @@ body:has(#tab-premios.active) .top-bar {
                 const snap = await tx.get(ref);
                 if (!snap.exists()) return;
                 const data = snap.data();
-                const updates = {};
+                // Marca permanente: una vez realizada, no volver a limpiar en futuras sesiones.
+                if (data.exampleRosterCleanupV1Done === true) return;
+                const updates = { exampleRosterCleanupV1Done: true };
                 for (const div of [1, 2, 3]) {
                     const teams = data[div]?.teams;
                     if (!Array.isArray(teams)) continue;
@@ -5268,7 +5270,7 @@ body:has(#tab-premios.active) .top-bar {
                     });
                     if (changed) updates[`${div}.teams`] = nextTeams;
                 }
-                if (Object.keys(updates).length) tx.update(ref, updates);
+                tx.update(ref, updates);
             });
             examplesCleanupCompleted = true;
         } catch (error) {
@@ -5516,6 +5518,9 @@ body:has(#tab-premios.active) .top-bar {
             document.getElementById('btn-reset-standings').style.display = 'inline-block';
 
             updateBracketInputsState();
+            // Ejecutar la limpieza al activar Admin, no solo al recibir un snapshot.
+            // Antes, el snapshot llegaba cuando isAdmin todavía era false.
+            void cleanExamplePlayersFromFirebase();
             alert('¡Modo Administrador Activado!');
             renderAll();
         } else {
