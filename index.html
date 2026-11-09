@@ -4225,7 +4225,7 @@ body:has(#tab-premios.active) .top-bar {
                 <h3 id="div-title" style="margin:0;">Tabla de Posiciones</h3>
                 <button id="btn-reset-standings" class="action-btn" style="display:none; background:var(--laliga-red);" onclick="resetCurrentDivision()">🔄 Resetear División</button>
             </div>
-            <div class="qualification-legend" aria-label="Leyenda de clasificación a torneos"><span class="qualification-legend-item"><span class="qualification-legend-dot champions" aria-hidden="true"></span>Champions League</span><span class="qualification-legend-item"><span class="qualification-legend-dot europa" aria-hidden="true"></span>Europa League</span></div>
+            <div class="qualification-legend" aria-label="Leyenda de clasificación a torneos"><span class="qualification-legend-item"><span class="qualification-legend-dot champions" aria-hidden="true"></span>Champions League</span><span class="qualification-legend-item"><span class="qualification-legend-dot europa" aria-hidden="true"></span>Europa League</span><span class="qualification-legend-item promotion-legend-item"><span class="qualification-legend-dot promotion" aria-hidden="true"></span>Ascenso</span><span class="qualification-legend-item relegation-legend-item"><span class="qualification-legend-dot relegation" aria-hidden="true"></span>Descenso</span></div>
             <div class="table-responsive">
                 <table>
                     <thead>
@@ -4876,7 +4876,7 @@ body:has(#tab-premios.active) .top-bar {
 
             <div class="card" style="margin-top: 24px; border-color: #F05B21; background: var(--bg-subcard);">
                 <h3 style="color: #FFB366;">📊 Clasificados al Momento (En Tiempo Real)</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Listado automático basado en las tablas de posiciones actuales (9.° al 13.° de 1.ª Div, 6.° al 11.° de 2.ª Div y 4.° al 8.° de 3.ª Div):</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Listado automático basado en las tablas de posiciones actuales (9.° al 14.° de 1.ª Div, 6.° al 10.° de 2.ª Div y 4.° al 8.° de 3.ª Div):</p>
                 <div class="ucl-qualified-grid" id="el-live-qualified-container"></div>
             </div>
         </div>
@@ -6230,10 +6230,10 @@ body:has(#tab-premios.active) .top-bar {
         let div3Teams = getSortedDivisionTeams(3);
 
         let qualified = [];
-        // 9 al 13 de primera (índices 8 al 12)
-        div1Teams.slice(8, 13).forEach(t => qualified.push({ ...t, sourceDiv: '1ª Div' }));
-        // 6 al 11 de segunda (índices 5 al 11)
-        div2Teams.slice(5, 11).forEach(t => qualified.push({ ...t, sourceDiv: '2ª Div' }));
+        // 9 al 14 de primera (índices 8 al 13)
+        div1Teams.slice(8, 14).forEach(t => qualified.push({ ...t, sourceDiv: '1ª Div' }));
+        // 6 al 10 de segunda (índices 5 al 9)
+        div2Teams.slice(5, 10).forEach(t => qualified.push({ ...t, sourceDiv: '2ª Div' }));
         // 4 al 8 de tercera (índices 3 al 8)
         div3Teams.slice(3, 8).forEach(t => qualified.push({ ...t, sourceDiv: '3ª Div' }));
         return qualified;
@@ -7003,8 +7003,8 @@ body:has(#tab-premios.active) .top-bar {
         let div2Teams = getSortedDivisionTeams(2);
         let div3Teams = getSortedDivisionTeams(3);
 
-        let d1Range = div1Teams.slice(8, 13);
-        let d2Range = div2Teams.slice(5, 11);
+        let d1Range = div1Teams.slice(8, 14);
+        let d2Range = div2Teams.slice(5, 10);
         let d3Range = div3Teams.slice(3, 8);
 
         let buildListELHTML = (list, startPos) => {
@@ -7019,11 +7019,11 @@ body:has(#tab-premios.active) .top-bar {
 
         container.innerHTML = `
             <div class="el-qualified-card">
-                <h4>🏆 1.ª División (Del 9.° al 13.°)</h4>
+                <h4>🏆 1.ª División (Del 9.° al 14.°)</h4>
                 <div class="ucl-qualified-list">${buildListELHTML(d1Range, 9)}</div>
             </div>
             <div class="el-qualified-card">
-                <h4>🥇 2.ª División (Del 6.° al 11.°)</h4>
+                <h4>🥇 2.ª División (Del 6.° al 10.°)</h4>
                 <div class="ucl-qualified-list">${buildListELHTML(d2Range, 6)}</div>
             </div>
             <div class="el-qualified-card">
@@ -7067,6 +7067,11 @@ body:has(#tab-premios.active) .top-bar {
     function renderStandings() {
         const divData = appData[currentDiv];
         if (!divData) return;
+        const standingsTab = document.getElementById('tab-clasificacion');
+        if (standingsTab) {
+            standingsTab.querySelectorAll('.promotion-legend-item').forEach(el => el.style.display = (currentDiv === 2 || currentDiv === 3) ? 'inline-flex' : 'none');
+            standingsTab.querySelectorAll('.relegation-legend-item').forEach(el => el.style.display = (currentDiv === 1 || currentDiv === 2) ? 'inline-flex' : 'none');
+        }
         let stats = divData.teams.map(t => ({
             ...t, pj: 0, pg: 0, pe: 0, pp: 0, gf: 0, gc: 0, dg: 0, pts: 0, form: []
         }));
@@ -7147,24 +7152,30 @@ body:has(#tab-premios.active) .top-bar {
                 : `<div class="team-logo">${initials}</div>`;
 
             const qualificationRanges = {
-                1: { champions: 8, europa: 13 },
-                2: { champions: 5, europa: 11 },
+                1: { champions: 8, europa: 14 },
+                2: { champions: 5, europa: 10 },
                 3: { champions: 3, europa: 8 }
             };
             const ranges = qualificationRanges[currentDiv];
             const qualification = ranges && currentPos <= ranges.champions
                 ? 'champions'
                 : ranges && currentPos <= ranges.europa ? 'europa' : '';
+            const movement = (currentDiv === 2 || currentDiv === 3) && currentPos <= 2
+                ? 'promotion'
+                : (currentDiv === 1 || currentDiv === 2) && currentPos > stats.length - 2
+                    ? 'relegation' : '';
+            const movementTitle = movement === 'promotion' ? 'Zona de ascenso' : movement === 'relegation' ? 'Zona de descenso' : '';
             const qualificationTitle = qualification === 'champions'
                 ? 'Clasifica a Champions League'
                 : qualification === 'europa' ? 'Clasifica a Europa League' : 'Sin clasificación europea';
 
             return `
-                <tr class="${qualification ? 'qualification-' + qualification : ''}" title="${qualificationTitle}">
+                <tr class="${qualification ? 'qualification-' + qualification : ''} ${movement ? 'movement-' + movement : ''}" title="${movementTitle || qualificationTitle}">
                     <td>
                         <div style="display:flex; align-items:center;">
                             ${trendBadge}
                             <strong>${currentPos}</strong>
+                            ${movement ? `<span class="movement-position-dot ${movement}" title="${movementTitle}" aria-label="${movementTitle}"></span>` : ''}
                         </div>
                     </td>
                     <td>
@@ -8446,6 +8457,41 @@ body:has(#tab-premios.active) .top-bar {
 }
 
 
+
+/* Ascenso y descenso: bolitas discretas y resaltado completo al pasar el mouse. */
+#tab-clasificacion .qualification-legend-dot.promotion {background:#22c55e;box-shadow:0 0 9px #22c55e66}
+#tab-clasificacion .qualification-legend-dot.relegation {background:#ef4444;box-shadow:0 0 9px #ef444466}
+#tab-clasificacion .qualification-legend-item.promotion-legend-item,
+#tab-clasificacion .qualification-legend-item.relegation-legend-item {display:inline-flex;}
+#tab-clasificacion .qualification-legend {flex-wrap:wrap;}
+#tab-clasificacion #standings-body .movement-position-dot {
+  display:inline-block;width:8px;height:8px;min-width:8px;border-radius:50%;
+  margin-left:9px;vertical-align:middle;box-shadow:0 0 6px currentColor;
+}
+#tab-clasificacion #standings-body .movement-position-dot.promotion {background:#22c55e;color:#22c55e;}
+#tab-clasificacion #standings-body .movement-position-dot.relegation {background:#ef4444;color:#ef4444;}
+/* Eliminar barras laterales de todos los equipos: las bolitas indican las zonas. */
+#tab-clasificacion #standings-body tr > td:first-child {border-left:0 !important;box-shadow:none !important;}
+#tab-clasificacion #standings-body tr:is(:hover,:active,:focus-within) > td:first-child {
+  border-left:0 !important;box-shadow:inset 0 1px rgba(255,90,110,.12),inset 0 -1px rgba(255,90,110,.12) !important;
+}
+/* Al pasar el mouse, colorear toda la fila de ascenso o descenso. */
+#tab-clasificacion #standings-body tr.movement-promotion:is(:hover,:active,:focus-within) > td {
+  background-color:rgba(34,197,94,.23) !important;
+  box-shadow:inset 0 1px rgba(74,222,128,.2),inset 0 -1px rgba(74,222,128,.2) !important;
+}
+#tab-clasificacion #standings-body tr.movement-relegation:is(:hover,:active,:focus-within) > td {
+  background-color:rgba(220,25,45,.66) !important;
+  box-shadow:inset 0 2px rgba(255,100,112,.78),inset 0 -2px rgba(255,100,112,.78) !important;
+}
+#tab-clasificacion #standings-body tr.movement-relegation:is(:hover,:active,:focus-within) {
+  background:#a61930 !important;
+  box-shadow:inset 0 0 20px rgba(255,25,55,.3) !important;
+}
+#tab-clasificacion #standings-body tr.movement-relegation:is(:hover,:active,:focus-within) .movement-position-dot.relegation {
+  background:#ff4659;box-shadow:0 0 0 3px rgba(255,70,89,.18),0 0 12px #ff4659;
+}
+
 /* Leyenda de torneos: cuadro a la derecha de la cabecera de clasificación */
 #tab-clasificacion .qualification-legend {
   width: max-content;
@@ -8987,6 +9033,14 @@ body:has(#tab-premios.active) .clubs-ticker-bar {
   border-bottom: 1px solid #a99a48 !important;
   box-shadow: 0 -1px 0 rgba(169,154,72,.24), 0 1px 0 rgba(169,154,72,.22) !important;
 }
+
+/* Ajuste final: recuperar marcas azules/naranjas originales y suavizar descenso. */
+#tab-clasificacion #standings-body tr.qualification-champions > td:first-child {box-shadow:inset 4px 0 0 #2878ff !important;}
+#tab-clasificacion #standings-body tr.qualification-europa > td:first-child {box-shadow:inset 4px 0 0 #ff8a22 !important;}
+#tab-clasificacion #standings-body tr.movement-relegation:is(:hover,:active,:focus-within) > td {background-color:rgba(210,36,58,.38) !important;box-shadow:inset 0 1px rgba(255,100,112,.38),inset 0 -1px rgba(255,100,112,.38) !important;}
+#tab-clasificacion #standings-body tr.movement-relegation:is(:hover,:active,:focus-within) {background:transparent !important;box-shadow:none !important;}
+#tab-clasificacion #standings-body tr.movement-relegation.qualification-champions:is(:hover,:active,:focus-within) > td:first-child {box-shadow:inset 4px 0 0 #2878ff !important;}
+#tab-clasificacion #standings-body tr.movement-relegation.qualification-europa:is(:hover,:active,:focus-within) > td:first-child {box-shadow:inset 4px 0 0 #ff8a22 !important;}
 </style>
 <script id="premios-pestanas-control-2026">
 function seleccionarPremio(tipo) {
