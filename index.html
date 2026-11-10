@@ -5154,7 +5154,11 @@ body:has(#tab-premios.active) .top-bar {
             backupStatus('Leyendo datos actuales de Firebase...');
             const snapshot = await getDoc(doc(db, 'liga', 'general_data'));
             if (!snapshot.exists()) throw new Error('No existe liga/general_data.');
-            const payload = {format:'liga-ilegal-backup-v1', createdAt:new Date().toISOString(), source:'liga/general_data', data:snapshot.data()};
+            const divisions=await Promise.all([1,2,3].map(n=>getDoc(doc(db,'liga_divisiones',String(n)))));
+            if(divisions.some(d=>!d.exists()))throw new Error('Falta una división migrada.');
+            const data={...snapshot.data()};
+            divisions.forEach((d,i)=>data[String(i+1)]=d.data());
+            const payload = {format:'liga-ilegal-backup-v1', createdAt:new Date().toISOString(), source:'liga/general_data', data};
             const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -5182,7 +5186,8 @@ body:has(#tab-premios.active) .top-bar {
             if (!confirm('Última confirmación: ¿RESTAURAR la copia y sobrescribir los datos actuales?')) return;
             backupStatus('Restaurando copia en Firebase...');
             // Solo un documento; el listener existente actualizará la página.
-            await setDoc(doc(db,'liga','general_data'),backup.data);
+            for(const n of [1,2,3])await setDoc(doc(db,'liga_divisiones',String(n)),backup.data[String(n)]);
+            await setDoc(doc(db,'liga','general_data'),leagueMetadata(backup.data),{merge:true});
             backupStatus('Copia restaurada. Recarga la página para verificar los datos.');
         } catch(e) { console.error('Error restaurando respaldo',e); backupStatus('Error: '+e.message); }
     };
@@ -5313,8 +5318,10 @@ body:has(#tab-premios.active) .top-bar {
                 // Marca permanente: una vez realizada, no volver a limpiar en futuras sesiones.
                 if (data.exampleRosterCleanupV1Done === true) return;
                 const updates = { exampleRosterCleanupV1Done: true };
+                const divisionSnaps = [];
+                for(const div of [1,2,3]) divisionSnaps.push(await tx.get(doc(db,'liga_divisiones',String(div))));
                 for (const div of [1, 2, 3]) {
-                    const teams = data[div]?.teams;
+                    const teams = divisionSnaps[div-1].data()?.teams;
                     if (!Array.isArray(teams)) continue;
                     let changed = false;
                     const nextTeams = teams.map(team => {
@@ -5324,7 +5331,7 @@ body:has(#tab-premios.active) .top-bar {
                         changed = true;
                         return { ...team, roster };
                     });
-                    if (changed) updates[`${div}.teams`] = nextTeams;
+                    if (changed) tx.update(doc(db,'liga_divisiones',String(div)),{teams:nextTeams});
                 }
                 tx.update(ref, updates);
             });
@@ -5336,71 +5343,80 @@ body:has(#tab-premios.active) .top-bar {
         }
     }
 
-    onSnapshot(doc(db, "liga", "general_data"), (docSnap) => {
-        if (docSnap.exists()) {
-            appData = docSnap.data();
-            // Recalcular después de actualizar los datos de Firebase y renderizar la interfaz.
-            if (!appData.socialDiscord) appData.socialDiscord = "https://discord.gg/tu-enlace-de-discord";
-            if (!appData.socialTiktok) appData.socialTiktok = "https://www.tiktok.com/@tu-usuario-tiktok";
-            if (!appData.supercup) appData.supercup = {};
-            if (!appData.europaleague) appData.europaleague = {};
-            
-            [1, 2, 3].forEach(div => {
-                if (appData[div] && appData[div].teams) {
-                    appData[div].teams.forEach(t => {
-                        if (t.roster) {
-                            t.roster.forEach(p => {
-                                if (p.goals === undefined) p.goals = 0;
-                                if (p.assists === undefined) p.assists = 0;
-                                if (p.saves === undefined) p.saves = 0;
-                            });
-                        }
-                    });
-                    if (appData[div].matches) {
-                        appData[div].matches.forEach(m => {
-                            if (!m.events) m.events = [];
-                        });
-                    }
-                }
-            });
-
-            // El administrador elimina ejemplos antiguos una sola vez; Firebase
-            // notifica el resultado a todos los visitantes mediante onSnapshot.
-            if (isAdmin && !examplesCleanupCompleted && !cleaningExamplePlayers) {
-                void cleanExamplePlayersFromFirebase();
-            }
-            renderAll();
-            renderFriendlies();
-            if (document.getElementById('tab-premios')?.classList.contains('active')) renderPremiosOficiales();
-        } else {
-            saveStateToCloud();
+    // Migración oficial: cada división se lee y guarda en su documento.
+    const leagueRefs = [doc(db,'liga','general_data'), ...[1,2,3].map(n=>doc(db,'liga_divisiones',String(n)))];
+    const leagueParts = new Array(4).fill(null);
+    const leagueSignatures = new Array(4).fill(null);
+    let leagueReady = false;
+    let leagueSaveInProgress = false;
+    function leagueSignature(value) { return JSON.stringify(value); }
+    function leagueMetadata(data) {
+        return Object.fromEntries(Object.entries(data || {}).filter(([key])=>!['1','2','3'].includes(key)));
+    }
+    function finishLeagueLoading() {
+        setTimeout(()=>{
+            isInitialLoading=false;
+            document.getElementById('page-loader')?.classList.add('fade-out');
+        },750);
+    }
+    function applyLeagueParts() {
+        if (leagueParts.some(x=>x===null)) return;
+        const next = {...leagueParts[0]};
+        for (let n=1;n<=3;n++) next[n]=leagueParts[n];
+        appData=next;
+        if (!appData.socialDiscord) appData.socialDiscord='https://discord.gg/tu-enlace-de-discord';
+        if (!appData.socialTiktok) appData.socialTiktok='https://www.tiktok.com/@tu-usuario-tiktok';
+        if (!appData.supercup) appData.supercup={};
+        if (!appData.europaleague) appData.europaleague={};
+        [1,2,3].forEach(div=>{
+            (appData[div]?.teams || []).forEach(t=>(t.roster||[]).forEach(p=>{
+                if(p.goals===undefined)p.goals=0;
+                if(p.assists===undefined)p.assists=0;
+                if(p.saves===undefined)p.saves=0;
+            }));
+            (appData[div]?.matches || []).forEach(m=>{if(!m.events)m.events=[];});
+        });
+        leagueReady=true;
+        renderAll(); renderFriendlies();
+        if(document.getElementById('tab-premios')?.classList.contains('active'))renderPremiosOficiales();
+        if(isInitialLoading)finishLeagueLoading();
+    }
+    leagueRefs.forEach((ref,i)=>onSnapshot(ref,snap=>{
+        if(!snap.exists()){
+            console.error('Falta el documento migrado:',ref.path);
+            if(isInitialLoading)finishLeagueLoading();
+            return; // No crear documentos vacíos ni sobrescribir la copia original.
         }
-        
-        setTimeout(() => {
-            isInitialLoading = false;
-            const loader = document.getElementById('page-loader');
-            if (loader) {
-                loader.classList.add('fade-out');
-            }
-        }, 750);
-    }, (error) => {
-        console.error("Error en Firebase onSnapshot: ", error);
-        setTimeout(() => {
-            isInitialLoading = false;
-            const loader = document.getElementById('page-loader');
-            if (loader) loader.classList.add('fade-out');
-        }, 750);
-    });
+        const data=snap.data();
+        if(i>0 && (!Array.isArray(data?.teams)||data.teams.length!==16)){
+            console.error('División incompleta:',ref.path);
+            if(isInitialLoading)finishLeagueLoading();
+            return;
+        }
+        leagueParts[i]=data;
+        leagueSignatures[i]=leagueSignature(data);
+        if(!leagueSaveInProgress)applyLeagueParts();
+    },error=>{
+        console.error('Error leyendo documento migrado:',ref.path,error);
+        if(isInitialLoading)finishLeagueLoading();
+    }));
 
     async function saveStateToCloud() {
-        if (!isAdmin && !isStaff) return false;
+        if ((!isAdmin && !isStaff) || !leagueReady || leagueSaveInProgress) return false;
+        const parts=[leagueMetadata(appData),appData[1],appData[2],appData[3]];
+        const changes=parts.map((value,i)=>({i,value,signature:leagueSignature(value)}))
+            .filter(({i,signature})=>signature!==leagueSignature(i===0?leagueMetadata(leagueParts[0]):leagueParts[i]));
+        if(!changes.length)return true;
+        leagueSaveInProgress=true;
         try {
-            await setDoc(doc(db, "liga", "general_data"), appData);
+            // No reescribir divisiones que no fueron modificadas por esta página.
+            for(const {i,value} of changes) {
+                if(i===0)await setDoc(leagueRefs[0],value,{merge:true});
+                else await setDoc(leagueRefs[i],value);
+            }
             return true;
-        } catch (e) {
-            console.error("Error al guardar en la nube: ", e);
-            return false;
-        }
+        }catch(e){console.error('Error al guardar en Firebase:',e);return false;}
+        finally{leagueSaveInProgress=false;}
     }
 
     window.triggerAutoSave = function() {
@@ -7848,11 +7864,11 @@ body:has(#tab-premios.active) .top-bar {
         const playerName = String(player.name || '');
         try {
             await runTransaction(db, async (transaction) => {
-                const ref = doc(db, 'liga', 'general_data');
+                const ref = doc(db, 'liga_divisiones', String(division));
                 const snapshot = await transaction.get(ref);
                 if (!snapshot.exists()) throw new Error('No se encontró la liga en Firebase.');
                 const data = snapshot.data();
-                const teams = [...(data[String(division)]?.teams || [])];
+                const teams = [...(data.teams || [])];
                 const index = teams.findIndex(t => String(t.id) === String(teamId));
                 if (index < 0) throw new Error('No se encontró el equipo en Firebase.');
                 const roster = [...(teams[index].roster || [])];
@@ -7862,7 +7878,7 @@ body:has(#tab-premios.active) .top-bar {
                 if (playerIndex < 0) throw new Error('El jugador ya no está en la plantilla de Firebase.');
                 roster.splice(playerIndex, 1);
                 teams[index] = { ...teams[index], roster };
-                transaction.update(ref, { [`${division}.teams`]: teams });
+                transaction.update(ref, { teams });
             });
             // Evitar que el botón «Guardar y Cerrar» reescriba una copia antigua.
             skipNextTeamModalAutoSave = true;
