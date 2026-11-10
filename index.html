@@ -5026,7 +5026,7 @@ body:has(#tab-premios.active) .top-bar {
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, onSnapshot, collection, getDocs, getDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, updateDoc, onSnapshot, collection, getDocs, getDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -5412,6 +5412,19 @@ body:has(#tab-premios.active) .top-bar {
         if(isInitialLoading)finishLeagueLoading();
     }));
 
+    // Las reglas validan la seguridad real. Este filtro evita que un guardado de Staff
+    // arrastre selecciones de equipos cambiadas automáticamente por la cascada visual.
+    function staffTournamentData(next, current, prefix) {
+        const safe = {...(current || {})};
+        const scoreId = prefix === 'ucl'
+            ? /^ucl-(?:so[1-8]-t[12]|sc[1-4]-t[12]|ss[1-2]-t[12]|sf[12])$/
+            : /^el-(?:so[1-8]-t[12]|sc[1-4]-t[12]|ss[1-2]-t[12]|sf[12])$/;
+        for (const [key, value] of Object.entries(next || {})) {
+            if (key === 'events' || scoreId.test(key)) safe[key] = value;
+        }
+        return safe;
+    }
+
     async function saveStateToCloud() {
         if ((!isAdmin && !isStaff) || !leagueReady || leagueSaveInProgress) return false;
         const parts=[leagueMetadata(appData),appData[1],appData[2],appData[3]];
@@ -5422,8 +5435,26 @@ body:has(#tab-premios.active) .top-bar {
         try {
             // No reescribir divisiones que no fueron modificadas por esta página.
             for(const {i,value} of changes) {
-                if(i===0)await setDoc(leagueRefs[0],value,{merge:true});
-                else await setDoc(leagueRefs[i],value);
+                if (isStaff && !isAdmin) {
+                    const previous = leagueParts[i] || {};
+                    const allowed = i === 0
+                        ? ['amistosos', 'supercup', 'europaleague']
+                        : ['matches', 'teams'];
+                    const patch = {};
+                    for (const field of allowed) {
+                        if (!Object.prototype.hasOwnProperty.call(value, field)) continue;
+                        const nextValue = field === 'supercup'
+                            ? staffTournamentData(value[field], previous[field], 'ucl')
+                            : field === 'europaleague'
+                            ? staffTournamentData(value[field], previous[field], 'el')
+                            : value[field];
+                        if (JSON.stringify(nextValue) !== JSON.stringify(previous[field])) {
+                            patch[field] = nextValue;
+                        }
+                    }
+                    if (Object.keys(patch).length) await updateDoc(leagueRefs[i], patch);
+                } else if (i === 0) await setDoc(leagueRefs[0], value, {merge:true});
+                else await setDoc(leagueRefs[i], value);
             }
             return true;
         }catch(e){console.error('Error al guardar en Firebase:',e);return false;}
@@ -5518,9 +5549,13 @@ body:has(#tab-premios.active) .top-bar {
     function updateBracketInputsState() {
         renderFriendlies();
         const canEdit = isAdmin || isStaff;
-        const bracketInputs = document.querySelectorAll('#tab-bracket input, #tab-bracket select, #tab-torneos input, #tab-torneos select');
-        bracketInputs.forEach(el => {
-            el.disabled = !canEdit;
+        // Las llaves de divisiones son exclusivas de Admin/Dueño.
+        document.querySelectorAll('#tab-bracket input, #tab-bracket select').forEach(el => {
+            el.disabled = !isAdmin;
+        });
+        // Staff puede registrar marcadores e incidencias de torneos, no escoger equipos.
+        document.querySelectorAll('#tab-torneos input, #tab-torneos select').forEach(el => {
+            el.disabled = el.tagName === 'SELECT' ? !isAdmin : !canEdit;
         });
         const clearBtn = document.getElementById('ucl-clear-btn');
         const uclManualSaveBtn = document.getElementById('ucl-manual-save-btn');
