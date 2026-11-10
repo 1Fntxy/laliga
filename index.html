@@ -7461,7 +7461,7 @@ body:has(#tab-premios.active) .top-bar {
                 let isBoxOpen = openMatchEventsBoxes[m.id] ? 'show' : '';
 
                 adminEventsEditor = `
-                    <div class="match-events-section match-events-wrapper-${m.id}">
+                    <div class="match-events-section match-events-wrapper-${m.id}" onclick="event.stopPropagation()">
                         <button class="match-events-toggle-btn match-events-btn-${m.id}" onclick="toggleMatchEventsBox(event, ${m.id})">⚙️ Registrar Incidencias por Jugador</button>
                         <div id="match-events-box-${m.id}" class="match-events-body ${isBoxOpen}">
                             <div style="font-size:0.8rem; font-weight:700; color:var(--text-main);">Jugadores con acciones en el partido:</div>
