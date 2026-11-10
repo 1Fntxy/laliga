@@ -4965,7 +4965,9 @@ body:has(#tab-premios.active) .top-bar {
     <div class="modal-content pin-modal-content">
         <button class="modal-close" onclick="closeAdminPinModal()" aria-label="Cerrar">&times;</button>
         <div class="pin-header"><span class="pin-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></span><div><h3 class="pin-heading">Acceso de Administrador</h3><p class="pin-description">Panel de control · Acceso restringido</p></div></div>
-        <label class="pin-label" for="admin-pin-input">Contraseña de administrador</label>
+        <label class="pin-label" for="admin-email-input">Correo de Firebase (Dueño o Admin)</label>
+        <div class="pin-input-wrap"><input type="email" id="admin-email-input" placeholder="Correo electrónico" autocomplete="username" onkeydown="if(event.key==='Enter') document.getElementById('admin-pin-input').focus()" style="width:100%;min-height:46px;padding:12px;border:1px solid #475569;border-radius:9px;background:#0f172a;color:#fff"></div>
+        <label class="pin-label" for="admin-pin-input">Contraseña de Firebase</label>
         <div class="pin-input-wrap"><span class="pin-lock" aria-hidden="true"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><input type="password" id="admin-pin-input" placeholder="Escribe tu contraseña" autocomplete="current-password" onkeydown="if(event.key==='Enter') verifyAdminPin()"><button class="pin-eye" type="button" aria-label="Mostrar contraseña" onclick="togglePinVisibility('admin',this)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
         <button class="action-btn pin-submit" onclick="verifyAdminPin()"><span aria-hidden="true">➜</span> Entrar como Admin</button>
     </div>
@@ -4975,7 +4977,9 @@ body:has(#tab-premios.active) .top-bar {
     <div class="modal-content pin-modal-content">
         <button class="modal-close" onclick="closeStaffPinModal()" aria-label="Cerrar">&times;</button>
         <div class="pin-header"><span class="pin-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><div><h3 class="pin-heading">Acceso de Staff</h3><p class="pin-description">Gestión de partidos · Acceso restringido</p></div></div>
-        <label class="pin-label" for="staff-pin-input">Contraseña de Staff</label>
+        <label class="pin-label" for="staff-email-input">Correo de Firebase (Staff)</label>
+        <div class="pin-input-wrap"><input type="email" id="staff-email-input" placeholder="Correo electrónico" autocomplete="username" onkeydown="if(event.key==='Enter') document.getElementById('staff-pin-input').focus()" style="width:100%;min-height:46px;padding:12px;border:1px solid #475569;border-radius:9px;background:#0f172a;color:#fff"></div>
+        <label class="pin-label" for="staff-pin-input">Contraseña de Firebase</label>
         <div class="pin-input-wrap"><span class="pin-lock" aria-hidden="true"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><input type="password" id="staff-pin-input" placeholder="Escribe tu contraseña" autocomplete="current-password" onkeydown="if(event.key==='Enter') verifyStaffPin()"><button class="pin-eye" type="button" aria-label="Mostrar contraseña" onclick="togglePinVisibility('staff',this)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
         <button class="action-btn pin-submit" onclick="verifyStaffPin()"><span aria-hidden="true">➜</span> Entrar como Staff</button>
     </div>
@@ -4986,7 +4990,7 @@ body:has(#tab-premios.active) .top-bar {
         <button class="modal-close" onclick="closeTeamModal()">&times;</button>
         <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;" id="modal-header"></div>
 
-        <div class="input-group" id="modal-dt-group" style="margin-bottom:20px;">
+        <div class="input-group" style="margin-bottom:20px;">
             <label>Director Técnico / Capitán (Roblox Username):</label>
             <input type="text" id="modal-dt-input" placeholder="Ej. ProPlayer" onchange="updateModalTeamInfo()">
         </div>
@@ -4999,7 +5003,7 @@ body:has(#tab-premios.active) .top-bar {
         <div class="roster-list" id="modal-roster-list"></div>
 
         <div style="margin-top:24px; text-align:right;">
-            <button id="modal-close-save-btn" class="action-btn" onclick="closeTeamModal()">Guardar y Cerrar</button>
+            <button class="action-btn" onclick="closeTeamModal()">Guardar y Cerrar</button>
         </div>
     </div>
 </div>
@@ -5023,6 +5027,7 @@ body:has(#tab-premios.active) .top-bar {
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, setDoc, onSnapshot, collection, getDocs, getDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBfh15wxd1qwYhKDkQ_5GjuJLxISH6EF8",
@@ -5035,6 +5040,7 @@ body:has(#tab-premios.active) .top-bar {
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
 
 
     // ARCHIVO HISTÓRICO: los datos se guardan en documentos separados por división.
@@ -5139,8 +5145,12 @@ body:has(#tab-premios.active) .top-bar {
         } finally {button.disabled=false;}
     };
 
-    const ADMIN_PIN = "L4L1G4_2026@88";
-    const STAFF_PIN = "ST4FFLIGARBLX";
+    // Los UID no son secretos. Los permisos reales se verifican con reglas de Firestore.
+    const AUTH_UIDS = Object.freeze({
+        owner: 'ST0ADWICF2NLNHp9OONc9kyxCdX2',
+        admin: 'cFuKeS6HRYeKSWc2aJh570xK5Cx2',
+        staff: 'APQSSQF2MqZmWoUnRbEEYlWs7Oz1'
+    });
     
     let isAdmin = false;
     // Respaldos manuales del documento principal. No modifica otras colecciones.
@@ -5540,125 +5550,124 @@ body:has(#tab-premios.active) .top-bar {
         });
     }
 
-    window.openAdminPinModal = function() {
-        if (!isAdmin) {
-            document.getElementById('admin-pin-input').value = '';
-            document.getElementById('admin-pin-modal').classList.add('active');
-            setTimeout(() => document.getElementById('admin-pin-input').focus(), 100);
-        } else {
-            if (confirm('¿Cerrar sesión de Administrador?')) {
-                isAdmin = false;
-                document.getElementById("backup-toggle").style.display = "none";
-                document.getElementById("backup-panel").hidden = true;
-                syncHistoryAdminVisibility();
-                document.getElementById('btn-admin-toggle').innerText = "🔑 Admin";
-                document.getElementById('btn-admin-toggle').style.background = "var(--accent-gold)";
-                document.getElementById('btn-admin-toggle').style.color = "#02040A";
-                
-                document.getElementById('tab-btn-gestion').style.display = 'none';
-                document.getElementById('floating-save-btn').style.display = 'none';
-                document.getElementById('btn-reset-top').style.display = 'none';
-                document.getElementById('btn-reset-standings').style.display = 'none';
-                
-                updateBracketInputsState();
-                switchMainSection(1);
-                alert('Modo Administrador Cerrado.');
-                renderAll();
-            }
+    // Inicio de sesión con Firebase Authentication. No hay contraseñas en el HTML.
+    function syncAuthenticatedRole() {
+        const user = auth.currentUser;
+        const wasAdmin = isAdmin;
+        const canAdmin = !!user && (user.uid === AUTH_UIDS.owner || user.uid === AUTH_UIDS.admin);
+        const canStaff = !!user && user.uid === AUTH_UIDS.staff;
+        isAdmin = canAdmin;
+        isStaff = canStaff;
+
+        const adminButton = document.getElementById('btn-admin-toggle');
+        const staffButton = document.getElementById('btn-staff-toggle');
+        if (adminButton) {
+            adminButton.innerText = canAdmin ? (user.uid === AUTH_UIDS.owner ? '👑 Dueño: Activo' : '🔓 Admin: Activo') : '🔑 Admin';
+            adminButton.style.background = canAdmin ? '#10B981' : 'var(--accent-gold)';
+            adminButton.style.color = canAdmin ? '#FFF' : '#02040A';
         }
+        if (staffButton) {
+            staffButton.innerText = canStaff ? '🔓 Staff: Activo' : '🛡️ Staff';
+            staffButton.style.background = canStaff ? '#10B981' : 'var(--accent-staff)';
+            staffButton.style.color = '#FFF';
+        }
+        document.getElementById('backup-toggle').style.display = canAdmin ? '' : 'none';
+        if (!canAdmin) document.getElementById('backup-panel').hidden = true;
+        document.getElementById('tab-btn-gestion').style.display = canAdmin ? 'inline-block' : 'none';
+        document.getElementById('floating-save-btn').style.display = (canAdmin || canStaff) ? 'flex' : 'none';
+        document.getElementById('btn-reset-top').style.display = canAdmin ? 'inline-block' : 'none';
+        document.getElementById('btn-reset-standings').style.display = canAdmin ? 'inline-block' : 'none';
+        syncHistoryAdminVisibility();
+        updateBracketInputsState();
+        if (!canAdmin && wasAdmin && document.getElementById('tab-btn-gestion')?.classList.contains('active')) {
+            switchMainSection(1);
+        }
+        if (leagueReady) {
+            renderAll();
+            renderFriendlies();
+            if (canAdmin && !wasAdmin) void cleanExamplePlayersFromFirebase();
+        }
+    }
+
+    onAuthStateChanged(auth, user => {
+        // Cualquier cuenta no incluida en la lista queda como visitante.
+        syncAuthenticatedRole();
+        if (user && !Object.values(AUTH_UIDS).includes(user.uid)) {
+            void signOut(auth);
+        }
+    }, error => console.error('Firebase Auth:', error));
+
+    window.openAdminPinModal = async function() {
+        if (isAdmin) {
+            if (confirm('¿Cerrar sesión de Administrador?')) {
+                try { await signOut(auth); } catch (e) { alert('No se pudo cerrar sesión: ' + e.message); }
+            }
+            return;
+        }
+        document.getElementById('admin-pin-input').value = '';
+        document.getElementById('admin-pin-modal').classList.add('active');
+        setTimeout(() => document.getElementById('admin-email-input').focus(), 100);
     };
 
     window.closeAdminPinModal = function() {
         document.getElementById('admin-pin-modal').classList.remove('active');
     };
 
-    window.verifyAdminPin = function() {
-        let pass = document.getElementById('admin-pin-input').value;
-        if (pass === ADMIN_PIN) {
-            isAdmin = true;
-            document.getElementById("backup-toggle").style.display = "";
-            syncHistoryAdminVisibility();
-            isStaff = false;
-            closeAdminPinModal();
-            document.getElementById('btn-admin-toggle').innerText = "🔓 Admin: Activo";
-            document.getElementById('btn-admin-toggle').style.background = "#10B981";
-            document.getElementById('btn-admin-toggle').style.color = "#FFF";
-
-            document.getElementById('btn-staff-toggle').innerText = "🛡️ Staff";
-            document.getElementById('btn-staff-toggle').style.background = "var(--accent-staff)";
-            document.getElementById('btn-staff-toggle').style.color = "#FFF";
-            
-            document.getElementById('tab-btn-gestion').style.display = 'inline-block';
-            document.getElementById('floating-save-btn').style.display = 'flex';
-            document.getElementById('btn-reset-top').style.display = 'inline-block';
-            document.getElementById('btn-reset-standings').style.display = 'inline-block';
-
-            updateBracketInputsState();
-            // Ejecutar la limpieza al activar Admin, no solo al recibir un snapshot.
-            // Antes, el snapshot llegaba cuando isAdmin todavía era false.
-            void cleanExamplePlayersFromFirebase();
-            alert('¡Modo Administrador Activado!');
-            renderAll();
-        } else {
-            alert('PIN Incorrecto.');
+    window.verifyAdminPin = async function() {
+        const email = document.getElementById('admin-email-input').value.trim();
+        const pass = document.getElementById('admin-pin-input').value;
+        if (!email || !pass) return alert('Escribe el correo y la contraseña de Firebase.');
+        try {
+            await setPersistence(auth, browserSessionPersistence);
+            const result = await signInWithEmailAndPassword(auth, email, pass);
+            if (result.user.uid !== AUTH_UIDS.owner && result.user.uid !== AUTH_UIDS.admin) {
+                await signOut(auth);
+                return alert('Esta cuenta no tiene permisos de Dueño o Admin.');
+            }
             document.getElementById('admin-pin-input').value = '';
-            document.getElementById('admin-pin-input').focus();
+            closeAdminPinModal();
+            syncAuthenticatedRole();
+            alert('¡Acceso de Administrador autorizado!');
+        } catch (e) {
+            console.error('Error de inicio de sesión Admin:', e.code);
+            alert('No se pudo iniciar sesión. Revisa el correo y la contraseña de Firebase.');
         }
     };
 
-    window.openStaffPinModal = function() {
-        if (!isStaff) {
-            document.getElementById('staff-pin-input').value = '';
-            document.getElementById('staff-pin-modal').classList.add('active');
-            setTimeout(() => document.getElementById('staff-pin-input').focus(), 100);
-        } else {
+    window.openStaffPinModal = async function() {
+        if (isStaff) {
             if (confirm('¿Cerrar sesión de Staff?')) {
-                isStaff = false;
-                document.getElementById('btn-staff-toggle').innerText = "🛡️ Staff";
-                document.getElementById('btn-staff-toggle').style.background = "var(--accent-staff)";
-                document.getElementById('btn-staff-toggle').style.color = "#FFF";
-                
-                document.getElementById('floating-save-btn').style.display = 'none';
-                updateBracketInputsState();
-                alert('Modo Staff Cerrado.');
-                renderAll();
+                try { await signOut(auth); } catch (e) { alert('No se pudo cerrar sesión: ' + e.message); }
             }
+            return;
         }
+        document.getElementById('staff-pin-input').value = '';
+        document.getElementById('staff-pin-modal').classList.add('active');
+        setTimeout(() => document.getElementById('staff-email-input').focus(), 100);
     };
 
     window.closeStaffPinModal = function() {
         document.getElementById('staff-pin-modal').classList.remove('active');
     };
 
-    window.verifyStaffPin = function() {
-        let pass = document.getElementById('staff-pin-input').value;
-        if (pass === STAFF_PIN) {
-            isStaff = true;
-            isAdmin = false;
-            document.getElementById("backup-toggle").style.display = "none";
-            document.getElementById("backup-panel").hidden = true;
-            syncHistoryAdminVisibility();
-            closeStaffPinModal();
-            document.getElementById('btn-staff-toggle').innerText = "🔓 Staff: Activo";
-            document.getElementById('btn-staff-toggle').style.background = "#10B981";
-            document.getElementById('btn-staff-toggle').style.color = "#FFF";
-
-            document.getElementById('btn-admin-toggle').innerText = "🔑 Admin";
-            document.getElementById('btn-admin-toggle').style.background = "var(--accent-gold)";
-            document.getElementById('btn-admin-toggle').style.color = "#02040A";
-            
-            document.getElementById('tab-btn-gestion').style.display = 'none';
-            document.getElementById('floating-save-btn').style.display = 'flex';
-            document.getElementById('btn-reset-top').style.display = 'none';
-            document.getElementById('btn-reset-standings').style.display = 'none';
-
-            updateBracketInputsState();
-            alert('¡Modo Staff Activado!');
-            renderAll();
-        } else {
-            alert('PIN Incorrecto.');
+    window.verifyStaffPin = async function() {
+        const email = document.getElementById('staff-email-input').value.trim();
+        const pass = document.getElementById('staff-pin-input').value;
+        if (!email || !pass) return alert('Escribe el correo y la contraseña de Firebase.');
+        try {
+            await setPersistence(auth, browserSessionPersistence);
+            const result = await signInWithEmailAndPassword(auth, email, pass);
+            if (result.user.uid !== AUTH_UIDS.staff) {
+                await signOut(auth);
+                return alert('Esta cuenta no tiene permisos de Staff.');
+            }
             document.getElementById('staff-pin-input').value = '';
-            document.getElementById('staff-pin-input').focus();
+            closeStaffPinModal();
+            syncAuthenticatedRole();
+            alert('¡Acceso de Staff autorizado!');
+        } catch (e) {
+            console.error('Error de inicio de sesión Staff:', e.code);
+            alert('No se pudo iniciar sesión. Revisa el correo y la contraseña de Firebase.');
         }
     };
 
@@ -7759,18 +7768,6 @@ body:has(#tab-premios.active) .top-bar {
         document.getElementById('modal-dt-input').value = team.manager || '';
         document.getElementById('modal-dt-input').disabled = !isAdmin;
         document.getElementById('modal-add-player-btn').style.display = isAdmin ? 'inline-block' : 'none';
-        document.getElementById('modal-close-save-btn').textContent = isAdmin ? 'Guardar y Cerrar' : 'Cerrar';
-        const dtInput = document.getElementById('modal-dt-input');
-        dtInput.style.display = isAdmin ? '' : 'none';
-        let dtDisplay = document.getElementById('modal-dt-readonly');
-        if (!dtDisplay) {
-            dtDisplay = document.createElement('div');
-            dtDisplay.id = 'modal-dt-readonly';
-            dtDisplay.style.cssText = 'color:var(--text-main);font-weight:700;padding:8px 0;';
-            dtInput.insertAdjacentElement('afterend', dtDisplay);
-        }
-        dtDisplay.textContent = team.manager || 'Sin registrar';
-        dtDisplay.style.display = isAdmin ? 'none' : '';
         renderRosterList(team);
         
         const modal = document.getElementById('team-modal');
@@ -7793,21 +7790,6 @@ body:has(#tab-premios.active) .top-bar {
 
     function renderRosterList(team) {
         const container = document.getElementById('modal-roster-list');
-        if (!isAdmin) {
-            // Visitantes y Staff: mostrar datos como texto, nunca como controles de edición.
-            const escapeText = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-            container.innerHTML = (team.roster || []).map(player => `
-                <div class="roster-item" style="justify-content:space-between;gap:12px;">
-                    <span style="min-width:36px;font-weight:800;">#${escapeText(player.num ?? '—')}</span>
-                    <span class="name-input" style="flex:1;min-width:140px;">${escapeText(player.discordName ? `${player.discordName} (${player.name})` : player.name)}</span>
-                    <span style="min-width:40px;font-weight:700;">${escapeText(player.pos || '—')}</span>
-                    <span class="stat-box-roster" title="Goles">⚽ ${escapeText(player.goals || 0)}</span>
-                    <span class="stat-box-roster" title="Asistencias">🎯 ${escapeText(player.assists || 0)}</span>
-                    <span class="stat-box-roster" title="Atajadas">🧤 ${escapeText(player.saves || 0)}</span>
-                </div>
-            `).join('') || '<div style="color:var(--text-muted);text-align:center;padding:12px;">Sin jugadores registrados.</div>';
-            return;
-        }
         container.innerHTML = team.roster.map((player, idx) => `
             <div class="roster-item" id="roster-row-${idx}">
                 <input type="number" class="num-input" value="${player.num}" placeholder="#" ${!isAdmin ? 'disabled' : ''} oninput="updateRosterFieldSilent(${idx}, 'num', this.value)">
