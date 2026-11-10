@@ -5026,7 +5026,7 @@ body:has(#tab-premios.active) .top-bar {
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, updateDoc, onSnapshot, collection, getDocs, getDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, updateDoc, onSnapshot, collection, getDocs, getDoc, runTransaction, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -5162,12 +5162,10 @@ body:has(#tab-premios.active) .top-bar {
         if (!isAdmin) return alert('Activa el modo Admin primero.');
         try {
             backupStatus('Leyendo datos actuales de Firebase...');
-            const snapshot = await getDoc(doc(db, 'liga', 'general_data'));
-            if (!snapshot.exists()) throw new Error('No existe liga/general_data.');
-            const divisions=await Promise.all([1,2,3].map(n=>getDoc(doc(db,'liga_divisiones',String(n)))));
-            if(divisions.some(d=>!d.exists()))throw new Error('Falta una división migrada.');
-            const data={...snapshot.data()};
-            divisions.forEach((d,i)=>data[String(i+1)]=d.data());
+            if(!leagueReady)throw new Error('Espera a que termine de cargar la liga.');
+            // Respaldar la vista efectiva: incluye los resultados de Staff separados.
+            const data=leagueClone(leagueMetadata(appData));
+            for(const n of [1,2,3])data[String(n)]=leagueClone(appData[n]);
             const payload = {format:'liga-ilegal-backup-v1', createdAt:new Date().toISOString(), source:'liga/general_data', data};
             const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
             const url = URL.createObjectURL(blob);
@@ -5198,6 +5196,13 @@ body:has(#tab-premios.active) .top-bar {
             // Solo un documento; el listener existente actualizará la página.
             for(const n of [1,2,3])await setDoc(doc(db,'liga_divisiones',String(n)),backup.data[String(n)]);
             await setDoc(doc(db,'liga','general_data'),leagueMetadata(backup.data),{merge:true});
+            // Al restaurar, borrar resultados separados para que no sobrescriban el respaldo.
+            for(const n of [1,2,3]) {
+                const saved=await getDocs(collection(db,'liga_resultados',String(n),'partidos'));
+                for(const item of saved.docs)await deleteDoc(item.ref);
+            }
+            await deleteDoc(doc(db,'liga_resultados','torneos'));
+            await deleteDoc(doc(db,'liga_resultados','amistosos'));
             backupStatus('Copia restaurada. Recarga la página para verificar los datos.');
         } catch(e) { console.error('Error restaurando respaldo',e); backupStatus('Error: '+e.message); }
     };
@@ -5353,26 +5358,113 @@ body:has(#tab-premios.active) .top-bar {
         }
     }
 
-    // Migración oficial: cada división se lee y guarda en su documento.
+    // Los documentos oficiales solo los pueden modificar Dueño/Admin.
+    // Los resultados e incidencias se guardan por separado para Staff.
+    // Se leen también los datos históricos de las divisiones, sin migración destructiva.
     const leagueRefs = [doc(db,'liga','general_data'), ...[1,2,3].map(n=>doc(db,'liga_divisiones',String(n)))];
     const leagueParts = new Array(4).fill(null);
     const leagueSignatures = new Array(4).fill(null);
+    const effectiveParts = new Array(4).fill(null);
+    const effectiveSignatures = new Array(4).fill(null);
+    const resultCollections = [null, ...[1,2,3].map(n=>collection(db,'liga_resultados',String(n),'partidos'))];
+    const resultParts = [null,null,null,null];
+    const tournamentResultsRef = doc(db,'liga_resultados','torneos');
+    const friendlyResultsRef = doc(db,'liga_resultados','amistosos');
+    let tournamentResults = null;
+    let friendlyResults = null;
     let leagueReady = false;
     let leagueSaveInProgress = false;
     function leagueSignature(value) { return JSON.stringify(value); }
     function leagueMetadata(data) {
         return Object.fromEntries(Object.entries(data || {}).filter(([key])=>!['1','2','3'].includes(key)));
     }
+    function leagueClone(value) { return JSON.parse(JSON.stringify(value)); }
     function finishLeagueLoading() {
         setTimeout(()=>{
             isInitialLoading=false;
             document.getElementById('page-loader')?.classList.add('fade-out');
         },750);
     }
+    function fixtureKey(m) { return [m.matchday,m.homeId,m.awayId].map(String).join('|'); }
+    function cleanScore(x) {
+        if(x===null || x==='' || x===undefined)return null;
+        const n=Number(x);
+        return Number.isInteger(n) && n>=0 && n<=99 ? n : null;
+    }
+    function cleanEvents(events, tournament=false) {
+        if(!Array.isArray(events))return [];
+        return events.slice(0,50).filter(ev=>ev && typeof ev==='object' && !Array.isArray(ev)).map(ev=>{
+            const obj={
+                playerName:String(ev.playerName||'').replace(/[<>&"'`]/g,'').slice(0,80),
+                goals:cleanScore(ev.goals)||0,
+                assists:cleanScore(ev.assists)||0,
+                saves:cleanScore(ev.saves)||0
+            };
+            if(tournament)obj.teamName=String(ev.teamName||'').replace(/[<>&"'`]/g,'').slice(0,80);
+            else obj.teamId=(typeof ev.teamId==='number'||typeof ev.teamId==='string') ? ev.teamId : '';
+            return obj;
+        });
+    }
+    function matchResult(m) {
+        return {fixture:fixtureKey(m),homeScore:cleanScore(m.homeScore),awayScore:cleanScore(m.awayScore),events:cleanEvents(m.events)};
+    }
+    function applyStatDelta(div, before, after) {
+        const counts=new Map();
+        const collect=(events,mult)=>{
+            for(const ev of (events||[])) {
+                const key=String(ev.teamId)+'\u0000'+String(ev.playerName);
+                const v=counts.get(key)||{goals:0,assists:0,saves:0};
+                for(const field of ['goals','assists','saves'])v[field]+=mult*(Number(ev[field])||0);
+                counts.set(key,v);
+            }
+        };
+        collect(before,-1);collect(after,1);
+        for(const team of (div.teams||[]))for(const player of (team.roster||[])) {
+            const v=counts.get(String(team.id)+'\u0000'+String(player.name));
+            if(v)for(const field of ['goals','assists','saves'])player[field]=Math.max(0,(Number(player[field])||0)+v[field]);
+        }
+    }
+    function safeTournamentData(source, prefix) {
+        const data={};
+        if(!source || typeof source!=='object' || Array.isArray(source))return data;
+        const scoreId=prefix==='ucl'
+            ? /^ucl-(?:so[1-8]-t[12]|sc[1-4]-t[12]|ss[1-2]-t[12]|sf[12])$/
+            : /^el-(?:so[1-8]-t[12]|sc[1-4]-t[12]|ss[1-2]-t[12]|sf[12])$/;
+        for(const [key,value] of Object.entries(source)) {
+            if(scoreId.test(key))data[key]=value===null||value===''?'':String(cleanScore(value)??'');
+            else if(key==='events' && value && typeof value==='object' && !Array.isArray(value)) {
+                const events={};
+                for(const [id,rows] of Object.entries(value).slice(0,64)) {
+                    if(/^[a-z0-9_-]{1,48}$/i.test(id))events[id]=cleanEvents(rows,true);
+                }
+                data.events=events;
+            }
+        }
+        return data;
+    }
     function applyLeagueParts() {
-        if (leagueParts.some(x=>x===null)) return;
-        const next = {...leagueParts[0]};
-        for (let n=1;n<=3;n++) next[n]=leagueParts[n];
+        if(leagueParts.some(x=>x===null) || resultParts.slice(1).some(x=>x===null)
+            || tournamentResults===null || friendlyResults===null)return;
+        const next=leagueClone(leagueParts[0]);
+        for(let n=1;n<=3;n++) {
+            const div=leagueClone(leagueParts[n]);
+            const byId=new Map((div.matches||[]).map(m=>[String(m.id),m]));
+            for(const [id,stored] of Object.entries(resultParts[n])) {
+                const m=byId.get(id);
+                if(!m || !stored || stored.fixture!==fixtureKey(m))continue;
+                const oldEvents=Array.isArray(m.events)?m.events:[];
+                const newEvents=cleanEvents(stored.events);
+                m.homeScore=cleanScore(stored.homeScore);
+                m.awayScore=cleanScore(stored.awayScore);
+                m.events=newEvents;
+                applyStatDelta(div,oldEvents,newEvents);
+            }
+            next[n]=div;
+        }
+        for(const [field,prefix] of [['supercup','ucl'],['europaleague','el']]) {
+            next[field]={...(next[field]||{}),...safeTournamentData(tournamentResults[field],prefix)};
+        }
+        if(Array.isArray(friendlyResults.amistosos))next.amistosos=leagueClone(friendlyResults.amistosos);
         appData=next;
         if (!appData.socialDiscord) appData.socialDiscord='https://discord.gg/tu-enlace-de-discord';
         if (!appData.socialTiktok) appData.socialTiktok='https://www.tiktok.com/@tu-usuario-tiktok';
@@ -5386,79 +5478,89 @@ body:has(#tab-premios.active) .top-bar {
             }));
             (appData[div]?.matches || []).forEach(m=>{if(!m.events)m.events=[];});
         });
+        effectiveParts[0]=leagueClone(leagueMetadata(appData));
+        for(let n=1;n<=3;n++)effectiveParts[n]=leagueClone(appData[n]);
+        effectiveParts.forEach((value,i)=>effectiveSignatures[i]=leagueSignature(value));
         leagueReady=true;
-        renderAll(); renderFriendlies();
+        renderAll();renderFriendlies();
         if(document.getElementById('tab-premios')?.classList.contains('active'))renderPremiosOficiales();
         if(isInitialLoading)finishLeagueLoading();
     }
     leagueRefs.forEach((ref,i)=>onSnapshot(ref,snap=>{
-        if(!snap.exists()){
+        if(!snap.exists()) {
             console.error('Falta el documento migrado:',ref.path);
             if(isInitialLoading)finishLeagueLoading();
-            return; // No crear documentos vacíos ni sobrescribir la copia original.
+            return;
         }
         const data=snap.data();
-        if(i>0 && (!Array.isArray(data?.teams)||data.teams.length!==16)){
+        if(i>0 && (!Array.isArray(data?.teams)||data.teams.length!==16)) {
             console.error('División incompleta:',ref.path);
             if(isInitialLoading)finishLeagueLoading();
             return;
         }
         leagueParts[i]=data;
-        // Guardar una firma independiente: editar appData nunca debe alterar esta referencia.
-        leagueSignatures[i]=leagueSignature(i===0 ? leagueMetadata(data) : data);
+        leagueSignatures[i]=leagueSignature(i===0?leagueMetadata(data):data);
         if(!leagueSaveInProgress)applyLeagueParts();
     },error=>{
         console.error('Error leyendo documento migrado:',ref.path,error);
         if(isInitialLoading)finishLeagueLoading();
     }));
-
-    // Las reglas validan la seguridad real. Este filtro evita que un guardado de Staff
-    // arrastre selecciones de equipos cambiadas automáticamente por la cascada visual.
-    function staffTournamentData(next, current, prefix) {
-        const safe = {...(current || {})};
-        const scoreId = prefix === 'ucl'
-            ? /^ucl-(?:so[1-8]-t[12]|sc[1-4]-t[12]|ss[1-2]-t[12]|sf[12])$/
-            : /^el-(?:so[1-8]-t[12]|sc[1-4]-t[12]|ss[1-2]-t[12]|sf[12])$/;
-        for (const [key, value] of Object.entries(next || {})) {
-            if (key === 'events' || scoreId.test(key)) safe[key] = value;
-        }
-        return safe;
-    }
+    for(let n=1;n<=3;n++)onSnapshot(resultCollections[n],snap=>{
+        const data={};
+        snap.forEach(d=>{if(/^\d{1,4}$/.test(d.id))data[d.id]=d.data();});
+        resultParts[n]=data;
+        if(!leagueSaveInProgress)applyLeagueParts();
+    },error=>{console.error('Error leyendo resultados de división',n,error);resultParts[n]={};if(!leagueSaveInProgress)applyLeagueParts();});
+    onSnapshot(tournamentResultsRef,snap=>{
+        tournamentResults=snap.exists()?snap.data():{};
+        if(!leagueSaveInProgress)applyLeagueParts();
+    },error=>{console.error('Error leyendo resultados de torneos',error);tournamentResults={};if(!leagueSaveInProgress)applyLeagueParts();});
+    onSnapshot(friendlyResultsRef,snap=>{
+        friendlyResults=snap.exists()?snap.data():{};
+        if(!leagueSaveInProgress)applyLeagueParts();
+    },error=>{console.error('Error leyendo amistosos',error);friendlyResults={};if(!leagueSaveInProgress)applyLeagueParts();});
 
     async function saveStateToCloud() {
-        if ((!isAdmin && !isStaff) || !leagueReady || leagueSaveInProgress) return false;
+        if((!isAdmin&&!isStaff)||!leagueReady||leagueSaveInProgress)return false;
         const parts=[leagueMetadata(appData),appData[1],appData[2],appData[3]];
         const changes=parts.map((value,i)=>({i,value,signature:leagueSignature(value)}))
-            .filter(({i,signature})=>signature!==leagueSignatures[i]);
+            .filter(({i,signature})=>signature!==effectiveSignatures[i]);
         if(!changes.length)return true;
         leagueSaveInProgress=true;
+        let success=false;
         try {
-            // No reescribir divisiones que no fueron modificadas por esta página.
             for(const {i,value} of changes) {
-                if (isStaff && !isAdmin) {
-                    const previous = leagueParts[i] || {};
-                    const allowed = i === 0
-                        ? ['amistosos', 'supercup', 'europaleague']
-                        : ['matches', 'teams'];
-                    const patch = {};
-                    for (const field of allowed) {
-                        if (!Object.prototype.hasOwnProperty.call(value, field)) continue;
-                        const nextValue = field === 'supercup'
-                            ? staffTournamentData(value[field], previous[field], 'ucl')
-                            : field === 'europaleague'
-                            ? staffTournamentData(value[field], previous[field], 'el')
-                            : value[field];
-                        if (JSON.stringify(nextValue) !== JSON.stringify(previous[field])) {
-                            patch[field] = nextValue;
+                const previous=effectiveParts[i];
+                if(i===0) {
+                    if(isAdmin)await setDoc(leagueRefs[0],value,{merge:true});
+                    if(leagueSignature(value.amistosos)!==leagueSignature(previous.amistosos)) {
+                        await setDoc(friendlyResultsRef,{amistosos:Array.isArray(value.amistosos)?value.amistosos:[]});
+                    }
+                    for(const [field,prefix] of [['supercup','ucl'],['europaleague','el']]) {
+                        const now=safeTournamentData(value[field],prefix);
+                        const old=safeTournamentData(previous[field],prefix);
+                        if(leagueSignature(now)!==leagueSignature(old)) {
+                            await setDoc(tournamentResultsRef,{[field]:now},{mergeFields:[field]});
                         }
                     }
-                    if (Object.keys(patch).length) await updateDoc(leagueRefs[i], patch);
-                } else if (i === 0) await setDoc(leagueRefs[0], value, {merge:true});
-                else await setDoc(leagueRefs[i], value);
+                } else {
+                    if(isAdmin)await setDoc(leagueRefs[i],value);
+                    const previousMatches=new Map((previous.matches||[]).map(m=>[String(m.id),m]));
+                    for(const m of (value.matches||[])) {
+                        const old=previousMatches.get(String(m.id));
+                        if(!old || leagueSignature(matchResult(m))!==leagueSignature(matchResult(old))) {
+                            await setDoc(doc(resultCollections[i],String(m.id)),matchResult(m));
+                        }
+                    }
+                }
             }
+            success=true;
             return true;
         }catch(e){console.error('Error al guardar en Firebase:',e);return false;}
-        finally{leagueSaveInProgress=false;}
+        finally {
+            leagueSaveInProgress=false;
+            if(success)applyLeagueParts();
+        }
     }
 
     window.triggerAutoSave = function() {
