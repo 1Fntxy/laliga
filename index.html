@@ -5394,7 +5394,8 @@ body:has(#tab-premios.active) .top-bar {
             return;
         }
         leagueParts[i]=data;
-        leagueSignatures[i]=leagueSignature(data);
+        // Guardar una firma independiente: editar appData nunca debe alterar esta referencia.
+        leagueSignatures[i]=leagueSignature(i===0 ? leagueMetadata(data) : data);
         if(!leagueSaveInProgress)applyLeagueParts();
     },error=>{
         console.error('Error leyendo documento migrado:',ref.path,error);
@@ -5405,7 +5406,7 @@ body:has(#tab-premios.active) .top-bar {
         if ((!isAdmin && !isStaff) || !leagueReady || leagueSaveInProgress) return false;
         const parts=[leagueMetadata(appData),appData[1],appData[2],appData[3]];
         const changes=parts.map((value,i)=>({i,value,signature:leagueSignature(value)}))
-            .filter(({i,signature})=>signature!==leagueSignature(i===0?leagueMetadata(leagueParts[0]):leagueParts[i]));
+            .filter(({i,signature})=>signature!==leagueSignatures[i]);
         if(!changes.length)return true;
         leagueSaveInProgress=true;
         try {
