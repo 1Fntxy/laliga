@@ -4986,7 +4986,7 @@ body:has(#tab-premios.active) .top-bar {
         <button class="modal-close" onclick="closeTeamModal()">&times;</button>
         <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;" id="modal-header"></div>
 
-        <div class="input-group" style="margin-bottom:20px;">
+        <div class="input-group" id="modal-dt-group" style="margin-bottom:20px;">
             <label>Director Técnico / Capitán (Roblox Username):</label>
             <input type="text" id="modal-dt-input" placeholder="Ej. ProPlayer" onchange="updateModalTeamInfo()">
         </div>
@@ -4999,7 +4999,7 @@ body:has(#tab-premios.active) .top-bar {
         <div class="roster-list" id="modal-roster-list"></div>
 
         <div style="margin-top:24px; text-align:right;">
-            <button class="action-btn" onclick="closeTeamModal()">Guardar y Cerrar</button>
+            <button id="modal-close-save-btn" class="action-btn" onclick="closeTeamModal()">Guardar y Cerrar</button>
         </div>
     </div>
 </div>
@@ -7467,6 +7467,7 @@ body:has(#tab-premios.active) .top-bar {
                             <div style="font-size:0.8rem; font-weight:700; color:var(--text-main);">Jugadores con acciones en el partido:</div>
                             ${eventRowsHTML}
                             <button class="action-btn" style="font-size:0.8rem; padding:6px 12px; margin-top:4px;" onclick="addMatchEvent(${m.id}, ${home.id})">+ Agregar Jugador a Incidencias</button>
+                            <button class="action-btn" type="button" style="font-size:0.8rem; padding:8px 12px; margin-top:4px; background:var(--accent-green); color:#fff;" onclick="saveAndCloseMatchEvents(event, ${m.id})">✅ Guardar y cerrar incidencias</button>
                         </div>
                     </div>
                 `;
@@ -7570,6 +7571,33 @@ body:has(#tab-premios.active) .top-bar {
             if (!openMatchEventsBoxes[matchId]) {
                 triggerAutoSave();
             }
+        }
+    };
+
+    // Guardar explícitamente en Firebase antes de cerrar el editor de incidencias.
+    window.saveAndCloseMatchEvents = async function(event, matchId) {
+        event.stopPropagation();
+        if (!isAdmin && !isStaff) return;
+        const btn = event.currentTarget;
+        if (btn.disabled) return;
+        const initialText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = '⏳ Guardando incidencias...';
+        // Cancelar el guardado diferido: esta acción guarda inmediatamente.
+        clearTimeout(autoSaveTimer);
+        autoSaveTimer = null;
+        try {
+            const ok = await saveStateToCloud();
+            if (!ok) throw new Error('No se pudo confirmar el guardado en Firebase.');
+            openMatchEventsBoxes[matchId] = false;
+            const box = document.getElementById(`match-events-box-${matchId}`);
+            if (box) box.classList.remove('show');
+        } catch (error) {
+            console.error('Error guardando incidencias:', error);
+            alert('❌ No se pudieron guardar las incidencias. El apartado sigue abierto; inténtalo de nuevo.');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = initialText;
         }
     };
 
@@ -7731,6 +7759,18 @@ body:has(#tab-premios.active) .top-bar {
         document.getElementById('modal-dt-input').value = team.manager || '';
         document.getElementById('modal-dt-input').disabled = !isAdmin;
         document.getElementById('modal-add-player-btn').style.display = isAdmin ? 'inline-block' : 'none';
+        document.getElementById('modal-close-save-btn').textContent = isAdmin ? 'Guardar y Cerrar' : 'Cerrar';
+        const dtInput = document.getElementById('modal-dt-input');
+        dtInput.style.display = isAdmin ? '' : 'none';
+        let dtDisplay = document.getElementById('modal-dt-readonly');
+        if (!dtDisplay) {
+            dtDisplay = document.createElement('div');
+            dtDisplay.id = 'modal-dt-readonly';
+            dtDisplay.style.cssText = 'color:var(--text-main);font-weight:700;padding:8px 0;';
+            dtInput.insertAdjacentElement('afterend', dtDisplay);
+        }
+        dtDisplay.textContent = team.manager || 'Sin registrar';
+        dtDisplay.style.display = isAdmin ? 'none' : '';
         renderRosterList(team);
         
         const modal = document.getElementById('team-modal');
@@ -7753,6 +7793,21 @@ body:has(#tab-premios.active) .top-bar {
 
     function renderRosterList(team) {
         const container = document.getElementById('modal-roster-list');
+        if (!isAdmin) {
+            // Visitantes y Staff: mostrar datos como texto, nunca como controles de edición.
+            const escapeText = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+            container.innerHTML = (team.roster || []).map(player => `
+                <div class="roster-item" style="justify-content:space-between;gap:12px;">
+                    <span style="min-width:36px;font-weight:800;">#${escapeText(player.num ?? '—')}</span>
+                    <span class="name-input" style="flex:1;min-width:140px;">${escapeText(player.discordName ? `${player.discordName} (${player.name})` : player.name)}</span>
+                    <span style="min-width:40px;font-weight:700;">${escapeText(player.pos || '—')}</span>
+                    <span class="stat-box-roster" title="Goles">⚽ ${escapeText(player.goals || 0)}</span>
+                    <span class="stat-box-roster" title="Asistencias">🎯 ${escapeText(player.assists || 0)}</span>
+                    <span class="stat-box-roster" title="Atajadas">🧤 ${escapeText(player.saves || 0)}</span>
+                </div>
+            `).join('') || '<div style="color:var(--text-muted);text-align:center;padding:12px;">Sin jugadores registrados.</div>';
+            return;
+        }
         container.innerHTML = team.roster.map((player, idx) => `
             <div class="roster-item" id="roster-row-${idx}">
                 <input type="number" class="num-input" value="${player.num}" placeholder="#" ${!isAdmin ? 'disabled' : ''} oninput="updateRosterFieldSilent(${idx}, 'num', this.value)">
