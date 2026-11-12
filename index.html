@@ -2602,6 +2602,9 @@ html[data-theme="light"] #torneo-subtab-copadelrey .ucl-match-box select option 
 
 /* Carga LaLiga compacta: solo estilos; se conserva el control JS de #page-loader. */
 #page-loader {background:rgba(3,7,16,.73)!important;backdrop-filter:blur(2.5px);-webkit-backdrop-filter:blur(2.5px)}
+/* Evitar mostrar la división predeterminada detrás del cargador inicial. */
+#page-loader:not(.fade-out) { background: #080d1a !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+
 #page-loader .liga-loading-classic{gap:11px!important; width:190px;max-width:90vw}
 #page-loader .liga-mark-frame{position:relative;width:126px;height:112px;display:flex;align-items:center;justify-content:center}
 #page-loader .liga-mark-image{position:relative;z-index:2;width:112px;height:auto;max-height:77px;object-fit:contain;filter:drop-shadow(0 1px 4px #000);animation:ligaMarkFloat 2.5s ease-in-out infinite}
@@ -5612,8 +5615,9 @@ body:has(#tab-premios.active) .top-bar {
         leagueReady=true;
         renderAll();renderFriendlies();
         if(document.getElementById('tab-premios')?.classList.contains('active'))renderPremiosOficiales();
-        if(isInitialLoading)finishLeagueLoading();
+        // Restaurar la vista ANTES de retirar la pantalla de carga.
         restoreViewOnce();
+        if(isInitialLoading)finishLeagueLoading();
     }
     leagueRefs.forEach((ref,i)=>onSnapshot(ref,snap=>{
         if(!snap.exists()) {
