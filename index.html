@@ -4087,6 +4087,71 @@ body:has(#tab-premios.active) .top-bar {
 #premios-panel-bota .premios-icon-bota img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;border:0!important;border-radius:0!important;box-shadow:none!important;}
 #premios-panel-bota .premios-card-head h3{margin:0!important;line-height:1.2;}
 </style>
+
+<style id="amistosos-interfaz-jornadas-2026">
+/* Formulario de programación en ventana compacta, no ocupa la pestaña. */
+#tab-amistosos #amis-form.amis-form{position:fixed!important;inset:0;z-index:100001;background:rgba(2,6,23,.80);backdrop-filter:blur(6px);padding:18px;margin:0!important;overflow-y:auto;align-items:center;justify-items:center;border:0;border-radius:0;box-shadow:none}
+#tab-amistosos #amis-form.amis-form.open{display:grid!important}
+#tab-amistosos .amis-create-dialog{width:min(100%,680px);max-height:calc(100dvh - 36px);overflow-y:auto;background:linear-gradient(155deg,#1c1b2d,#0d1729 80%);border:1px solid #e92d51;border-radius:17px;padding:24px;box-shadow:0 24px 75px #000a;color:#f8fafc}
+#tab-amistosos .amis-create-top{display:flex;align-items:start;justify-content:space-between;gap:12px;margin-bottom:20px}
+#tab-amistosos .amis-create-top h3{font-size:22px;margin:0 0 5px;color:#fff}
+#tab-amistosos .amis-create-top p{font-size:12px;line-height:1.6;color:#a9bbd2}
+#tab-amistosos .amis-create-x{font-size:27px;color:#fff;background:#1d2940;border:1px solid #45516b;border-radius:8px;width:37px;height:37px;flex:none}
+#tab-amistosos .amis-create-pickers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+#tab-amistosos .amis-picker{min-width:0;position:relative;display:flex;flex-direction:column;gap:8px}
+#tab-amistosos .amis-picker>label{font-size:12px;color:#e2e8f0;font-weight:800}
+#tab-amistosos .amis-picker>input{width:100%;background:#1c2a40;color:#fff;border:1px solid #43526b;border-radius:9px;padding:11px 12px}
+#tab-amistosos .amis-selected{min-height:70px;border:1px dashed #50617c;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;color:#b6c8df;font-size:12px;text-align:center;flex-wrap:wrap}
+#tab-amistosos .amis-selected.picked{background:#15253a;border-style:solid;border-color:#db3355;color:#fff}
+#tab-amistosos .amis-selected img{width:37px;height:37px;object-fit:contain}
+#tab-amistosos .amis-selected small{color:#f29aaf;font-size:10px}
+#tab-amistosos .amis-team-choices:not([hidden]){display:flex;flex-direction:column;gap:5px;max-height:225px;overflow:auto;background:#0b1425;border:1px solid #485874;border-radius:10px;padding:6px}
+#tab-amistosos .amis-team-option{display:flex;align-items:center;gap:10px;text-align:left;color:#fff;background:#1b2a40;border:1px solid transparent;border-radius:8px;padding:8px;width:100%}
+#tab-amistosos .amis-team-option:hover{background:#293e59;border-color:#f03758}
+#tab-amistosos .amis-team-option img{width:30px;height:30px;object-fit:contain;flex:none}
+#tab-amistosos .amis-team-option span{display:flex;flex-direction:column;gap:3px;font-size:12px}
+#tab-amistosos .amis-team-option small{color:#aabdd7;font-size:10px}
+#tab-amistosos .amis-no-teams{padding:12px;color:#9eafc9;text-align:center;font-size:12px}
+#tab-amistosos .amis-create-preview{margin-top:15px;padding:12px;border:1px solid #394964;border-radius:10px;background:#0a1426;text-align:center;font-size:12px;color:#d8e4f4;display:flex;justify-content:center;align-items:center;gap:15px;flex-wrap:wrap}
+#tab-amistosos .amis-create-preview strong{color:#fa4468}
+#tab-amistosos .amis-form-buttons{justify-content:flex-end}
+/* Incidencias selectivas desplegables, iguales al flujo de Jornadas. */
+#tab-amistosos .amis-inline-editor{background:#111b2d;border-top:1px solid #344359;padding:16px;display:flex;flex-direction:column;gap:12px}
+#tab-amistosos .amis-editor-heading{display:flex;flex-direction:column;gap:4px;color:#fff;font-size:13px}
+#tab-amistosos .amis-editor-heading small{color:#a6b9d1;font-size:11px}
+#tab-amistosos .amis-editor-rows{display:flex;flex-direction:column;gap:8px}
+#tab-amistosos .amis-event-row{background:#0b1425;border:1px solid #36475f;color:#fff;flex-wrap:wrap;overflow:visible}
+#tab-amistosos .amis-event-row select,#tab-amistosos .amis-event-row input{background:#1b2a41;color:#fff;border:1px solid #485a73}
+#tab-amistosos .amis-event-row .ps-team-select{width:clamp(105px,20%,165px);flex:1}
+#tab-amistosos .amis-event-row .ps-player-select{min-width:130px;flex:2}
+#tab-amistosos .amis-event-row .ps-stat-box{color:#f3f7ff;white-space:nowrap}
+#tab-amistosos .amis-event-row .ps-input{width:47px;text-align:center}
+#tab-amistosos .amis-event-remove{background:#a7183a;color:#fff;border:1px solid #ec3656;border-radius:8px;padding:5px 11px;font-size:20px}
+#tab-amistosos .amis-editor-actions{display:flex;gap:9px;flex-wrap:wrap}
+#tab-amistosos .amis-editor-actions .amis-btn{font-size:12px}
+/* Resumen plegable, por equipo, sin ventana emergente. */
+#tab-amistosos .amis-summary{border-top:1px dashed #38465e;background:#10192b;padding:16px}
+#tab-amistosos .amis-summary-title{font-weight:800;color:#fff;font-size:13px;margin-bottom:12px}
+#tab-amistosos .amis-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+#tab-amistosos .amis-summary-grid>div>strong{display:block;color:#e7eefb;font-size:12px;margin-bottom:8px}
+#tab-amistosos .amis-summary-away{text-align:right}
+#tab-amistosos .amis-summary-empty{color:#92a8c4;font-size:11px;font-style:italic}
+#tab-amistosos .amis-summary .compact-event-badge{color:#fff;background:#1c2b42;border-color:#394b63;white-space:normal;text-align:left}
+#tab-amistosos .amis-match-footer{flex-wrap:wrap}
+#tab-amistosos .amis-inline-score input{width:47px}
+@media(max-width:650px){
+ #tab-amistosos .amis-create-dialog{padding:15px}
+ #tab-amistosos .amis-create-pickers{grid-template-columns:1fr}
+ #tab-amistosos .amis-selected{min-height:48px}
+ #tab-amistosos .amis-team-choices:not([hidden]){max-height:145px}
+ #tab-amistosos .amis-event-row .ps-team-select,#tab-amistosos .amis-event-row .ps-player-select{width:100%;flex:1 1 42%;min-width:100px}
+ #tab-amistosos .amis-event-row .ps-stat-box{flex:1;justify-content:center}
+ #tab-amistosos .amis-editor-actions .amis-btn{width:100%}
+ #tab-amistosos .amis-summary-grid{gap:10px}
+ #tab-amistosos .amis-inline-score input{width:36px}
+}
+</style>
+
 </head>
 <body>
 
@@ -4293,13 +4358,17 @@ body:has(#tab-premios.active) .top-bar {
           <button type="button" class="amis-filter" data-filter="finalizados" onclick="setFriendlyFilter('finalizados')">Finalizados</button>
           <button type="button" class="amis-filter" data-filter="historial" onclick="setFriendlyFilter('historial')">Historial</button>
         </div>
-        <form class="amis-form" id="amis-form" onsubmit="saveFriendly(event)">
-          <input type="hidden" id="amis-id"><div class="amis-fields">
-            <label>Equipo local<input type="search" id="amis-home-search" placeholder="Buscar equipo local..." oninput="filterFriendlyTeamSelect('amis-home',this.value)"><select id="amis-home" required onchange="previewFriendlyManual()"></select></label><label>Equipo visitante<input type="search" id="amis-away-search" placeholder="Buscar equipo visitante..." oninput="filterFriendlyTeamSelect('amis-away',this.value)"><select id="amis-away" required onchange="previewFriendlyManual()"></select></label>
-            <label>Estado<select id="amis-state"><option value="programado">Por jugar</option><option value="finalizado">Finalizado</option></select></label>
-            <label>Goles local<input type="number" id="amis-hs" min="0" max="99" placeholder="Sin jugar"></label>
-            <label>Goles visitante<input type="number" id="amis-as" min="0" max="99" placeholder="Sin jugar"></label>
-          </div><div id="amis-manual-preview" class="amis-manual-preview" aria-live="polite">Selecciona dos equipos para crear el amistoso.</div><div class="amis-form-buttons"><button type="submit" class="amis-btn">Guardar amistoso</button><button type="button" class="amis-btn secondary" onclick="toggleAmisForm(false)">Cancelar</button></div>
+        <form class="amis-form" id="amis-form" onsubmit="saveFriendly(event)" onclick="if(event.target===this)toggleAmisForm(false)">
+          <div class="amis-create-dialog">
+            <div class="amis-create-top"><div><h3>Programar amistoso</h3><p>Elige los dos equipos. El marcador se registra después, desde el partido.</p></div><button type="button" class="amis-create-x" onclick="toggleAmisForm(false)" aria-label="Cerrar">×</button></div>
+            <input type="hidden" id="amis-id"><input type="hidden" id="amis-state" value="programado"><input type="hidden" id="amis-hs"><input type="hidden" id="amis-as">
+            <div class="amis-create-pickers">
+              <div class="amis-picker"><label for="amis-home-search">Equipo local</label><div class="amis-selected" id="amis-home-selected">Selecciona un equipo local</div><input type="search" id="amis-home-search" placeholder="🔎 Buscar equipo local..." autocomplete="off" onfocus="filterFriendlyTeamSelect('amis-home',this.value)" oninput="filterFriendlyTeamSelect('amis-home',this.value)"><select id="amis-home" hidden aria-label="Equipo local"></select><div class="amis-team-choices" id="amis-home-choices" hidden></div></div>
+              <div class="amis-picker"><label for="amis-away-search">Equipo visitante</label><div class="amis-selected" id="amis-away-selected">Selecciona un equipo visitante</div><input type="search" id="amis-away-search" placeholder="🔎 Buscar equipo visitante..." autocomplete="off" onfocus="filterFriendlyTeamSelect('amis-away',this.value)" oninput="filterFriendlyTeamSelect('amis-away',this.value)"><select id="amis-away" hidden aria-label="Equipo visitante"></select><div class="amis-team-choices" id="amis-away-choices" hidden></div></div>
+            </div>
+            <div id="amis-manual-preview" class="amis-create-preview" aria-live="polite">Selecciona dos equipos para crear el amistoso.</div>
+            <div class="amis-form-buttons"><button type="button" class="amis-btn secondary" onclick="toggleAmisForm(false)">Cancelar</button><button type="submit" class="amis-btn">✓ Crear partido</button></div>
+          </div>
         </form>
         <div id="amis-incidence-modal" class="amis-draw-modal" hidden role="dialog" aria-modal="true" aria-labelledby="amis-incidence-title">
           <div class="amis-draw-dialog amis-incidence-dialog">
@@ -6053,15 +6122,22 @@ body:has(#tab-premios.active) .top-bar {
         renderFriendlies();
     };
     window.toggleAmisForm = function(show) {
-        if (!friendlyCanEdit()) return;
-        const form = document.getElementById('amis-form');
-        if (show === false || form.classList.contains('open') && show !== true) { form.classList.remove('open'); form.reset(); document.getElementById('amis-id').value=''; return; }
-        const options = friendlyTeams().map(t=>`<option value="${safeFriendly(t.key)}">${safeFriendly(t.name)} · ${t.div}ª división</option>`).join('');
-        document.getElementById('amis-home').innerHTML='<option value="">Selecciona equipo</option>'+options;
-        document.getElementById('amis-away').innerHTML='<option value="">Selecciona equipo</option>'+options;
-        document.getElementById('amis-home-search').value='';document.getElementById('amis-away-search').value='';
+        if(!friendlyCanEdit())return;
+        const form=document.getElementById('amis-form');
+        if(show===false){
+            form.classList.remove('open');form.reset();document.getElementById('amis-id').value='';
+            document.querySelectorAll('#amis-form .amis-team-choices').forEach(el=>el.hidden=true);
+            return;
+        }
+        const options=friendlyTeams().map(t=>`<option value="${safeFriendly(t.key)}">${safeFriendly(t.name)} · ${t.div}ª división</option>`).join('');
+        for(const id of ['amis-home','amis-away']){
+            document.getElementById(id).innerHTML='<option value="">Selecciona equipo</option>'+options;
+            document.getElementById(id).value='';
+            document.getElementById(id+'-search').value='';
+            document.getElementById(id+'-choices').hidden=true;
+        }
+        document.getElementById('amis-state').value='programado';
         previewFriendlyManual();form.classList.add('open');
-        form.scrollIntoView({behavior:'smooth',block:'nearest'});
     };
     window.saveFriendly = function(e) {
         e.preventDefault(); if (!friendlyCanEdit()) return;
@@ -6091,74 +6167,159 @@ body:has(#tab-premios.active) .top-bar {
         appData.amistosos=friendlies().filter(m=>m.id!==id);renderFriendlies();triggerAutoSave();
     };
     window.filterFriendlyTeamSelect=function(id,term){
-        const select=document.getElementById(id),current=select.value;
-        const q=term.trim().toLocaleLowerCase();
-        select.innerHTML='<option value="">Selecciona equipo</option>'+friendlyTeams().filter(t=>`${t.name} ${t.div} división`.toLocaleLowerCase().includes(q)).map(t=>`<option value="${safeFriendly(t.key)}">${safeFriendly(t.name)} · ${t.div}ª división</option>`).join('');
-        if([...select.options].some(o=>o.value===current))select.value=current;
+        const choices=document.getElementById(id+'-choices');if(!choices)return;
+        const q=String(term||'').trim().toLocaleLowerCase();
+        const teams=friendlyTeams().filter(t=>`${t.name} ${t.div} división`.toLocaleLowerCase().includes(q)).sort((a,b)=>a.name.localeCompare(b.name,'es')).slice(0,18);
+        choices.innerHTML=teams.length?teams.map(t=>`<button type="button" class="amis-team-option" data-key="${safeFriendly(t.key)}" onclick="selectFriendlyTeam('${id}',this.dataset.key)">${t.logo?`<img src="${safeFriendly(t.logo)}" alt="" onerror="this.style.display='none'">`:'<span class="amis-team-option-fallback">⚽</span>'}<span><b>${safeFriendly(t.name)}</b><small>${t.div}ª División</small></span></button>`).join(''):'<p class="amis-no-teams">No se encontraron equipos</p>';
+        choices.hidden=false;
+    };
+    window.selectFriendlyTeam=function(id,key){
+        const team=friendlyTeams().find(t=>t.key===key);if(!team)return;
+        document.getElementById(id).value=key;
+        document.getElementById(id+'-search').value='';
+        document.getElementById(id+'-choices').hidden=true;
         previewFriendlyManual();
     };
     window.previewFriendlyManual=function(){
         const home=document.getElementById('amis-home').value,away=document.getElementById('amis-away').value;
         const h=friendlyTeams().find(t=>t.key===home),a=friendlyTeams().find(t=>t.key===away);
+        for(const [id,t] of [['amis-home',h],['amis-away',a]]){
+            const el=document.getElementById(id+'-selected');if(!el)continue;
+            el.innerHTML=t?`${t.logo?`<img src="${safeFriendly(t.logo)}" alt="" onerror="this.style.display='none'">`:'⚽'} <b>${safeFriendly(t.name)}</b> <small>${t.div}ª DIV.</small>`:`Selecciona un equipo ${id==='amis-home'?'local':'visitante'}`;
+            el.classList.toggle('picked',!!t);
+        }
         const preview=document.getElementById('amis-manual-preview');if(!preview)return;
         preview.innerHTML=home&&away&&home===away?'⚠️ El local y el visitante deben ser distintos.':
-          h&&a?`<span>${h.logo?`<img src="${safeFriendly(h.logo)}" alt="">`:''}<b>${safeFriendly(h.name)}</b> <small>${h.div}ª DIV.</small></span><strong>VS</strong><span>${a.logo?`<img src="${safeFriendly(a.logo)}" alt="">`:''}<b>${safeFriendly(a.name)}</b> <small>${a.div}ª DIV.</small></span>`:'Selecciona dos equipos para crear el amistoso.';
+          h&&a?`<b>${safeFriendly(h.name)}</b> <strong>VS</strong> <b>${safeFriendly(a.name)}</b>`:'Selecciona dos equipos para crear el amistoso.';
     };
     let friendlyIncidenceId=null;
-    window.closeFriendlyIncidences=function(){document.getElementById('amis-incidence-modal').hidden=true;friendlyIncidenceId=null;};
-    window.openFriendlyIncidences=function(id){
-        if(!friendlyCanEdit())return;
-        const m=friendlies().find(x=>x.id===id);if(!m)return;
-        friendlyIncidenceId=id;
-        const teams=friendlyTeams(),selected=[m.home,m.away];
-        const entries=selected.flatMap(key=>{const [div,teamId]=key.split(':');const team=(appData[Number(div)]?.teams||[]).find(t=>String(t.id)===teamId);return (team?.roster||[]).map(p=>({key,name:p.name||'',team:team.name}));});
-        const rows=document.getElementById('amis-incidence-rows');
-        const stored=Array.isArray(m.incidents)?m.incidents:[];
-        if(!entries.length){rows.innerHTML='<p>No hay jugadores registrados en las plantillas de estos equipos.</p>';}
-        else rows.innerHTML=`<div class="amis-incidence-header"><span>Jugador</span><span>Goles</span><span>Asist.</span><span>Atajadas</span></div>`+entries.map((p,i)=>{
-            const old=stored.find(x=>x.teamKey===p.key&&x.playerName===p.name)||{};
-            return `<div class="amis-incidence-row" data-team="${safeFriendly(p.key)}" data-player="${safeFriendly(p.name)}"><span><b>${safeFriendly(p.name)}</b><small>${safeFriendly(p.team)}</small></span><input aria-label="Goles de ${safeFriendly(p.name)}" type="number" min="0" max="99" value="${Number(old.goals)||0}"><input aria-label="Asistencias de ${safeFriendly(p.name)}" type="number" min="0" max="99" value="${Number(old.assists)||0}"><input aria-label="Atajadas de ${safeFriendly(p.name)}" type="number" min="0" max="99" value="${Number(old.saves)||0}"></div>`;
+    const friendlySummaryOpen = new Set();
+    function friendlyRoster(key) {
+        const [div,teamId]=String(key||'').split(':');
+        const team=(appData[Number(div)]?.teams||[]).find(t=>String(t.id)===String(teamId));
+        return Array.isArray(team?.roster)?team.roster:[];
+    }
+    function friendlyIncidenceRowHtml(m, ev={}) {
+        const keys=[m.home,m.away];
+        const key=keys.includes(ev.teamKey)?ev.teamKey:keys.find(k=>friendlyRoster(k).length)||keys[0];
+        const names=friendlyRoster(key).map(p=>String(p.name||'')).filter(Boolean);
+        if(ev.playerName&&!names.includes(ev.playerName))names.push(ev.playerName);
+        const teamOptions=keys.map(k=>{
+            const t=friendlyTeams().find(t=>t.key===k);
+            return `<option value="${safeFriendly(k)}" ${key===k?'selected':''}>${safeFriendly(t?.name||'Equipo')}</option>`;
         }).join('');
-        document.getElementById('amis-incidence-modal').hidden=false;
+        const playerOptions=names.map(name=>`<option value="${safeFriendly(name)}" ${name===ev.playerName?'selected':''}>${safeFriendly(name)}</option>`).join('');
+        return `<div class="match-player-stat-row amis-event-row">
+          <select class="ps-team-select" aria-label="Equipo" onchange="changeFriendlyIncidenceTeam(this)">${teamOptions}</select>
+          <select class="ps-player-select" aria-label="Jugador">${playerOptions||'<option value="">Sin jugadores</option>'}</select>
+          <div class="ps-stat-box" title="Goles">⚽ <input type="number" class="ps-input" min="0" max="99" aria-label="Goles" value="${Number(ev.goals)||0}"></div>
+          <div class="ps-stat-box" title="Asistencias">🎯 <input type="number" class="ps-input" min="0" max="99" aria-label="Asistencias" value="${Number(ev.assists)||0}"></div>
+          <div class="ps-stat-box" title="Atajadas">🧤 <input type="number" class="ps-input" min="0" max="99" aria-label="Atajadas" value="${Number(ev.saves)||0}"></div>
+          <button type="button" class="amis-event-remove" aria-label="Quitar jugador" onclick="this.closest('.amis-event-row').remove()">×</button>
+        </div>`;
+    }
+    function friendlyIncidenceEditorHtml(m) {
+        const incidents=Array.isArray(m.incidents)?m.incidents:[];
+        return `<section class="amis-inline-editor" onclick="event.stopPropagation()">
+          <div class="amis-editor-heading"><strong>⚙️ Registrar incidencias por jugador</strong><small>Como en Jornadas · No se suman a las estadísticas oficiales</small></div>
+          <div class="amis-editor-rows">${incidents.map(ev=>friendlyIncidenceRowHtml(m,ev)).join('')}</div>
+          <div class="amis-editor-actions"><button type="button" class="amis-btn secondary" onclick="addFriendlyIncidenceRow(this.closest('.amis-match').dataset.matchId)">＋ Agregar jugador a incidencias</button><button type="button" class="amis-btn" onclick="saveFriendlyIncidences(this.closest('.amis-match').dataset.matchId,this)">✓ Guardar y cerrar incidencias</button><button type="button" class="amis-btn secondary" onclick="closeFriendlyIncidences()">Cancelar</button></div>
+        </section>`;
+    }
+    window.openFriendlyIncidences=function(id){
+        if(!friendlyCanEdit()||!friendlies().some(m=>m.id===id))return;
+        friendlyIncidenceId=friendlyIncidenceId===id?null:id;
+        renderFriendlies();
+    };
+    window.closeFriendlyIncidences=function(){friendlyIncidenceId=null;renderFriendlies();};
+    window.addFriendlyIncidenceRow=function(id){
+        if(!friendlyCanEdit()||friendlyIncidenceId!==id)return;
+        const m=friendlies().find(m=>m.id===id);if(!m)return;
+        const row=document.querySelector(`.amis-match[data-match-id="${CSS.escape(id)}"] .amis-editor-rows`);if(!row)return;
+        row.insertAdjacentHTML('beforeend',friendlyIncidenceRowHtml(m));
+        row.lastElementChild?.querySelector('.ps-player-select')?.focus();
+    };
+    window.changeFriendlyIncidenceTeam=function(sel){
+        const playerSelect=sel.closest('.amis-event-row')?.querySelector('.ps-player-select');if(!playerSelect)return;
+        const names=friendlyRoster(sel.value).map(p=>String(p.name||'')).filter(Boolean);
+        playerSelect.innerHTML=names.map(name=>`<option value="${safeFriendly(name)}">${safeFriendly(name)}</option>`).join('')||'<option value="">Sin jugadores</option>';
+    };
+    window.saveFriendlyIncidences=async function(id,button){
+        if(!friendlyCanEdit()||friendlyIncidenceId!==id)return;
+        const arr=friendlies().slice(),idx=arr.findIndex(x=>x.id===id);if(idx<0)return;
+        const match=document.querySelector(`.amis-match[data-match-id="${CSS.escape(id)}"]`);if(!match)return;
+        const incidents=[],seen=new Set();
+        for(const row of match.querySelectorAll('.amis-editor-rows .amis-event-row')){
+            const teamKey=row.querySelector('.ps-team-select')?.value;
+            const playerName=row.querySelector('.ps-player-select')?.value;
+            const inputs=[...row.querySelectorAll('.ps-input')];
+            const values=inputs.map(input=>input.value.trim()===''?0:Number(input.value));
+            if(values.some(v=>!Number.isInteger(v)||v<0||v>99)){alert('Las incidencias deben ser números entre 0 y 99.');return;}
+            if(!playerName){if(values.some(Boolean)){alert('Selecciona un jugador válido.');return;}continue;}
+            const unique=teamKey+'|'+playerName;
+            if(seen.has(unique)){alert('Ese jugador está repetido. Usa una sola fila por jugador.');return;}
+            seen.add(unique);
+            if(values.some(Boolean))incidents.push({teamKey,playerName,goals:values[0],assists:values[1],saves:values[2]});
+        }
+        const previous=arr[idx];
+        arr[idx]={...previous,incidents};appData.amistosos=arr;
+        if(button){button.disabled=true;button.textContent='Guardando...';}
+        clearTimeout(autoSaveTimer);autoSaveTimer=null;
+        try{
+            const ok=await saveStateToCloud();
+            if(!ok)throw new Error('No se confirmó el guardado');
+            friendlyIncidenceId=null;renderFriendlies();
+        }catch(err){
+            console.error('No se guardaron las incidencias del amistoso:',err);
+            appData.amistosos=arr.map((x,i)=>i===idx?previous:x);
+            alert('No se pudieron guardar las incidencias en Firebase. Vuelve a intentarlo.');
+            if(button){button.disabled=false;button.textContent='✓ Guardar y cerrar incidencias';}
+        }
+    };
+    window.showPublicFriendlyIncidences=function(id){
+        if(friendlySummaryOpen.has(id))friendlySummaryOpen.delete(id);else friendlySummaryOpen.add(id);
+        renderFriendlies();
     };
     window.closePublicFriendlyIncidences=function(){
         document.getElementById('amis-public-incidences-modal').hidden=true;
     };
-    window.showPublicFriendlyIncidences=function(id){
-        const m=friendlies().find(x=>x.id===id);if(!m)return;
+    function friendlySummaryHtml(m,h,a){
         const incidents=Array.isArray(m.incidents)?m.incidents:[];
-        const teams=friendlyTeams();
-        const container=document.getElementById('amis-public-incidences-content');
-        if(!incidents.length){
-            container.innerHTML='<p class="amis-public-empty">Todavía no hay incidencias registradas para este partido.</p>';
-        }else{
-            container.innerHTML='<div class="amis-incidence-header"><span>Jugador / Equipo</span><span>Goles</span><span>Asist.</span><span>Atajadas</span></div>'+incidents.map(p=>{
-                const team=teams.find(t=>t.key===p.teamKey);
-                return `<div class="amis-incidence-row amis-public-row"><span><b>${safeFriendly(p.playerName||'Jugador')}</b><small>${safeFriendly(team?.name||'Equipo')}</small></span><strong>${Number(p.goals)||0}</strong><strong>${Number(p.assists)||0}</strong><strong>${Number(p.saves)||0}</strong></div>`;
+        const side=key=>{
+            const list=incidents.filter(x=>x.teamKey===key);
+            if(!list.length)return '<span class="amis-summary-empty">Sin incidencias registradas</span>';
+            return list.map(p=>{
+                const stats=[Number(p.goals)>0?`⚽ ${Number(p.goals)}`:'',Number(p.assists)>0?`🎯 ${Number(p.assists)}`:'',Number(p.saves)>0?`🧤 ${Number(p.saves)}`:''].filter(Boolean).join(' · ');
+                return `<span class="compact-event-badge"><b>${safeFriendly(p.playerName)}</b>: ${stats}</span>`;
             }).join('');
+        };
+        return `<div class="amis-summary"><div class="amis-summary-title">Resumen del partido</div><div class="amis-summary-grid"><div><strong>${safeFriendly(h.name)}</strong><div class="team-events-side">${side(m.home)}</div></div><div class="amis-summary-away"><strong>${safeFriendly(a.name)}</strong><div class="team-events-side away-side">${side(m.away)}</div></div></div></div>`;
+    }
+    window.updateFriendlyScore=function(id,side,raw){
+        if(!friendlyCanEdit())return;
+        const arr=friendlies().slice(),idx=arr.findIndex(m=>m.id===id);if(idx<0)return;
+        const text=String(raw).trim(),num=text===''?null:Number(text);
+        if(num!==null&&(!Number.isInteger(num)||num<0||num>99)){
+            alert('El marcador debe ser un número entre 0 y 99.');renderFriendlies();return;
         }
-        document.getElementById('amis-public-incidences-modal').hidden=false;
-    };
-    window.saveFriendlyIncidences=function(){
-        if(!friendlyCanEdit()||!friendlyIncidenceId)return;
-        const arr=friendlies().slice(),idx=arr.findIndex(x=>x.id===friendlyIncidenceId);if(idx<0)return;
-        const incidents=[];
-        for(const row of document.querySelectorAll('#amis-incidence-rows .amis-incidence-row')){
-            const values=[...row.querySelectorAll('input')].map(input=>Number(input.value));
-            if(values.some(v=>!Number.isInteger(v)||v<0||v>99)){alert('Las incidencias deben ser números entre 0 y 99.');return;}
-            if(values.some(Boolean))incidents.push({teamKey:row.dataset.team,playerName:row.dataset.player,goals:values[0],assists:values[1],saves:values[2]});
+        const old=arr[idx],key=side==='home'?'homeScore':'awayScore';
+        const next={...old,[key]:num};
+        const finished=next.homeScore!==null&&next.homeScore!==undefined&&next.awayScore!==null&&next.awayScore!==undefined;
+        next.state=finished?'finalizado':'programado';
+        next.finishedAt=finished?(old.state==='finalizado'&&old.finishedAt?old.finishedAt:new Date().toISOString()):null;
+        arr[idx]=next;appData.amistosos=arr;triggerAutoSave();
+        if(old.state!==next.state){
+            if(finished&&friendlyFilter==='programados')setFriendlyFilter('finalizados');
+            else if(!finished&&friendlyFilter!=='programados')setFriendlyFilter('programados');
+            else renderFriendlies();
         }
-        arr[idx]={...arr[idx],incidents};appData.amistosos=arr;triggerAutoSave();closeFriendlyIncidences();renderFriendlies();
     };
     window.saveFriendlyInlineScore=function(id){
-        if(!friendlyCanEdit())return;
         const row=[...document.querySelectorAll('.amis-match')].find(el=>el.dataset.matchId===id);if(!row)return;
         const inputs=[...row.querySelectorAll('.amis-inline-score input')];
-        const values=inputs.map(x=>Number(x.value));
-        if(inputs.some(x=>x.value==='')||values.some(v=>!Number.isInteger(v)||v<0||v>99)){alert('Escribe ambos marcadores entre 0 y 99.');return;}
-        const arr=friendlies().slice(),idx=arr.findIndex(m=>m.id===id);if(idx<0)return;
-        const old=arr[idx];arr[idx]={...old,state:'finalizado',homeScore:values[0],awayScore:values[1],finishedAt:old.state==='finalizado'&&old.finishedAt?old.finishedAt:new Date().toISOString()};
-        appData.amistosos=arr;setFriendlyFilter('finalizados');triggerAutoSave();
+        if(inputs.length!==2)return;
+        updateFriendlyScore(id,'home',inputs[0].value);
+        updateFriendlyScore(id,'away',inputs[1].value);
     };
     let friendlyDrawCount=1;
     window.chooseFriendlyDrawCount=function(count){
@@ -6202,8 +6363,8 @@ body:has(#tab-premios.active) .top-bar {
         const list=document.getElementById('amis-list');if(!list)return;
         const actions=document.getElementById('amis-admin-actions');if(actions)actions.classList.toggle('allowed',friendlyCanEdit());
         if(!friendlyCanEdit())document.getElementById('amis-form')?.classList.remove('open');
-        const teams=friendlyTeams();const lookup=k=>teams.find(t=>t.key===k)||{name:'Equipo no disponible',logo:'',div:'?'};
-        const now=Date.now(), week=7*24*60*60*1000;
+        const teams=friendlyTeams(),lookup=k=>teams.find(t=>t.key===k)||{name:'Equipo no disponible',logo:'',div:'?'};
+        const now=Date.now(),week=7*24*60*60*1000;
         const filtered=friendlies().filter(m=>{
             if(m.state!=='finalizado')return friendlyFilter==='programados';
             const finish=Date.parse(m.finishedAt||m.date||'');
@@ -6215,17 +6376,22 @@ body:has(#tab-premios.active) .top-bar {
             const badge=t=>t.logo?`<img class="amis-logo" src="${safeFriendly(t.logo)}" alt="" onerror="this.style.display='none'">`:`<span class="amis-logo amis-initial">${safeFriendly(t.name).slice(0,2).toUpperCase()}</span>`;
             const bg=t=>t.logo?`<img class="amis-watermark" src="${safeFriendly(t.logo)}" alt="" onerror="this.style.display='none'">`:'';
             const score=done?`${Number(m.homeScore)||0} : ${Number(m.awayScore)||0}`:'– : –';
-            const inlineScore=friendlyCanEdit()?`<div class="amis-inline-score"><input type="number" min="0" max="99" placeholder="–" value="${done?Number(m.homeScore):''}" aria-label="Goles local"><span>:</span><input type="number" min="0" max="99" placeholder="–" value="${done?Number(m.awayScore):''}" aria-label="Goles visitante"></div><button type="button" class="amis-inline-save" onclick="saveFriendlyInlineScore('${safeFriendly(m.id)}')">Guardar resultado</button>`:`<div class="amis-score">${score}</div>`;
+            const value=x=>x===null||x===undefined?'':Number(x);
+            const inlineScore=friendlyCanEdit()?`<div class="amis-inline-score"><input type="number" min="0" max="99" placeholder="–" value="${value(m.homeScore)}" aria-label="Goles local" onchange="updateFriendlyScore(this.closest('.amis-match').dataset.matchId,'home',this.value)"><span>:</span><input type="number" min="0" max="99" placeholder="–" value="${value(m.awayScore)}" aria-label="Goles visitante" onchange="updateFriendlyScore(this.closest('.amis-match').dataset.matchId,'away',this.value)"></div>`:`<div class="amis-score">${score}</div>`;
+            const summaryOpen=friendlySummaryOpen.has(m.id);
+            const editorOpen=friendlyCanEdit()&&friendlyIncidenceId===m.id;
             return `<article class="amis-match" data-match-id="${safeFriendly(m.id)}">
               <div class="amis-match-main">
                 <div class="amis-watermark-left">${bg(h)}</div><div class="amis-watermark-right">${bg(a)}</div>
                 <div class="amis-team-stat"><span class="amis-stat-label">LOCAL</span><strong>${safeFriendly(h.div)}ª DIVISIÓN</strong><small>AMISTOSO</small></div>
                 <div class="amis-team amis-team-home">${badge(h)}<strong>${safeFriendly(h.name)}</strong></div>
-                <div class="amis-center"><span class="amis-pill ${done?'amis-pill-finished':''}">${done?'FINALIZADO':'POR JUGAR'}</span>${inlineScore}<span class="amis-small">AMISTOSO</span></div>
+                <div class="amis-center"><span class="amis-pill ${done?'amis-pill-finished':''}">${done?'✓ FINALIZADO':'◷ POR JUGAR'}</span>${inlineScore}<span class="amis-small">${friendlyCanEdit()?'Marcador con guardado automático':'AMISTOSO'}</span></div>
                 <div class="amis-team amis-team-away">${badge(a)}<strong>${safeFriendly(a.name)}</strong></div>
                 <div class="amis-team-stat amis-stat-away"><span class="amis-stat-label">VISITANTE</span><strong>${safeFriendly(a.div)}ª DIVISIÓN</strong><small>AMISTOSO</small></div>
               </div>
-              <div class="amis-match-footer"><span>Partido amistoso · No suma a la liga oficial</span><span class="amis-match-controls"><button class="amis-btn secondary" onclick="showPublicFriendlyIncidences('${safeFriendly(m.id)}')">Ver incidencias</button>${friendlyCanEdit()?`<button class="amis-btn secondary" onclick="openFriendlyIncidences('${safeFriendly(m.id)}')">Incidencias por jugador</button><button class="amis-btn secondary" onclick="deleteFriendly('${safeFriendly(m.id)}')">Eliminar</button>`:''}</span></div>
+              <div class="amis-match-footer"><span>Partido amistoso · No suma a la liga oficial</span><span class="amis-match-controls"><button type="button" class="amis-btn secondary" onclick="showPublicFriendlyIncidences(this.closest('.amis-match').dataset.matchId)">${summaryOpen?'▲ Ocultar resumen':'▼ Ver resumen'}</button>${friendlyCanEdit()?`<button type="button" class="amis-btn secondary" onclick="openFriendlyIncidences(this.closest('.amis-match').dataset.matchId)">${editorOpen?'▲ Cerrar incidencias':'⚙️ Registrar incidencias'}</button><button type="button" class="amis-btn secondary" onclick="deleteFriendly(this.closest('.amis-match').dataset.matchId)">Eliminar</button>`:''}</span></div>
+              ${summaryOpen?friendlySummaryHtml(m,h,a):''}
+              ${editorOpen?friendlyIncidenceEditorHtml(m):''}
             </article>`;
         }).join(''):`<div class="amis-empty">${friendlyFilter==='programados'?'No hay amistosos programados.':friendlyFilter==='finalizados'?'No hay amistosos finalizados en los últimos 7 días.':'Todavía no hay amistosos en el historial.'}</div>`;
     }
