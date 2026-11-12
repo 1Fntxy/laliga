@@ -2933,6 +2933,22 @@ body:has(#tab-premios.active) .clubs-ticker-bar { border-bottom-color: rgba(185,
 /* Trofeo Balón de Oro en el acceso de Premios (escritorio y móvil) */
 .btn-premios-top .premios-nav-trophy, .dropdown-item .premios-nav-trophy {width:22px;height:25px;object-fit:contain;display:inline-block;vertical-align:middle;margin-right:4px;flex-shrink:0;}
 .btn-premios-top {display:inline-flex;align-items:center;justify-content:center;gap:2px;}
+
+/* Top 10 oficial: emojis pequeños y a color en goles, asistencias y atajadas. */
+#tab-estadisticas .stat-color-emoji.liga-color-emoji,
+#tab-estadisticas .stats-pills .liga-color-emoji {
+  display:inline-block;
+  font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif !important;
+  font-variant-emoji:emoji;
+  font-size:1em;
+  font-weight:400 !important;
+  line-height:1;
+  vertical-align:-.07em;
+  white-space:nowrap;
+  filter:none !important;
+}
+#tab-estadisticas .stat-performance .stat-color-emoji.liga-color-emoji {font-size:17px;vertical-align:-2px;}
+#tab-estadisticas .stat-podium-value .stat-color-emoji.liga-color-emoji {font-size:19px;vertical-align:-1px;}
 </style>
 <style>
 /* Selector desplegable premium de Jornadas: conserva la lógica original */
@@ -4137,6 +4153,25 @@ body:has(#tab-premios.active) .top-bar {
 #tab-amistosos .amis-summary-away{text-align:right}
 #tab-amistosos .amis-summary-empty{color:#92a8c4;font-size:11px;font-style:italic}
 #tab-amistosos .amis-summary .compact-event-badge{color:#fff;background:#1c2b42;border-color:#394b63;white-space:normal;text-align:left}
+
+/* Emojis de color compactos, solo en incidencias de Amistosos y Jornadas. */
+.liga-color-emoji {
+  display:inline-block;
+  font-size:1.05em;
+  line-height:1;
+  vertical-align:-.08em;
+  font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif;
+  font-weight:normal;
+  white-space:nowrap;
+}
+
+/* Emojis originales a color en el resumen de amistosos, del mismo tamaño que los iconos anteriores. */
+#tab-amistosos .amis-summary .amis-color-emoji {
+  display:inline-block; font-size:1.05em; line-height:1; vertical-align:-.08em;
+  font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif;
+  font-weight:normal; white-space:nowrap;
+}
+
 #tab-amistosos .amis-match-footer{flex-wrap:wrap}
 #tab-amistosos .amis-inline-score input{width:47px}
 @media(max-width:650px){
@@ -4392,9 +4427,9 @@ body:has(#tab-premios.active) .top-bar {
 
     <div id="tab-estadisticas" class="content-section">
         <div class="stats-pills">
-            <button class="pill-btn active" onclick="switchStatSubtab('goles', event)">⚽ Goles</button>
-            <button class="pill-btn" onclick="switchStatSubtab('asistencias', event)">🎯 Asistencias</button>
-            <button class="pill-btn" onclick="switchStatSubtab('paradas', event)">🧤 Atajadas</button>
+            <button class="pill-btn active" onclick="switchStatSubtab('goles', event)"><span class="liga-color-emoji" aria-hidden="true">⚽</span> Goles</button>
+            <button class="pill-btn" onclick="switchStatSubtab('asistencias', event)"><span class="liga-color-emoji" aria-hidden="true">🎯</span> Asistencias</button>
+            <button class="pill-btn" onclick="switchStatSubtab('paradas', event)"><span class="liga-color-emoji" aria-hidden="true">🧤</span> Atajadas</button>
         </div>
 
         <div id="stat-subtab-goles" class="stat-subcontent card">
@@ -6212,9 +6247,9 @@ body:has(#tab-premios.active) .top-bar {
         return `<div class="match-player-stat-row amis-event-row">
           <select class="ps-team-select" aria-label="Equipo" onchange="changeFriendlyIncidenceTeam(this)">${teamOptions}</select>
           <select class="ps-player-select" aria-label="Jugador">${playerOptions||'<option value="">Sin jugadores</option>'}</select>
-          <div class="ps-stat-box" title="Goles">⚽ <input type="number" class="ps-input" min="0" max="99" aria-label="Goles" value="${Number(ev.goals)||0}"></div>
-          <div class="ps-stat-box" title="Asistencias">🎯 <input type="number" class="ps-input" min="0" max="99" aria-label="Asistencias" value="${Number(ev.assists)||0}"></div>
-          <div class="ps-stat-box" title="Atajadas">🧤 <input type="number" class="ps-input" min="0" max="99" aria-label="Atajadas" value="${Number(ev.saves)||0}"></div>
+          <div class="ps-stat-box" title="Goles"><span class="liga-color-emoji" aria-label="Goles">⚽</span> <input type="number" class="ps-input" min="0" max="99" aria-label="Goles" value="${Number(ev.goals)||0}"></div>
+          <div class="ps-stat-box" title="Asistencias"><span class="liga-color-emoji" aria-label="Asistencias">🎯</span> <input type="number" class="ps-input" min="0" max="99" aria-label="Asistencias" value="${Number(ev.assists)||0}"></div>
+          <div class="ps-stat-box" title="Atajadas"><span class="liga-color-emoji" aria-label="Atajadas">🧤</span> <input type="number" class="ps-input" min="0" max="99" aria-label="Atajadas" value="${Number(ev.saves)||0}"></div>
           <button type="button" class="amis-event-remove" aria-label="Quitar jugador" onclick="this.closest('.amis-event-row').remove()">×</button>
         </div>`;
     }
@@ -6289,7 +6324,7 @@ body:has(#tab-premios.active) .top-bar {
             const list=incidents.filter(x=>x.teamKey===key);
             if(!list.length)return '<span class="amis-summary-empty">Sin incidencias registradas</span>';
             return list.map(p=>{
-                const stats=[Number(p.goals)>0?`⚽ ${Number(p.goals)}`:'',Number(p.assists)>0?`🎯 ${Number(p.assists)}`:'',Number(p.saves)>0?`🧤 ${Number(p.saves)}`:''].filter(Boolean).join(' · ');
+                const stats=[Number(p.goals)>0?`<span class="amis-color-emoji" aria-label="Goles">⚽</span> ${Number(p.goals)}`:'',Number(p.assists)>0?`<span class="amis-color-emoji" aria-label="Asistencias">🎯</span> ${Number(p.assists)}`:'',Number(p.saves)>0?`<span class="amis-color-emoji" aria-label="Atajadas">🧤</span> ${Number(p.saves)}`:''].filter(Boolean).join(' · ');
                 return `<span class="compact-event-badge"><b>${safeFriendly(p.playerName)}</b>: ${stats}</span>`;
             }).join('');
         };
@@ -6385,7 +6420,7 @@ body:has(#tab-premios.active) .top-bar {
                 <div class="amis-watermark-left">${bg(h)}</div><div class="amis-watermark-right">${bg(a)}</div>
                 <div class="amis-team-stat"><span class="amis-stat-label">LOCAL</span><strong>${safeFriendly(h.div)}ª DIVISIÓN</strong><small>AMISTOSO</small></div>
                 <div class="amis-team amis-team-home">${badge(h)}<strong>${safeFriendly(h.name)}</strong></div>
-                <div class="amis-center"><span class="amis-pill ${done?'amis-pill-finished':''}">${done?'✓ FINALIZADO':'◷ POR JUGAR'}</span>${inlineScore}<span class="amis-small">${friendlyCanEdit()?'Marcador con guardado automático':'AMISTOSO'}</span></div>
+                <div class="amis-center"><span class="amis-pill ${done?'amis-pill-finished':''}">${done?'✓ FINALIZADO':'◷ POR JUGAR'}</span>${inlineScore}<span class="amis-small">PARTIDO AMISTOSO</span></div>
                 <div class="amis-team amis-team-away">${badge(a)}<strong>${safeFriendly(a.name)}</strong></div>
                 <div class="amis-team-stat amis-stat-away"><span class="amis-stat-label">VISITANTE</span><strong>${safeFriendly(a.div)}ª DIVISIÓN</strong><small>AMISTOSO</small></div>
               </div>
@@ -7545,12 +7580,12 @@ body:has(#tab-premios.active) .top-bar {
             return p.teamLogo ? `<img class="stat-team-logo" src="${safe(p.teamLogo)}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'"><span class="stat-team-fallback" style="display:none">${initials}</span>` : `<span class="stat-team-fallback">${initials}</span>`;
         };
         const groups = [
-            {key:'goles',field:'goals',body:'tops-goles-body',symbol:'⚽️',label:'GOLES'},
+            {key:'goles',field:'goals',body:'tops-goles-body',symbol:'⚽',label:'GOLES'},
             {key:'asistencias',field:'assists',body:'tops-asist-body',symbol:'🎯',label:'ASISTENCIAS'},
             {key:'paradas',field:'saves',body:'tops-atajadas-body',symbol:'🧤',label:'ATAJADAS'}
         ];
         groups.forEach(g => {
-            const ranked = [...players].sort((a,b) => b[g.field]-a[g.field]).slice(0,5);
+            const ranked = [...players].sort((a,b) => b[g.field]-a[g.field]).slice(0,10);
             const leaderValue = ranked.length ? ranked[0][g.field] : 0;
             const showPodium = leaderValue > 0 && ranked.length >= 3;
             const podium = document.getElementById('stat-podium-' + g.key);
@@ -7558,7 +7593,7 @@ body:has(#tab-premios.active) .top-bar {
                 podium.style.display = showPodium ? 'grid' : 'none';
                 podium.innerHTML = showPodium ? [1,0,2].map(index => {
                     const p = ranked[index], cls = ['gold','silver','bronze'][index];
-                    return `<div class="stat-podium-card ${cls}"><div class="stat-podium-rank">${index===0?'♛ ':''}#${index+1}</div><div class="stat-podium-player">${safe(p.name)}</div><div class="stat-podium-team">${logo(p)}<span>${safe(p.teamName)}</span></div><div class="stat-podium-value">${p[g.field]} <small style="font-size:.65rem;color:var(--text-muted)">${g.label}</small></div>${index===0?`<span class="stat-leader-tag">LÍDER DE ${g.label}</span>`:''}</div>`;
+                    return `<div class="stat-podium-card ${cls}"><div class="stat-podium-rank">${index===0?'♛ ':''}#${index+1}</div><div class="stat-podium-player">${safe(p.name)}</div><div class="stat-podium-team">${logo(p)}<span>${safe(p.teamName)}</span></div><div class="stat-podium-value"><span class="stat-color-emoji liga-color-emoji" aria-label="${g.label}">${g.symbol}</span> ${p[g.field]} <small style="font-size:.65rem;color:var(--text-muted)">${g.label}</small></div>${index===0?`<span class="stat-leader-tag">LÍDER DE ${g.label}</span>`:''}</div>`;
                 }).join('') : '';
             }
             const rows = showPodium ? ranked.slice(3) : ranked;
@@ -7569,7 +7604,7 @@ body:has(#tab-premios.active) .top-bar {
                 const rank = i + (showPodium ? 4 : 1);
                 const pct = leaderValue > 0 ? Math.max(0,Math.min(100,p[g.field]/leaderValue*100)) : 0;
                 const isLeader = rank===1 && leaderValue>0;
-                return `<tr style="animation-delay:${Math.min(i,8)*35}ms"><td><strong style="color:var(--laliga-red)">#${rank}</strong></td><td><strong>${safe(p.name)}</strong>${isLeader?`<span class="stat-leader-tag">♛ LÍDER DE ${g.label}</span>`:''}</td><td><span class="stat-team-cell">${logo(p)}<span>${safe(p.teamName)}</span></span></td><td><div class="stat-performance"><strong><span class="stat-color-emoji">${g.symbol}</span> <span class="animate-num" data-target="${p[g.field]}">0</span></strong><div class="stat-performance-track"><div class="stat-performance-fill" style="--stat-width:${pct.toFixed(1)}%"></div></div></div></td></tr>`;
+                return `<tr style="animation-delay:${Math.min(i,8)*35}ms"><td><strong style="color:var(--laliga-red)">#${rank}</strong></td><td><strong>${safe(p.name)}</strong>${isLeader?`<span class="stat-leader-tag">♛ LÍDER DE ${g.label}</span>`:''}</td><td><span class="stat-team-cell">${logo(p)}<span>${safe(p.teamName)}</span></span></td><td><div class="stat-performance"><strong><span class="stat-color-emoji liga-color-emoji" aria-label="${g.label}">${g.symbol}</span> <span class="animate-num" data-target="${p[g.field]}">0</span></strong><div class="stat-performance-track"><div class="stat-performance-fill" style="--stat-width:${pct.toFixed(1)}%"></div></div></div></td></tr>`;
             }).join('') || `<tr><td colspan="4" style="text-align:center;color:var(--text-muted)">${showPodium?'Los tres primeros aparecen en el podio':'Sin registros'}</td></tr>`;
         });
         animateCounters();
@@ -7662,9 +7697,9 @@ body:has(#tab-premios.active) .top-bar {
         for (let playerName in playerMap) {
             let stats = playerMap[playerName];
             let parts = [];
-            if (stats.goals > 0) parts.push(`⚽ ${stats.goals}`);
-            if (stats.assists > 0) parts.push(`🎯 ${stats.assists}`);
-            if (stats.saves > 0) parts.push(`🧤 ${stats.saves}`);
+            if (stats.goals > 0) parts.push(`<span class="liga-color-emoji" aria-label="Goles">⚽</span> ${stats.goals}`);
+            if (stats.assists > 0) parts.push(`<span class="liga-color-emoji" aria-label="Asistencias">🎯</span> ${stats.assists}`);
+            if (stats.saves > 0) parts.push(`<span class="liga-color-emoji" aria-label="Atajadas">🧤</span> ${stats.saves}`);
 
             if (parts.length > 0) {
                 html += `<span class="compact-event-badge"><b>${playerName}</b>: ${parts.join(' | ')}</span>`;
@@ -7762,9 +7797,9 @@ body:has(#tab-premios.active) .top-bar {
                             <select class="ps-player-select" onchange="updateMatchEventField(${m.id}, ${evIdx}, 'playerName', this.value)">
                                 ${playersOpts}
                             </select>
-                            <div class="ps-stat-box">⚽ <input type="number" class="ps-input" value="${ev.goals || 0}" min="0" oninput="updateMatchEventNumSilent(${m.id}, ${evIdx}, 'goals', this.value)"></div>
-                            <div class="ps-stat-box">🎯 <input type="number" class="ps-input" value="${ev.assists || 0}" min="0" oninput="updateMatchEventNumSilent(${m.id}, ${evIdx}, 'assists', this.value)"></div>
-                            <div class="ps-stat-box">🧤 <input type="number" class="ps-input" value="${ev.saves || 0}" min="0" oninput="updateMatchEventNumSilent(${m.id}, ${evIdx}, 'saves', this.value)"></div>
+                            <div class="ps-stat-box"><span class="liga-color-emoji" aria-label="Goles">⚽</span> <input type="number" class="ps-input" value="${ev.goals || 0}" min="0" oninput="updateMatchEventNumSilent(${m.id}, ${evIdx}, 'goals', this.value)"></div>
+                            <div class="ps-stat-box"><span class="liga-color-emoji" aria-label="Asistencias">🎯</span> <input type="number" class="ps-input" value="${ev.assists || 0}" min="0" oninput="updateMatchEventNumSilent(${m.id}, ${evIdx}, 'assists', this.value)"></div>
+                            <div class="ps-stat-box"><span class="liga-color-emoji" aria-label="Atajadas">🧤</span> <input type="number" class="ps-input" value="${ev.saves || 0}" min="0" oninput="updateMatchEventNumSilent(${m.id}, ${evIdx}, 'saves', this.value)"></div>
                             <button class="action-btn" style="background:var(--laliga-red); padding:4px 10px; font-size:0.9rem;" onclick="removeMatchEvent(${m.id}, ${evIdx})">&times;</button>
                         </div>
                     `;
@@ -8996,7 +9031,7 @@ body:has(#tab-premios.active) .top-bar {
     if (!node || !node.parentNode || !node.nodeValue || !matcher.test(node.nodeValue)) {matcher.lastIndex=0;return;}
     matcher.lastIndex=0;
     const parent=node.parentElement;
-    if (!parent || parent.closest('script,style,textarea,svg,[contenteditable="true"]')) return;
+    if (!parent || parent.closest('script,style,textarea,svg,[contenteditable="true"],.amis-color-emoji,.liga-color-emoji')) return;
     const frag=document.createDocumentFragment();
     const str=node.nodeValue; let last=0;
     for (const match of str.matchAll(matcher)) {
