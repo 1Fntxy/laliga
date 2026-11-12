@@ -5353,6 +5353,28 @@ body:has(#tab-premios.active) .top-bar {
         "Ironclad XI", "Storm Breakers", "Venom FC", "Legacy Elite"
     ];
 
+    // Preferencias de navegación: solo se guardan en este navegador, nunca en Firebase.
+    const NAV_KEY = 'laliga_ultima_vista_v1';
+    let navState = (() => { try { return JSON.parse(localStorage.getItem(NAV_KEY)) || {}; } catch { return {}; } })();
+    let navRestored = false;
+    function rememberView(patch = {}) {
+        navState = {...navState, ...patch};
+        try { localStorage.setItem(NAV_KEY, JSON.stringify(navState)); } catch {}
+    }
+    function restoreViewOnce() {
+        if (navRestored || !leagueReady) return;
+        navRestored = true;
+        const section = ['1','2','3','torneos','premios'].includes(String(navState.section)) ? String(navState.section) : '1';
+        executeSwitchSection(/^\d$/.test(section) ? Number(section) : section);
+        if (/^[123]$/.test(section)) {
+            const tab = ['clasificacion','calendario','estadisticas','amistosos','gestion','historial'].includes(navState.tab) ? navState.tab : 'clasificacion';
+            if (tab !== 'gestion' || isAdmin) window.switchTab(tab);
+            const day = Number(navState.matchday);
+            if (Number.isInteger(day) && day >= 1 && day <= getMaxMatchdays()) window.jumpToMatchday(day);
+        } else if (section === 'torneos' && ['supercopa','copadelrey'].includes(navState.torneo)) {
+            window.switchTorneoTab(navState.torneo);
+        }
+    }
     let currentDiv = 1;
     let currentMatchday = 1;
     let activeTeamId = null;
@@ -5569,6 +5591,8 @@ body:has(#tab-premios.active) .top-bar {
             next[field]={...(next[field]||{}),...safeTournamentData(tournamentResults[field],prefix)};
         }
         if(Array.isArray(friendlyResults.amistosos))next.amistosos=leagueClone(friendlyResults.amistosos);
+        // Los ecos de autoguardado no deben reconstruir selects ni hacer parpadear la vista.
+        if (leagueReady && leagueSignature(next) === leagueSignature(appData)) return;
         appData=next;
         if (!appData.socialDiscord) appData.socialDiscord='https://discord.gg/tu-enlace-de-discord';
         if (!appData.socialTiktok) appData.socialTiktok='https://www.tiktok.com/@tu-usuario-tiktok';
@@ -5589,6 +5613,7 @@ body:has(#tab-premios.active) .top-bar {
         renderAll();renderFriendlies();
         if(document.getElementById('tab-premios')?.classList.contains('active'))renderPremiosOficiales();
         if(isInitialLoading)finishLeagueLoading();
+        restoreViewOnce();
     }
     leagueRefs.forEach((ref,i)=>onSnapshot(ref,snap=>{
         if(!snap.exists()) {
@@ -6013,6 +6038,7 @@ body:has(#tab-premios.active) .top-bar {
     };
 
     window.switchMainSection = function(section) {
+        rememberView({section: String(section), ...(typeof section === 'number' ? {tab:'clasificacion',matchday:1} : {})});
         showLoaderAndSwitch(section);
     };
 
@@ -6432,6 +6458,7 @@ body:has(#tab-premios.active) .top-bar {
     }
 
     window.switchTab = function(tabName, evt) {
+        rememberView({section:String(currentDiv),tab:tabName});
         document.querySelectorAll('.main-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
         
@@ -6444,6 +6471,7 @@ body:has(#tab-premios.active) .top-bar {
     };
 
     window.switchTorneoTab = function(torneoName, evt) {
+        rememberView({torneo:torneoName});
         document.querySelectorAll('#torneos-tabs-container .tab-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.torneo-subcontent').forEach(sub => {
             sub.style.display = 'none';
@@ -7632,6 +7660,7 @@ body:has(#tab-premios.active) .top-bar {
         let newMD = currentMatchday + delta;
         if (newMD >= 1 && newMD <= maxMD) {
             currentMatchday = newMD;
+            rememberView({matchday:currentMatchday});
             openMatchEventsBoxes = {};
             openMatchDetailsBoxes = {};
             renderMatchdaySelector();
@@ -7641,6 +7670,7 @@ body:has(#tab-premios.active) .top-bar {
 
     window.jumpToMatchday = function(val) {
         currentMatchday = parseInt(val);
+        rememberView({matchday:currentMatchday});
         openMatchEventsBoxes = {};
         openMatchDetailsBoxes = {};
         renderMatchdaySelector();
