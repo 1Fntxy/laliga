@@ -7774,8 +7774,13 @@ body:has(#tab-premios.active) .top-bar {
 
             if (!m.events) m.events = [];
 
-            let homeEventsList = m.events.filter(ev => ev.teamId == home.id);
-            let awayEventsList = m.events.filter(ev => ev.teamId == away.id);
+            // Solo mostrar incidencias cuyo jugador pertenece al equipo seleccionado.
+            const validEvent = ev => {
+                const team = divData.teams.find(t => String(t.id) === String(ev.teamId));
+                return !!(team && Array.isArray(team.roster) && team.roster.some(p => p.name === ev.playerName));
+            };
+            let homeEventsList = m.events.filter(ev => ev.teamId == home.id && validEvent(ev));
+            let awayEventsList = m.events.filter(ev => ev.teamId == away.id && validEvent(ev));
 
             let homeSideHTML = getGroupedTeamEventsHTML(homeEventsList);
             let awaySideHTML = getGroupedTeamEventsHTML(awayEventsList);
@@ -7787,6 +7792,10 @@ body:has(#tab-premios.active) .top-bar {
                 let eventRowsHTML = m.events.map((ev, evIdx) => {
                     let teamObj = divData.teams.find(t => t.id == ev.teamId);
                     let playersOpts = teamObj && teamObj.roster ? teamObj.roster.map(p => `<option value="${p.name}" ${p.name === ev.playerName ? 'selected' : ''}>${p.name}</option>`).join('') : '';
+                    // No atribuir silenciosamente a otro jugador una incidencia antigua mal asociada.
+                    if (!teamObj || !Array.isArray(teamObj.roster) || !teamObj.roster.some(p => p.name === ev.playerName)) {
+                        playersOpts = `<option value="" selected disabled>⚠️ Corregir jugador (${String(ev.playerName || 'sin nombre').replace(/</g,'&lt;').replace(/>/g,'&gt;')})</option>` + playersOpts;
+                    }
 
                     return `
                         <div class="match-player-stat-row">
@@ -7975,7 +7984,13 @@ body:has(#tab-premios.active) .top-bar {
         const divData = appData[currentDiv];
         const match = divData.matches.find(m => m.id === matchId);
         if (match && match.events[evIdx]) {
-            match.events[evIdx][field] = val;
+            if (field === 'teamId') {
+                // Cambiar de equipo exige volver a seleccionar un jugador de ese equipo.
+                match.events[evIdx].teamId = val;
+                match.events[evIdx].playerName = '';
+            } else {
+                match.events[evIdx][field] = val;
+            }
             openMatchEventsBoxes[matchId] = true; 
             recalculateAllPlayerStats();
             renderMatches();
