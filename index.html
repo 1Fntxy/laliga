@@ -2953,6 +2953,15 @@ body:has(#tab-premios.active) .clubs-ticker-bar { border-bottom-color: rgba(185,
 }
 #tab-estadisticas .stat-performance .stat-color-emoji.liga-color-emoji {font-size:17px;vertical-align:-2px;}
 #tab-estadisticas .stat-podium-value .stat-color-emoji.liga-color-emoji {font-size:19px;vertical-align:-1px;}
+
+/* Viñeta SOLO durante la carga inicial / recarga; no afecta cambios de pestaña. */
+#page-loader.liga-initial-vignette {
+    background: radial-gradient(ellipse 73% 67% at 50% 48%,
+        rgba(3,7,16,.43) 0%, rgba(3,7,16,.60) 44%,
+        rgba(3,7,16,.86) 76%, rgba(3,7,16,.97) 100%) !important;
+    backdrop-filter: blur(3px) saturate(.88) !important;
+    -webkit-backdrop-filter: blur(3px) saturate(.88) !important;
+}
 </style>
 <style>
 /* Selector desplegable premium de Jornadas: conserva la lógica original */
@@ -4194,7 +4203,7 @@ body:has(#tab-premios.active) .top-bar {
 </head>
 <body>
 
-<div id="page-loader">
+<div id="page-loader" class="liga-initial-vignette">
   <div class="rolling-ball-container liga-loading-classic">
     <div class="liga-mark-frame" aria-hidden="true">
       <span class="liga-mark-arc"></span>
@@ -5513,6 +5522,8 @@ body:has(#tab-premios.active) .top-bar {
         setTimeout(()=>{
             isInitialLoading=false;
             document.getElementById('page-loader')?.classList.add('fade-out');
+            // Al terminar la primera carga, volver al estilo original de cambio de sección.
+            document.getElementById('page-loader')?.classList.remove('liga-initial-vignette');
         },750);
     }
     function fixtureKey(m) { return [m.matchday,m.homeId,m.awayId].map(String).join('|'); }
