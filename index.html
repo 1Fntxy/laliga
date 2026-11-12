@@ -7773,13 +7773,6 @@ body:has(#tab-premios.active) .top-bar {
             if (!home || !away) return '';
 
             if (!m.events) m.events = [];
-            // Limpiar filas huérfanas completamente vacías de versiones anteriores.
-            // Nunca eliminar incidencias que tengan estadísticas reales.
-            m.events = m.events.filter(ev => {
-                const team = divData.teams.find(t => String(t.id) === String(ev.teamId));
-                const recognized = team && Array.isArray(team.roster) && team.roster.some(p => p.name === ev.playerName);
-                return recognized || Number(ev.goals) > 0 || Number(ev.assists) > 0 || Number(ev.saves) > 0;
-            });
 
             // Solo mostrar incidencias cuyo jugador pertenece al equipo seleccionado.
             const validEvent = ev => {
@@ -7798,14 +7791,14 @@ body:has(#tab-premios.active) .top-bar {
             if (canEditMatches) {
                 let eventRowsHTML = m.events.map((ev, evIdx) => {
                     let teamObj = divData.teams.find(t => t.id == ev.teamId);
-                    // Un solo campo: muestra el jugador y permite buscar escribiendo.
-                    // Las sugerencias pertenecen únicamente al equipo de la incidencia.
-                    const escapePlayerHTML = value => String(value ?? '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-                    const playerListId = `match-players-${m.id}-${evIdx}`;
-                    const playersOpts = teamObj && Array.isArray(teamObj.roster)
-                        ? teamObj.roster.map(p => `<option value="${escapePlayerHTML(p.name)}"></option>`).join('') : '';
-                    const playerValid = !!teamObj?.roster?.some(p => p.name === ev.playerName);
-                    const playerValue = playerValid ? ev.playerName : '';
+                    // Ocultar jugadores ya registrados en otra fila del mismo equipo.
+                    // Conservar la selección de esta fila para poder editarla.
+                    const occupied = new Set(m.events.filter((other, idx) => idx !== evIdx && String(other.teamId) === String(ev.teamId)).map(other => other.playerName));
+                    let playersOpts = teamObj && teamObj.roster ? teamObj.roster.filter(p => p.name === ev.playerName || !occupied.has(p.name)).map(p => `<option value="${p.name}" ${p.name === ev.playerName ? 'selected' : ''}>${p.name}</option>`).join('') : '';
+                    // No atribuir silenciosamente a otro jugador una incidencia antigua mal asociada.
+                    if (!teamObj || !Array.isArray(teamObj.roster) || !teamObj.roster.some(p => p.name === ev.playerName)) {
+                        playersOpts = `<option value="" selected disabled>⚠️ Corregir jugador (${String(ev.playerName || 'sin nombre').replace(/</g,'&lt;').replace(/>/g,'&gt;')})</option>` + playersOpts;
+                    }
 
                     return `
                         <div class="match-player-stat-row">
@@ -7813,10 +7806,9 @@ body:has(#tab-premios.active) .top-bar {
                                 <option value="${home.id}" ${ev.teamId == home.id ? 'selected' : ''}>${home.name}</option>
                                 <option value="${away.id}" ${ev.teamId == away.id ? 'selected' : ''}>${away.name}</option>
                             </select>
-                            <div style="flex:2;min-width:160px;">
-                                <input class="ps-player-select" type="text" list="${playerListId}" value="${escapePlayerHTML(playerValue)}" placeholder="🔎 Buscar o seleccionar jugador" aria-label="Buscar o seleccionar jugador" autocomplete="off" style="width:100%;min-width:0;box-sizing:border-box;" onchange="selectMatchPlayerFromSearch(this, ${m.id}, ${evIdx})" onblur="restoreMatchPlayerSearch(this, ${m.id}, ${evIdx})">
-                                <datalist id="${playerListId}">${playersOpts}</datalist>
-                            </div>
+                            <select class="ps-player-select" onchange="updateMatchEventField(${m.id}, ${evIdx}, 'playerName', this.value)">
+                                ${playersOpts}
+                            </select>
                             <div class="ps-stat-box"><span class="liga-color-emoji" aria-label="Goles">⚽</span> <input type="number" class="ps-input" value="${ev.goals || 0}" min="0" oninput="updateMatchEventNumSilent(${m.id}, ${evIdx}, 'goals', this.value)"></div>
                             <div class="ps-stat-box"><span class="liga-color-emoji" aria-label="Asistencias">🎯</span> <input type="number" class="ps-input" value="${ev.assists || 0}" min="0" oninput="updateMatchEventNumSilent(${m.id}, ${evIdx}, 'assists', this.value)"></div>
                             <div class="ps-stat-box"><span class="liga-color-emoji" aria-label="Atajadas">🧤</span> <input type="number" class="ps-input" value="${ev.saves || 0}" min="0" oninput="updateMatchEventNumSilent(${m.id}, ${evIdx}, 'saves', this.value)"></div>
@@ -7945,15 +7937,6 @@ body:has(#tab-premios.active) .top-bar {
     window.saveAndCloseMatchEvents = async function(event, matchId) {
         event.stopPropagation();
         if (!isAdmin && !isStaff) return;
-        const divData = appData[currentDiv];
-        const match = divData?.matches.find(m => m.id === matchId);
-        if (match && match.events.some(ev => {
-            const team = divData.teams.find(t => String(t.id) === String(ev.teamId));
-            return !team?.roster?.some(p => p.name === ev.playerName);
-        })) {
-            alert('Selecciona un jugador válido en las incidencias pendientes antes de guardar.');
-            return;
-        }
         const btn = event.currentTarget;
         if (btn.disabled) return;
         const initialText = btn.textContent;
@@ -7977,37 +7960,15 @@ body:has(#tab-premios.active) .top-bar {
         }
     };
 
-    // Campo único con sugerencias nativas: no permite guardar nombres que no estén en la plantilla.
-    window.selectMatchPlayerFromSearch = function(input, matchId, evIdx) {
-        const match = appData[currentDiv]?.matches?.find(m => m.id === matchId);
-        const ev = match?.events?.[evIdx];
-        const team = appData[currentDiv]?.teams?.find(t => String(t.id) === String(ev?.teamId));
-        if (!ev || !team) return;
-        const player = (team.roster || []).find(p => String(p.name).toLowerCase() === input.value.trim().toLowerCase());
-        if (player) {
-            if (ev.playerName !== player.name) updateMatchEventField(matchId, evIdx, 'playerName', player.name);
-            else input.value = player.name;
-        } else {
-            input.value = (team.roster || []).some(p => p.name === ev.playerName) ? ev.playerName : '';
-        }
-    };
-    window.restoreMatchPlayerSearch = function(input, matchId, evIdx) {
-        const match = appData[currentDiv]?.matches?.find(m => m.id === matchId);
-        const ev = match?.events?.[evIdx];
-        const team = appData[currentDiv]?.teams?.find(t => String(t.id) === String(ev?.teamId));
-        if (!ev || !team) return;
-        const player = (team.roster || []).find(p => String(p.name).toLowerCase() === input.value.trim().toLowerCase());
-        if (!player) input.value = (team.roster || []).some(p => p.name === ev.playerName) ? ev.playerName : '';
-    };
-
     window.addMatchEvent = function(matchId, defaultTeamId) {
         if (!isAdmin && !isStaff) return;
         const divData = appData[currentDiv];
         const match = divData.matches.find(m => m.id === matchId);
         if (match) {
             const team = divData.teams.find(t => t.id == defaultTeamId);
-            const defaultPlayer = team && team.roster ? (team.roster.find(p => !match.events.some(ev => String(ev.teamId) === String(defaultTeamId) && ev.playerName === p.name))?.name || '') : '';
-            if (!defaultPlayer) { alert('No hay jugadores disponibles sin registrar en este equipo.'); return; }
+            const used = new Set((match.events || []).filter(ev => String(ev.teamId) === String(defaultTeamId)).map(ev => ev.playerName));
+            const defaultPlayer = team?.roster?.find(p => !used.has(p.name))?.name;
+            if (!defaultPlayer) { alert('Ya registraste a todos los jugadores de este equipo.'); return; }
             match.events.push({
                 teamId: defaultTeamId,
                 playerName: defaultPlayer,
@@ -8030,9 +7991,18 @@ body:has(#tab-premios.active) .top-bar {
         if (match && match.events[evIdx]) {
             if (field === 'teamId') {
                 // Cambiar de equipo exige volver a seleccionar un jugador de ese equipo.
+                const targetTeam = divData.teams.find(t => String(t.id) === String(val));
+                const taken = new Set(match.events.filter((other, idx) => idx !== evIdx && String(other.teamId) === String(val)).map(other => other.playerName));
+                const available = targetTeam?.roster?.find(p => !taken.has(p.name));
+                if (!available) { alert('No hay jugadores disponibles en ese equipo.'); renderMatches(); return; }
                 match.events[evIdx].teamId = val;
-                match.events[evIdx].playerName = '';
+                match.events[evIdx].playerName = available.name;
             } else {
+                if (field === 'playerName' && match.events.some((other, idx) => idx !== evIdx && String(other.teamId) === String(match.events[evIdx].teamId) && other.playerName === val)) {
+                    alert('Ese jugador ya tiene una incidencia registrada en este partido.');
+                    renderMatches();
+                    return;
+                }
                 match.events[evIdx][field] = val;
             }
             openMatchEventsBoxes[matchId] = true; 
@@ -8048,14 +8018,7 @@ body:has(#tab-premios.active) .top-bar {
         const divData = appData[currentDiv];
         const match = divData.matches.find(m => m.id === matchId);
         if (match && match.events[evIdx]) {
-            const ev = match.events[evIdx];
-            const team = divData.teams.find(t => String(t.id) === String(ev.teamId));
-            if (!team?.roster?.some(p => p.name === ev.playerName)) {
-                alert('Primero selecciona un jugador válido.');
-                renderMatches();
-                return;
-            }
-            match.events[evIdx][field] = Math.max(0, parseInt(val) || 0);
+            match.events[evIdx][field] = parseInt(val) || 0;
             openMatchEventsBoxes[matchId] = true; 
             recalculateAllPlayerStats();
             renderTops();
