@@ -8129,6 +8129,7 @@ body:has(#tab-premios.active) .top-bar {
                     <div class="input-group">
                         <label>Escudo / Logo (URL de imagen)</label>
                         <input type="text" value="${t.logo || ''}" placeholder="https://ejemplo.com/escudo.png" ${!isAdmin ? 'disabled' : ''} onchange="updateTeamLogoUrl(${t.id}, this.value)">
+                        ${isAdmin ? `<button type="button" class="action-btn" style="margin-top:7px;background:#24292f;font-size:.8rem;padding:8px 12px;" onclick="openGithubEscudos(${t.id})">Elegir escudo de GitHub</button>` : ''}
                     </div>
                 </div>
             `;
@@ -9567,6 +9568,63 @@ function seleccionarPremio(tipo) {
       for(const prop of ['display','overflow','transition','max-height','opacity','transform','height'])panel.style.removeProperty(prop);
     };
   });
+})();
+</script>
+
+<!-- Selector de escudos publicados en GitHub Pages. No cambia Firebase ni las estadísticas. -->
+<div id="github-escudos-modal" role="dialog" aria-modal="true" aria-label="Escudos de GitHub" style="display:none;position:fixed;inset:0;z-index:120000;background:rgba(0,0,0,.78);padding:20px;align-items:center;justify-content:center;">
+  <div style="width:min(780px,100%);max-height:90vh;overflow:auto;background:var(--bg-card);color:var(--text-main);border-radius:15px;padding:20px;border:1px solid var(--border-color);">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px"><strong style="font-size:1.1rem">Escudos de GitHub</strong><button type="button" class="action-btn" onclick="closeGithubEscudos()">Cerrar</button></div>
+    <p style="color:var(--text-muted);font-size:.85rem;margin-bottom:12px">Selecciona una imagen de la carpeta escudos del repositorio 1Fntxy/laliga.</p>
+    <div id="github-escudos-status" style="margin-bottom:12px;font-size:.85rem" aria-live="polite"></div>
+    <div id="github-escudos-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:12px"></div>
+  </div>
+</div>
+<script>
+(function(){
+  const API='https://api.github.com/repos/1Fntxy/laliga/contents/escudos?ref=main';
+  const BASE='https://1fntxy.github.io/laliga/escudos/';
+  let target=null, targetDiv=null, cached=null;
+  const modal=()=>document.getElementById('github-escudos-modal');
+  const status=()=>document.getElementById('github-escudos-status');
+  const grid=()=>document.getElementById('github-escudos-grid');
+  window.closeGithubEscudos=function(){modal().style.display='none';target=null;targetDiv=null;};
+  window.openGithubEscudos=async function(id){
+    if(!isAdmin)return;
+    target=id;targetDiv=currentDiv;
+    modal().style.display='flex';grid().replaceChildren();status().textContent='Cargando escudos...';
+    try{
+      if(!cached){
+        const response=await fetch(API,{headers:{'Accept':'application/vnd.github+json'}});
+        if(!response.ok)throw new Error('GitHub respondió '+response.status);
+        const files=await response.json();
+        if(!Array.isArray(files))throw new Error('La carpeta no está disponible');
+        cached=files.filter(f=>f.type==='file' && /\.(png|jpe?g|webp|gif|svg)$/i.test(f.name));
+      }
+      if(!cached.length){status().textContent='No hay imágenes en la carpeta escudos.';return;}
+      status().textContent=cached.length+' escudos disponibles. Haz clic en uno para asignarlo.';
+      for(const file of cached){
+        const url=BASE+encodeURIComponent(file.name);
+        const btn=document.createElement('button');btn.type='button';
+        btn.style.cssText='display:flex;flex-direction:column;align-items:center;gap:7px;padding:10px;border-radius:10px;border:1px solid var(--border-color);background:var(--bg-subcard);color:var(--text-main);cursor:pointer;min-width:0';
+        btn.title=file.name;
+        const img=document.createElement('img');img.src=url;img.alt=file.name;img.loading='lazy';img.style.cssText='width:75px;height:75px;object-fit:contain';
+        const name=document.createElement('span');name.textContent=file.name;name.style.cssText='font-size:10px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+        btn.append(img,name);
+        btn.onclick=()=>{
+          if(!isAdmin||target===null||targetDiv===null)return;
+          const team=appData[targetDiv]?.teams?.find(t=>String(t.id)===String(target));
+          if(!team){status().textContent='No se encontró el equipo. Abre el selector de nuevo.';return;}
+          team.logo=url;
+          if(currentDiv===targetDiv){renderTeamManagement();renderClubsTicker();}
+          triggerAutoSave();window.closeGithubEscudos();
+        };
+        grid().appendChild(btn);
+      }
+    }catch(err){status().textContent='No se pudieron cargar los escudos ('+err.message+'). Puedes seguir pegando la URL manualmente.';}
+  };
+  modal().addEventListener('click',e=>{if(e.target===modal())window.closeGithubEscudos();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal().style.display==='flex')window.closeGithubEscudos();});
 })();
 </script>
 </body>
