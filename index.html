@@ -8799,6 +8799,55 @@ body:has(#tab-premios.active) .top-bar {
         if(document.getElementById('tab-premios')?.classList.contains('active')) renderPremiosOficiales();
     });
     premiosObserver.observe(document.getElementById('tab-premios'),{attributes:true,attributeFilter:['class']});
+
+// Selector de escudos: dentro del módulo para compartir el estado de equipos y administración.
+
+(function(){
+  const API='https://api.github.com/repos/1Fntxy/laliga/contents/escudos?ref=main';
+  const BASE='https://1fntxy.github.io/laliga/escudos/';
+  let target=null, targetDiv=null, cached=null;
+  const modal=()=>document.getElementById('github-escudos-modal');
+  const status=()=>document.getElementById('github-escudos-status');
+  const grid=()=>document.getElementById('github-escudos-grid');
+  window.closeGithubEscudos=function(){modal().style.display='none';target=null;targetDiv=null;};
+  window.openGithubEscudos=async function(id){
+    if(!isAdmin)return;
+    target=id;targetDiv=currentDiv;
+    modal().style.display='flex';grid().replaceChildren();status().textContent='Cargando escudos...';
+    try{
+      if(!cached){
+        const response=await fetch(API,{headers:{'Accept':'application/vnd.github+json'}});
+        if(!response.ok)throw new Error('GitHub respondió '+response.status);
+        const files=await response.json();
+        if(!Array.isArray(files))throw new Error('La carpeta no está disponible');
+        cached=files.filter(f=>f.type==='file' && /\.(png|jpe?g|webp|gif|svg)$/i.test(f.name));
+      }
+      if(!cached.length){status().textContent='No hay imágenes en la carpeta escudos.';return;}
+      status().textContent=cached.length+' escudos disponibles. Haz clic en uno para asignarlo.';
+      for(const file of cached){
+        const url=BASE+encodeURIComponent(file.name);
+        const btn=document.createElement('button');btn.type='button';
+        btn.style.cssText='display:flex;flex-direction:column;align-items:center;gap:7px;padding:10px;border-radius:10px;border:1px solid var(--border-color);background:var(--bg-subcard);color:var(--text-main);cursor:pointer;min-width:0';
+        btn.title=file.name;
+        const img=document.createElement('img');img.src=url;img.alt=file.name;img.loading='lazy';img.style.cssText='width:75px;height:75px;object-fit:contain';
+        const name=document.createElement('span');name.textContent=file.name;name.style.cssText='font-size:10px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+        btn.append(img,name);
+        btn.onclick=()=>{
+          if(!isAdmin||target===null||targetDiv===null)return;
+          const team=appData[targetDiv]?.teams?.find(t=>String(t.id)===String(target));
+          if(!team){status().textContent='No se encontró el equipo. Abre el selector de nuevo.';return;}
+          team.logo=url;
+          if(currentDiv===targetDiv){renderTeamManagement();renderClubsTicker();}
+          triggerAutoSave();window.closeGithubEscudos();
+        };
+        grid().appendChild(btn);
+      }
+    }catch(err){status().textContent='No se pudieron cargar los escudos ('+err.message+'). Puedes seguir pegando la URL manualmente.';}
+  };
+  modal().addEventListener('click',e=>{if(e.target===modal())window.closeGithubEscudos();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal().style.display==='flex')window.closeGithubEscudos();});
+})();
+
 </script>
 
 
@@ -9580,52 +9629,6 @@ function seleccionarPremio(tipo) {
     <div id="github-escudos-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:12px"></div>
   </div>
 </div>
-<script>
-(function(){
-  const API='https://api.github.com/repos/1Fntxy/laliga/contents/escudos?ref=main';
-  const BASE='https://1fntxy.github.io/laliga/escudos/';
-  let target=null, targetDiv=null, cached=null;
-  const modal=()=>document.getElementById('github-escudos-modal');
-  const status=()=>document.getElementById('github-escudos-status');
-  const grid=()=>document.getElementById('github-escudos-grid');
-  window.closeGithubEscudos=function(){modal().style.display='none';target=null;targetDiv=null;};
-  window.openGithubEscudos=async function(id){
-    if(!isAdmin)return;
-    target=id;targetDiv=currentDiv;
-    modal().style.display='flex';grid().replaceChildren();status().textContent='Cargando escudos...';
-    try{
-      if(!cached){
-        const response=await fetch(API,{headers:{'Accept':'application/vnd.github+json'}});
-        if(!response.ok)throw new Error('GitHub respondió '+response.status);
-        const files=await response.json();
-        if(!Array.isArray(files))throw new Error('La carpeta no está disponible');
-        cached=files.filter(f=>f.type==='file' && /\.(png|jpe?g|webp|gif|svg)$/i.test(f.name));
-      }
-      if(!cached.length){status().textContent='No hay imágenes en la carpeta escudos.';return;}
-      status().textContent=cached.length+' escudos disponibles. Haz clic en uno para asignarlo.';
-      for(const file of cached){
-        const url=BASE+encodeURIComponent(file.name);
-        const btn=document.createElement('button');btn.type='button';
-        btn.style.cssText='display:flex;flex-direction:column;align-items:center;gap:7px;padding:10px;border-radius:10px;border:1px solid var(--border-color);background:var(--bg-subcard);color:var(--text-main);cursor:pointer;min-width:0';
-        btn.title=file.name;
-        const img=document.createElement('img');img.src=url;img.alt=file.name;img.loading='lazy';img.style.cssText='width:75px;height:75px;object-fit:contain';
-        const name=document.createElement('span');name.textContent=file.name;name.style.cssText='font-size:10px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
-        btn.append(img,name);
-        btn.onclick=()=>{
-          if(!isAdmin||target===null||targetDiv===null)return;
-          const team=appData[targetDiv]?.teams?.find(t=>String(t.id)===String(target));
-          if(!team){status().textContent='No se encontró el equipo. Abre el selector de nuevo.';return;}
-          team.logo=url;
-          if(currentDiv===targetDiv){renderTeamManagement();renderClubsTicker();}
-          triggerAutoSave();window.closeGithubEscudos();
-        };
-        grid().appendChild(btn);
-      }
-    }catch(err){status().textContent='No se pudieron cargar los escudos ('+err.message+'). Puedes seguir pegando la URL manualmente.';}
-  };
-  modal().addEventListener('click',e=>{if(e.target===modal())window.closeGithubEscudos();});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal().style.display==='flex')window.closeGithubEscudos();});
-})();
-</script>
+
 </body>
 </html>
