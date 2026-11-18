@@ -7873,7 +7873,7 @@ body:has(#tab-premios.active) .top-bar {
             let homeSideHTML = getGroupedTeamEventsHTML(homeEventsList);
             let awaySideHTML = getGroupedTeamEventsHTML(awayEventsList);
 
-            let canEditMatches = (isAdmin || isStaff) && !(divData.restructureCutoff && Number(m.matchday) <= divData.restructureCutoff);
+            let canEditMatches = (isAdmin || isStaff);
             let adminEventsEditor = '';
             
             if (canEditMatches) {
