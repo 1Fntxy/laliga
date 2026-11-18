@@ -5631,6 +5631,15 @@ body:has(#tab-premios.active) .top-bar {
         restoreViewOnce();
         if(isInitialLoading)finishLeagueLoading();
     }
+    let snapshotRenderTimer = null;
+    function queueLeagueSnapshotRender() {
+        if (leagueSaveInProgress) return;
+        clearTimeout(snapshotRenderTimer);
+        snapshotRenderTimer = setTimeout(() => {
+            snapshotRenderTimer = null;
+            if (!leagueSaveInProgress) applyLeagueParts();
+        }, leagueReady ? 450 : 0);
+    }
     leagueRefs.forEach((ref,i)=>onSnapshot(ref,snap=>{
         if(!snap.exists()) {
             console.error('Falta el documento migrado:',ref.path);
@@ -5645,7 +5654,7 @@ body:has(#tab-premios.active) .top-bar {
         }
         leagueParts[i]=data;
         leagueSignatures[i]=leagueSignature(i===0?leagueMetadata(data):data);
-        if(!leagueSaveInProgress)applyLeagueParts();
+        queueLeagueSnapshotRender();
     },error=>{
         console.error('Error leyendo documento migrado:',ref.path,error);
         if(isInitialLoading)finishLeagueLoading();
@@ -5654,16 +5663,16 @@ body:has(#tab-premios.active) .top-bar {
         const data={};
         snap.forEach(d=>{if(/^\d{1,4}$/.test(d.id))data[d.id]=d.data();});
         resultParts[n]=data;
-        if(!leagueSaveInProgress)applyLeagueParts();
-    },error=>{console.error('Error leyendo resultados de división',n,error);resultParts[n]={};if(!leagueSaveInProgress)applyLeagueParts();});
+        queueLeagueSnapshotRender();
+    },error=>{console.error('Error leyendo resultados de división',n,error);resultParts[n]={};queueLeagueSnapshotRender();});
     onSnapshot(tournamentResultsRef,snap=>{
         tournamentResults=snap.exists()?snap.data():{};
-        if(!leagueSaveInProgress)applyLeagueParts();
-    },error=>{console.error('Error leyendo resultados de torneos',error);tournamentResults={};if(!leagueSaveInProgress)applyLeagueParts();});
+        queueLeagueSnapshotRender();
+    },error=>{console.error('Error leyendo resultados de torneos',error);tournamentResults={};queueLeagueSnapshotRender();});
     onSnapshot(friendlyResultsRef,snap=>{
         friendlyResults=snap.exists()?snap.data():{};
-        if(!leagueSaveInProgress)applyLeagueParts();
-    },error=>{console.error('Error leyendo amistosos',error);friendlyResults={};if(!leagueSaveInProgress)applyLeagueParts();});
+        queueLeagueSnapshotRender();
+    },error=>{console.error('Error leyendo amistosos',error);friendlyResults={};queueLeagueSnapshotRender();});
 
     async function saveStateToCloud() {
         if((!isAdmin&&!isStaff)||!leagueReady||leagueSaveInProgress)return false;
@@ -5708,6 +5717,7 @@ body:has(#tab-premios.active) .top-bar {
         }
     }
 
+    let saveIndicatorResetTimer = null;
     window.triggerAutoSave = function() {
         if ((!isAdmin && !isStaff) || isInitialLoading) return;
         
@@ -5717,6 +5727,7 @@ body:has(#tab-premios.active) .top-bar {
         // Si los datos no cambiaron, no alterar el aviso ni lanzar escrituras.
         const pendingParts=[leagueMetadata(appData),appData[1],appData[2],appData[3]];
         if (pendingParts.every((part,i)=>leagueSignature(part)===effectiveSignatures[i])) return;
+        clearTimeout(saveIndicatorResetTimer);
         if (span) span.innerText = "⏳ Guardando...";
         if (btn) btn.style.borderColor = "#F05B21";
 
@@ -5727,14 +5738,14 @@ body:has(#tab-premios.active) .top-bar {
                 if (ok) {
                     btn.style.borderColor = "var(--accent-green)";
                     span.innerText = "Guardado ✅";
-                    setTimeout(() => {
+                    saveIndicatorResetTimer = setTimeout(() => {
                         btn.style.borderColor = "var(--border-color)";
                         span.innerText = "💾 AutoGuardado";
                     }, 2500);
                 } else {
                     btn.style.borderColor = "#F05B21";
                     span.innerText = "❌ Error";
-                    setTimeout(() => {
+                    saveIndicatorResetTimer = setTimeout(() => {
                         btn.style.borderColor = "var(--border-color)";
                         span.innerText = "💾 AutoGuardado";
                     }, 2500);
@@ -5745,6 +5756,7 @@ body:has(#tab-premios.active) .top-bar {
 
     window.manualSaveCloud = async function() {
         if (!isAdmin && !isStaff) return;
+        clearTimeout(autoSaveTimer);
         const btn = document.getElementById('floating-save-btn');
         const span = btn ? btn.querySelector('span') : null;
         if (span) span.innerText = "⏳ Guardando...";
@@ -7476,9 +7488,20 @@ body:has(#tab-premios.active) .top-bar {
         return positions;
     }
 
+    let lastStandingsSignature = null;
     function renderStandings() {
         const divData = appData[currentDiv];
         if (!divData) return;
+        // La tabla solo depende de equipos, resultados y arrastres, no de incidencias,
+        // cambios de otras divisiones ni metadatos recibidos por Firebase.
+        const standingsSignature = JSON.stringify({
+            division: currentDiv,
+            cutoff: divData.restructureCutoff || 0,
+            teams: (divData.teams || []).map(t => [t.id,t.name,t.logo,t.carryover]),
+            matches: (divData.matches || []).map(m => [m.id,m.matchday,m.homeId,m.awayId,m.homeScore,m.awayScore])
+        });
+        if (standingsSignature === lastStandingsSignature && document.querySelector('#tab-clasificacion tbody tr')) return;
+        lastStandingsSignature = standingsSignature;
         const standingsTab = document.getElementById('tab-clasificacion');
         if (standingsTab) {
             standingsTab.querySelectorAll('.promotion-legend-item').forEach(el => el.style.display = (currentDiv === 2 || currentDiv === 3) ? 'inline-flex' : 'none');
