@@ -5714,6 +5714,9 @@ body:has(#tab-premios.active) .top-bar {
         const btn = document.getElementById('floating-save-btn');
         const span = btn ? btn.querySelector('span') : null;
 
+        // Si los datos no cambiaron, no alterar el aviso ni lanzar escrituras.
+        const pendingParts=[leagueMetadata(appData),appData[1],appData[2],appData[3]];
+        if (pendingParts.every((part,i)=>leagueSignature(part)===effectiveSignatures[i])) return;
         if (span) span.innerText = "⏳ Guardando...";
         if (btn) btn.style.borderColor = "#F05B21";
 
@@ -6574,7 +6577,9 @@ body:has(#tab-premios.active) .top-bar {
         renderSocialLinks();
         renderStandings();
         renderMatchdaySelector();
-        renderMatches();
+        // No destruir el editor de incidencias que el usuario tiene abierto.
+        // Al cerrarlo, el siguiente render normal reflejará los cambios remotos.
+        if (!Object.values(openMatchEventsBoxes).some(Boolean) || !document.querySelector('[id^="match-events-box-"]')) renderMatches();
         renderTops();
         renderTeamManagement();
         renderBracketSelectors();
@@ -7955,7 +7960,7 @@ body:has(#tab-premios.active) .top-bar {
                     openMatchEventsBoxes[matchId] = false;
                     const box = document.getElementById(`match-events-box-${matchId}`);
                     if (box) box.classList.remove('show');
-                    triggerAutoSave();
+                    // Cerrar un panel no modifica datos: no iniciar autoguardado.
                 }
             }
         }
