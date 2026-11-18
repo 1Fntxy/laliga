@@ -5598,7 +5598,7 @@ body:has(#tab-premios.active) .top-bar {
                 m.homeScore=cleanScore(stored.homeScore);
                 m.awayScore=cleanScore(stored.awayScore);
                 m.events=newEvents;
-                applyStatDelta(div,oldEvents,newEvents);
+                if (!(div.restructureCutoff && Number(m.matchday) <= div.restructureCutoff)) applyStatDelta(div,oldEvents,newEvents);
             }
             next[n]=div;
         }
@@ -6597,10 +6597,11 @@ body:has(#tab-premios.active) .top-bar {
         const divData = appData[divNum];
         if (!divData || !divData.teams) return [];
         let stats = divData.teams.map(t => ({
-            ...t, pj: 0, pg: 0, pe: 0, pp: 0, gf: 0, gc: 0, dg: 0, pts: 0
+            ...t, pj: Number(t.carryover?.pj)||0, pg: Number(t.carryover?.pg)||0, pe: Number(t.carryover?.pe)||0, pp: Number(t.carryover?.pp)||0, gf: Number(t.carryover?.gf)||0, gc: Number(t.carryover?.gc)||0, dg: 0, pts: Number(t.carryover?.pts)||0
         }));
 
         divData.matches.forEach(m => {
+            if (Number(m.matchday) <= (divData.restructureCutoff || 0)) return;
             if (m.homeScore !== null && m.awayScore !== null) {
                 let home = stats.find(t => t.id === m.homeId);
                 let away = stats.find(t => t.id === m.awayId);
@@ -7444,11 +7445,9 @@ body:has(#tab-premios.active) .top-bar {
     function calculatePositionsForMatches(matchesLimit) {
         const divData = appData[currentDiv];
         if (!divData) return {};
-        let tempStats = divData.teams.map(t => ({ id: t.id, pts: 0, gf: 0, gc: 0, dg: 0 }));
+        let tempStats = divData.teams.map(t => ({ id: t.id, pts: Number(t.carryover?.pts)||0, gf: Number(t.carryover?.gf)||0, gc: Number(t.carryover?.gc)||0, dg: 0 }));
         
-        const filteredMatches = matchesLimit !== undefined 
-            ? divData.matches.filter(m => m.matchday <= matchesLimit)
-            : divData.matches;
+        const filteredMatches = divData.matches.filter(m => Number(m.matchday) > (divData.restructureCutoff || 0) && (matchesLimit === undefined || m.matchday <= matchesLimit));
 
         filteredMatches.forEach(m => {
             if (m.homeScore !== null && m.awayScore !== null) {
@@ -7481,12 +7480,13 @@ body:has(#tab-premios.active) .top-bar {
             standingsTab.querySelectorAll('.relegation-legend-item').forEach(el => el.style.display = (currentDiv === 1 || currentDiv === 2) ? 'inline-flex' : 'none');
         }
         let stats = divData.teams.map(t => ({
-            ...t, pj: 0, pg: 0, pe: 0, pp: 0, gf: 0, gc: 0, dg: 0, pts: 0, form: []
+            ...t, pj: Number(t.carryover?.pj)||0, pg: Number(t.carryover?.pg)||0, pe: Number(t.carryover?.pe)||0, pp: Number(t.carryover?.pp)||0, gf: Number(t.carryover?.gf)||0, gc: Number(t.carryover?.gc)||0, dg: 0, pts: Number(t.carryover?.pts)||0, form: []
         }));
 
         let maxPlayedMD = 0;
 
         divData.matches.forEach(m => {
+            if (Number(m.matchday) <= (divData.restructureCutoff || 0)) return;
             if (m.homeScore !== null && m.awayScore !== null) {
                 if (m.matchday > maxPlayedMD) maxPlayedMD = m.matchday;
                 let home = stats.find(t => t.id === m.homeId);
@@ -7756,9 +7756,10 @@ body:has(#tab-premios.active) .top-bar {
 
     // Vista de jornadas: estadísticas derivadas en memoria, sin modificar Firebase.
     function getMatchdayTeamSnapshot(divData) {
-        const rows = divData.teams.map(t => ({ id: t.id, pts: 0, gf: 0, gc: 0, dg: 0, form: [] }));
+        const rows = divData.teams.map(t => ({ id: t.id, pts: Number(t.carryover?.pts)||0, gf: Number(t.carryover?.gf)||0, gc: Number(t.carryover?.gc)||0, dg: 0, form: [] }));
         const byId = new Map(rows.map(t => [String(t.id), t]));
         divData.matches.forEach((m, index) => {
+            if (Number(m.matchday) <= (divData.restructureCutoff || 0)) return;
             if (m.homeScore === null || m.homeScore === undefined || m.homeScore === '' ||
                 m.awayScore === null || m.awayScore === undefined || m.awayScore === '') return;
             const a = byId.get(String(m.homeId)), b = byId.get(String(m.awayId));
@@ -7814,8 +7815,12 @@ body:has(#tab-premios.active) .top-bar {
         }
 
         container.innerHTML = currentMatches.map(m => {
-            const home = divData.teams.find(t => t.id === m.homeId);
-            const away = divData.teams.find(t => t.id === m.awayId);
+            let home = divData.teams.find(t => t.id === m.homeId);
+            let away = divData.teams.find(t => t.id === m.awayId);
+            if (Number(m.matchday) <= (divData.restructureCutoff || 0)) {
+                if (home && m.historicalHome) home = {...home,name:m.historicalHome,logo:m.historicalHomeLogo||home.logo};
+                if (away && m.historicalAway) away = {...away,name:m.historicalAway,logo:m.historicalAwayLogo||away.logo};
+            }
             if (!home || !away) return '';
 
             if (!m.events) m.events = [];
@@ -7831,7 +7836,7 @@ body:has(#tab-premios.active) .top-bar {
             let homeSideHTML = getGroupedTeamEventsHTML(homeEventsList);
             let awaySideHTML = getGroupedTeamEventsHTML(awayEventsList);
 
-            let canEditMatches = isAdmin || isStaff;
+            let canEditMatches = (isAdmin || isStaff) && !(divData.restructureCutoff && Number(m.matchday) <= divData.restructureCutoff);
             let adminEventsEditor = '';
             
             if (canEditMatches) {
