@@ -7527,25 +7527,34 @@ body:has(#tab-premios.active) .top-bar {
 
                     if (m.homeScore > m.awayScore) {
                         home.pg++; home.pts += 3; away.pp++;
-                        home.form.push({ matchday: m.matchday, result: 'W' });
-                        away.form.push({ matchday: m.matchday, result: 'L' });
                     } else if (m.homeScore < m.awayScore) {
                         away.pg++; away.pts += 3; home.pp++;
-                        home.form.push({ matchday: m.matchday, result: 'L' });
-                        away.form.push({ matchday: m.matchday, result: 'W' });
                     } else {
                         home.pe++; home.pts += 1;
                         away.pe++; away.pts += 1;
-                        home.form.push({ matchday: m.matchday, result: 'D' });
-                        away.form.push({ matchday: m.matchday, result: 'D' });
                     }
                 }
             }
         });
 
+        // La forma reciente incluye partidos anteriores al corte de reestructuración.
+        // Esos resultados SOLO se usan para las letras V/D/E: los puntos, goles y
+        // partidos jugados siguen calculándose arriba, respetando carryover.
+        divData.matches.forEach((m, index) => {
+            if (m.homeScore == null || m.awayScore == null || m.homeScore === '' || m.awayScore === '') return;
+            const hs = Number(m.homeScore), as = Number(m.awayScore);
+            if (!Number.isFinite(hs) || !Number.isFinite(as)) return;
+            const home = stats.find(t => String(t.id) === String(m.homeId));
+            const away = stats.find(t => String(t.id) === String(m.awayId));
+            if (!home || !away) return;
+            const outcomes = hs > as ? ['W', 'L'] : hs < as ? ['L', 'W'] : ['D', 'D'];
+            home.form.push({matchday: Number(m.matchday) || 0, index, result: outcomes[0]});
+            away.form.push({matchday: Number(m.matchday) || 0, index, result: outcomes[1]});
+        });
+
         stats.forEach(t => {
             t.dg = t.gf - t.gc;
-            t.form.sort((a, b) => a.matchday - b.matchday);
+            t.form.sort((a, b) => a.matchday - b.matchday || a.index - b.index);
             t.last5 = t.form.slice(-5).map(f => f.result);
         });
 
