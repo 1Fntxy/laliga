@@ -5598,7 +5598,9 @@ body:has(#tab-premios.active) .top-bar {
                 m.homeScore=cleanScore(stored.homeScore);
                 m.awayScore=cleanScore(stored.awayScore);
                 m.events=newEvents;
-                if (!(div.restructureCutoff && Number(m.matchday) <= div.restructureCutoff)) applyStatDelta(div,oldEvents,newEvents);
+                // Incidencias de partidos pendientes del corte también deben contabilizarse.
+                // Las ya registradas no se duplican: se aplica únicamente la diferencia.
+                applyStatDelta(div,oldEvents,newEvents);
             }
             next[n]=div;
         }
@@ -6610,6 +6612,31 @@ body:has(#tab-premios.active) .top-bar {
         updateBracketInputsState();
     }
 
+
+    // Base verificada del respaldo 18/11/2026, 22:44 UTC (solo Tercera).
+    // El arrastre ya incluye estos marcadores: restarlos antes de sumar su estado actual.
+    // Los partidos que estaban pendientes se cuentan cuando se registren.
+    const historicalScoreBaselineD3 = {"1":[1,"1","16",9,2],"2":[1,"2","15",6,10],"3":[1,"3","14",8,4],"4":[1,"4","13",8,3],"5":[1,"5","12",9,4],"6":[1,"6","11",4,16],"7":[1,"7","10",2,9],"8":[1,"8","9",5,2],"9":[2,"1","15",3,7],"10":[2,"16","14",12,13],"11":[2,"2","13",8,4],"12":[2,"3","12",7,2],"13":[2,"4","11",4,6],"14":[2,"5","10",2,9],"15":[2,"6","9",3,11],"16":[2,"7","8",2,10],"20":[3,"2","11",6,5]};
+    function forEachCountedLeagueResult(divData, divNum, matchesLimit, callback) {
+        const cutoff = Number(divData.restructureCutoff) || 0;
+        for (const m of (divData.matches || [])) {
+            if (matchesLimit !== undefined && Number(m.matchday) > matchesLimit) continue;
+            const historical = Number(m.matchday) <= cutoff;
+            if (historical && Number(divNum) !== 3) continue;
+            const baseline = historical ? historicalScoreBaselineD3[String(m.id)] : null;
+            // Solo restar un resultado que realmente pertenecía al mismo enfrentamiento.
+            if (baseline && Number(baseline[0]) === Number(m.matchday) &&
+                String(baseline[1]) === String(m.homeId) && String(baseline[2]) === String(m.awayId)) {
+                callback({...m, homeScore:baseline[3], awayScore:baseline[4]}, -1);
+            }
+            if (m.homeScore !== null && m.homeScore !== undefined && m.homeScore !== '' &&
+                m.awayScore !== null && m.awayScore !== undefined && m.awayScore !== '' &&
+                Number.isFinite(Number(m.homeScore)) && Number.isFinite(Number(m.awayScore))) {
+                callback(m, 1);
+            }
+        }
+    }
+
     function getSortedDivisionTeams(divNum) {
         const divData = appData[divNum];
         if (!divData || !divData.teams) return [];
@@ -6617,18 +6644,17 @@ body:has(#tab-premios.active) .top-bar {
             ...t, pj: Number(t.carryover?.pj)||0, pg: Number(t.carryover?.pg)||0, pe: Number(t.carryover?.pe)||0, pp: Number(t.carryover?.pp)||0, gf: Number(t.carryover?.gf)||0, gc: Number(t.carryover?.gc)||0, dg: 0, pts: Number(t.carryover?.pts)||0
         }));
 
-        divData.matches.forEach(m => {
-            if (Number(m.matchday) <= (divData.restructureCutoff || 0)) return;
-            if (m.homeScore !== null && m.awayScore !== null) {
+        forEachCountedLeagueResult(divData, divNum, undefined, (m, sign) => {
+            {
                 let home = stats.find(t => t.id === m.homeId);
                 let away = stats.find(t => t.id === m.awayId);
                 if (home && away) {
-                    home.pj++; away.pj++;
-                    home.gf += m.homeScore; home.gc += m.awayScore;
-                    away.gf += m.awayScore; away.gc += m.homeScore;
-                    if (m.homeScore > m.awayScore) { home.pg++; home.pts += 3; away.pp++; }
-                    else if (m.homeScore < m.awayScore) { away.pg++; away.pts += 3; home.pp++; }
-                    else { home.pe++; home.pts += 1; away.pe++; away.pts += 1; }
+                    home.pj += sign; away.pj += sign;
+                    home.gf += sign * m.homeScore; home.gc += sign * m.awayScore;
+                    away.gf += sign * m.awayScore; away.gc += sign * m.homeScore;
+                    if (m.homeScore > m.awayScore) { home.pg += sign; home.pts += sign * 3; away.pp += sign; }
+                    else if (m.homeScore < m.awayScore) { away.pg += sign; away.pts += sign * 3; home.pp += sign; }
+                    else { home.pe += sign; home.pts += sign * 1; away.pe += sign; away.pts += sign * 1; }
                 }
             }
         });
@@ -7464,18 +7490,16 @@ body:has(#tab-premios.active) .top-bar {
         if (!divData) return {};
         let tempStats = divData.teams.map(t => ({ id: t.id, pts: Number(t.carryover?.pts)||0, gf: Number(t.carryover?.gf)||0, gc: Number(t.carryover?.gc)||0, dg: 0 }));
         
-        const filteredMatches = divData.matches.filter(m => Number(m.matchday) > (divData.restructureCutoff || 0) && (matchesLimit === undefined || m.matchday <= matchesLimit));
-
-        filteredMatches.forEach(m => {
-            if (m.homeScore !== null && m.awayScore !== null) {
+        forEachCountedLeagueResult(divData, currentDiv, matchesLimit, (m, sign) => {
+            {
                 let home = tempStats.find(t => t.id === m.homeId);
                 let away = tempStats.find(t => t.id === m.awayId);
                 if (home && away) {
-                    home.gf += m.homeScore; home.gc += m.awayScore;
-                    away.gf += m.awayScore; away.gc += m.homeScore;
-                    if (m.homeScore > m.awayScore) home.pts += 3;
-                    else if (m.homeScore < m.awayScore) away.pts += 3;
-                    else { home.pts += 1; away.pts += 1; }
+                    home.gf += sign * m.homeScore; home.gc += sign * m.awayScore;
+                    away.gf += sign * m.awayScore; away.gc += sign * m.homeScore;
+                    if (m.homeScore > m.awayScore) home.pts += sign * 3;
+                    else if (m.homeScore < m.awayScore) away.pts += sign * 3;
+                    else { home.pts += sign * 1; away.pts += sign * 1; }
                 }
             }
         });
@@ -7513,25 +7537,24 @@ body:has(#tab-premios.active) .top-bar {
 
         let maxPlayedMD = 0;
 
-        divData.matches.forEach(m => {
-            if (Number(m.matchday) <= (divData.restructureCutoff || 0)) return;
-            if (m.homeScore !== null && m.awayScore !== null) {
+        forEachCountedLeagueResult(divData, currentDiv, undefined, (m, sign) => {
+            {
                 if (m.matchday > maxPlayedMD) maxPlayedMD = m.matchday;
                 let home = stats.find(t => t.id === m.homeId);
                 let away = stats.find(t => t.id === m.awayId);
                 
                 if (home && away) {
-                    home.pj++; away.pj++;
-                    home.gf += m.homeScore; home.gc += m.awayScore;
-                    away.gf += m.awayScore; away.gc += m.homeScore;
+                    home.pj += sign; away.pj += sign;
+                    home.gf += sign * m.homeScore; home.gc += sign * m.awayScore;
+                    away.gf += sign * m.awayScore; away.gc += sign * m.homeScore;
 
                     if (m.homeScore > m.awayScore) {
-                        home.pg++; home.pts += 3; away.pp++;
+                        home.pg += sign; home.pts += sign * 3; away.pp += sign;
                     } else if (m.homeScore < m.awayScore) {
-                        away.pg++; away.pts += 3; home.pp++;
+                        away.pg += sign; away.pts += sign * 3; home.pp += sign;
                     } else {
-                        home.pe++; home.pts += 1;
-                        away.pe++; away.pts += 1;
+                        home.pe += sign; home.pts += sign * 1;
+                        away.pe += sign; away.pts += sign * 1;
                     }
                 }
             }
@@ -7795,20 +7818,20 @@ body:has(#tab-premios.active) .top-bar {
     function getMatchdayTeamSnapshot(divData) {
         const rows = divData.teams.map(t => ({ id: t.id, pts: Number(t.carryover?.pts)||0, gf: Number(t.carryover?.gf)||0, gc: Number(t.carryover?.gc)||0, dg: 0, form: [] }));
         const byId = new Map(rows.map(t => [String(t.id), t]));
-        divData.matches.forEach((m, index) => {
-            if (Number(m.matchday) <= (divData.restructureCutoff || 0)) return;
+        forEachCountedLeagueResult(divData, currentDiv, undefined, (m, sign) => {
+            const index = (divData.matches || []).findIndex(x => String(x.id) === String(m.id));
             if (m.homeScore === null || m.homeScore === undefined || m.homeScore === '' ||
                 m.awayScore === null || m.awayScore === undefined || m.awayScore === '') return;
             const a = byId.get(String(m.homeId)), b = byId.get(String(m.awayId));
             if (!a || !b) return;
             const hs = Number(m.homeScore), as = Number(m.awayScore);
             if (!Number.isFinite(hs) || !Number.isFinite(as)) return;
-            a.gf += hs; a.gc += as; b.gf += as; b.gc += hs;
+            a.gf += sign * hs; a.gc += sign * as; b.gf += sign * as; b.gc += sign * hs;
             const outcome = hs > as ? ['W','L'] : hs < as ? ['L','W'] : ['D','D'];
-            a.pts += outcome[0] === 'W' ? 3 : outcome[0] === 'D' ? 1 : 0;
-            b.pts += outcome[1] === 'W' ? 3 : outcome[1] === 'D' ? 1 : 0;
-            a.form.push({md: Number(m.matchday) || 0, index, result: outcome[0]});
-            b.form.push({md: Number(m.matchday) || 0, index, result: outcome[1]});
+            a.pts += sign * (outcome[0] === 'W' ? 3 : outcome[0] === 'D' ? 1 : 0);
+            b.pts += sign * (outcome[1] === 'W' ? 3 : outcome[1] === 'D' ? 1 : 0);
+            if (sign > 0) a.form.push({md: Number(m.matchday) || 0, index, result: outcome[0]});
+            if (sign > 0) b.form.push({md: Number(m.matchday) || 0, index, result: outcome[1]});
         });
         rows.forEach(t => {
             t.dg = t.gf - t.gc;
