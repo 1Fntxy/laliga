@@ -7560,21 +7560,32 @@ body:has(#tab-premios.active) .top-bar {
             }
         });
 
-        // La forma reciente incluye partidos anteriores al corte de reestructuración.
-        // Esos resultados SOLO se usan para las letras V/D/E: los puntos, goles y
-        // partidos jugados siguen calculándose arriba, respetando carryover.
-        divData.matches.forEach((m, index) => {
-            if (m.homeScore == null || m.awayScore == null || m.homeScore === '' || m.awayScore === '') return;
+        // La forma de equipos trasladados se obtiene del arrastre del propio club,
+        // no de los partidos históricos de la plaza que ahora ocupa.
+        // El arrastre guarda cantidades de V/E/D, no su orden cronológico exacto.
+        stats.forEach(t => {
+            const c = t.carryover || {};
+            const carried = Math.max(0, Number(c.pj) || 0);
+            if (carried > 0) {
+                const w = Math.max(0, Number(c.pg) || 0);
+                const d = Math.max(0, Number(c.pe) || 0);
+                const l = Math.max(0, Number(c.pp) || 0);
+                const results = [...Array(Math.min(100,w)).fill('W'), ...Array(Math.min(100,d)).fill('D'), ...Array(Math.min(100,l)).fill('L')];
+                t.form = results.map((result,index) => ({matchday:-1,index,result}));
+            }
+        });
+        // Únicamente añadir resultados contabilizados después del traslado.
+        forEachCountedLeagueResult(divData, currentDiv, undefined, (m, sign) => {
+            if (sign !== 1) return;
             const hs = Number(m.homeScore), as = Number(m.awayScore);
-            if (!Number.isFinite(hs) || !Number.isFinite(as)) return;
             const home = stats.find(t => String(t.id) === String(m.homeId));
             const away = stats.find(t => String(t.id) === String(m.awayId));
             if (!home || !away) return;
             const outcomes = hs > as ? ['W', 'L'] : hs < as ? ['L', 'W'] : ['D', 'D'];
-            home.form.push({matchday: Number(m.matchday) || 0, index, result: outcomes[0]});
-            away.form.push({matchday: Number(m.matchday) || 0, index, result: outcomes[1]});
+            const index = (divData.matches || []).indexOf(m);
+            home.form.push({matchday:Number(m.matchday)||0,index,result:outcomes[0]});
+            away.form.push({matchday:Number(m.matchday)||0,index,result:outcomes[1]});
         });
-
         stats.forEach(t => {
             t.dg = t.gf - t.gc;
             t.form.sort((a, b) => a.matchday - b.matchday || a.index - b.index);
