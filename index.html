@@ -7877,10 +7877,8 @@ body:has(#tab-premios.active) .top-bar {
         container.innerHTML = currentMatches.map(m => {
             let home = divData.teams.find(t => t.id === m.homeId);
             let away = divData.teams.find(t => t.id === m.awayId);
-            if (Number(m.matchday) <= (divData.restructureCutoff || 0)) {
-                if (home && m.historicalHome) home = {...home,name:m.historicalHome,logo:m.historicalHomeLogo||home.logo};
-                if (away && m.historicalAway) away = {...away,name:m.historicalAway,logo:m.historicalAwayLogo||away.logo};
-            }
+            // Mostrar los nombres y escudos actuales en todas las jornadas,
+            // sin alterar resultados, incidencias ni estadísticas históricas.
             if (!home || !away) return '';
 
             if (!m.events) m.events = [];
