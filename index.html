@@ -7548,7 +7548,11 @@ body:has(#tab-premios.active) .top-bar {
             division: currentDiv,
             cutoff: divData.restructureCutoff || 0,
             teams: (divData.teams || []).map(t => [t.id,t.name,t.logo,t.carryover]),
-            matches: (divData.matches || []).map(m => [m.id,m.matchday,m.homeId,m.awayId,m.homeScore,m.awayScore])
+            matches: (divData.matches || []).map(m => [m.id,m.matchday,m.homeId,m.awayId,m.homeScore,m.awayScore]),
+            // La forma de un club trasladado depende también de partidos históricos de otras divisiones.
+            historicalForm: ['1','2','3'].flatMap(d => (appData[d]?.matches || []).filter(m =>
+                m.homeScore != null && m.awayScore != null && (m.historicalHome || m.historicalAway)
+            ).map(m => [d,m.id,m.matchday,m.historicalHome,m.historicalAway,m.homeScore,m.awayScore]))
         });
         if (standingsSignature === lastStandingsSignature && document.querySelector('#tab-clasificacion tbody tr')) return;
         lastStandingsSignature = standingsSignature;
@@ -7612,6 +7616,34 @@ body:has(#tab-premios.active) .top-bar {
             if (exact) {
                 t.form = actual;
             } else {
+                // Recuperar el orden REAL de las jornadas del club, incluso si sus
+                // partidos anteriores siguen archivados en su división de origen.
+                // Los IDs representan plazas y cambian con /moverequipo; por eso
+                // para el historial se usa el nombre histórico del participante.
+                const historicalKey = value => String(value || '').normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '').trim().toLowerCase().replace(/\s+/g, ' ');
+                const targetName = historicalKey(t.name);
+                const historical = [];
+                ['1','2','3'].forEach(division => {
+                    (appData[division]?.matches || []).forEach((m,index) => {
+                        if (m.homeScore == null || m.awayScore == null || m.homeScore === '' || m.awayScore === '') return;
+                        const hs = Number(m.homeScore), as = Number(m.awayScore);
+                        if (!Number.isFinite(hs) || !Number.isFinite(as)) return;
+                        const isHome = historicalKey(m.historicalHome) === targetName;
+                        const isAway = historicalKey(m.historicalAway) === targetName;
+                        if (isHome === isAway) return;
+                        const result = hs === as ? 'D' : (isHome ? hs > as : as > hs) ? 'W' : 'L';
+                        historical.push({matchday:Number(m.matchday)||0,index,division,result});
+                    });
+                });
+                historical.sort((a,b) => a.matchday - b.matchday || Number(a.division) - Number(b.division) || a.index - b.index);
+                const historicalExact = historical.length === total &&
+                    historical.filter(x => x.result === 'W').length === Number(t.pg) &&
+                    historical.filter(x => x.result === 'D').length === Number(t.pe) &&
+                    historical.filter(x => x.result === 'L').length === Number(t.pp);
+                if (historicalExact) {
+                    t.form = historical;
+                } else {
                 // Los clubes recién registrados o trasladados pueden conservar
                 // estadísticas de una plaza sin tener sus IDs en los partidos.
                 // Nunca duplicar resultados ni mostrar "Sin partidos" si PJ > 0.
@@ -7631,6 +7663,7 @@ body:has(#tab-premios.active) .top-bar {
                     for (let i=0;i<missing[result];i++) unknown.push({matchday:-1,index:unknown.length,result,orderUnknown:true});
                 });
                 t.form = unknown.concat(newMatches).slice(-Math.min(total,5));
+                }
             }
         });
         stats.forEach(t => {
