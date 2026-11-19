@@ -7560,19 +7560,21 @@ body:has(#tab-premios.active) .top-bar {
             }
         });
 
-        // La forma de equipos trasladados se obtiene del arrastre del propio club,
-        // no de los partidos históricos de la plaza que ahora ocupa.
-        // El arrastre guarda cantidades de V/E/D, no su orden cronológico exacto.
+        // Usar las jornadas reales para los equipos que siguen en su división.
+        // Solo los clubes trasladados necesitan reconstruir resultados del arrastre,
+        // pues Firebase conserva sus totales pero no el orden de esos partidos.
         stats.forEach(t => {
             const c = t.carryover || {};
             const carried = Math.max(0, Number(c.pj) || 0);
-            if (carried > 0) {
-                const w = Math.max(0, Number(c.pg) || 0);
-                const d = Math.max(0, Number(c.pe) || 0);
-                const l = Math.max(0, Number(c.pp) || 0);
-                const results = [...Array(Math.min(100,w)).fill('W'), ...Array(Math.min(100,d)).fill('D'), ...Array(Math.min(100,l)).fill('L')];
-                t.form = results.map((result,index) => ({matchday:-1,index,result}));
-            }
+            if (!carried) return;
+            const w = Math.max(0, Math.floor(Number(c.pg) || 0));
+            const d = Math.max(0, Math.floor(Number(c.pe) || 0));
+            const l = Math.max(0, Math.floor(Number(c.pp) || 0));
+            const kinds = [w, d, l].filter(n => n > 0).length;
+            // Si todos fueron del mismo tipo, el orden es inequívoco.
+            // Si hubo mezcla, no inventar una cronología que Firebase no guardó.
+            const result = kinds === 1 ? (w ? 'W' : d ? 'D' : 'L') : '?';
+            t.form = Array.from({length: Math.min(100,Math.floor(carried))}, (_,index) => ({matchday:-1,index,result}));
         });
         // Únicamente añadir resultados contabilizados después del traslado.
         forEachCountedLeagueResult(divData, currentDiv, undefined, (m, sign) => {
@@ -7608,7 +7610,8 @@ body:has(#tab-premios.active) .top-bar {
                 t.last5.forEach(res => {
                     if (res === 'W') formHTML += `<div class="form-dot win">V</div>`;
                     else if (res === 'L') formHTML += `<div class="form-dot loss">D</div>`;
-                    else formHTML += `<div class="form-dot draw">E</div>`;
+                    else if (res === 'D') formHTML += `<div class="form-dot draw">E</div>`;
+                    else formHTML += `<div class="form-dot draw" title="Orden histórico no disponible">?</div>`;
                 });
             }
             formHTML += '</div>';
