@@ -7560,38 +7560,57 @@ body:has(#tab-premios.active) .top-bar {
             }
         });
 
-        // Usar las jornadas reales para los equipos que siguen en su división.
-        // Solo los clubes trasladados necesitan reconstruir resultados del arrastre,
-        // pues Firebase conserva sus totales pero no el orden de esos partidos.
-        stats.forEach(t => {
-            const c = t.carryover || {};
-            const carried = Math.max(0, Number(c.pj) || 0);
-            if (!carried) return;
-            const w = Math.max(0, Math.floor(Number(c.pg) || 0));
-            const d = Math.max(0, Math.floor(Number(c.pe) || 0));
-            const l = Math.max(0, Math.floor(Number(c.pp) || 0));
-            const kinds = [w, d, l].filter(n => n > 0).length;
-            // Si todos fueron del mismo tipo, el orden es inequívoco.
-            // Si hubo mezcla, no inventar una cronología que Firebase no guardó.
-            const result = kinds === 1 ? (w ? 'W' : d ? 'D' : 'L') : '?';
-            t.form = Array.from({length: Math.min(100,Math.floor(carried))}, (_,index) => ({matchday:-1,index,result}));
-        });
-        // Únicamente añadir resultados contabilizados después del traslado.
-        forEachCountedLeagueResult(divData, currentDiv, undefined, (m, sign) => {
-            if (sign !== 1) return;
+        // Forma: leer cada partido REAL una sola vez y en orden de jornada.
+        // No usar forEachCountedLeagueResult aquí: sus ajustes +/- son para
+        // las estadísticas, no para representar partidos individuales.
+        const formByTeam = new Map(stats.map(t => [String(t.id), []]));
+        (divData.matches || []).forEach((m, index) => {
+            if (m.homeScore == null || m.awayScore == null || m.homeScore === '' || m.awayScore === '') return;
             const hs = Number(m.homeScore), as = Number(m.awayScore);
-            const home = stats.find(t => String(t.id) === String(m.homeId));
-            const away = stats.find(t => String(t.id) === String(m.awayId));
-            if (!home || !away) return;
-            const outcomes = hs > as ? ['W', 'L'] : hs < as ? ['L', 'W'] : ['D', 'D'];
-            const index = (divData.matches || []).indexOf(m);
-            home.form.push({matchday:Number(m.matchday)||0,index,result:outcomes[0]});
-            away.form.push({matchday:Number(m.matchday)||0,index,result:outcomes[1]});
+            if (!Number.isFinite(hs) || !Number.isFinite(as)) return;
+            const outcomes = hs > as ? ['W','L'] : hs < as ? ['L','W'] : ['D','D'];
+            const home = formByTeam.get(String(m.homeId));
+            const away = formByTeam.get(String(m.awayId));
+            if (home) home.push({matchday:Number(m.matchday)||0,index,result:outcomes[0]});
+            if (away) away.push({matchday:Number(m.matchday)||0,index,result:outcomes[1]});
+        });
+        stats.forEach(t => {
+            const actual = (formByTeam.get(String(t.id)) || []).sort((a,b) => a.matchday - b.matchday || a.index - b.index);
+            const total = Math.max(0, Math.floor(Number(t.pj)||0));
+            // El historial de la plaza puede pertenecer a otro club trasladado.
+            // Si coincide en cantidad y V/E/D con el equipo actual, sí es fiable.
+            const exact = actual.length === total &&
+                actual.filter(x => x.result === 'W').length === Number(t.pg) &&
+                actual.filter(x => x.result === 'D').length === Number(t.pe) &&
+                actual.filter(x => x.result === 'L').length === Number(t.pp);
+            if (exact) {
+                t.form = actual;
+            } else {
+                // Los clubes recién registrados o trasladados pueden conservar
+                // estadísticas de una plaza sin tener sus IDs en los partidos.
+                // Nunca duplicar resultados ni mostrar "Sin partidos" si PJ > 0.
+                const cutoff = Number(divData.restructureCutoff) || 0;
+                const newMatches = actual.filter(x => x.matchday > cutoff);
+                const used = {W:0,D:0,L:0};
+                newMatches.forEach(x => { used[x.result]++; });
+                const missing = {
+                    W: Math.max(0, (Number(t.pg)||0) - used.W),
+                    D: Math.max(0, (Number(t.pe)||0) - used.D),
+                    L: Math.max(0, (Number(t.pp)||0) - used.L)
+                };
+                // Los resultados sin partido identificable no tienen un orden
+                // cronológico comprobable; se agrupan y se marca la advertencia.
+                const unknown = [];
+                ['W','D','L'].forEach(result => {
+                    for (let i=0;i<missing[result];i++) unknown.push({matchday:-1,index:unknown.length,result,orderUnknown:true});
+                });
+                t.form = unknown.concat(newMatches).slice(-Math.min(total,5));
+            }
         });
         stats.forEach(t => {
             t.dg = t.gf - t.gc;
             t.form.sort((a, b) => a.matchday - b.matchday || a.index - b.index);
-            t.last5 = t.form.slice(-5).map(f => f.result);
+            t.last5 = t.form.slice(-5).map(f => ({result:f.result, orderUnknown:!!f.orderUnknown}));
         });
 
         stats.sort((a, b) => b.pts - a.pts || b.dg - a.dg || b.gf - a.gf);
@@ -7607,10 +7626,12 @@ body:has(#tab-premios.active) .top-bar {
             if (t.last5.length === 0) {
                 formHTML += '<span style="color:var(--text-muted); font-size:0.75rem;">Sin partidos</span>';
             } else {
-                t.last5.forEach(res => {
-                    if (res === 'W') formHTML += `<div class="form-dot win">V</div>`;
-                    else if (res === 'L') formHTML += `<div class="form-dot loss">D</div>`;
-                    else if (res === 'D') formHTML += `<div class="form-dot draw">E</div>`;
+                t.last5.forEach(entry => {
+                    const res = entry.result;
+                    const note = entry.orderUnknown ? ' title="Resultado acumulado; orden de jornada no disponible"' : '';
+                    if (res === 'W') formHTML += `<div class="form-dot win"${note}>V</div>`;
+                    else if (res === 'L') formHTML += `<div class="form-dot loss"${note}>D</div>`;
+                    else if (res === 'D') formHTML += `<div class="form-dot draw"${note}>E</div>`;
                     else formHTML += `<div class="form-dot draw" title="Orden histórico no disponible">?</div>`;
                 });
             }
