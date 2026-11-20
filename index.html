@@ -8136,27 +8136,47 @@ body:has(#tab-premios.active) .top-bar {
         }
     };
 
-    // Guardar explícitamente en Firebase antes de cerrar el editor de incidencias.
+    // Guardar solo el resultado/incidencias de este partido. No reescribir la
+    // división completa: el bot puede haber trasladado equipos en Firebase.
     window.saveAndCloseMatchEvents = async function(event, matchId) {
         event.stopPropagation();
         if (!isAdmin && !isStaff) return;
         const btn = event.currentTarget;
         if (btn.disabled) return;
         const initialText = btn.textContent;
+        const division = Number(currentDiv);
+        const localMatch = appData[division]?.matches?.find(m => String(m.id) === String(matchId));
+        if (!localMatch || !leagueReady) {
+            alert('❌ No se encontró el partido cargado. No se guardó nada.');
+            return;
+        }
         btn.disabled = true;
         btn.textContent = '⏳ Guardando incidencias...';
-        // Cancelar el guardado diferido: esta acción guarda inmediatamente.
         clearTimeout(autoSaveTimer);
         autoSaveTimer = null;
         try {
-            const ok = await saveStateToCloud();
-            if (!ok) throw new Error('No se pudo confirmar el guardado en Firebase.');
+            // Verificar que el partido no fue sustituido por un movimiento
+            // de equipos desde que esta pestaña lo cargó.
+            const freshDivision = await getDoc(leagueRefs[division]);
+            const currentMatch = freshDivision.data()?.matches?.find(m => String(m.id) === String(matchId));
+            if (!currentMatch || fixtureKey(currentMatch) !== fixtureKey(localMatch)) {
+                throw new Error('El calendario del partido cambió en Firebase. Recarga la página antes de editarlo.');
+            }
+            const payload = matchResult(localMatch);
+            await setDoc(doc(resultCollections[division], String(matchId)), payload);
+            // Este documento ya está guardado aunque existan cambios de otras
+            // secciones pendientes; no registrar falsamente esas ediciones como guardadas.
+            resultParts[division] ||= {};
+            resultParts[division][String(matchId)] = payload;
             openMatchEventsBoxes[matchId] = false;
             const box = document.getElementById(`match-events-box-${matchId}`);
             if (box) box.classList.remove('show');
+            // Dejar la reconstrucción de tablas al listener de Firebase,
+            // que combinará los resultados sin sobrescribir las divisiones.
+            queueLeagueSnapshotRender();
         } catch (error) {
-            console.error('Error guardando incidencias:', error);
-            alert('❌ No se pudieron guardar las incidencias. El apartado sigue abierto; inténtalo de nuevo.');
+            console.error('Error guardando incidencias del partido:', {division, matchId}, error);
+            alert('❌ No se pudieron guardar las incidencias. ' + (error?.message || 'Revisa la consola de Firebase.') + '\nEl apartado sigue abierto.');
         } finally {
             btn.disabled = false;
             btn.textContent = initialText;
