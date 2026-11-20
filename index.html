@@ -6648,7 +6648,9 @@ body:has(#tab-premios.active) .top-bar {
         for (const m of (divData.matches || [])) {
             if (matchesLimit !== undefined && Number(m.matchday) > matchesLimit) continue;
             const historical = Number(m.matchday) <= cutoff;
-            if (historical && Number(divNum) !== 3) continue;
+            // Excepción autorizada: un equipo trasladado vuelve a disputar J3.
+            // Solamente este encuentro se cuenta pese al corte histórico.
+            if (historical && Number(divNum) !== 3 && !m.countDespiteCutoff) continue;
             const baseline = historical ? historicalScoreBaselineD3[String(m.id)] : null;
             // Solo restar un resultado que realmente pertenecía al mismo enfrentamiento.
             if (baseline && Number(baseline[0]) === Number(m.matchday) &&
@@ -7623,14 +7625,22 @@ body:has(#tab-premios.active) .top-bar {
                 const historicalKey = value => String(value || '').normalize('NFD')
                     .replace(/[\u0300-\u036f]/g, '').trim().toLowerCase().replace(/\s+/g, ' ');
                 const targetName = historicalKey(t.name);
+                // Si una jornada anterior fue anulada para el club tras un traslado,
+                // conservar el marcador en el archivo histórico, pero excluirla
+                // únicamente de su forma actual (V/E/D). No afecta al rival.
+                const excludedHistorical = new Set(Array.isArray(t.excludedHistoricalFixtures) ? t.excludedHistoricalFixtures.map(String) : []);
                 const historical = [];
                 ['1','2','3'].forEach(division => {
                     (appData[division]?.matches || []).forEach((m,index) => {
+                        if (excludedHistorical.has(`${division}:${m.id}`)) return;
                         if (m.homeScore == null || m.awayScore == null || m.homeScore === '' || m.awayScore === '') return;
                         const hs = Number(m.homeScore), as = Number(m.awayScore);
                         if (!Number.isFinite(hs) || !Number.isFinite(as)) return;
-                        const isHome = historicalKey(m.historicalHome) === targetName;
-                        const isAway = historicalKey(m.historicalAway) === targetName;
+                        // En el encuentro excepcional de J3 se utiliza el ID actual
+                        // del club, pues sus nombres históricos son de otra plaza.
+                        const isSpecial = String(division) === String(currentDiv) && !!m.countDespiteCutoff;
+                        const isHome = isSpecial ? String(m.homeId) === String(t.id) : historicalKey(m.historicalHome) === targetName;
+                        const isAway = isSpecial ? String(m.awayId) === String(t.id) : historicalKey(m.historicalAway) === targetName;
                         if (isHome === isAway) return;
                         const result = hs === as ? 'D' : (isHome ? hs > as : as > hs) ? 'W' : 'L';
                         historical.push({matchday:Number(m.matchday)||0,index,division,result});
