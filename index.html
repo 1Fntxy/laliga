@@ -5554,7 +5554,34 @@ body:has(#tab-premios.active) .top-bar {
         });
     }
     function matchResult(m) {
-        return {fixture:fixtureKey(m),homeScore:cleanScore(m.homeScore),awayScore:cleanScore(m.awayScore),events:cleanEvents(m.events)};
+        const result = {fixture:fixtureKey(m),homeScore:cleanScore(m.homeScore),awayScore:cleanScore(m.awayScore),events:cleanEvents(m.events)};
+        // Solo los partidos NUEVOS jugados después del corte reciben esta marca.
+        // Se guarda junto al resultado (no reescribe los equipos en Firestore).
+        if (m.countDespiteCutoff === true) result.countDespiteCutoff = true;
+        return result;
+    }
+    function hasCompleteMatchScore(m) {
+        return cleanScore(m?.homeScore) !== null && cleanScore(m?.awayScore) !== null;
+    }
+    function markNewMatchWithinCutoff(division, match) {
+        const n = Number(division);
+        const cutoff = Number(appData[n]?.restructureCutoff) || 0;
+        if (n === 3 || !cutoff || Number(match.matchday) > cutoff || match.countDespiteCutoff === true) return;
+        if (!hasCompleteMatchScore(match)) return;
+        // Nunca transformar automáticamente un resultado histórico ya guardado
+        // en un partido nuevo: sus puntos pueden estar incluidos en carryover.
+        const original = (leagueParts[n]?.matches || []).find(m => String(m.id) === String(match.id));
+        const stored = resultParts[n]?.[String(match.id)];
+        if ((original && hasCompleteMatchScore(original)) || (stored && hasCompleteMatchScore(stored))) return;
+        match.countDespiteCutoff = true;
+    }
+    function divisionWithoutMatchResults(value) {
+        return {...value, matches:(value?.matches || []).map(m => {
+            const copy = {...m};
+            delete copy.homeScore; delete copy.awayScore; delete copy.events;
+            delete copy.countDespiteCutoff;
+            return copy;
+        })};
     }
     function applyStatDelta(div, before, after) {
         const counts=new Map();
@@ -5613,6 +5640,9 @@ body:has(#tab-premios.active) .top-bar {
                 m.homeScore=cleanScore(stored.homeScore);
                 m.awayScore=cleanScore(stored.awayScore);
                 m.events=newEvents;
+                // El marcador se guarda en liga_resultados, junto a la marca
+                // que indica que es un partido nuevo tras la reestructuración.
+                if (stored.countDespiteCutoff === true) m.countDespiteCutoff = true;
                 // Incidencias de partidos pendientes del corte también deben contabilizarse.
                 // Las ya registradas no se duplican: se aplica únicamente la diferencia.
                 applyStatDelta(div,oldEvents,newEvents);
@@ -5715,7 +5745,12 @@ body:has(#tab-premios.active) .top-bar {
                         }
                     }
                 } else {
-                    if(isAdmin) {
+                    // Registrar marcadores sin reescribir toda la división.
+                    // Solo los cambios estructurales (equipos, calendario, etc.)
+                    // necesitan una transacción sobre liga_divisiones.
+                    const structuralChange = leagueSignature(divisionWithoutMatchResults(value)) !==
+                        leagueSignature(divisionWithoutMatchResults(previous));
+                    if(isAdmin && structuralChange) {
                         // Nunca sobrescribir silenciosamente una división modificada en Firebase
                         // por el bot u otro administrador desde que se cargó este editor.
                         await runTransaction(db, async tx => {
@@ -5731,7 +5766,11 @@ body:has(#tab-premios.active) .top-bar {
                     for(const m of (value.matches||[])) {
                         const old=previousMatches.get(String(m.id));
                         if(!old || leagueSignature(matchResult(m))!==leagueSignature(matchResult(old))) {
-                            await setDoc(doc(resultCollections[i],String(m.id)),matchResult(m));
+                            markNewMatchWithinCutoff(i, m);
+                            const result = matchResult(m);
+                            await setDoc(doc(resultCollections[i],String(m.id)),result);
+                            resultParts[i] ||= {};
+                            resultParts[i][String(m.id)] = result;
                         }
                     }
                 }
@@ -8106,6 +8145,19 @@ body:has(#tab-premios.active) .top-bar {
                 </div>
             `;
         }).join('');
+        // D2 J3 reorganizada: mostrar el único descanso, sin dar puntos ni PJ.
+        // El aviso solo aparece tras ejecutar el reparador (cuatro cruces pendientes).
+        if (Number(currentDiv) === 2 && Number(currentMatchday) === 3 && currentMatches.length === 4) {
+            const resting = (divData.teams || []).find(t =>
+                String(t.name || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                    .toLowerCase().replace(/[^a-z0-9]/g, '') === 'atleticocostar');
+            if (resting && !currentMatches.some(m => String(m.homeId) === String(resting.id) || String(m.awayId) === String(resting.id))) {
+                const notice = document.createElement('div');
+                notice.style.cssText = 'padding:14px 18px;border:1px solid var(--border-color);border-radius:12px;background:var(--bg-subcard);color:var(--text-main);font-weight:700;text-align:center;';
+                notice.textContent = '⏸️ Descansa en la jornada 3: ' + resting.name + ' (sin sumar PJ ni puntos)';
+                container.appendChild(notice);
+            }
+        }
     }
 
     window.addEventListener('click', function(e) {
@@ -8172,6 +8224,7 @@ body:has(#tab-premios.active) .top-bar {
             if (!currentMatch || fixtureKey(currentMatch) !== fixtureKey(localMatch)) {
                 throw new Error('El calendario del partido cambió en Firebase. Recarga la página antes de editarlo.');
             }
+            markNewMatchWithinCutoff(division, localMatch);
             const payload = matchResult(localMatch);
             await setDoc(doc(resultCollections[division], String(matchId)), payload);
             // Este documento ya está guardado aunque existan cambios de otras
@@ -8279,6 +8332,7 @@ body:has(#tab-premios.active) .top-bar {
         const match = divData.matches.find(m => m.id === matchId);
         if (match) {
             match[type + 'Score'] = val === '' ? null : parseInt(val);
+            markNewMatchWithinCutoff(currentDiv, match);
             const statusEl = document.getElementById(`match-status-${matchId}`);
             if (statusEl) {
                 const finished = match.homeScore !== null && match.awayScore !== null && Number.isFinite(match.homeScore) && Number.isFinite(match.awayScore);
