@@ -7588,7 +7588,7 @@ body:has(#tab-premios.active) .top-bar {
         const standingsSignature = JSON.stringify({
             division: currentDiv,
             cutoff: divData.restructureCutoff || 0,
-            teams: (divData.teams || []).map(t => [t.id,t.name,t.logo,t.carryover]),
+            teams: (divData.teams || []).map(t => [t.id,t.name,t.logo,t.carryover,t.adminByeD2J3_2026]),
             matches: (divData.matches || []).map(m => [m.id,m.matchday,m.homeId,m.awayId,m.homeScore,m.awayScore]),
             // La forma de un club trasladado depende también de partidos históricos de otras divisiones.
             historicalForm: ['1','2','3'].flatMap(d => (appData[d]?.matches || []).filter(m =>
@@ -7647,6 +7647,19 @@ body:has(#tab-premios.active) .top-bar {
         });
         stats.forEach(t => {
             const actual = (formByTeam.get(String(t.id)) || []).sort((a,b) => a.matchday - b.matchday || a.index - b.index);
+            // Una victoria administrativa por descanso NO tiene marcador ni partido en el calendario.
+            // La marca escrita por el reparador de D2 J3 coloca la V después de las jornadas 1 y 2.
+            // Solo añadirla si faltaba exactamente una victoria, evitando inventar otros resultados.
+            if (String(currentDiv) === '2' && t.adminByeD2J3_2026?.type === 'victoria-administrativa-por-descanso') {
+                const totals = {W:Number(t.pg)||0, D:Number(t.pe)||0, L:Number(t.pp)||0};
+                const registered = {W:0,D:0,L:0};
+                actual.forEach(entry => { registered[entry.result]++; });
+                if (totals.W - registered.W === 1 && totals.D === registered.D && totals.L === registered.L &&
+                    !actual.some(entry => entry.matchday === 3)) {
+                    actual.push({matchday:3,index:Number.MAX_SAFE_INTEGER,result:'W',administrative:true});
+                    actual.sort((a,b) => a.matchday - b.matchday || a.index - b.index);
+                }
+            }
             const total = Math.max(0, Math.floor(Number(t.pj)||0));
             // El historial de la plaza puede pertenecer a otro club trasladado.
             // Si coincide en cantidad y V/E/D con el equipo actual, sí es fiable.
