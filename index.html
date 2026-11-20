@@ -7729,6 +7729,22 @@ body:has(#tab-premios.active) .top-bar {
             }
         });
         stats.forEach(t => {
+            // D2 J3: resultado administrativo de descanso, marcado en Firebase.
+            // Como no existe un partido para esa victoria, reconstruimos su orden
+            // solo cuando coinciden exactamente los totales oficiales (2D, 1V).
+            // No modifica puntos, estadísticas ni resultados de otros equipos.
+            const bye = t.adminByeD2J3_2026;
+            if (String(currentDiv) === '2' &&
+                bye?.type === 'victoria-administrativa-por-descanso' &&
+                Number(bye.matchday) === 3 &&
+                Number(t.pj) === 3 && Number(t.pg) === 1 &&
+                Number(t.pe) === 0 && Number(t.pp) === 2) {
+                t.form = [
+                    {matchday:1,index:0,result:'L'},
+                    {matchday:2,index:1,result:'L'},
+                    {matchday:3,index:2,result:'W',administrative:true}
+                ];
+            }
             t.dg = t.gf - t.gc;
             t.form.sort((a, b) => a.matchday - b.matchday || a.index - b.index);
             t.last5 = t.form.slice(-5).map(f => ({result:f.result, orderUnknown:!!f.orderUnknown}));
