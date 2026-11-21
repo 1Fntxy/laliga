@@ -6057,7 +6057,13 @@ body.market-mode #sub-tabs-container{display:none!important}
     },error=>{console.error('Error leyendo amistosos',error);friendlyResults={};queueLeagueSnapshotRender();});
 
     async function saveStateToCloud() {
-        if((!isAdmin&&!isStaff)||!leagueReady||leagueSaveInProgress)return false;
+        if ((!isAdmin && !isStaff) || !leagueReady) return false;
+        // Si ya hay un guardado activo, esperar a que termine antes de iniciar otro.
+        // Antes se devolvía false y la interfaz decía «Error», aunque Firebase
+        // hubiera guardado correctamente la primera operación.
+        while (leagueSaveInProgress) {
+            await new Promise(resolve => setTimeout(resolve, 120));
+        }
         const parts=[leagueMetadata(appData),appData[1],appData[2],appData[3]];
         const changes=parts.map((value,i)=>({i,value,signature:leagueSignature(value)}))
             .filter(({i,signature})=>signature!==effectiveSignatures[i]);
