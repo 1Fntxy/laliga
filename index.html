@@ -4235,6 +4235,45 @@ body.market-mode #sub-tabs-container{display:none!important}
 @media(max-width:600px){.liga-market-players,.liga-market-info-grid{grid-template-columns:1fr}.liga-market-tabs{display:grid;grid-template-columns:1fr 1fr}.liga-market-tab:last-child{grid-column:1 / -1}}
 </style>
 
+<style id="liga-market-premium-2026">
+/* Tarjetas y controles exclusivos del mercado. No alteran otras pestañas. */
+#tab-mercado .liga-market-panel{background:linear-gradient(160deg,var(--bg-card,#202b3d),var(--bg-subcard,#131c2d));padding:24px!important}
+#tab-mercado .liga-market-players{grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+#tab-mercado .liga-market-item{position:relative;overflow:hidden;gap:12px;padding:17px;background:var(--bg-subcard);border:1px solid var(--border-color);border-radius:15px;box-shadow:0 8px 24px rgba(0,0,0,.09);transition:border-color .2s,transform .2s}
+#tab-mercado .liga-market-item:hover{border-color:rgba(239,63,79,.55);transform:translateY(-2px)}
+#tab-mercado .liga-market-player-head{display:flex;align-items:center;gap:11px;min-width:0}
+#tab-mercado .liga-market-shield{width:50px;height:50px;flex:0 0 50px;object-fit:contain;border-radius:12px;background:rgba(126,142,165,.10);padding:5px}
+#tab-mercado .liga-market-shield-fallback{display:grid;place-items:center;font-size:23px}
+#tab-mercado .liga-market-player-info{min-width:0;flex:1}
+#tab-mercado .liga-market-player-info h4{margin:2px 0!important;line-height:1.25;font-size:17px;overflow-wrap:anywhere}
+#tab-mercado .liga-market-club{display:block;font-size:11px;overflow-wrap:anywhere}
+#tab-mercado .liga-market-tags{display:flex;gap:7px;flex-wrap:wrap}
+#tab-mercado .liga-market-tag{font-weight:800;font-size:11px;padding:5px 9px;background:rgba(126,142,165,.12);border:1px solid var(--border-color);color:var(--text-primary);border-radius:7px}
+#tab-mercado .liga-market-tag.liga-market-price-tag{background:rgba(229,47,70,.10);color:var(--laliga-red);border-color:rgba(229,47,70,.25)}
+#tab-mercado .liga-market-statline{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+#tab-mercado .liga-market-stat{background:rgba(120,139,170,.075);border:1px solid var(--border-color);border-radius:9px;text-align:center;padding:8px 2px}
+#tab-mercado .liga-market-stat strong{display:block;color:var(--text-primary);font-size:17px}
+#tab-mercado .liga-market-stat small{display:block;font-size:10px;color:var(--text-muted);margin-top:2px}
+#tab-mercado .liga-market-money{padding-top:10px;border-top:1px solid var(--border-color);display:flex;justify-content:space-between;gap:8px;align-items:end}
+#tab-mercado .liga-market-money small{display:block;color:var(--text-muted);font-size:10px;font-weight:700}
+#tab-mercado .liga-market-money .liga-market-price{font-size:21px;line-height:1.4}
+#tab-mercado .liga-market-money .liga-market-value{font-size:13px;font-weight:800;color:var(--text-primary);text-align:right}
+#tab-mercado .liga-market-note{color:var(--text-muted);font-size:11px;margin:0}
+#tab-mercado .liga-market-toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:15px}
+#tab-mercado .liga-market-toolbar input,#tab-mercado .liga-market-toolbar select{min-width:0;border:1px solid var(--border-color);background:var(--bg-subcard);color:var(--text-primary);border-radius:10px;padding:10px 12px;min-height:40px;font-size:13px}
+#tab-mercado .liga-market-toolbar input{flex:2 1 180px}
+#tab-mercado .liga-market-toolbar select{flex:1 1 125px;cursor:pointer}
+#tab-mercado .liga-market-toolbar input::placeholder{color:var(--text-muted)}
+#tab-mercado .liga-market-summary{display:flex;gap:9px;flex-wrap:wrap;margin:0 0 18px}
+#tab-mercado .liga-market-summary-chip{border:1px solid var(--border-color);background:rgba(120,139,170,.07);border-radius:10px;padding:10px 14px;min-width:130px}
+#tab-mercado .liga-market-summary-chip strong{font-size:17px;display:block;color:var(--text-primary)}
+#tab-mercado .liga-market-summary-chip small{font-size:10px;color:var(--text-muted);font-weight:800;text-transform:uppercase}
+#tab-mercado .liga-market-info-row{font-size:12px;color:var(--text-muted);margin:0}
+#tab-mercado .liga-market-route{color:var(--text-primary);font-size:12px;font-weight:800;line-height:1.5}
+#tab-mercado .liga-market-compact-price{font-size:19px!important}
+@media(max-width:1080px){#tab-mercado .liga-market-players{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:660px){#tab-mercado .liga-market-players{grid-template-columns:1fr}#tab-mercado .liga-market-panel{padding:14px!important}#tab-mercado .liga-market-summary-chip{flex:1}}
+</style>
 <style id="liga-market-tabs-mobile-fix">
 @media(max-width:620px){
 #sub-tabs-container{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;overflow:visible!important}
@@ -4397,6 +4436,74 @@ body.market-mode #sub-tabs-container{display:none!important}
 }
 </style>
 
+<style id="liga-market-motion-2026">
+/* Solo animaciones visuales: no cambia datos, clics, filtros o Firebase. */
+@keyframes ligaMarketAppear {
+  from {opacity:0;transform:translateY(9px)}
+  to {opacity:1;transform:translateY(0)}
+}
+@keyframes ligaMarketTabAppear {
+  from {opacity:.35;transform:translateY(5px)}
+  to {opacity:1;transform:translateY(0)}
+}
+@keyframes ligaMarketShine {
+  from {transform:translateX(-160%) skewX(-20deg)}
+  to {transform:translateX(360%) skewX(-20deg)}
+}
+#tab-mercado .liga-market-tab {
+  position:relative;overflow:hidden;
+  transition:background-color .22s ease,border-color .22s ease,box-shadow .22s ease,transform .22s cubic-bezier(.2,.8,.2,1),filter .22s ease!important;
+}
+#tab-mercado .liga-market-tab:hover {transform:translateY(-3px)!important;box-shadow:0 8px 20px rgba(232,38,57,.18)}
+#tab-mercado .liga-market-tab:active {transform:translateY(0) scale(.96)!important;filter:brightness(.95)}
+#tab-mercado .liga-market-tab.active {box-shadow:0 8px 23px rgba(232,38,57,.23),inset 0 1px 0 rgba(255,255,255,.12)!important}
+#tab-mercado .liga-market-tab.active::after {
+  content:"";position:absolute;inset:-12% auto -12% 0;width:30%;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent);
+  transform:translateX(-160%) skewX(-20deg);
+}
+#tab-mercado .liga-market-tab.active:hover::after {animation:ligaMarketShine .65s ease-out both}
+#tab-mercado .liga-market-subcontent.active {animation:ligaMarketTabAppear .28s ease-out both}
+#tab-mercado .liga-market-item {
+  transition:transform .24s cubic-bezier(.2,.8,.2,1),box-shadow .24s ease,border-color .24s ease,background-color .24s ease!important;
+  animation:ligaMarketAppear .3s ease-out both;
+}
+#tab-mercado .liga-market-item:hover {
+  transform:translateY(-5px)!important;border-color:rgba(239,63,79,.65)!important;
+  box-shadow:0 15px 28px rgba(0,0,0,.18),0 0 0 1px rgba(239,63,79,.1)!important;
+}
+#tab-mercado .liga-market-item:active {transform:translateY(-2px)!important}
+#tab-mercado .liga-market-shield {transition:transform .3s ease,filter .3s ease}
+#tab-mercado .liga-market-item:hover .liga-market-shield {transform:scale(1.07);filter:drop-shadow(0 2px 8px rgba(239,63,79,.2))}
+#tab-mercado .liga-market-stat,#tab-mercado .liga-market-summary-chip {
+  transition:transform .2s ease,background-color .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+#tab-mercado .liga-market-stat:hover,#tab-mercado .liga-market-summary-chip:hover {
+  transform:translateY(-2px);border-color:rgba(239,63,79,.36);
+  background:rgba(232,38,57,.07);box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+#tab-mercado .liga-market-toolbar input,#tab-mercado .liga-market-toolbar select {
+  transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease,background-color .2s ease;
+}
+#tab-mercado .liga-market-toolbar input:hover,#tab-mercado .liga-market-toolbar select:hover {border-color:rgba(239,63,79,.55)}
+#tab-mercado .liga-market-toolbar input:focus,#tab-mercado .liga-market-toolbar select:focus {
+  outline:none;border-color:var(--laliga-red);box-shadow:0 0 0 3px rgba(232,38,57,.15);
+}
+#tab-mercado .liga-market-tag {transition:background-color .2s ease,transform .2s ease}
+#tab-mercado .liga-market-tag:hover {background:rgba(232,38,57,.10);transform:translateY(-1px)}
+#btn-top-mercado {transition:transform .2s ease,box-shadow .2s ease,filter .2s ease!important}
+#btn-top-mercado:hover {transform:translateY(-2px);box-shadow:0 6px 18px rgba(16,180,120,.15)}
+#btn-top-mercado:active {transform:scale(.97)}
+@media (prefers-reduced-motion:reduce) {
+  #tab-mercado .liga-market-item,#tab-mercado .liga-market-subcontent.active,
+  #tab-mercado .liga-market-tab.active:hover::after {animation:none!important}
+  #tab-mercado .liga-market-item,#tab-mercado .liga-market-tab,#tab-mercado .liga-market-shield,
+  #tab-mercado .liga-market-stat,#tab-mercado .liga-market-summary-chip,
+  #tab-mercado .liga-market-toolbar input,#tab-mercado .liga-market-toolbar select,
+  #tab-mercado .liga-market-tag,#btn-top-mercado {transition:none!important}
+}
+</style>
+
 </head>
 <body>
 
@@ -4526,6 +4633,16 @@ body.market-mode #sub-tabs-container{display:none!important}
 
     <div id="market-subtab-ventas" class="liga-market-subcontent active">
       <span class="liga-market-highlight">Jugadores publicados en venta por sus equipos</span>
+      <div class="liga-market-summary" id="liga-market-summary" aria-live="polite">
+        <div class="liga-market-summary-chip"><strong id="liga-market-count">0</strong><small>En venta</small></div>
+        <div class="liga-market-summary-chip"><strong id="liga-market-club-count">0</strong><small>Clubes vendedores</small></div>
+      </div>
+      <div class="liga-market-toolbar" role="search" aria-label="Filtrar jugadores en venta">
+        <input id="liga-market-search" type="search" placeholder="🔎 Buscar jugador o equipo…" autocomplete="off" aria-label="Buscar jugador o equipo">
+        <select id="liga-market-division" aria-label="Filtrar por división"><option value="">Todas las divisiones</option><option value="1">Primera División</option><option value="2">Segunda División</option></select>
+        <select id="liga-market-position" aria-label="Filtrar por posición"><option value="">Todas las posiciones</option><option value="POR">🧤 Porteros</option><option value="DEF">🛡️ Defensas</option><option value="MED">🎯 Mediocampistas</option><option value="DEL">⚽ Delanteros</option></select>
+        <select id="liga-market-order" aria-label="Ordenar jugadores"><option value="recent">Más recientes</option><option value="price-asc">Precio: menor a mayor</option><option value="price-desc">Precio: mayor a menor</option><option value="value-desc">Mayor valor de mercado</option></select>
+      </div>
       <div class="liga-market-players" id="liga-market-list" aria-live="polite"><p class="liga-market-empty">Cargando jugadores transferibles…</p></div>
     </div>
 
@@ -5405,20 +5522,99 @@ body.market-mode #sub-tabs-container{display:none!important}
         el.textContent=String(text ?? '');
         return el;
     };
-    onSnapshot(collection(db,'liga_mercado_publicaciones'),snapshot=>{
+    // Vista enriquecida de los anuncios: cruza publicaciones con plantillas públicas.
+    // Solo lecturas: no crea ofertas, no modifica presupuestos ni cambia roles.
+    const marketPositionLabels={POR:'🧤 Portero',DEF:'🛡️ Defensa',MED:'🎯 Mediocampista',DEL:'⚽ Delantero'};
+    let marketPublicListings=[];
+    const marketDivisionData={'1':null,'2':null};
+    const marketRosterInfo = listing => {
+        const division=String(listing.division||'1');
+        const teams=marketDivisionData[division]?.teams;
+        if(!Array.isArray(teams))return {player:null,team:null};
+        const team=teams.find(t=>String(t.id)===String(listing.teamId)) ||
+                   teams.find(t=>String(t.name||'').trim().toLowerCase()===String(listing.teamName||'').trim().toLowerCase());
+        if(!team)return {player:null,team:null};
+        const player=(Array.isArray(team.roster)?team.roster:[]).find(p=>
+            (listing.playerId && String(p.discordId||'')===String(listing.playerId)) ||
+            String(p.name||'').trim().toLowerCase()===String(listing.playerName||'').trim().toLowerCase());
+        return {player:player||null,team};
+    };
+    const marketSalePosition = p => String(marketRosterInfo(p).player?.pos || p.pos || '').toUpperCase();
+    const marketAddStat = (card,label,value) => {
+        const stat=marketNode('div','liga-market-stat','');
+        stat.append(marketNode('strong','',value),marketNode('small','',label));
+        card.append(stat);
+    };
+    function renderMarketSales(){
         if(!marketList)return;
-        const items=snapshot.docs.map(d=>d.data()).filter(p=>p.active && String(p.division||'1')!=='3').sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+        const search=String(document.getElementById('liga-market-search')?.value||'').toLocaleLowerCase('es').trim();
+        const division=String(document.getElementById('liga-market-division')?.value||'');
+        const position=String(document.getElementById('liga-market-position')?.value||'');
+        const order=document.getElementById('liga-market-order')?.value||'recent';
+        const listings=marketPublicListings.filter(p=>
+            (!search || `${p.playerName||''} ${p.teamName||''}`.toLocaleLowerCase('es').includes(search)) &&
+            (!division || String(p.division||'1')===division) &&
+            (!position || marketSalePosition(p)===position)
+        );
+        const num=(p,key)=>Number(p?.[key])||0;
+        listings.sort((a,b)=>order==='price-asc'?num(a,'price')-num(b,'price'):
+            order==='price-desc'?num(b,'price')-num(a,'price'):
+            order==='value-desc'?num(b,'value')-num(a,'value'):
+            num(b,'updatedAt')-num(a,'updatedAt'));
+        document.getElementById('liga-market-count').textContent=String(marketPublicListings.length);
+        document.getElementById('liga-market-club-count').textContent=String(new Set(marketPublicListings.map(p=>`${p.division}:${p.teamId||p.teamName}`)).size);
         marketList.replaceChildren();
-        if(!items.length){marketList.append(marketNode('p','liga-market-empty','Todavía no hay jugadores en venta.'));return;}
-        for(const p of items){
+        if(!listings.length){marketList.append(marketNode('p','liga-market-empty',marketPublicListings.length?'No hay jugadores que coincidan con los filtros.':'Todavía no hay jugadores en venta.'));return;}
+        for(const p of listings){
+            const {player,team}=marketRosterInfo(p);
+            const pos=String(player?.pos||p.pos||'').toUpperCase();
             const card=marketNode('article','liga-market-item','');
-            card.append(marketNode('span','liga-market-club',p.teamName||'Equipo'));
-            card.append(marketNode('h4','',p.playerName||'Jugador'));
-            card.append(marketNode('div','liga-market-price',marketEur(p.price)));
-            card.append(marketNode('div','liga-market-value','Valor de mercado: '+marketEur(p.value)));
-            card.append(marketNode('div','liga-market-value','Para ofertar usa /ofertar en Discord'));
+            const head=marketNode('div','liga-market-player-head','');
+            const logo=String(team?.logo||'').trim();
+            if(/^https:\/\/[^\s]+$/i.test(logo)){
+                const shield=document.createElement('img');
+                shield.className='liga-market-shield';shield.src=logo;shield.alt='Escudo del equipo';shield.loading='lazy';
+                shield.referrerPolicy='no-referrer';
+                shield.onerror=()=>shield.replaceWith(marketNode('div','liga-market-shield liga-market-shield-fallback','🛡️'));
+                head.append(shield);
+            }else head.append(marketNode('div','liga-market-shield liga-market-shield-fallback','🛡️'));
+            const info=marketNode('div','liga-market-player-info','');
+            info.append(marketNode('span','liga-market-club',p.teamName||team?.name||'Equipo'));
+            info.append(marketNode('h4','',p.playerName||player?.name||'Jugador'));
+            head.append(info);card.append(head);
+            const tags=marketNode('div','liga-market-tags','');
+            tags.append(marketNode('span','liga-market-tag',marketPositionLabels[pos]||'📋 Posición sin registrar'));
+            tags.append(marketNode('span','liga-market-tag',`D${p.division||'1'}`));
+            if(player?.num!=null)tags.append(marketNode('span','liga-market-tag',`#${player.num}`));
+            card.append(tags);
+            if(player){
+                const stats=marketNode('div','liga-market-statline','');
+                marketAddStat(stats,'⚽ Goles',Number(player.goals)||0);
+                marketAddStat(stats,'🎯 Asistencias',Number(player.assists)||0);
+                marketAddStat(stats,'🧤 Atajadas',Number(player.saves)||0);
+                card.append(stats);
+            }
+            const prices=marketNode('div','liga-market-money','');
+            const selling=marketNode('div','','');selling.append(marketNode('small','','PRECIO DE VENTA'),marketNode('div','liga-market-price',marketEur(p.price)));
+            const value=marketNode('div','','');value.append(marketNode('small','','VALOR DE MERCADO'),marketNode('div','liga-market-value',marketEur(p.value)));
+            prices.append(selling,value);card.append(prices);
+            card.append(marketNode('p','liga-market-note','💬 Para ofertar, utiliza /ofertar en Discord'));
             marketList.append(card);
         }
+    }
+    for(const id of ['liga-market-search','liga-market-division','liga-market-position','liga-market-order']){
+        const input=document.getElementById(id);
+        input?.addEventListener(id==='liga-market-search'?'input':'change',renderMarketSales);
+    }
+    for(const division of ['1','2']){
+        onSnapshot(doc(db,'liga_divisiones',division),snap=>{
+            marketDivisionData[division]=snap.exists()?snap.data():null;
+            renderMarketSales();
+        },error=>console.warn('No se pudo cargar la plantilla de D'+division+' en el mercado:',error));
+    }
+    onSnapshot(collection(db,'liga_mercado_publicaciones'),snapshot=>{
+        marketPublicListings=snapshot.docs.map(d=>d.data()).filter(p=>p.active&&String(p.division||'1')!=='3');
+        renderMarketSales();
     },error=>{
         if(marketList)marketList.replaceChildren(marketNode('p','liga-market-empty','No se pudo consultar el mercado. Revisa las reglas de lectura de Firebase.'));
         console.warn('Mercado de transferencias: consulta no disponible',error);
@@ -5457,7 +5653,7 @@ body.market-mode #sub-tabs-container{display:none!important}
         if(!purchases.length){marketPurchases.append(marketNode('p','liga-market-empty','Todavía no hay compras registradas.'));return;}
         for(const p of purchases){
             const card=marketNode('article','liga-market-item','');
-            card.append(marketNode('span','liga-market-club',`${p.sellerName||'Club vendedor'} → ${p.buyerName||'Club comprador'}`));
+            card.append(marketNode('div','liga-market-route',`${p.sellerName||'Club vendedor'} → ${p.buyerName||'Club comprador'}`));
             card.append(marketNode('h4','',p.playerName||'Jugador'));
             card.append(marketNode('div','liga-market-price',marketEur(p.amount)));
             marketField(card,'Fecha',marketDate(p.completedAt));
@@ -5473,7 +5669,7 @@ body.market-mode #sub-tabs-container{display:none!important}
         if(!loans.length){marketLoansList.append(marketNode('p','liga-market-empty','No hay préstamos activos.'));return;}
         for(const p of loans){
             const card=marketNode('article','liga-market-item','');
-            card.append(marketNode('span','liga-market-club',`${p.ownerName||'Propietario'} → ${p.receiverName||'Receptor'}`));
+            card.append(marketNode('div','liga-market-route',`${p.ownerName||'Propietario'} → ${p.receiverName||'Receptor'}`));
             card.append(marketNode('h4','',p.playerName||'Jugador'));
             marketField(card,'Duración',`${Number(p.days)||0} días`);
             marketField(card,'Costo',marketEur(p.fee));
@@ -6056,89 +6252,8 @@ body.market-mode #sub-tabs-container{display:none!important}
         queueLeagueSnapshotRender();
     },error=>{console.error('Error leyendo amistosos',error);friendlyResults={};queueLeagueSnapshotRender();});
 
-    // Escudos: guardar exclusivamente el logo del equipo, sin reescribir el
-    // resto de la división (que también modifica el bot de Discord).
-    function logoOnlyEdits(before, after) {
-        const oldTeams = before?.teams || [], newTeams = after?.teams || [];
-        if (!Array.isArray(oldTeams) || !Array.isArray(newTeams) || oldTeams.length !== newTeams.length) return null;
-        const withoutLogos = data => {
-            const copy = leagueClone(data);
-            (copy.teams || []).forEach(t => { delete t.logo; });
-            return divisionWithoutMatchResults(copy);
-        };
-        if (leagueSignature(withoutLogos(before)) !== leagueSignature(withoutLogos(after))) return null;
-        const edits=[];
-        for (let n=0;n<oldTeams.length;n++) {
-            const oldTeam=oldTeams[n], newTeam=newTeams[n];
-            if (String(oldTeam.id)!==String(newTeam.id)) return null;
-            if ((oldTeam.logo || '') !== (newTeam.logo || '')) {
-                edits.push({id:String(oldTeam.id),name:String(oldTeam.name),before:oldTeam.logo || '',after:newTeam.logo || ''});
-            }
-        }
-        return edits.length ? edits : null;
-    }
-    async function saveOnlyTeamLogos(division, edits) {
-        const ref=leagueRefs[division];
-        const written=await runTransaction(db,async tx=>{
-            const snap=await tx.get(ref);
-            if(!snap.exists())throw new Error('La división ya no existe. Recarga la página.');
-            const live=snap.data();
-            if(!Array.isArray(live.teams)||live.teams.length!==16)throw new Error('La plantilla de equipos cambió. Recarga la página.');
-            const updated=live.teams.map(team=>({...team}));
-            for(const edit of edits){
-                const team=updated.find(t=>String(t.id)===edit.id);
-                if(!team || String(team.name)!==edit.name)throw new Error('El equipo cambió de plaza o nombre. Recarga antes de guardar.');
-                if((team.logo || '')!==edit.before && (team.logo || '')!==edit.after)
-                    throw new Error('Otra persona cambió ese escudo. Recarga antes de guardar.');
-                team.logo=edit.after;
-            }
-            tx.update(ref,{teams:updated});
-            return {...live,teams:updated};
-        });
-        // Mantener sincronizado el estado local incluso si el listener tarda.
-        leagueParts[division]=written;
-        leagueSignatures[division]=leagueSignature(written);
-    }
-
-    // Las incidencias recalculan goles/asistencias/atajadas de la plantilla en memoria.
-    // Estas cifras son derivadas de liga_resultados, NO un cambio estructural del
-    // documento de la división. Evitar transacciones innecesarias que daban Error
-    // aunque el botón verde hubiese guardado correctamente el partido.
-    function onlyDerivedRosterStatsChanged(previous, current) {
-        if (!previous || !current) return false;
-        const oldResults = (previous.matches || []).map(m => matchResult(m));
-        const newResults = (current.matches || []).map(m => matchResult(m));
-        if (leagueSignature(oldResults) === leagueSignature(newResults)) return false;
-        const clean = (value, baseline) => {
-            const copy = leagueClone(divisionWithoutMatchResults(value));
-            const byTeam = new Map((baseline.teams || []).map(t => [String(t.id), t]));
-            for (const team of copy.teams || []) {
-                const oldTeam = byTeam.get(String(team.id));
-                if (!oldTeam) return null;
-                const oldPlayers = new Map((oldTeam.roster || []).map(p => [String(p.discordId || '') + '\u0000' + String(p.name), p]));
-                for (const player of team.roster || []) {
-                    const old = oldPlayers.get(String(player.discordId || '') + '\u0000' + String(player.name));
-                    if (!old) return null;
-                    for (const field of ['goals', 'assists', 'saves']) {
-                        if (Object.prototype.hasOwnProperty.call(old, field)) player[field] = old[field];
-                        else delete player[field];
-                    }
-                }
-            }
-            return copy;
-        };
-        const normalized=clean(current, previous);
-        return normalized !== null && leagueSignature(normalized) === leagueSignature(divisionWithoutMatchResults(previous));
-    }
-
     async function saveStateToCloud() {
-        if ((!isAdmin && !isStaff) || !leagueReady) return false;
-        // Si ya hay un guardado activo, esperar a que termine antes de iniciar otro.
-        // Antes se devolvía false y la interfaz decía «Error», aunque Firebase
-        // hubiera guardado correctamente la primera operación.
-        while (leagueSaveInProgress) {
-            await new Promise(resolve => setTimeout(resolve, 120));
-        }
+        if((!isAdmin&&!isStaff)||!leagueReady||leagueSaveInProgress)return false;
         const parts=[leagueMetadata(appData),appData[1],appData[2],appData[3]];
         const changes=parts.map((value,i)=>({i,value,signature:leagueSignature(value)}))
             .filter(({i,signature})=>signature!==effectiveSignatures[i]);
@@ -6165,25 +6280,18 @@ body.market-mode #sub-tabs-container{display:none!important}
                     // Solo los cambios estructurales (equipos, calendario, etc.)
                     // necesitan una transacción sobre liga_divisiones.
                     const structuralChange = leagueSignature(divisionWithoutMatchResults(value)) !==
-                        leagueSignature(divisionWithoutMatchResults(previous)) &&
-                        !onlyDerivedRosterStatsChanged(previous, value);
+                        leagueSignature(divisionWithoutMatchResults(previous));
                     if(isAdmin && structuralChange) {
-                        const logoEdits=logoOnlyEdits(previous,value);
-                        if(logoEdits){
-                            // El cambio de escudo no debe fallar por marcadores o fichajes
-                            // realizados entre tanto, ni sobrescribir esas operaciones.
-                            await saveOnlyTeamLogos(i,logoEdits);
-                        }else{
-                            // Cambios estructurales: conservar la validación estricta.
-                            await runTransaction(db, async tx => {
-                                const live = await tx.get(leagueRefs[i]);
-                                if (!live.exists()) throw new Error('La división fue eliminada; recarga la página.');
-                                if (leagueSignature(live.data()) !== leagueSignature(previous)) {
-                                    throw new Error('La división cambió en Firebase (posible traslado del bot). Recarga la página antes de guardar para no sobrescribir equipos.');
-                                }
-                                tx.set(leagueRefs[i], value);
-                            });
-                        }
+                        // Nunca sobrescribir silenciosamente una división modificada en Firebase
+                        // por el bot u otro administrador desde que se cargó este editor.
+                        await runTransaction(db, async tx => {
+                            const live = await tx.get(leagueRefs[i]);
+                            if (!live.exists()) throw new Error('La división fue eliminada; recarga la página.');
+                            if (leagueSignature(live.data()) !== leagueSignature(previous)) {
+                                throw new Error('La división cambió en Firebase (posible traslado del bot). Recarga la página antes de guardar para no sobrescribir equipos.');
+                            }
+                            tx.set(leagueRefs[i], value);
+                        });
                     }
                     const previousMatches=new Map((previous.matches||[]).map(m=>[String(m.id),m]));
                     for(const m of (value.matches||[])) {
@@ -6195,12 +6303,6 @@ body.market-mode #sub-tabs-container{display:none!important}
                             resultParts[i] ||= {};
                             resultParts[i][String(m.id)] = result;
                         }
-                    }
-                    // Lo que acabamos de guardar ya no debe volver a contarse como
-                    // pendiente. El listener reconstruirá las estadísticas desde los resultados.
-                    if (!structuralChange) {
-                        effectiveParts[i]=leagueClone(value);
-                        effectiveSignatures[i]=leagueSignature(value);
                     }
                 }
             }
@@ -8813,12 +8915,6 @@ body.market-mode #sub-tabs-container{display:none!important}
             // Dejar la reconstrucción de tablas al listener de Firebase,
             // que combinará los resultados sin sobrescribir las divisiones.
             queueLeagueSnapshotRender();
-            const statusBtn=document.getElementById('floating-save-btn');
-            const statusLabel=statusBtn?.querySelector('span');
-            if(statusBtn && statusLabel){
-                statusBtn.style.borderColor='var(--accent-green)';
-                statusLabel.textContent='Guardado ✅';
-            }
         } catch (error) {
             console.error('Error guardando incidencias del partido:', {division, matchId}, error);
             alert('❌ No se pudieron guardar las incidencias. ' + (error?.message || 'Revisa la consola de Firebase.') + '\nEl apartado sigue abierto.');
