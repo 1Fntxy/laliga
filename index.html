@@ -4601,6 +4601,9 @@ body.market-mode #sub-tabs-container{display:none!important}
                 <h3>Calendario de Partidos</h3>
             </div>
             
+            <div id="liga-reorder-controls" style="display:none;justify-content:flex-end;margin-bottom:14px;">
+                <button type="button" class="action-btn" id="liga-reorder-btn" onclick="reorganizarJornadasLiga()">🔀 Reorganizar jornadas</button>
+            </div>
             <div class="matchday-nav">
                 <button class="action-btn" onclick="changeMatchday(-1)">◀ Anterior</button>
                 <div class="matchday-tabs-holder matchday-dropdown-holder"><span class="matchday-dropdown-icon" aria-hidden="true">▦</span><select id="matchday-select" class="matchday-select-styled matchday-premium-select" aria-label="Seleccionar jornada" onchange="jumpToMatchday(this.value)"></select><span class="matchday-dropdown-chevron" aria-hidden="true">⌄</span></div>
@@ -6254,6 +6257,7 @@ body.market-mode #sub-tabs-container{display:none!important}
         const canStaff = !!user && user.uid === AUTH_UIDS.staff;
         isAdmin = canAdmin;
         isStaff = canStaff;
+        actualizarBotonesReorganizacion();
         // Esta temporada D3 está oculta para visitantes; no se eliminan sus datos.
         const canSeeThirdDivision = canAdmin || canStaff;
         for (const id of ['btn-div-3', 'mobile-btn-div-3']) {
@@ -8239,6 +8243,101 @@ body.market-mode #sub-tabs-container{display:none!important}
         animateCounters();
     }
 
+    // Reorganización segura: solo intercambia los números de jornadas COMPLETAS
+    // y sin resultados/incidencias. Los ID y rivales de cada partido se conservan.
+    function actualizarBotonesReorganizacion() {
+        const controls = document.getElementById('liga-reorder-controls');
+        if (controls) controls.style.display = (isAdmin && [1,2].includes(Number(currentDiv))) ? 'flex' : 'none';
+        const btn = document.getElementById('liga-reorder-btn');
+        if (btn) btn.textContent = '🔀 Reorganizar jornadas de ' + (Number(currentDiv) === 2 ? 'Segunda' : 'Primera');
+    }
+
+    window.reorganizarJornadasLiga = async function() {
+        const division = Number(currentDiv);
+        const nombre = division === 1 ? 'Primera' : 'Segunda';
+        if (!isAdmin || ![1,2].includes(division) || !leagueReady || isInitialLoading) return;
+        const btn = document.getElementById('liga-reorder-btn');
+        if (!btn || btn.disabled || leagueSaveInProgress) return;
+        if (autoSaveTimer) {
+            alert('Hay cambios guardándose o pendientes de guardar. Espera a que se guarden y vuelve a intentar.');
+            return;
+        }
+        // No sobrescribir cambios locales ajenos a esta acción.
+        if ([0,1,2,3].some(i => leagueSignature(i === 0 ? leagueMetadata(appData) : appData[i]) !== effectiveSignatures[i])) {
+            alert('Hay cambios pendientes en la página. Guárdalos antes de reorganizar las jornadas.');
+            return;
+        }
+        const original = appData[division]?.matches;
+        if (!Array.isArray(original) || original.length !== 120) {
+            alert(`El calendario de ${nombre} no tiene los 120 partidos esperados; no se ha modificado.`);
+            return;
+        }
+        const rounds = new Map();
+        for (const m of original) {
+            const day = Number(m.matchday);
+            if (!Number.isInteger(day) || day < 1 || day > 15) {
+                alert('Hay jornadas con numeración inválida. No se ha modificado nada.');
+                return;
+            }
+            if (!rounds.has(day)) rounds.set(day, []);
+            rounds.get(day).push(m);
+        }
+        const valid = Array.from({length:15},(_,i)=>i+1).every(day=>{
+            const matches = rounds.get(day) || [];
+            const teams = matches.flatMap(m=>[String(m.homeId),String(m.awayId)]);
+            return matches.length === 8 && new Set(teams).size === 16;
+        });
+        if (!valid) {
+            alert('El calendario actual tiene equipos duplicados o jornadas incompletas. No se ha modificado nada.');
+            return;
+        }
+        const hasData = m => cleanScore(m.homeScore) !== null || cleanScore(m.awayScore) !== null ||
+            (Array.isArray(m.events) && m.events.length > 0) ||
+            m.countDespiteCutoff === true;
+        const fixed = new Set([...rounds].filter(([,matches])=>matches.some(hasData)).map(([day])=>day));
+        const available = [...rounds.keys()].filter(day=>!fixed.has(day)).sort((a,b)=>a-b);
+        if (available.length < 2) {
+            alert('No hay suficientes jornadas sin resultados para reorganizar.');
+            return;
+        }
+        if (!confirm(`¿Reorganizar ${available.length} jornadas completas de ${nombre} División?\nLas ${fixed.size} jornadas con partidos iniciados o registrados permanecerán intactas.\nNo se cambiarán resultados, rivales ni estadísticas.`)) return;
+        if (!confirm(`SEGUNDA CONFIRMACIÓN\n\n¿Confirmas que quieres GUARDAR un nuevo orden de las jornadas de ${nombre} División en Firebase?\n\nEste cambio será visible para todos. Las jornadas ya iniciadas permanecerán intactas.`)) return;
+        const shuffled = available.slice();
+        for (let i=shuffled.length-1;i>0;i--) {
+            const j=Math.floor(Math.random()*(i+1));
+            [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
+        }
+        if (shuffled.every((day,i)=>day===available[i])) [shuffled[0],shuffled[1]]=[shuffled[1],shuffled[0]];
+        const byDay = new Map(available.map((day,i)=>[day,shuffled[i]]));
+        const updated = original.map(m=>({...m,matchday:byDay.get(Number(m.matchday)) || Number(m.matchday)}));
+        btn.disabled=true;
+        btn.textContent='⏳ Reorganizando...';
+        try {
+            const previous = leagueClone(leagueParts[division]);
+            await runTransaction(db,async tx=>{
+                const live = await tx.get(leagueRefs[division]);
+                if (!live.exists() || leagueSignature(live.data())!==leagueSignature(previous)) {
+                    throw new Error(`${nombre} División cambió en Firebase. Recarga la página antes de intentarlo.`);
+                }
+                const liveMatches = live.data().matches || [];
+                if (liveMatches.length !== original.length || liveMatches.some((m,i)=>String(m.id)!==String(original[i].id))) {
+                    throw new Error('El calendario cambió en Firebase. Recarga la página.');
+                }
+                // Reaplicar únicamente la jornada, conservando intacto el resto del documento.
+                const assigned = new Map(updated.map(m=>[String(m.id),m.matchday]));
+                tx.update(leagueRefs[division],{matches:liveMatches.map(m=>({...m,matchday:assigned.get(String(m.id))}))});
+            });
+            alert(`✅ Jornadas de ${nombre} reorganizadas y guardadas en Firebase. Las jornadas con partidos jugados se conservaron.`);
+            // El listener de Firestore actualizará la página para todos los usuarios.
+        } catch(error) {
+            console.error(`Error reorganizando jornadas de ${nombre}:`,error);
+            alert('❌ No se reorganizaron las jornadas. '+(error?.message||'Error de Firebase.'));
+        } finally {
+            btn.disabled=false;
+            btn.textContent=`🔀 Reorganizar jornadas de ${nombre}`;
+        }
+    };
+
     function getMaxMatchdays() {
         const divData = appData[currentDiv];
         if (!divData || !divData.matches || divData.matches.length === 0) return 15;
@@ -8388,6 +8487,7 @@ body.market-mode #sub-tabs-container{display:none!important}
     }
 
     function renderMatches() {
+        actualizarBotonesReorganizacion();
         const divData = appData[currentDiv];
         if (!divData) return;
         const container = document.getElementById('matches-container');
