@@ -6100,6 +6100,37 @@ body.market-mode #sub-tabs-container{display:none!important}
         leagueSignatures[division]=leagueSignature(written);
     }
 
+    // Las incidencias recalculan goles/asistencias/atajadas de la plantilla en memoria.
+    // Estas cifras son derivadas de liga_resultados, NO un cambio estructural del
+    // documento de la división. Evitar transacciones innecesarias que daban Error
+    // aunque el botón verde hubiese guardado correctamente el partido.
+    function onlyDerivedRosterStatsChanged(previous, current) {
+        if (!previous || !current) return false;
+        const oldResults = (previous.matches || []).map(m => matchResult(m));
+        const newResults = (current.matches || []).map(m => matchResult(m));
+        if (leagueSignature(oldResults) === leagueSignature(newResults)) return false;
+        const clean = (value, baseline) => {
+            const copy = leagueClone(divisionWithoutMatchResults(value));
+            const byTeam = new Map((baseline.teams || []).map(t => [String(t.id), t]));
+            for (const team of copy.teams || []) {
+                const oldTeam = byTeam.get(String(team.id));
+                if (!oldTeam) return null;
+                const oldPlayers = new Map((oldTeam.roster || []).map(p => [String(p.discordId || '') + '\u0000' + String(p.name), p]));
+                for (const player of team.roster || []) {
+                    const old = oldPlayers.get(String(player.discordId || '') + '\u0000' + String(player.name));
+                    if (!old) return null;
+                    for (const field of ['goals', 'assists', 'saves']) {
+                        if (Object.prototype.hasOwnProperty.call(old, field)) player[field] = old[field];
+                        else delete player[field];
+                    }
+                }
+            }
+            return copy;
+        };
+        const normalized=clean(current, previous);
+        return normalized !== null && leagueSignature(normalized) === leagueSignature(divisionWithoutMatchResults(previous));
+    }
+
     async function saveStateToCloud() {
         if ((!isAdmin && !isStaff) || !leagueReady) return false;
         // Si ya hay un guardado activo, esperar a que termine antes de iniciar otro.
@@ -6134,7 +6165,8 @@ body.market-mode #sub-tabs-container{display:none!important}
                     // Solo los cambios estructurales (equipos, calendario, etc.)
                     // necesitan una transacción sobre liga_divisiones.
                     const structuralChange = leagueSignature(divisionWithoutMatchResults(value)) !==
-                        leagueSignature(divisionWithoutMatchResults(previous));
+                        leagueSignature(divisionWithoutMatchResults(previous)) &&
+                        !onlyDerivedRosterStatsChanged(previous, value);
                     if(isAdmin && structuralChange) {
                         const logoEdits=logoOnlyEdits(previous,value);
                         if(logoEdits){
@@ -6163,6 +6195,12 @@ body.market-mode #sub-tabs-container{display:none!important}
                             resultParts[i] ||= {};
                             resultParts[i][String(m.id)] = result;
                         }
+                    }
+                    // Lo que acabamos de guardar ya no debe volver a contarse como
+                    // pendiente. El listener reconstruirá las estadísticas desde los resultados.
+                    if (!structuralChange) {
+                        effectiveParts[i]=leagueClone(value);
+                        effectiveSignatures[i]=leagueSignature(value);
                     }
                 }
             }
@@ -8775,6 +8813,12 @@ body.market-mode #sub-tabs-container{display:none!important}
             // Dejar la reconstrucción de tablas al listener de Firebase,
             // que combinará los resultados sin sobrescribir las divisiones.
             queueLeagueSnapshotRender();
+            const statusBtn=document.getElementById('floating-save-btn');
+            const statusLabel=statusBtn?.querySelector('span');
+            if(statusBtn && statusLabel){
+                statusBtn.style.borderColor='var(--accent-green)';
+                statusLabel.textContent='Guardado ✅';
+            }
         } catch (error) {
             console.error('Error guardando incidencias del partido:', {division, matchId}, error);
             alert('❌ No se pudieron guardar las incidencias. ' + (error?.message || 'Revisa la consola de Firebase.') + '\nEl apartado sigue abierto.');
