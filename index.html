@@ -6035,6 +6035,9 @@ body.market-mode #sub-tabs-container{display:none!important}
     const leagueParts = new Array(4).fill(null);
     const leagueSignatures = new Array(4).fill(null);
     const effectiveParts = new Array(4).fill(null);
+    // Copia ORIGINAL de Firebase, sin incidencias añadidas en memoria.
+    // Sirve para validar cambios externos y no duplicar goles/asistencias/atajadas.
+    const effectiveRawDivisionParts = new Array(4).fill(null);
     const effectiveSignatures = new Array(4).fill(null);
     const resultCollections = [null, ...[1,2,3].map(n=>collection(db,'liga_resultados',String(n),'partidos'))];
     const resultParts = [null,null,null,null];
@@ -6200,7 +6203,10 @@ body.market-mode #sub-tabs-container{display:none!important}
             (appData[div]?.matches || []).forEach(m=>{if(!m.events)m.events=[];});
         });
         effectiveParts[0]=leagueClone(leagueMetadata(appData));
-        for(let n=1;n<=3;n++)effectiveParts[n]=leagueClone(appData[n]);
+        for(let n=1;n<=3;n++) {
+            effectiveParts[n]=leagueClone(appData[n]);
+            effectiveRawDivisionParts[n]=leagueClone(leagueParts[n]);
+        }
         effectiveParts.forEach((value,i)=>effectiveSignatures[i]=leagueSignature(value));
         leagueReady=true;
         renderAll();renderFriendlies();
@@ -6287,10 +6293,37 @@ body.market-mode #sub-tabs-container{display:none!important}
                         await runTransaction(db, async tx => {
                             const live = await tx.get(leagueRefs[i]);
                             if (!live.exists()) throw new Error('La división fue eliminada; recarga la página.');
-                            if (leagueSignature(live.data()) !== leagueSignature(previous)) {
+                            const rawBefore = effectiveRawDivisionParts[i];
+                            if (!rawBefore || leagueSignature(live.data()) !== leagueSignature(rawBefore)) {
                                 throw new Error('La división cambió en Firebase (posible traslado del bot). Recarga la página antes de guardar para no sobrescribir equipos.');
                             }
-                            tx.set(leagueRefs[i], value);
+                            // La vista contiene incidencias de liga_resultados aplicadas en memoria.
+                            // Al escribir una estadística editada manualmente, restar esa capa
+                            // temporal para no volver a sumar los mismos goles al recargar.
+                            const storedDivision = leagueClone(value);
+                            const originalTeams = new Map((rawBefore.teams || []).map(t=>[String(t.id),t]));
+                            const shownTeams = new Map((previous.teams || []).map(t=>[String(t.id),t]));
+                            for (const team of (storedDivision.teams || [])) {
+                                const baseTeam=originalTeams.get(String(team.id));
+                                const shownTeam=shownTeams.get(String(team.id));
+                                if (!baseTeam || !shownTeam) continue;
+                                const identify=(p)=>p.discordId ? 'discord:'+String(p.discordId) : 'name:'+String(p.name||'');
+                                const basePlayers=new Map((baseTeam.roster||[]).map(p=>[identify(p),p]));
+                                const shownPlayers=new Map((shownTeam.roster||[]).map(p=>[identify(p),p]));
+                                for (const player of (team.roster||[])) {
+                                    const base=basePlayers.get(identify(player));
+                                    const shown=shownPlayers.get(identify(player));
+                                    if (!base || !shown) continue;
+                                    for (const field of ['goals','assists','saves']) {
+                                        const overlay=(Number(shown[field])||0)-(Number(base[field])||0);
+                                        if (overlay) player[field]=Math.max(0,(Number(player[field])||0)-overlay);
+                                    }
+                                }
+                            }
+                            // Los resultados oficiales se almacenan aparte; no copiarlos
+                            // dentro del documento estructural de la división.
+                            storedDivision.matches=leagueClone(rawBefore.matches||[]);
+                            tx.set(leagueRefs[i], storedDivision);
                         });
                     }
                     const previousMatches=new Map((previous.matches||[]).map(m=>[String(m.id),m]));
