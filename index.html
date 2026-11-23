@@ -4504,6 +4504,31 @@ body.market-mode #sub-tabs-container{display:none!important}
 }
 </style>
 
+
+<style id="liga-compras-redesign-2026">
+/* Diseño exclusivo de Compras: Ventas y Préstamos sin cambios. */
+#market-subtab-compras #liga-market-compras{grid-template-columns:repeat(auto-fit,minmax(min(100%,390px),1fr));gap:18px;align-items:stretch}
+#market-subtab-compras .liga-buy-card{position:relative;display:flex;flex-direction:column;gap:16px;min-width:0;padding:20px!important;border:1px solid rgba(76,196,139,.26)!important;border-radius:16px!important;background:linear-gradient(155deg,rgba(27,49,54,.44),rgba(12,20,36,.93) 44%,rgba(10,21,32,.96))!important;box-shadow:0 12px 24px rgba(0,0,0,.13)!important}
+#market-subtab-compras .liga-buy-card:hover{border-color:rgba(56,215,150,.57)!important;box-shadow:0 16px 36px rgba(0,0,0,.24)!important}
+#market-subtab-compras .liga-buy-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+#market-subtab-compras .liga-buy-status{display:inline-flex;gap:7px;align-items:center;padding:6px 10px;border-radius:99px;background:rgba(21,177,101,.13);color:#65e8a4;font-size:.69rem;font-weight:900;letter-spacing:.35px}
+#market-subtab-compras .liga-buy-date{font-size:.7rem;color:#9cabc0;font-weight:700}
+#market-subtab-compras .liga-buy-route{display:grid;grid-template-columns:minmax(0,1fr) minmax(112px,1.05fr) minmax(0,1fr);gap:10px;align-items:center}
+#market-subtab-compras .liga-buy-club{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;text-align:center}
+#market-subtab-compras .liga-buy-crest{height:53px;width:53px;object-fit:contain;border-radius:11px;filter:drop-shadow(0 3px 7px rgba(0,0,0,.3))}
+#market-subtab-compras .liga-buy-crest-fallback{display:flex;align-items:center;justify-content:center;background:rgba(147,164,189,.09);border:1px solid rgba(147,164,189,.2);font-size:27px}
+#market-subtab-compras .liga-buy-club-name{font-weight:850;color:#f0f6ff;font-size:.85rem;line-height:1.25;overflow-wrap:anywhere}
+#market-subtab-compras .liga-buy-label{color:#8e9db2;font-size:.67rem;line-height:1.2}
+#market-subtab-compras .liga-buy-center{display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px;min-width:0}
+#market-subtab-compras .liga-buy-arrow{font-size:1.3rem;color:#78e5ae;font-weight:900}
+#market-subtab-compras .liga-buy-amount{font-family:Outfit,'Plus Jakarta Sans',sans-serif;color:#4ee4a3;font-size:clamp(.95rem,2vw,1.38rem);font-weight:900;white-space:normal;overflow-wrap:anywhere}
+#market-subtab-compras .liga-buy-value{color:#acbbce;font-size:.68rem;line-height:1.35}
+#market-subtab-compras .liga-buy-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid rgba(154,169,191,.15);padding-top:14px;margin-top:auto}
+#market-subtab-compras .liga-buy-player-label{display:block;color:#91a8bc;font-size:.66rem;letter-spacing:.45px;font-weight:850;margin-bottom:5px}
+#market-subtab-compras .liga-buy-player-name{font-weight:900;font-size:1rem;color:#fff;overflow-wrap:anywhere}
+#market-subtab-compras .liga-buy-check{display:flex;align-items:center;justify-content:center;width:29px;height:29px;border:1px solid rgba(57,205,139,.55);border-radius:100%;color:#4ee4a3;font-size:1rem;flex-shrink:0}
+@media(max-width:560px){#market-subtab-compras .liga-buy-card{padding:14px!important;gap:14px}#market-subtab-compras .liga-buy-route{grid-template-columns:minmax(0,1fr) minmax(98px,1fr) minmax(0,1fr);gap:4px}#market-subtab-compras .liga-buy-crest{width:42px;height:42px}#market-subtab-compras .liga-buy-amount{font-size:1rem}#market-subtab-compras .liga-buy-club-name{font-size:.74rem}}
+</style>
 </head>
 <body>
 
@@ -5647,22 +5672,77 @@ body.market-mode #sub-tabs-container{display:none!important}
             `No se pudieron cargar ${kind}. Revisa los permisos de lectura del mercado en Firebase.`));
         console.warn('Mercado público: '+kind,error);
     };
+    // Solo Compras: se usan los datos públicos de transferencias y los escudos que la liga ya carga.
+    // Los registros antiguos sin valor histórico muestran un aviso; el bot nuevo lo publica.
     const marketPurchases = document.getElementById('liga-market-compras');
-    marketLiveStarters.push(() => onSnapshot(collection(db,'liga_mercado_compras_publicas'), snapshot => {
+    const marketBuyFindTeam = (name,division) => {
+        const normalized = value => String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase().replace(/\s+f\.?c\.?$/,'');
+        const sections=division && ['1','2'].includes(String(division)) ? [String(division)] : ['1','2'];
+        for(const d of sections){
+            const teams=appData?.[d]?.teams;
+            if(!Array.isArray(teams))continue;
+            const matched=teams.find(t=>normalized(t.name)===normalized(name));
+            if(matched)return matched;
+        }
+        return null;
+    };
+    const marketBuyCrest = (team,label,storedLogo='') => {
+        const historical=String(storedLogo||'').trim();
+        const logo=/^https:\/\//i.test(historical) ? historical : String(team?.logo||'').trim();
+        if(/^https:\/\/[^\s]+$/i.test(logo) || /^data:image\/(?:png|jpe?g|gif|webp);base64,/i.test(logo)){
+            const img=document.createElement('img');
+            img.className='liga-buy-crest';img.src=logo;img.alt=`Escudo de ${label}`;img.loading='lazy';
+            img.onerror=()=>img.replaceWith(marketNode('div','liga-buy-crest liga-buy-crest-fallback','🛡️'));
+            return img;
+        }
+        return marketNode('div','liga-buy-crest liga-buy-crest-fallback','🛡️');
+    };
+    const marketBuyClub = (name,division,subtitle,storedLogo='') => {
+        const club=marketNode('div','liga-buy-club','');
+        club.append(marketBuyCrest(marketBuyFindTeam(name,division),name,storedLogo));
+        club.append(marketNode('div','liga-buy-club-name',name));
+        club.append(marketNode('small','liga-buy-label',subtitle));
+        return club;
+    };
+    let marketPurchaseCache=[];
+    const renderMarketPurchases = () => {
         if(!marketPurchases)return;
-        const purchases=snapshot.docs.map(d=>d.data())
-          .filter(p=>p.status==='complete'&&p.buyerDivision!=='3'&&p.sellerDivision!=='3')
-          .sort((a,b)=>Number(b.completedAt||0)-Number(a.completedAt||0));
         marketPurchases.replaceChildren();
-        if(!purchases.length){marketPurchases.append(marketNode('p','liga-market-empty','Todavía no hay compras registradas.'));return;}
-        for(const p of purchases){
-            const card=marketNode('article','liga-market-item','');
-            card.append(marketNode('div','liga-market-route',`${p.sellerName||'Club vendedor'} → ${p.buyerName||'Club comprador'}`));
-            card.append(marketNode('h4','',p.playerName||'Jugador'));
-            card.append(marketNode('div','liga-market-price',marketEur(p.amount)));
-            marketField(card,'Fecha',marketDate(p.completedAt));
+        if(!marketPurchaseCache.length){marketPurchases.append(marketNode('p','liga-market-empty','Todavía no hay compras registradas.'));return;}
+        for(const p of marketPurchaseCache){
+            const seller=String(p.sellerName||'Club vendedor');
+            const buyer=String(p.buyerName||'Club comprador');
+            const card=marketNode('article','liga-market-item liga-buy-card','');
+            const top=marketNode('div','liga-buy-top','');
+            top.append(marketNode('span','liga-buy-status','✓ TRANSFERENCIA COMPLETADA'));
+            top.append(marketNode('time','liga-buy-date',marketDate(p.completedAt)));
+            card.append(top);
+            const route=marketNode('div','liga-buy-route','');
+            route.append(marketBuyClub(seller,p.sellerDivision,'Club vendedor',p.sellerLogo));
+            const center=marketNode('div','liga-buy-center','');
+            center.append(marketNode('span','liga-buy-arrow','➜'));
+            center.append(marketNode('strong','liga-buy-amount',marketEur(p.amount)));
+            const rawValue=p.value ?? p.marketValue;
+            const historicValue=rawValue!=null && Number.isFinite(Number(rawValue)) && Number(rawValue)>0
+              ? `Valor de mercado: ${marketEur(rawValue)}` : 'Valor de mercado no registrado';
+            center.append(marketNode('small','liga-buy-value',historicValue));
+            route.append(center);
+            route.append(marketBuyClub(buyer,p.buyerDivision,'Club comprador',p.buyerLogo));
+            card.append(route);
+            const bottom=marketNode('div','liga-buy-bottom','');
+            const player=marketNode('div','','');
+            player.append(marketNode('small','liga-buy-player-label','JUGADOR TRANSFERIDO'));
+            player.append(marketNode('strong','liga-buy-player-name',p.playerName||'Jugador'));
+            bottom.append(player,marketNode('span','liga-buy-check','✓'));
+            card.append(bottom);
             marketPurchases.append(card);
         }
+    };
+    marketLiveStarters.push(() => onSnapshot(collection(db,'liga_mercado_compras_publicas'), snapshot => {
+        marketPurchaseCache=snapshot.docs.map(d=>d.data())
+          .filter(p=>p.status==='complete'&&p.buyerDivision!=='3'&&p.sellerDivision!=='3')
+          .sort((a,b)=>Number(b.completedAt||0)-Number(a.completedAt||0));
+        renderMarketPurchases();
     },error=>marketPublicError(marketPurchases,'las compras',error)));
     const marketLoansList = document.getElementById('liga-market-prestamos');
     const renderMarketLoans = docs => {
