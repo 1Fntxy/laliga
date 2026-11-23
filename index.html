@@ -6536,9 +6536,19 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
         queueLeagueSnapshotRender();
     },error=>{console.error('Error leyendo amistosos',error);friendlyResults={};queueLeagueSnapshotRender();});
 
-    async function saveStateToCloud() {
-        if((!isAdmin&&!isStaff)||!leagueReady||leagueSaveInProgress)return false;
-        const parts=[leagueMetadata(appData),appData[1],appData[2],appData[3]];
+    // Procesar guardados sucesivos en orden: el segundo marcador no debe fallar
+    // solo porque el primero todavía se está escribiendo en Firebase.
+    let leagueSaveQueue = Promise.resolve();
+    function saveStateToCloud() {
+        const queued = leagueSaveQueue.catch(() => false).then(() => saveStateToCloudNow());
+        leagueSaveQueue = queued;
+        return queued;
+    }
+    async function saveStateToCloudNow() {
+        if((!isAdmin&&!isStaff)||!leagueReady)return false;
+        // Copias inmutables: un marcador editado mientras se guarda el anterior
+        // quedará pendiente para la siguiente operación, no se marcará como guardado.
+        const parts=[leagueMetadata(appData),appData[1],appData[2],appData[3]].map(leagueClone);
         const changes=parts.map((value,i)=>({i,value,signature:leagueSignature(value)}))
             .filter(({i,signature})=>signature!==effectiveSignatures[i]);
         if(!changes.length)return true;
