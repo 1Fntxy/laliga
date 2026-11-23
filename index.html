@@ -5525,6 +5525,15 @@ body.market-mode #sub-tabs-container{display:none!important}
     // Vista enriquecida de los anuncios: cruza publicaciones con plantillas públicas.
     // Solo lecturas: no crea ofertas, no modifica presupuestos ni cambia roles.
     const marketPositionLabels={POR:'🧤 Portero',DEF:'🛡️ Defensa',MED:'🎯 Mediocampista',DEL:'⚽ Delantero'};
+    // Optimización Firestore: iniciar las tres escuchas del mercado únicamente al abrirlo.
+    // No se desconectan al cambiar de pestaña para evitar cobrar nuevamente lecturas iniciales.
+    const marketLiveStarters=[];
+    let marketSubscriptionsStarted=false;
+    function startMarketSubscriptions(){
+        if(marketSubscriptionsStarted)return;
+        marketSubscriptionsStarted=true;
+        for(const start of marketLiveStarters)start();
+    }
     let marketPublicListings=[];
     const marketDivisionData={'1':null,'2':null};
     const marketRosterInfo = listing => {
@@ -5606,19 +5615,14 @@ body.market-mode #sub-tabs-container{display:none!important}
         const input=document.getElementById(id);
         input?.addEventListener(id==='liga-market-search'?'input':'change',renderMarketSales);
     }
-    for(const division of ['1','2']){
-        onSnapshot(doc(db,'liga_divisiones',division),snap=>{
-            marketDivisionData[division]=snap.exists()?snap.data():null;
-            renderMarketSales();
-        },error=>console.warn('No se pudo cargar la plantilla de D'+division+' en el mercado:',error));
-    }
-    onSnapshot(collection(db,'liga_mercado_publicaciones'),snapshot=>{
+    // Los datos de jugadores se reutilizan de las escuchas oficiales de las divisiones.
+    marketLiveStarters.push(() => onSnapshot(collection(db,'liga_mercado_publicaciones'),snapshot=>{
         marketPublicListings=snapshot.docs.map(d=>d.data()).filter(p=>p.active&&String(p.division||'1')!=='3');
         renderMarketSales();
     },error=>{
         if(marketList)marketList.replaceChildren(marketNode('p','liga-market-empty','No se pudo consultar el mercado. Revisa las reglas de lectura de Firebase.'));
         console.warn('Mercado de transferencias: consulta no disponible',error);
-    });
+    }));
 
     // Compras y préstamos visibles al público: documentos de lectura, sin datos internos de ofertas.
     // La fuente privada la actualiza exclusivamente el bot usando Firebase Admin.
@@ -5644,7 +5648,7 @@ body.market-mode #sub-tabs-container{display:none!important}
         console.warn('Mercado público: '+kind,error);
     };
     const marketPurchases = document.getElementById('liga-market-compras');
-    onSnapshot(collection(db,'liga_mercado_compras_publicas'), snapshot => {
+    marketLiveStarters.push(() => onSnapshot(collection(db,'liga_mercado_compras_publicas'), snapshot => {
         if(!marketPurchases)return;
         const purchases=snapshot.docs.map(d=>d.data())
           .filter(p=>p.status==='complete'&&p.buyerDivision!=='3'&&p.sellerDivision!=='3')
@@ -5659,7 +5663,7 @@ body.market-mode #sub-tabs-container{display:none!important}
             marketField(card,'Fecha',marketDate(p.completedAt));
             marketPurchases.append(card);
         }
-    },error=>marketPublicError(marketPurchases,'las compras',error));
+    },error=>marketPublicError(marketPurchases,'las compras',error)));
     const marketLoansList = document.getElementById('liga-market-prestamos');
     const renderMarketLoans = docs => {
         if(!marketLoansList)return;
@@ -5680,10 +5684,10 @@ body.market-mode #sub-tabs-container{display:none!important}
         }
     };
     let marketLoanSnapshot=[];
-    onSnapshot(collection(db,'liga_mercado_prestamos_publicos'),snapshot=>{
+    marketLiveStarters.push(() => onSnapshot(collection(db,'liga_mercado_prestamos_publicos'),snapshot=>{
         marketLoanSnapshot=snapshot.docs;
         renderMarketLoans(marketLoanSnapshot);
-    },error=>marketPublicError(marketLoansList,'los préstamos',error));
+    },error=>marketPublicError(marketLoansList,'los préstamos',error)));
     // Actualizar el tiempo restante sin hacer nuevas lecturas de Firebase.
     setInterval(()=>{
         if(document.getElementById('market-subtab-prestamos')?.classList.contains('active'))
@@ -6237,6 +6241,10 @@ body.market-mode #sub-tabs-container{display:none!important}
             return;
         }
         leagueParts[i]=data;
+        if(i===1 || i===2){
+            marketDivisionData[String(i)]=data;
+            if(marketSubscriptionsStarted && document.getElementById('tab-mercado')?.classList.contains('active'))renderMarketSales();
+        }
         leagueSignatures[i]=leagueSignature(i===0?leagueMetadata(data):data);
         queueLeagueSnapshotRender();
     },error=>{
@@ -7156,6 +7164,7 @@ body.market-mode #sub-tabs-container{display:none!important}
 
     // Mercado en la barra superior, independiente de las subpestañas por división.
     window.switchMarketSection = function() {
+        startMarketSubscriptions();
         document.body.classList.add('market-mode');
         document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
         document.getElementById('tab-mercado')?.classList.add('active');
