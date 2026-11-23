@@ -4531,6 +4531,36 @@ body.market-mode #sub-tabs-container{display:none!important}
 @media(max-width:560px){#market-subtab-compras .liga-buy-card{padding:14px!important;gap:14px}#market-subtab-compras .liga-buy-route{grid-template-columns:minmax(0,1fr) minmax(98px,1fr) minmax(0,1fr);gap:4px}#market-subtab-compras .liga-buy-crest{width:42px;height:42px}#market-subtab-compras .liga-buy-amount{font-size:1rem}#market-subtab-compras .liga-buy-club-name{font-size:.74rem}}
 </style>
 
+
+<style id="liga-prestamos-redesign-2026">
+/* Solo presentación de Mercado > Préstamos. No modifica Firebase. */
+#market-subtab-prestamos #liga-market-prestamos{grid-template-columns:repeat(auto-fit,minmax(min(100%,390px),1fr));gap:18px;align-items:stretch}
+#market-subtab-prestamos .liga-loan-card{position:relative;display:flex;flex-direction:column;gap:15px;min-width:0;padding:20px!important;border:1px solid rgba(78,159,228,.30)!important;border-radius:16px!important;background:linear-gradient(155deg,rgba(27,46,77,.53),rgba(12,20,36,.94) 48%,rgba(9,19,36,.98))!important;box-shadow:0 12px 24px rgba(0,0,0,.13)!important}
+#market-subtab-prestamos .liga-loan-card:hover{border-color:rgba(99,184,255,.58)!important;box-shadow:0 16px 36px rgba(0,0,0,.24)!important}
+#market-subtab-prestamos .liga-loan-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+#market-subtab-prestamos .liga-loan-status{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:20px;background:rgba(49,136,220,.15);color:#92ceff;font-size:.7rem;font-weight:900;letter-spacing:.3px}
+#market-subtab-prestamos .liga-loan-date{font-size:.71rem;color:#a3b6cd;font-weight:700}
+#market-subtab-prestamos .liga-loan-route{display:grid;grid-template-columns:minmax(0,1fr) minmax(78px,.65fr) minmax(0,1fr);align-items:center;gap:8px}
+#market-subtab-prestamos .liga-loan-direction{display:flex;flex-direction:column;align-items:center;text-align:center;gap:7px;color:#93c5fd;min-width:0}
+#market-subtab-prestamos .liga-loan-direction strong{color:#e5f2ff;font-size:.9rem;overflow-wrap:anywhere}
+#market-subtab-prestamos .liga-loan-direction small{color:#91a8bc;font-size:.68rem}
+#market-subtab-prestamos .liga-loan-route .liga-buy-club-name{color:#f0f6ff}
+#market-subtab-prestamos .liga-loan-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;border-top:1px solid rgba(154,169,191,.17);padding-top:14px}
+#market-subtab-prestamos .liga-loan-metric{padding:10px 12px;border:1px solid rgba(147,171,206,.16);background:rgba(39,58,84,.28);border-radius:10px;min-width:0}
+#market-subtab-prestamos .liga-loan-metric small{display:block;color:#91a8bc;font-size:.67rem;font-weight:800;letter-spacing:.25px;margin-bottom:5px}
+#market-subtab-prestamos .liga-loan-metric strong{display:block;color:#eef5ff;font-size:.88rem;overflow-wrap:anywhere}
+#market-subtab-prestamos .liga-loan-metric.liga-loan-fee strong{color:#79e3ae;font-size:1rem}
+#market-subtab-prestamos .liga-loan-footer{display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px;padding-top:13px;margin-top:auto;border-top:1px solid rgba(154,169,191,.17)}
+#market-subtab-prestamos .liga-loan-footer small{color:#9db1cb;font-size:.67rem;font-weight:800;letter-spacing:.35px}
+#market-subtab-prestamos .liga-loan-footer strong{font-size:1rem;color:#fff;overflow-wrap:anywhere}
+#market-subtab-prestamos .liga-loan-remaining{font-size:.75rem;font-weight:800;color:#96ccff;margin-top:4px}
+#market-subtab-prestamos .liga-loan-empty{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;min-height:190px;padding:28px 16px;border:1px dashed rgba(120,158,202,.27);border-radius:14px;background:rgba(10,21,40,.25)}
+#market-subtab-prestamos .liga-loan-empty-icon{display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:15px;background:rgba(73,146,218,.13);color:#91caff;font-size:1.55rem}
+#market-subtab-prestamos .liga-loan-empty strong{color:#edf5ff;font-size:1.02rem}
+#market-subtab-prestamos .liga-loan-empty span:last-child{color:#95a6be;font-size:.8rem;line-height:1.5}
+@media(max-width:560px){#market-subtab-prestamos .liga-loan-card{padding:14px!important;gap:12px}#market-subtab-prestamos .liga-loan-route{grid-template-columns:minmax(0,1fr) 62px minmax(0,1fr);gap:4px}#market-subtab-prestamos .liga-buy-crest{width:42px;height:42px}#market-subtab-prestamos .liga-buy-club-name{font-size:.75rem}#market-subtab-prestamos .liga-loan-metric{padding:8px}}
+</style>
+
 <style id="liga-market-ventas-red-glow-2026">
 /* Solo Ventas: brillo rojo discreto, sin alterar Compras ni Préstamos. */
 #market-subtab-ventas .liga-market-item {
@@ -5765,16 +5795,46 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
         const loans=docs.map(d=>d.data()).filter(p=>p.status==='active'&&p.ownerDivision!=='3'&&p.receiverDivision!=='3')
             .sort((a,b)=>Number(a.endsAt||0)-Number(b.endsAt||0));
         marketLoansList.replaceChildren();
-        if(!loans.length){marketLoansList.append(marketNode('p','liga-market-empty','No hay préstamos activos.'));return;}
+        if(!loans.length){
+            const empty=marketNode('div','liga-loan-empty','');
+            empty.append(marketNode('div','liga-loan-empty-icon','⇄'));
+            empty.append(marketNode('strong','','No hay préstamos activos'));
+            empty.append(marketNode('span','','Los préstamos confirmados aparecerán aquí con sus clubes, duración y fecha de regreso.'));
+            marketLoansList.append(empty);
+            return;
+        }
         for(const p of loans){
-            const card=marketNode('article','liga-market-item','');
-            card.append(marketNode('div','liga-market-route',`${p.ownerName||'Propietario'} → ${p.receiverName||'Receptor'}`));
-            card.append(marketNode('h4','',p.playerName||'Jugador'));
-            marketField(card,'Duración',`${Number(p.days)||0} días`);
-            marketField(card,'Costo',marketEur(p.fee));
-            marketField(card,'Inicio',marketDate(p.startedAt));
-            marketField(card,'Regreso previsto',marketDate(p.endsAt));
-            card.append(marketNode('div','liga-market-price',marketCountdown(p.endsAt)));
+            const owner=String(p.ownerName||'Club de origen');
+            const receiver=String(p.receiverName||'Club receptor');
+            const card=marketNode('article','liga-market-item liga-loan-card','');
+            const top=marketNode('div','liga-loan-top','');
+            top.append(marketNode('span','liga-loan-status','● PRÉSTAMO ACTIVO'));
+            top.append(marketNode('time','liga-loan-date',`Inicio: ${marketDate(p.startedAt)}`));
+            card.append(top);
+            const route=marketNode('div','liga-loan-route','');
+            route.append(marketBuyClub(owner,p.ownerDivision,'Club de origen',p.ownerLogo));
+            const center=marketNode('div','liga-loan-direction','');
+            center.append(marketNode('strong','','➜'));
+            center.append(marketNode('small','','CESIÓN'));
+            route.append(center);
+            route.append(marketBuyClub(receiver,p.receiverDivision,'Club receptor',p.receiverLogo));
+            card.append(route);
+            const metrics=marketNode('div','liga-loan-metrics','');
+            const metric=(label,value,extra='')=>{
+                const box=marketNode('div',`liga-loan-metric ${extra}`.trim(),'');
+                box.append(marketNode('small','',label),marketNode('strong','',value));
+                metrics.append(box);
+            };
+            metric('DURACIÓN',`${Number(p.days)||0} días`);
+            metric('TARIFA DEL PRÉSTAMO',marketEur(p.fee),'liga-loan-fee');
+            metric('FECHA DE INICIO',marketDate(p.startedAt));
+            metric('REGRESO PREVISTO',marketDate(p.endsAt));
+            card.append(metrics);
+            const footer=marketNode('div','liga-loan-footer','');
+            footer.append(marketNode('small','','JUGADOR CEDIDO'));
+            footer.append(marketNode('strong','',p.playerName||'Jugador'));
+            footer.append(marketNode('span','liga-loan-remaining',marketCountdown(p.endsAt)));
+            card.append(footer);
             marketLoansList.append(card);
         }
     };
