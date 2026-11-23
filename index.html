@@ -5652,6 +5652,7 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
         onSnapshot(doc(db,'liga_divisiones',division),snap=>{
             marketDivisionData[division]=snap.exists()?snap.data():null;
             renderMarketSales();
+            if(typeof renderMarketPurchases==='function')renderMarketPurchases();
         },error=>console.warn('No se pudo cargar la plantilla de D'+division+' en el mercado:',error));
     }
     onSnapshot(collection(db,'liga_mercado_publicaciones'),snapshot=>{
@@ -5687,10 +5688,13 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
     };
     const marketPurchases = document.getElementById('liga-market-compras');
     const marketBuyFindTeam = (name,division) => {
-        const normalized = value => String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase().replace(/\s+f\.?c\.?$/,'');
-        const sections=division && ['1','2'].includes(String(division)) ? [String(division)] : ['1','2'];
+        const normalized = value => String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+            .toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+fc$/,'').replace(/\s+/g,' ').trim();
+        // El club puede haberse cambiado de división después de una compra.
+        const preferred=String(division);
+        const sections=[...new Set([preferred,'1','2','3'])];
         for(const d of sections){
-            const teams=appData?.[d]?.teams;
+            const teams=appData?.[d]?.teams || marketDivisionData?.[d]?.teams;
             if(!Array.isArray(teams))continue;
             const matched=teams.find(t=>normalized(t.name)===normalized(name));
             if(matched)return matched;
@@ -6305,6 +6309,8 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
         effectiveParts.forEach((value,i)=>effectiveSignatures[i]=leagueSignature(value));
         leagueReady=true;
         renderAll();renderFriendlies();
+        // Los escudos pueden llegar después de la lista pública de compras.
+        if (typeof renderMarketPurchases === 'function') renderMarketPurchases();
         if(document.getElementById('tab-premios')?.classList.contains('active'))renderPremiosOficiales();
         // Restaurar la vista ANTES de retirar la pantalla de carga.
         restoreViewOnce();
@@ -8522,6 +8528,27 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
         animateCounters();
     }
 
+    // Estadísticas oficiales visibles: derivadas de incidencias sin alterar Firebase.
+    // La cifra guardada se respeta cuando es superior (historial/manual/traspasos).
+    function leagueOfficialStats(div, team, player) {
+        const fields = ['goals','assists','saves'];
+        const result = Object.fromEntries(fields.map(f => [f,Math.max(0,Number(player?.[f])||0)]));
+        const division = appData?.[div];
+        if (!division || !team || !player) return result;
+        const normalized = name => String(name||'').trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es').replace(/\s+/g,' ');
+        const playerKey = normalized(player.name);
+        const teamId = String(team.id);
+        const totals = {goals:0,assists:0,saves:0};
+        for (const match of (division.matches||[])) {
+            for (const ev of (Array.isArray(match.events)?match.events:[])) {
+                if (String(ev.teamId)!==teamId || normalized(ev.playerName)!==playerKey) continue;
+                for (const f of fields) totals[f] += Math.max(0,Number(ev[f])||0);
+            }
+        }
+        for(const f of fields) result[f] = Math.max(result[f],totals[f]);
+        return result;
+    }
+
     function renderTops() {
         const divData = appData[currentDiv];
         if (!divData) return;
@@ -8529,8 +8556,7 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
         const players = [];
         (divData.teams || []).forEach(t => (t.roster || []).forEach(p => players.push({
             name: p.name || 'Sin Nombre', teamName: t.name || 'Equipo',
-            teamLogo: t.logo || '', goals: parseInt(p.goals) || 0,
-            assists: parseInt(p.assists) || 0, saves: parseInt(p.saves) || 0
+            teamLogo: t.logo || '', ...leagueOfficialStats(currentDiv,t,p)
         })));
         const logo = p => {
             const initials = safe((p.teamName || 'EQ').slice(0, 2).toUpperCase());
@@ -9262,9 +9288,9 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
                     <option value="MED" ${player.pos==='MED'?'selected':''}>MED</option>
                     <option value="DEL" ${player.pos==='DEL'?'selected':''}>DEL</option>
                 </select>
-                <div class="stat-box-roster" title="Goles">⚽ <input type="number" class="stat-input-roster" value="${player.goals || 0}" min="0" ${!isAdmin ? 'disabled' : ''} oninput="updateRosterFieldSilent(${idx}, 'goals', this.value)"></div>
-                <div class="stat-box-roster" title="Asistencias">🎯 <input type="number" class="stat-input-roster" value="${player.assists || 0}" min="0" ${!isAdmin ? 'disabled' : ''} oninput="updateRosterFieldSilent(${idx}, 'assists', this.value)"></div>
-                <div class="stat-box-roster" title="Paradas / Atajadas">🧤 <input type="number" class="stat-input-roster" value="${player.saves || 0}" min="0" ${!isAdmin ? 'disabled' : ''} oninput="updateRosterFieldSilent(${idx}, 'saves', this.value)"></div>
+                <div class="stat-box-roster" title="Goles">⚽ <input type="number" class="stat-input-roster" value="${leagueOfficialStats(currentDiv,team,player).goals}" min="0" ${!isAdmin ? 'disabled' : ''} oninput="updateRosterFieldSilent(${idx}, 'goals', this.value)"></div>
+                <div class="stat-box-roster" title="Asistencias">🎯 <input type="number" class="stat-input-roster" value="${leagueOfficialStats(currentDiv,team,player).assists}" min="0" ${!isAdmin ? 'disabled' : ''} oninput="updateRosterFieldSilent(${idx}, 'assists', this.value)"></div>
+                <div class="stat-box-roster" title="Paradas / Atajadas">🧤 <input type="number" class="stat-input-roster" value="${leagueOfficialStats(currentDiv,team,player).saves}" min="0" ${!isAdmin ? 'disabled' : ''} oninput="updateRosterFieldSilent(${idx}, 'saves', this.value)"></div>
                 ${isAdmin ? `<button type="button" class="transfer-player-btn" title="Transferir a otro equipo" onclick="transferRosterPlayer(${idx})">⇄ Transferir</button>` : ``}
                 ${isAdmin ? `<button style="background:transparent; border:none; color:var(--laliga-red); cursor:pointer; font-size:1.2rem; margin-left:4px;" onclick="deletePlayer(${idx})">&times;</button>` : ``}
             </div>
@@ -9731,9 +9757,10 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
                     if (!p.name || !p.name.trim()) continue;
                     const key = playerIdentity(p);
                     const obj = ensurePlayer(key,p.name,team);
-                    obj.goals += Math.max(0, premiosNum(p.goals) - premiosNum(p.transferCarry?.goals));
-                    obj.assists += Math.max(0, premiosNum(p.assists) - premiosNum(p.transferCarry?.assists));
-                    obj.saves += Math.max(0, premiosNum(p.saves) - premiosNum(p.transferCarry?.saves));
+                    const leagueStats = leagueOfficialStats(div,t,p);
+                    obj.goals += Math.max(0, premiosNum(leagueStats.goals) - premiosNum(p.transferCarry?.goals));
+                    obj.assists += Math.max(0, premiosNum(leagueStats.assists) - premiosNum(p.transferCarry?.assists));
+                    obj.saves += Math.max(0, premiosNum(leagueStats.saves) - premiosNum(p.transferCarry?.saves));
                     if (p.pos) obj.pos=p.pos;
                     playerAliases.set(`${div}|${t.id}|${normal(p.name)}`,key);
                 }
