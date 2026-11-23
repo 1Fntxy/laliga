@@ -6216,6 +6216,54 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
             return copy;
         })};
     }
+    // No tratar las estadísticas recalculadas desde incidencias como una
+    // edición estructural de la plantilla. Las estadísticas derivadas se
+    // reconstruyen desde liga_resultados; los cambios manuales de plantilla
+    // siguen sujetos a la transacción y su protección de concurrencia.
+    function divisionForStructuralCheck(value, previous) {
+        const snapshot = leagueClone(value);
+        const previousMatches = new Map((previous.matches || []).map(m => [String(m.id), m]));
+        const resultsChanged = (value.matches || []).some(m => {
+            const old = previousMatches.get(String(m.id));
+            return !old || leagueSignature(matchResult(m)) !== leagueSignature(matchResult(old));
+        });
+        if (!resultsChanged) return divisionWithoutMatchResults(snapshot);
+
+        const computed = new Map();
+        for (const match of (value.matches || [])) {
+            for (const ev of (match.events || [])) {
+                const key = String(ev.teamId) + '\u0000' + String(ev.playerName);
+                const totals = computed.get(key) || {goals:0,assists:0,saves:0};
+                for (const stat of ['goals','assists','saves']) totals[stat] += Number(ev[stat]) || 0;
+                computed.set(key, totals);
+            }
+        }
+        const oldTeams = new Map((previous.teams || []).map(t => [String(t.id), t]));
+        // Solo revertir para la comparación si TODOS los valores estadísticos
+        // coinciden exactamente con los totales derivados de las incidencias.
+        const rows = [];
+        let purelyCalculated = true;
+        for (const team of (snapshot.teams || [])) {
+            const oldTeam = oldTeams.get(String(team.id));
+            if (!oldTeam) { purelyCalculated = false; break; }
+            const identify = p => p.discordId ? 'discord:'+String(p.discordId) : 'name:'+String(p.name || '');
+            const oldRoster = new Map((oldTeam.roster || []).map(p => [identify(p), p]));
+            for (const player of (team.roster || [])) {
+                const old = oldRoster.get(identify(player));
+                if (!old) { purelyCalculated = false; break; }
+                const expected = computed.get(String(team.id) + '\u0000' + String(player.name)) || {goals:0,assists:0,saves:0};
+                if (['goals','assists','saves'].some(stat => (Number(player[stat]) || 0) !== expected[stat])) {
+                    purelyCalculated = false; break;
+                }
+                rows.push({player,old});
+            }
+            if (!purelyCalculated) break;
+        }
+        if (purelyCalculated) for (const {player,old} of rows) {
+            for (const stat of ['goals','assists','saves']) player[stat] = old[stat];
+        }
+        return divisionWithoutMatchResults(snapshot);
+    }
     function applyStatDelta(div, before, after) {
         const counts=new Map();
         const collect=(events,mult)=>{
@@ -6367,6 +6415,7 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
         if(!changes.length)return true;
         leagueSaveInProgress=true;
         let success=false;
+        const savedResultOnly = [];
         try {
             for(const {i,value} of changes) {
                 const previous=effectiveParts[i];
@@ -6386,7 +6435,7 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
                     // Registrar marcadores sin reescribir toda la división.
                     // Solo los cambios estructurales (equipos, calendario, etc.)
                     // necesitan una transacción sobre liga_divisiones.
-                    const structuralChange = leagueSignature(divisionWithoutMatchResults(value)) !==
+                    const structuralChange = leagueSignature(divisionForStructuralCheck(value, previous)) !==
                         leagueSignature(divisionWithoutMatchResults(previous));
                     if(isAdmin && structuralChange) {
                         // Nunca sobrescribir silenciosamente una división modificada en Firebase
@@ -6427,6 +6476,7 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
                             tx.set(leagueRefs[i], storedDivision);
                         });
                     }
+                    if (!structuralChange) savedResultOnly.push({i,value});
                     const previousMatches=new Map((previous.matches||[]).map(m=>[String(m.id),m]));
                     for(const m of (value.matches||[])) {
                         const old=previousMatches.get(String(m.id));
@@ -6445,7 +6495,13 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
         }catch(e){console.error('Error al guardar en Firebase:',e);return false;}
         finally {
             leagueSaveInProgress=false;
-            if(success)applyLeagueParts();
+            if(success) {
+                for (const {i,value} of savedResultOnly) {
+                    effectiveParts[i] = leagueClone(value);
+                    effectiveSignatures[i] = leagueSignature(value);
+                }
+                applyLeagueParts();
+            }
         }
     }
 
