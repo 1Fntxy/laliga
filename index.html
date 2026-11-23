@@ -4534,7 +4534,7 @@ body.market-mode #sub-tabs-container{display:none!important}
 
 <style id="liga-prestamos-redesign-2026">
 /* Solo presentación de Mercado > Préstamos. No modifica Firebase. */
-#market-subtab-prestamos #liga-market-prestamos{grid-template-columns:repeat(auto-fit,minmax(min(100%,390px),1fr));gap:18px;align-items:stretch}
+#market-subtab-prestamos #liga-market-prestamos{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:stretch}
 #market-subtab-prestamos .liga-loan-card{position:relative;display:flex;flex-direction:column;gap:15px;min-width:0;padding:20px!important;border:1px solid rgba(78,159,228,.30)!important;border-radius:16px!important;background:linear-gradient(155deg,rgba(27,46,77,.53),rgba(12,20,36,.94) 48%,rgba(9,19,36,.98))!important;box-shadow:0 12px 24px rgba(0,0,0,.13)!important}
 #market-subtab-prestamos .liga-loan-card:hover{border-color:rgba(99,184,255,.58)!important;box-shadow:0 16px 36px rgba(0,0,0,.24)!important}
 #market-subtab-prestamos .liga-loan-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
@@ -4544,6 +4544,12 @@ body.market-mode #sub-tabs-container{display:none!important}
 #market-subtab-prestamos .liga-loan-direction{display:flex;flex-direction:column;align-items:center;text-align:center;gap:7px;color:#93c5fd;min-width:0}
 #market-subtab-prestamos .liga-loan-direction strong{color:#e5f2ff;font-size:.9rem;overflow-wrap:anywhere}
 #market-subtab-prestamos .liga-loan-direction small{color:#91a8bc;font-size:.68rem}
+#market-subtab-prestamos .liga-buy-club{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0;text-align:center}
+#market-subtab-prestamos .liga-buy-crest{display:block;height:53px;width:53px;object-fit:contain;border-radius:11px;filter:drop-shadow(0 3px 7px rgba(0,0,0,.3));flex-shrink:0}
+#market-subtab-prestamos .liga-buy-crest-fallback{display:flex;align-items:center;justify-content:center;background:rgba(147,164,189,.09);border:1px solid rgba(147,164,189,.2);font-size:27px}
+#market-subtab-prestamos .liga-buy-club-name{font-weight:850;color:#f0f6ff;font-size:.85rem;line-height:1.25;overflow-wrap:anywhere}
+#market-subtab-prestamos .liga-buy-label{color:#8e9db2;font-size:.67rem;line-height:1.2}
+@media(max-width:800px){#market-subtab-prestamos #liga-market-prestamos{grid-template-columns:1fr}}
 #market-subtab-prestamos .liga-loan-route .liga-buy-club-name{color:#f0f6ff}
 #market-subtab-prestamos .liga-loan-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;border-top:1px solid rgba(154,169,191,.17);padding-top:14px}
 #market-subtab-prestamos .liga-loan-metric{padding:10px 12px;border:1px solid rgba(147,171,206,.16);background:rgba(39,58,84,.28);border-radius:10px;min-width:0}
@@ -5705,6 +5711,7 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
             marketDivisionData[division]=snap.exists()?snap.data():null;
             renderMarketSales();
             if(typeof renderMarketPurchases==='function')renderMarketPurchases();
+            if(typeof renderMarketLoans==='function' && marketLoanSnapshot.length)renderMarketLoans(marketLoanSnapshot);
         },error=>console.warn('No se pudo cargar la plantilla de D'+division+' en el mercado:',error));
     }
     onSnapshot(collection(db,'liga_mercado_publicaciones'),snapshot=>{
