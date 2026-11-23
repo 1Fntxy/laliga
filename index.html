@@ -4522,6 +4522,7 @@ body.market-mode #sub-tabs-container{display:none!important}
 #market-subtab-compras .liga-buy-arrow{font-size:1.3rem;color:#78e5ae;font-weight:900}
 #market-subtab-compras .liga-buy-amount{font-family:Outfit,'Plus Jakarta Sans',sans-serif;color:#4ee4a3;font-size:clamp(.95rem,2vw,1.38rem);font-weight:900;white-space:normal;overflow-wrap:anywhere}
 #market-subtab-compras .liga-buy-value{color:#acbbce;font-size:.68rem;line-height:1.35}
+#market-subtab-compras .liga-buy-sellon{padding:10px 12px;border:1px solid rgba(245,158,11,.22);border-radius:9px;background:rgba(245,158,11,.055);color:#f9d58b;font-size:.76rem;font-weight:750;line-height:1.5;text-align:center}
 #market-subtab-compras .liga-buy-bottom{display:grid;grid-template-columns:1fr minmax(0,auto) 1fr;align-items:center;gap:12px;border-top:1px solid rgba(154,169,191,.15);padding-top:14px;margin-top:auto;text-align:center}
 #market-subtab-compras .liga-buy-bottom>div:first-child{grid-column:2;min-width:0;text-align:center}
 #market-subtab-compras .liga-buy-bottom>.liga-buy-check{grid-column:3;justify-self:end}
@@ -5803,6 +5804,18 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
             route.append(center);
             route.append(marketBuyClub(buyer,p.buyerDivision,'Club comprador',p.buyerLogo));
             card.append(route);
+            // Porcentajes registrados por el bot; no se inventan para compras antiguas.
+            const futurePercent=Number(p.sellOnPercent);
+            if(Number.isFinite(futurePercent)&&futurePercent>0&&futurePercent<=50){
+                card.append(marketNode('div','liga-buy-sellon',`📜 Futura venta: ${futurePercent}% para ${seller}`));
+            }
+            const paidCommission=Number(p.sellOnPaid);
+            const paidPercent=Number(p.sellOnPaidPercent);
+            if(Number.isFinite(paidCommission)&&paidCommission>0){
+                const beneficiary=String(p.sellOnBeneficiaryName||'club anterior');
+                const percentText=Number.isFinite(paidPercent)&&paidPercent>0?` (${paidPercent}%)`:'';
+                card.append(marketNode('div','liga-buy-sellon',`💸 Comisión de venta anterior: ${marketEur(paidCommission)}${percentText} para ${beneficiary}`));
+            }
             const bottom=marketNode('div','liga-buy-bottom','');
             const player=marketNode('div','','');
             player.append(marketNode('small','liga-buy-player-label','JUGADOR TRANSFERIDO'));
