@@ -5612,6 +5612,27 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
             String(p.name||'').trim().toLowerCase()===String(listing.playerName||'').trim().toLowerCase());
         return {player:player||null,team};
     };
+    // Mercado > Ventas: estadísticas oficiales de liga, calculadas en lectura.
+    // Las incidencias de partidos pueden existir aunque el roster todavía tenga 0.
+    // No modifica el roster, las publicaciones ni los documentos de Firebase.
+    const marketSaleOfficialStats = (listing, team, player) => {
+        const fields=['goals','assists','saves'];
+        const result=Object.fromEntries(fields.map(f=>[f,Math.max(0,Number(player?.[f])||0)]));
+        if(!team || !player) return result;
+        const div=marketDivisionData[String(listing.division||'1')];
+        if(!div) return result;
+        const normal=name=>String(name||'').trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es').replace(/\s+/g,' ');
+        const teamId=String(team.id), name=normal(player.name);
+        const totals={goals:0,assists:0,saves:0};
+        for(const match of (Array.isArray(div.matches)?div.matches:[])) {
+            for(const ev of (Array.isArray(match?.events)?match.events:[])) {
+                if(String(ev.teamId)!==teamId || normal(ev.playerName)!==name)continue;
+                for(const f of fields) totals[f]+=Math.max(0,Number(ev[f])||0);
+            }
+        }
+        for(const f of fields)result[f]=Math.max(result[f],totals[f]);
+        return result;
+    };
     const marketSalePosition = p => String(marketRosterInfo(p).player?.pos || p.pos || '').toUpperCase();
     const marketAddStat = (card,label,value) => {
         const stat=marketNode('div','liga-market-stat','');
@@ -5661,9 +5682,10 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
             if(player?.num!=null)tags.append(marketNode('span','liga-market-tag',`#${player.num}`));
             card.append(tags);
             const stats=marketNode('div','liga-market-statline','');
-            marketAddStat(stats,'⚽ Goles',player ? (Number(player.goals)||0) : '—');
-            marketAddStat(stats,'🎯 Asistencias',player ? (Number(player.assists)||0) : '—');
-            marketAddStat(stats,'🧤 Atajadas',player ? (Number(player.saves)||0) : '—');
+            const officialStats=marketSaleOfficialStats(p,team,player);
+            marketAddStat(stats,'⚽ Goles',player ? officialStats.goals : '—');
+            marketAddStat(stats,'🎯 Asistencias',player ? officialStats.assists : '—');
+            marketAddStat(stats,'🧤 Atajadas',player ? officialStats.saves : '—');
             if(!player) stats.title='Estadísticas no disponibles: jugador no localizado en la plantilla actual';
             card.append(stats);
             const prices=marketNode('div','liga-market-money','');
