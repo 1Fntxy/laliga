@@ -8788,49 +8788,119 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
         return html || `<span style="font-size:0.75rem; color:var(--text-muted); font-style:italic;">Sin incidencias registradas</span>`;
     }
 
-    // Vista de jornadas: estadísticas derivadas en memoria, sin modificar Firebase.
+    // Vista de jornadas: utilizar los TOTALES oficiales (incluido el arrastre
+    // de reorganizaciones), sin confundir partidos históricos con partidos nuevos.
+    // Los indicadores son de lectura: NO se reescribe ni se guarda nada en Firebase.
     function getMatchdayTeamSnapshot(divData) {
-        const rows = divData.teams.map(t => ({ id: t.id, pts: Number(t.carryover?.pts)||0, gf: Number(t.carryover?.gf)||0, gc: Number(t.carryover?.gc)||0, dg: 0, form: [] }));
-        const byId = new Map(rows.map(t => [String(t.id), t]));
-        forEachCountedLeagueResult(divData, currentDiv, undefined, (m, sign) => {
-            const index = (divData.matches || []).findIndex(x => String(x.id) === String(m.id));
-            if (m.homeScore === null || m.homeScore === undefined || m.homeScore === '' ||
-                m.awayScore === null || m.awayScore === undefined || m.awayScore === '') return;
-            const a = byId.get(String(m.homeId)), b = byId.get(String(m.awayId));
-            if (!a || !b) return;
+        const teams = getSortedDivisionTeams(currentDiv);
+        const byId = new Map();
+        const simplifyName = value => String(value || '').normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '').trim().toLowerCase().replace(/\s+/g, ' ');
+
+        teams.forEach((t, index) => {
+            byId.set(String(t.id), {
+                id: t.id, position: index + 1,
+                pts: Number(t.pts) || 0, gf: Number(t.gf) || 0,
+                gc: Number(t.gc) || 0, dg: Number(t.dg) || 0,
+                pj: Math.max(0, Number(t.pj) || 0),
+                pg: Math.max(0, Number(t.pg) || 0),
+                pe: Math.max(0, Number(t.pe) || 0),
+                pp: Math.max(0, Number(t.pp) || 0),
+                name: t.name, form: [], last5: []
+            });
+        });
+
+        // Partido registrado: la forma se obtiene de los marcadores reales,
+        // INCLUSO si sus puntos ya estaban incluidos en carryover.
+        // No usar forEachCountedLeagueResult aquí porque ignora partidos del corte.
+        const direct = new Map([...byId.keys()].map(id => [id, []]));
+        (divData.matches || []).forEach((m, index) => {
+            if (m.homeScore == null || m.awayScore == null || m.homeScore === '' || m.awayScore === '') return;
             const hs = Number(m.homeScore), as = Number(m.awayScore);
             if (!Number.isFinite(hs) || !Number.isFinite(as)) return;
-            a.gf += sign * hs; a.gc += sign * as; b.gf += sign * as; b.gc += sign * hs;
-            const outcome = hs > as ? ['W','L'] : hs < as ? ['L','W'] : ['D','D'];
-            a.pts += sign * (outcome[0] === 'W' ? 3 : outcome[0] === 'D' ? 1 : 0);
-            b.pts += sign * (outcome[1] === 'W' ? 3 : outcome[1] === 'D' ? 1 : 0);
-            if (sign > 0) a.form.push({md: Number(m.matchday) || 0, index, result: outcome[0]});
-            if (sign > 0) b.form.push({md: Number(m.matchday) || 0, index, result: outcome[1]});
+            const results = hs === as ? ['D','D'] : hs > as ? ['W','L'] : ['L','W'];
+            const home = direct.get(String(m.homeId)), away = direct.get(String(m.awayId));
+            if (home) home.push({md:Number(m.matchday)||0,index,result:results[0]});
+            if (away) away.push({md:Number(m.matchday)||0,index,result:results[1]});
         });
-        rows.forEach(t => {
-            t.dg = t.gf - t.gc;
-            t.form.sort((a,b) => a.md - b.md || a.index - b.index);
-            t.last5 = t.form.slice(-5).map(f => f.result);
-        });
-        rows.sort((a,b) => b.pts - a.pts || b.dg - a.dg || b.gf - a.gf);
-        rows.forEach((t,i) => t.position = i + 1);
+
+        for (const [id, t] of byId) {
+            const recorded = (direct.get(id) || []).sort((a,b) => a.md - b.md || a.index - b.index);
+            const exact = entries => entries.length === t.pj &&
+                entries.filter(e => e.result === 'W').length === t.pg &&
+                entries.filter(e => e.result === 'D').length === t.pe &&
+                entries.filter(e => e.result === 'L').length === t.pp;
+            let form = recorded;
+
+            // Si cambiaron los ocupantes de las plazas, los partidos antiguos
+            // pueden pertenecer al club anterior. Usar el nombre histórico
+            // guardado en el encuentro para identificar al equipo trasladado.
+            if (!exact(form)) {
+                const wanted = simplifyName(t.name);
+                const original = (divData.teams || []).find(team => String(team.id) === id);
+                const excluded = new Set(Array.isArray(original?.excludedHistoricalFixtures)
+                    ? original.excludedHistoricalFixtures.map(String) : []);
+                const historical = [];
+                ['1','2','3'].forEach(division => {
+                    (appData[division]?.matches || []).forEach((m,index) => {
+                        if (excluded.has(`${division}:${m.id}`)) return;
+                        if (m.homeScore == null || m.awayScore == null || m.homeScore === '' || m.awayScore === '') return;
+                        const hs = Number(m.homeScore), as = Number(m.awayScore);
+                        if (!Number.isFinite(hs) || !Number.isFinite(as)) return;
+                        const isSpecial = String(division) === String(currentDiv) && !!m.countDespiteCutoff;
+                        const home = isSpecial ? String(m.homeId) === id : simplifyName(m.historicalHome) === wanted;
+                        const away = isSpecial ? String(m.awayId) === id : simplifyName(m.historicalAway) === wanted;
+                        if (home === away) return;
+                        historical.push({md:Number(m.matchday)||0,index,division,
+                            result: hs === as ? 'D' : ((home ? hs > as : as > hs) ? 'W' : 'L')});
+                    });
+                });
+                historical.sort((a,b) => a.md - b.md || Number(a.division)-Number(b.division) || a.index-b.index);
+                if (exact(historical)) form = historical;
+                else {
+                    // No atribuir al club el historial de otra plaza. Si el
+                    // orden de las jornadas no se conoce, mostrar el balance
+                    // oficial como forma sin orden en vez de fingir 0 partidos.
+                    const cutoff = Number(divData.restructureCutoff) || 0;
+                    const recent = recorded.filter(x => x.md > cutoff);
+                    const used = {W:0,D:0,L:0};
+                    recent.forEach(x => { used[x.result]++; });
+                    const missing = {W:Math.max(0,t.pg-used.W),D:Math.max(0,t.pe-used.D),L:Math.max(0,t.pp-used.L)};
+                    const unknown = [];
+                    ['W','D','L'].forEach(result => {
+                        for (let i=0; i<missing[result]; i++) unknown.push({md:-1,index:unknown.length,result,orderUnknown:true});
+                    });
+                    form = unknown.concat(recent);
+                }
+            }
+            // Victoria administrativa de D2 J3, sin marcador, ya reflejada en
+            // los totales: solo se representa si fue registrada explícitamente.
+            const original = (divData.teams || []).find(team => String(team.id) === id);
+            if (String(currentDiv) === '2' && original?.adminByeD2J3_2026?.type === 'victoria-administrativa-por-descanso'
+                && t.pj === 3 && t.pg === 1 && t.pe === 0 && t.pp === 2) {
+                form = [{md:1,index:0,result:'L'}, {md:2,index:1,result:'L'},
+                    {md:3,index:2,result:'W',administrative:true}];
+            }
+            t.form = form;
+            t.last5 = form.slice(-5);
+        }
         return byId;
     }
 
     function getMatchdayTeamMeta(team, snapshot, side) {
         const t = snapshot.get(String(team.id));
         if (!t) return '';
-        const dg = t.dg > 0 ? '+' + t.dg : String(t.dg);
+        const winRate = t.pj > 0 ? Math.round(t.pg / t.pj * 100) : 0;
         const form = t.last5.length
-            ? t.last5.map(r => `<span class="fixture-form-dot ${r === 'W' ? 'win' : r === 'D' ? 'draw' : 'loss'}" title="${r === 'W' ? 'Victoria' : r === 'D' ? 'Empate' : 'Derrota'}">${r === 'W' ? 'V' : r === 'D' ? 'E' : 'D'}</span>`).join('')
+            ? t.last5.map(f => `<span class="fixture-form-dot ${f.result === 'W' ? 'win' : f.result === 'D' ? 'draw' : 'loss'}" title="${f.orderUnknown ? 'Resultado histórico (orden sin confirmar): ' : ''}${f.result === 'W' ? 'Victoria' : f.result === 'D' ? 'Empate' : 'Derrota'}">${f.result === 'W' ? 'V' : f.result === 'D' ? 'E' : 'D'}</span>`).join('')
             : '<span class="fixture-form-empty">Sin partidos previos</span>';
         return `<div class="fixture-team-meta ${side}">
             <div class="fixture-team-role">${side === 'home' ? 'EQUIPO 1' : 'EQUIPO 2'}</div>
             <div class="fixture-team-rank">#${t.position} <span>EN LA LIGA</span></div>
             <div class="fixture-team-numbers"><b>${t.pts}</b> PTS</div>
-            <div class="fixture-win-rate" title="Victorias sobre partidos disputados">
-                <div class="fixture-win-rate-heading"><span>VICTORIAS</span><strong>${t.form.length ? Math.round(t.form.filter(f => f.result === 'W').length / t.form.length * 100) : 0}%</strong></div>
-                <div class="fixture-win-rate-track"><div class="fixture-win-rate-fill" style="--win-width:${t.form.length ? Math.round(t.form.filter(f => f.result === 'W').length / t.form.length * 100) : 0}%"></div></div>
+            <div class="fixture-win-rate" title="${t.pg} victorias de ${t.pj} partidos disputados">
+                <div class="fixture-win-rate-heading"><span>VICTORIAS</span><strong>${winRate}%</strong></div>
+                <div class="fixture-win-rate-track"><div class="fixture-win-rate-fill" style="--win-width:${winRate}%"></div></div>
             </div>
             <div class="fixture-team-form" aria-label="Últimos cinco partidos">${form}</div>
         </div>`;
