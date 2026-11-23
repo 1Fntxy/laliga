@@ -5818,6 +5818,33 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
           .sort((a,b)=>Number(b.completedAt||0)-Number(a.completedAt||0));
         renderMarketPurchases();
     },error=>marketPublicError(marketPurchases,'las compras',error));
+    // Préstamos: buscar el escudo en los datos REALES de Firebase antes que
+    // en la lista inicial de ejemplo. Los documentos públicos de préstamos
+    // guardan nombres, pero no necesariamente URLs de escudos.
+    const marketLoanClub = (name,division,subtitle,storedLogo='') => {
+        const normal = value => String(value||'').normalize('NFD')
+            .replace(/[\u0300-\u036f]/g,'').toLowerCase()
+            .replace(/[^a-z0-9 ]/g,' ').replace(/\s+fc$/,'')
+            .replace(/\s+/g,' ').trim();
+        const target=normal(name);
+        const divisions=[...new Set([String(division),'1','2','3'])];
+        let matched=null;
+        for(const d of divisions){
+            // No usar || aquí: una plantilla inicial siempre existe y tapaba
+            // los equipos auténticos leídos de liga_divisiones.
+            for(const teams of [marketDivisionData?.[d]?.teams,appData?.[d]?.teams]){
+                if(!Array.isArray(teams))continue;
+                const found=teams.find(t=>normal(t?.name)===target && String(t?.logo||'').trim());
+                if(found){matched=found;break;}
+            }
+            if(matched)break;
+        }
+        const club=marketNode('div','liga-buy-club','');
+        club.append(marketBuyCrest(matched,name,storedLogo));
+        club.append(marketNode('div','liga-buy-club-name',name));
+        club.append(marketNode('small','liga-buy-label',subtitle));
+        return club;
+    };
     const marketLoansList = document.getElementById('liga-market-prestamos');
     const renderMarketLoans = docs => {
         if(!marketLoansList)return;
@@ -5841,12 +5868,12 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
             top.append(marketNode('time','liga-loan-date',`Inicio: ${marketDate(p.startedAt)}`));
             card.append(top);
             const route=marketNode('div','liga-loan-route','');
-            route.append(marketBuyClub(owner,p.ownerDivision,'Club de origen',p.ownerLogo));
+            route.append(marketLoanClub(owner,p.ownerDivision,'Club de origen',p.ownerLogo));
             const center=marketNode('div','liga-loan-direction','');
             center.append(marketNode('strong','','➜'));
             center.append(marketNode('small','','CESIÓN'));
             route.append(center);
-            route.append(marketBuyClub(receiver,p.receiverDivision,'Club receptor',p.receiverLogo));
+            route.append(marketLoanClub(receiver,p.receiverDivision,'Club receptor',p.receiverLogo));
             card.append(route);
             const metrics=marketNode('div','liga-loan-metrics','');
             const metric=(label,value,extra='')=>{
