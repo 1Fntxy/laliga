@@ -7594,7 +7594,7 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
             // Excepción autorizada: un equipo trasladado vuelve a disputar J3.
             // Solamente este encuentro se cuenta pese al corte histórico.
             if (historical && Number(divNum) !== 3 && !m.countDespiteCutoff) continue;
-            const baseline = historical ? historicalScoreBaselineD3[String(m.id)] : null;
+            const baseline = Number(divNum) === 3 && historical ? historicalScoreBaselineD3[String(m.id)] : null;
             // Solo restar un resultado que realmente pertenecía al mismo enfrentamiento.
             if (baseline && Number(baseline[0]) === Number(m.matchday) &&
                 String(baseline[1]) === String(m.homeId) && String(baseline[2]) === String(m.awayId)) {
@@ -7604,6 +7604,84 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
                 m.awayScore !== null && m.awayScore !== undefined && m.awayScore !== '' &&
                 Number.isFinite(Number(m.homeScore)) && Number.isFinite(Number(m.awayScore))) {
                 callback(m, 1);
+            }
+        }
+    }
+
+    // Reconciliación de lectura: nunca escribe en Firebase. Los arrastres de
+    // reestructuración no pueden producir victorias, goles o puntos negativos.
+    // Los partidos del corte que NO están en el arrastre se suman solo cuando
+    // conservan el nombre histórico del mismo club (identidad verificable).
+    function reconcileLeagueTable(divData, divNum, stats, matchesLimit) {
+        const cutoff = Number(divData.restructureCutoff) || 0;
+        const key = value => String(value || '').normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '').trim().toLowerCase().replace(/\s+/g, ' ');
+        const addResult = (t, hs, as, home) => {
+            const gf = home ? hs : as, gc = home ? as : hs;
+            t.pj += 1; t.gf += gf; t.gc += gc;
+            if (gf > gc) { t.pg += 1; t.pts += 3; }
+            else if (gf < gc) t.pp += 1;
+            else { t.pe += 1; t.pts += 1; }
+        };
+        for (const t of stats) {
+            const raw = t.carryover || {};
+            const invalidCarry = ['pj','pg','pe','pp','gf','gc','pts'].some(k => Number(raw[k] || 0) < 0);
+            // Un arrastre inválido no es un resultado: se reconstruye únicamente
+            // con partidos identificables, sin atribuir marcadores de otras plazas.
+            if (invalidCarry) {
+                for (const field of ['pj','pg','pe','pp','gf','gc','pts']) t[field] = 0;
+                for (const m of (divData.matches || [])) {
+                    if (matchesLimit !== undefined && Number(m.matchday) > matchesLimit) continue;
+                    if (m.homeScore == null || m.awayScore == null) continue;
+                    const hs=Number(m.homeScore), as=Number(m.awayScore);
+                    if (!Number.isFinite(hs) || !Number.isFinite(as)) continue;
+                    const home = key(m.historicalHome) === key(t.name) && !!m.historicalHome;
+                    const away = key(m.historicalAway) === key(t.name) && !!m.historicalAway;
+                    const newMatch = Number(m.matchday) > cutoff || m.countDespiteCutoff === true;
+                    if (home !== away) addResult(t,hs,as,home);
+                    else if (newMatch && !m.historicalHome && !m.historicalAway &&
+                             String(m.homeId) !== String(m.awayId)) {
+                        if (String(m.homeId) === String(t.id)) addResult(t,hs,as,true);
+                        else if (String(m.awayId) === String(t.id)) addResult(t,hs,as,false);
+                    }
+                }
+                continue;
+            }
+            // La clasificación normal ya contó los partidos posteriores al corte.
+            // Completar solo encuentros antiguos inequívocamente atribuidos al club
+            // que no quedaron incluidos en su carryover (PJ insuficientes).
+            if (!cutoff || Number(divNum) === 3) continue;
+            const noCarry = ['pj','pg','pe','pp','gf','gc','pts'].every(k => Number(raw[k] || 0) === 0);
+            const excluded = new Set(Array.isArray(t.excludedHistoricalFixtures)
+                ? t.excludedHistoricalFixtures.map(String) : []);
+            const known = (divData.matches || []).filter(m => {
+                if (Number(m.matchday) > cutoff || m.countDespiteCutoff === true ||
+                    (matchesLimit !== undefined && Number(m.matchday) > matchesLimit) ||
+                    m.homeScore == null || m.awayScore == null ||
+                    excluded.has(`${divNum}:${m.id}`)) return false;
+                const explicitHome = !!m.historicalHome, explicitAway = !!m.historicalAway;
+                if (explicitHome || explicitAway) {
+                    return key(m.historicalHome) === key(t.name) || key(m.historicalAway) === key(t.name);
+                }
+                // Compatibilidad: partidos antiguos sin nombre histórico. Solo
+                // contarlos si el club NO tiene ningún arrastre (no hay duplicación).
+                return noCarry && (String(m.homeId) === String(t.id) || String(m.awayId) === String(t.id));
+            });
+            const recorded = (divData.matches || []).filter(m =>
+                (Number(m.matchday) > cutoff || m.countDespiteCutoff === true) &&
+                (matchesLimit === undefined || Number(m.matchday) <= matchesLimit) &&
+                m.homeScore != null && m.awayScore != null &&
+                (String(m.homeId) === String(t.id) || String(m.awayId) === String(t.id))).length;
+            const covered = Math.max(0, Number(t.pj) - recorded);
+            // Solo se pueden recuperar las jornadas antiguas si el arrastre no
+            // registra ya todos esos partidos; nunca duplicar un partido contado.
+            if (covered >= known.length) continue;
+            for (const m of known.slice(covered)) {
+                const hs=Number(m.homeScore),as=Number(m.awayScore);
+                if (!Number.isFinite(hs) || !Number.isFinite(as)) continue;
+                addResult(t,hs,as,m.historicalHome || m.historicalAway
+                    ? key(m.historicalHome)===key(t.name)
+                    : String(m.homeId)===String(t.id));
             }
         }
     }
@@ -7630,6 +7708,7 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
             }
         });
 
+        reconcileLeagueTable(divData, divNum, stats);
         stats.forEach(t => t.dg = t.gf - t.gc);
         stats.sort((a, b) => b.pts - a.pts || b.dg - a.dg || b.gf - a.gf);
         return stats;
@@ -8438,22 +8517,24 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
     function calculatePositionsForMatches(matchesLimit) {
         const divData = appData[currentDiv];
         if (!divData) return {};
-        let tempStats = divData.teams.map(t => ({ id: t.id, pts: Number(t.carryover?.pts)||0, gf: Number(t.carryover?.gf)||0, gc: Number(t.carryover?.gc)||0, dg: 0 }));
+        let tempStats = divData.teams.map(t => ({ ...t, pj:Number(t.carryover?.pj)||0, pg:Number(t.carryover?.pg)||0, pe:Number(t.carryover?.pe)||0, pp:Number(t.carryover?.pp)||0, pts: Number(t.carryover?.pts)||0, gf: Number(t.carryover?.gf)||0, gc: Number(t.carryover?.gc)||0, dg: 0 }));
         
         forEachCountedLeagueResult(divData, currentDiv, matchesLimit, (m, sign) => {
             {
                 let home = tempStats.find(t => t.id === m.homeId);
                 let away = tempStats.find(t => t.id === m.awayId);
                 if (home && away) {
+                    home.pj += sign; away.pj += sign;
                     home.gf += sign * m.homeScore; home.gc += sign * m.awayScore;
                     away.gf += sign * m.awayScore; away.gc += sign * m.homeScore;
-                    if (m.homeScore > m.awayScore) home.pts += sign * 3;
-                    else if (m.homeScore < m.awayScore) away.pts += sign * 3;
-                    else { home.pts += sign * 1; away.pts += sign * 1; }
+                    if (m.homeScore > m.awayScore) {home.pg += sign; home.pts += sign * 3; away.pp += sign;}
+                    else if (m.homeScore < m.awayScore) {away.pg += sign; away.pts += sign * 3; home.pp += sign;}
+                    else { home.pe += sign;away.pe += sign;home.pts += sign * 1; away.pts += sign * 1; }
                 }
             }
         });
 
+        reconcileLeagueTable(divData, currentDiv, tempStats, matchesLimit);
         tempStats.forEach(t => t.dg = t.gf - t.gc);
         tempStats.sort((a, b) => b.pts - a.pts || b.dg - a.dg || b.gf - a.gf);
 
@@ -8472,7 +8553,7 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
             division: currentDiv,
             cutoff: divData.restructureCutoff || 0,
             teams: (divData.teams || []).map(t => [t.id,t.name,t.logo,t.carryover,t.adminByeD2J3_2026]),
-            matches: (divData.matches || []).map(m => [m.id,m.matchday,m.homeId,m.awayId,m.homeScore,m.awayScore]),
+            matches: (divData.matches || []).map(m => [m.id,m.matchday,m.homeId,m.awayId,m.homeScore,m.awayScore,m.countDespiteCutoff,m.historicalHome,m.historicalAway]),
             // La forma de un club trasladado depende también de partidos históricos de otras divisiones.
             historicalForm: ['1','2','3'].flatMap(d => (appData[d]?.matches || []).filter(m =>
                 m.homeScore != null && m.awayScore != null && (m.historicalHome || m.historicalAway)
@@ -8513,6 +8594,8 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
                 }
             }
         });
+
+        reconcileLeagueTable(divData, currentDiv, stats);
 
         // Forma: leer cada partido REAL una sola vez y en orden de jornada.
         // No usar forEachCountedLeagueResult aquí: sus ajustes +/- son para
