@@ -8543,6 +8543,67 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
         return positions;
     }
 
+    // Identifica la forma por CLUB, no solo por ID de plaza: los IDs cambian
+    // de dueño al intercambiar/registrar equipos. Es exclusivamente de lectura.
+    function getClubChronologicalForm(team, division, totals) {
+        const key = value => String(value || '').normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '').trim().toLowerCase().replace(/\s+/g, ' ');
+        const name = key(team.name);
+        const teamId = String(team.id);
+        const excluded = new Set(Array.isArray(team.excludedHistoricalFixtures)
+            ? team.excludedHistoricalFixtures.map(String) : []);
+        const matches = [];
+        ['1','2','3'].forEach(d => {
+            const source = appData[d];
+            const cutoff = Number(source?.restructureCutoff) || 0;
+            (source?.matches || []).forEach((m, index) => {
+                if (excluded.has(`${d}:${m.id}`)) return;
+                if (m.homeScore == null || m.awayScore == null || m.homeScore === '' || m.awayScore === '') return;
+                const hs = Number(m.homeScore), as = Number(m.awayScore);
+                if (!Number.isFinite(hs) || !Number.isFinite(as)) return;
+                const special = String(d) === String(division) && m.countDespiteCutoff === true;
+                // Un nombre histórico identifica a quien REALMENTE jugó, no al
+                // dueño actual de la plaza. La excepción especial se identifica por ID.
+                const playedAfterCutoff = String(d) === String(division) &&
+                    (Number(m.matchday) > cutoff || !cutoff);
+                // Si hay identidad histórica de cualquiera de los lados,
+                // nunca completar la otra por el ID reutilizable de la plaza.
+                // Para partidos nuevos sin nombres históricos, el ID sí es válido.
+                const hasHistoricalNames = !!(m.historicalHome || m.historicalAway);
+                const home = special ? String(m.homeId) === teamId
+                    : hasHistoricalNames ? key(m.historicalHome) === name
+                    : playedAfterCutoff && String(m.homeId) === teamId;
+                const away = special ? String(m.awayId) === teamId
+                    : hasHistoricalNames ? key(m.historicalAway) === name
+                    : playedAfterCutoff && String(m.awayId) === teamId;
+                if (home === away) return;
+                matches.push({matchday:Number(m.matchday)||0,index,division:d,
+                    result:hs===as?'D':(home ? hs>as : as>hs)?'W':'L'});
+            });
+        });
+        matches.sort((a,b) => a.matchday-b.matchday || Number(a.division)-Number(b.division) || a.index-b.index);
+        const targets = {W:Number(totals.pg)||0,D:Number(totals.pe)||0,L:Number(totals.pp)||0};
+        const exact = matches.length === Number(totals.pj) &&
+            ['W','D','L'].every(r => matches.filter(m => m.result===r).length===targets[r]);
+        if (exact) return matches;
+        // Si algunos resultados antiguos no tienen identidad verificable, NO
+        // inventar su orden. Conservar primero los partidos identificados, y
+        // representar aparte los resultados que falten según el balance oficial.
+        const remaining = {...targets};
+        const reliable = [];
+        for (let i=matches.length-1;i>=0;i--) {
+            const m=matches[i];
+            if (remaining[m.result]>0) {reliable.push(m);remaining[m.result]--;}
+        }
+        reliable.reverse();
+        const unknown=[];
+        ['W','D','L'].forEach(result => {
+            for (let i=0;i<remaining[result];i++)
+                unknown.push({matchday:-1,index:unknown.length,result,orderUnknown:true});
+        });
+        return unknown.concat(reliable).slice(-Math.max(0,Number(totals.pj)||0));
+    }
+
     let lastStandingsSignature = null;
     function renderStandings() {
         const divData = appData[currentDiv];
@@ -8552,12 +8613,13 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
         const standingsSignature = JSON.stringify({
             division: currentDiv,
             cutoff: divData.restructureCutoff || 0,
-            teams: (divData.teams || []).map(t => [t.id,t.name,t.logo,t.carryover,t.adminByeD2J3_2026]),
+            teams: (divData.teams || []).map(t => [t.id,t.name,t.logo,t.carryover,t.excludedHistoricalFixtures]),
             matches: (divData.matches || []).map(m => [m.id,m.matchday,m.homeId,m.awayId,m.homeScore,m.awayScore,m.countDespiteCutoff,m.historicalHome,m.historicalAway]),
             // La forma de un club trasladado depende también de partidos históricos de otras divisiones.
             historicalForm: ['1','2','3'].flatMap(d => (appData[d]?.matches || []).filter(m =>
-                m.homeScore != null && m.awayScore != null && (m.historicalHome || m.historicalAway)
-            ).map(m => [d,m.id,m.matchday,m.historicalHome,m.historicalAway,m.homeScore,m.awayScore]))
+                m.homeScore != null && m.awayScore != null
+            ).map(m => [d,appData[d]?.restructureCutoff,m.id,m.matchday,m.homeId,m.awayId,
+                m.historicalHome,m.historicalAway,m.homeScore,m.awayScore,m.countDespiteCutoff]))
         });
         if (standingsSignature === lastStandingsSignature && document.querySelector('#tab-clasificacion tbody tr')) return;
         lastStandingsSignature = standingsSignature;
@@ -8597,120 +8659,11 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
 
         reconcileLeagueTable(divData, currentDiv, stats);
 
-        // Forma: leer cada partido REAL una sola vez y en orden de jornada.
-        // No usar forEachCountedLeagueResult aquí: sus ajustes +/- son para
-        // las estadísticas, no para representar partidos individuales.
-        const formByTeam = new Map(stats.map(t => [String(t.id), []]));
-        (divData.matches || []).forEach((m, index) => {
-            if (m.homeScore == null || m.awayScore == null || m.homeScore === '' || m.awayScore === '') return;
-            const hs = Number(m.homeScore), as = Number(m.awayScore);
-            if (!Number.isFinite(hs) || !Number.isFinite(as)) return;
-            const outcomes = hs > as ? ['W','L'] : hs < as ? ['L','W'] : ['D','D'];
-            const home = formByTeam.get(String(m.homeId));
-            const away = formByTeam.get(String(m.awayId));
-            if (home) home.push({matchday:Number(m.matchday)||0,index,result:outcomes[0]});
-            if (away) away.push({matchday:Number(m.matchday)||0,index,result:outcomes[1]});
+        // Forma de todos los equipos: respeta identidad histórica en traslados.
+        stats.forEach(t => {
+            t.form = getClubChronologicalForm(t, currentDiv, t);
         });
         stats.forEach(t => {
-            const actual = (formByTeam.get(String(t.id)) || []).sort((a,b) => a.matchday - b.matchday || a.index - b.index);
-            // Una victoria administrativa por descanso NO tiene marcador ni partido en el calendario.
-            // La marca escrita por el reparador de D2 J3 coloca la V después de las jornadas 1 y 2.
-            // Solo añadirla si faltaba exactamente una victoria, evitando inventar otros resultados.
-            if (String(currentDiv) === '2' && t.adminByeD2J3_2026?.type === 'victoria-administrativa-por-descanso') {
-                const totals = {W:Number(t.pg)||0, D:Number(t.pe)||0, L:Number(t.pp)||0};
-                const registered = {W:0,D:0,L:0};
-                actual.forEach(entry => { registered[entry.result]++; });
-                if (totals.W - registered.W === 1 && totals.D === registered.D && totals.L === registered.L &&
-                    !actual.some(entry => entry.matchday === 3)) {
-                    actual.push({matchday:3,index:Number.MAX_SAFE_INTEGER,result:'W',administrative:true});
-                    actual.sort((a,b) => a.matchday - b.matchday || a.index - b.index);
-                }
-            }
-            const total = Math.max(0, Math.floor(Number(t.pj)||0));
-            // El historial de la plaza puede pertenecer a otro club trasladado.
-            // Si coincide en cantidad y V/E/D con el equipo actual, sí es fiable.
-            const exact = actual.length === total &&
-                actual.filter(x => x.result === 'W').length === Number(t.pg) &&
-                actual.filter(x => x.result === 'D').length === Number(t.pe) &&
-                actual.filter(x => x.result === 'L').length === Number(t.pp);
-            if (exact) {
-                t.form = actual;
-            } else {
-                // Recuperar el orden REAL de las jornadas del club, incluso si sus
-                // partidos anteriores siguen archivados en su división de origen.
-                // Los IDs representan plazas y cambian con /moverequipo; por eso
-                // para el historial se usa el nombre histórico del participante.
-                const historicalKey = value => String(value || '').normalize('NFD')
-                    .replace(/[\u0300-\u036f]/g, '').trim().toLowerCase().replace(/\s+/g, ' ');
-                const targetName = historicalKey(t.name);
-                // Si una jornada anterior fue anulada para el club tras un traslado,
-                // conservar el marcador en el archivo histórico, pero excluirla
-                // únicamente de su forma actual (V/E/D). No afecta al rival.
-                const excludedHistorical = new Set(Array.isArray(t.excludedHistoricalFixtures) ? t.excludedHistoricalFixtures.map(String) : []);
-                const historical = [];
-                ['1','2','3'].forEach(division => {
-                    (appData[division]?.matches || []).forEach((m,index) => {
-                        if (excludedHistorical.has(`${division}:${m.id}`)) return;
-                        if (m.homeScore == null || m.awayScore == null || m.homeScore === '' || m.awayScore === '') return;
-                        const hs = Number(m.homeScore), as = Number(m.awayScore);
-                        if (!Number.isFinite(hs) || !Number.isFinite(as)) return;
-                        // En el encuentro excepcional de J3 se utiliza el ID actual
-                        // del club, pues sus nombres históricos son de otra plaza.
-                        const isSpecial = String(division) === String(currentDiv) && !!m.countDespiteCutoff;
-                        const isHome = isSpecial ? String(m.homeId) === String(t.id) : historicalKey(m.historicalHome) === targetName;
-                        const isAway = isSpecial ? String(m.awayId) === String(t.id) : historicalKey(m.historicalAway) === targetName;
-                        if (isHome === isAway) return;
-                        const result = hs === as ? 'D' : (isHome ? hs > as : as > hs) ? 'W' : 'L';
-                        historical.push({matchday:Number(m.matchday)||0,index,division,result});
-                    });
-                });
-                historical.sort((a,b) => a.matchday - b.matchday || Number(a.division) - Number(b.division) || a.index - b.index);
-                const historicalExact = historical.length === total &&
-                    historical.filter(x => x.result === 'W').length === Number(t.pg) &&
-                    historical.filter(x => x.result === 'D').length === Number(t.pe) &&
-                    historical.filter(x => x.result === 'L').length === Number(t.pp);
-                if (historicalExact) {
-                    t.form = historical;
-                } else {
-                // Los clubes recién registrados o trasladados pueden conservar
-                // estadísticas de una plaza sin tener sus IDs en los partidos.
-                // Nunca duplicar resultados ni mostrar "Sin partidos" si PJ > 0.
-                const cutoff = Number(divData.restructureCutoff) || 0;
-                const newMatches = actual.filter(x => x.matchday > cutoff);
-                const used = {W:0,D:0,L:0};
-                newMatches.forEach(x => { used[x.result]++; });
-                const missing = {
-                    W: Math.max(0, (Number(t.pg)||0) - used.W),
-                    D: Math.max(0, (Number(t.pe)||0) - used.D),
-                    L: Math.max(0, (Number(t.pp)||0) - used.L)
-                };
-                // Los resultados sin partido identificable no tienen un orden
-                // cronológico comprobable; se agrupan y se marca la advertencia.
-                const unknown = [];
-                ['W','D','L'].forEach(result => {
-                    for (let i=0;i<missing[result];i++) unknown.push({matchday:-1,index:unknown.length,result,orderUnknown:true});
-                });
-                t.form = unknown.concat(newMatches).slice(-Math.min(total,5));
-                }
-            }
-        });
-        stats.forEach(t => {
-            // D2 J3: resultado administrativo de descanso, marcado en Firebase.
-            // Como no existe un partido para esa victoria, reconstruimos su orden
-            // solo cuando coinciden exactamente los totales oficiales (2D, 1V).
-            // No modifica puntos, estadísticas ni resultados de otros equipos.
-            const bye = t.adminByeD2J3_2026;
-            if (String(currentDiv) === '2' &&
-                bye?.type === 'victoria-administrativa-por-descanso' &&
-                Number(bye.matchday) === 3 &&
-                Number(t.pj) === 3 && Number(t.pg) === 1 &&
-                Number(t.pe) === 0 && Number(t.pp) === 2) {
-                t.form = [
-                    {matchday:1,index:0,result:'L'},
-                    {matchday:2,index:1,result:'L'},
-                    {matchday:3,index:2,result:'W',administrative:true}
-                ];
-            }
             t.dg = t.gf - t.gc;
             t.form.sort((a, b) => a.matchday - b.matchday || a.index - b.index);
             t.last5 = t.form.slice(-5).map(f => ({result:f.result, orderUnknown:!!f.orderUnknown}));
@@ -9088,77 +9041,9 @@ html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
             });
         });
 
-        // Partido registrado: la forma se obtiene de los marcadores reales,
-        // INCLUSO si sus puntos ya estaban incluidos en carryover.
-        // No usar forEachCountedLeagueResult aquí porque ignora partidos del corte.
-        const direct = new Map([...byId.keys()].map(id => [id, []]));
-        (divData.matches || []).forEach((m, index) => {
-            if (m.homeScore == null || m.awayScore == null || m.homeScore === '' || m.awayScore === '') return;
-            const hs = Number(m.homeScore), as = Number(m.awayScore);
-            if (!Number.isFinite(hs) || !Number.isFinite(as)) return;
-            const results = hs === as ? ['D','D'] : hs > as ? ['W','L'] : ['L','W'];
-            const home = direct.get(String(m.homeId)), away = direct.get(String(m.awayId));
-            if (home) home.push({md:Number(m.matchday)||0,index,result:results[0]});
-            if (away) away.push({md:Number(m.matchday)||0,index,result:results[1]});
-        });
-
         for (const [id, t] of byId) {
-            const recorded = (direct.get(id) || []).sort((a,b) => a.md - b.md || a.index - b.index);
-            const exact = entries => entries.length === t.pj &&
-                entries.filter(e => e.result === 'W').length === t.pg &&
-                entries.filter(e => e.result === 'D').length === t.pe &&
-                entries.filter(e => e.result === 'L').length === t.pp;
-            let form = recorded;
-
-            // Si cambiaron los ocupantes de las plazas, los partidos antiguos
-            // pueden pertenecer al club anterior. Usar el nombre histórico
-            // guardado en el encuentro para identificar al equipo trasladado.
-            if (!exact(form)) {
-                const wanted = simplifyName(t.name);
-                const original = (divData.teams || []).find(team => String(team.id) === id);
-                const excluded = new Set(Array.isArray(original?.excludedHistoricalFixtures)
-                    ? original.excludedHistoricalFixtures.map(String) : []);
-                const historical = [];
-                ['1','2','3'].forEach(division => {
-                    (appData[division]?.matches || []).forEach((m,index) => {
-                        if (excluded.has(`${division}:${m.id}`)) return;
-                        if (m.homeScore == null || m.awayScore == null || m.homeScore === '' || m.awayScore === '') return;
-                        const hs = Number(m.homeScore), as = Number(m.awayScore);
-                        if (!Number.isFinite(hs) || !Number.isFinite(as)) return;
-                        const isSpecial = String(division) === String(currentDiv) && !!m.countDespiteCutoff;
-                        const home = isSpecial ? String(m.homeId) === id : simplifyName(m.historicalHome) === wanted;
-                        const away = isSpecial ? String(m.awayId) === id : simplifyName(m.historicalAway) === wanted;
-                        if (home === away) return;
-                        historical.push({md:Number(m.matchday)||0,index,division,
-                            result: hs === as ? 'D' : ((home ? hs > as : as > hs) ? 'W' : 'L')});
-                    });
-                });
-                historical.sort((a,b) => a.md - b.md || Number(a.division)-Number(b.division) || a.index-b.index);
-                if (exact(historical)) form = historical;
-                else {
-                    // No atribuir al club el historial de otra plaza. Si el
-                    // orden de las jornadas no se conoce, mostrar el balance
-                    // oficial como forma sin orden en vez de fingir 0 partidos.
-                    const cutoff = Number(divData.restructureCutoff) || 0;
-                    const recent = recorded.filter(x => x.md > cutoff);
-                    const used = {W:0,D:0,L:0};
-                    recent.forEach(x => { used[x.result]++; });
-                    const missing = {W:Math.max(0,t.pg-used.W),D:Math.max(0,t.pe-used.D),L:Math.max(0,t.pp-used.L)};
-                    const unknown = [];
-                    ['W','D','L'].forEach(result => {
-                        for (let i=0; i<missing[result]; i++) unknown.push({md:-1,index:unknown.length,result,orderUnknown:true});
-                    });
-                    form = unknown.concat(recent);
-                }
-            }
-            // Victoria administrativa de D2 J3, sin marcador, ya reflejada en
-            // los totales: solo se representa si fue registrada explícitamente.
-            const original = (divData.teams || []).find(team => String(team.id) === id);
-            if (String(currentDiv) === '2' && original?.adminByeD2J3_2026?.type === 'victoria-administrativa-por-descanso'
-                && t.pj === 3 && t.pg === 1 && t.pe === 0 && t.pp === 2) {
-                form = [{md:1,index:0,result:'L'}, {md:2,index:1,result:'L'},
-                    {md:3,index:2,result:'W',administrative:true}];
-            }
+            const original = (divData.teams || []).find(team => String(team.id) === id) || t;
+            let form = getClubChronologicalForm(original, currentDiv, t);
             t.form = form;
             t.last5 = form.slice(-5);
         }
