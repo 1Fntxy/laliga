@@ -2964,6 +2964,96 @@ body:has(#tab-premios.active) .clubs-ticker-bar { border-bottom-color: rgba(185,
     backdrop-filter: blur(3px) saturate(.88) !important;
     -webkit-backdrop-filter: blur(3px) saturate(.88) !important;
 }
+
+/* === AJUSTE DE CONTRASTE EN MODO CLARO: JORNADAS Y ESTADÍSTICAS === */
+body:not([data-theme="dark"]) .match-card,
+body[data-theme="light"] .match-card {
+    color: #F8FAFC;
+}
+body:not([data-theme="dark"]) .match-card .match-team,
+body:not([data-theme="dark"]) .match-card .match-team span,
+body:not([data-theme="dark"]) .match-card .fixture-team-rank,
+body:not([data-theme="dark"]) .match-card .fixture-team-rank span,
+body:not([data-theme="dark"]) .match-card .fixture-team-numbers,
+body:not([data-theme="dark"]) .match-card .fixture-team-numbers b,
+body:not([data-theme="dark"]) .match-card .fixture-win-rate-heading,
+body:not([data-theme="dark"]) .match-card .fixture-win-rate-heading strong,
+body:not([data-theme="dark"]) .match-card .fixture-form-empty,
+body:not([data-theme="dark"]) .match-card .team-events-side,
+body:not([data-theme="dark"]) .match-card .compact-event-badge,
+body[data-theme="light"] .match-card .match-team,
+body[data-theme="light"] .match-card .match-team span,
+body[data-theme="light"] .match-card .fixture-team-rank,
+body[data-theme="light"] .match-card .fixture-team-rank span,
+body[data-theme="light"] .match-card .fixture-team-numbers,
+body[data-theme="light"] .match-card .fixture-team-numbers b,
+body[data-theme="light"] .match-card .fixture-win-rate-heading,
+body[data-theme="light"] .match-card .fixture-win-rate-heading strong,
+body[data-theme="light"] .match-card .fixture-form-empty,
+body[data-theme="light"] .match-card .team-events-side,
+body[data-theme="light"] .match-card .compact-event-badge {
+    color: #F8FAFC !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,.65);
+}
+body:not([data-theme="dark"]) .match-card .fixture-team-rank span,
+body:not([data-theme="dark"]) .match-card .fixture-team-numbers,
+body:not([data-theme="dark"]) .match-card .fixture-win-rate-heading,
+body:not([data-theme="dark"]) .match-card .team-events-side,
+body[data-theme="light"] .match-card .fixture-team-rank span,
+body[data-theme="light"] .match-card .fixture-team-numbers,
+body[data-theme="light"] .match-card .fixture-win-rate-heading,
+body[data-theme="light"] .match-card .team-events-side {
+    color: rgba(248,250,252,.92) !important;
+}
+body:not([data-theme="dark"]) .match-card .compact-event-badge,
+body[data-theme="light"] .match-card .compact-event-badge {
+    background: rgba(255,255,255,.08) !important;
+    border-color: rgba(255,255,255,.18) !important;
+}
+body:not([data-theme="dark"]) #tab-estadisticas .stat-subcontent,
+body[data-theme="light"] #tab-estadisticas .stat-subcontent {
+    color: #F8FAFC;
+}
+body:not([data-theme="dark"]) #tab-estadisticas .stat-subcontent h3,
+body:not([data-theme="dark"]) #tab-estadisticas .stat-subcontent p,
+body:not([data-theme="dark"]) #tab-estadisticas .stat-subcontent th,
+body:not([data-theme="dark"]) #tab-estadisticas .stat-subcontent td,
+body:not([data-theme="dark"]) #tab-estadisticas .stat-podium-rank,
+body:not([data-theme="dark"]) #tab-estadisticas .stat-podium-player,
+body:not([data-theme="dark"]) #tab-estadisticas .stat-podium-team,
+body:not([data-theme="dark"]) #tab-estadisticas .stat-podium-value,
+body:not([data-theme="dark"]) #tab-estadisticas .stat-performance,
+body:not([data-theme="dark"]) #tab-estadisticas .stat-performance strong,
+body:not([data-theme="dark"]) #tab-estadisticas .stat-team-cell,
+body:not([data-theme="dark"]) #tab-estadisticas .team-cell,
+body:not([data-theme="dark"]) #tab-estadisticas .table-responsive table td,
+body:not([data-theme="dark"]) #tab-estadisticas .table-responsive table th,
+body[data-theme="light"] #tab-estadisticas .stat-subcontent h3,
+body[data-theme="light"] #tab-estadisticas .stat-subcontent p,
+body[data-theme="light"] #tab-estadisticas .stat-subcontent th,
+body[data-theme="light"] #tab-estadisticas .stat-subcontent td,
+body[data-theme="light"] #tab-estadisticas .stat-podium-rank,
+body[data-theme="light"] #tab-estadisticas .stat-podium-player,
+body[data-theme="light"] #tab-estadisticas .stat-podium-team,
+body[data-theme="light"] #tab-estadisticas .stat-podium-value,
+body[data-theme="light"] #tab-estadisticas .stat-performance,
+body[data-theme="light"] #tab-estadisticas .stat-performance strong,
+body[data-theme="light"] #tab-estadisticas .stat-team-cell,
+body[data-theme="light"] #tab-estadisticas .team-cell,
+body[data-theme="light"] #tab-estadisticas .table-responsive table td,
+body[data-theme="light"] #tab-estadisticas .table-responsive table th {
+    color: #F8FAFC !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,.55);
+}
+body:not([data-theme="dark"]) #tab-estadisticas .stat-subcontent p,
+body:not([data-theme="dark"]) #tab-estadisticas .stat-podium-team,
+body:not([data-theme="dark"]) #tab-estadisticas .table-responsive table th,
+body[data-theme="light"] #tab-estadisticas .stat-subcontent p,
+body[data-theme="light"] #tab-estadisticas .stat-podium-team,
+body[data-theme="light"] #tab-estadisticas .table-responsive table th {
+    color: rgba(248,250,252,.9) !important;
+}
+
 </style>
 <style>
 /* Selector desplegable premium de Jornadas: conserva la lógica original */
@@ -4581,6 +4671,22 @@ body.market-mode #sub-tabs-container{display:none!important}
 }
 html:not([data-theme="dark"]) #market-subtab-ventas .liga-market-item {
   background:linear-gradient(155deg,rgba(238,52,76,.085),rgba(255,255,255,.97) 48%,rgba(255,248,249,.98)) !important;
+}
+</style>
+
+<style id="fix-texto-selector-jornada-modo-claro">
+/* Fondo oscuro: etiqueta de jornada siempre blanca, también en modo claro. */
+html:not([data-theme="dark"]) #tab-calendario #matchday-select.matchday-premium-select,
+html[data-theme="light"] #tab-calendario #matchday-select.matchday-premium-select {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+html:not([data-theme="dark"]) #tab-calendario #matchday-select.matchday-premium-select option,
+html[data-theme="light"] #tab-calendario #matchday-select.matchday-premium-select option {
+  color: #fff !important;
+  background: #1c293e !important;
 }
 </style>
 </head>
