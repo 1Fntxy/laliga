@@ -8,6 +8,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Evita mostrar el logo del Balón de Oro durante la carga inicial.
+           Solo se muestra cuando el banner pertenece realmente a Premios. */
+        #hero-banner:not(.premios-gold-hero) #premios-balon-imagen {
+            display: none !important;
+        }
         :root {
             --bg-body: #F4F5F7;
             --bg-card: #FFFFFF;
@@ -3052,6 +3057,45 @@ body[data-theme="light"] #tab-estadisticas .stat-subcontent p,
 body[data-theme="light"] #tab-estadisticas .stat-podium-team,
 body[data-theme="light"] #tab-estadisticas .table-responsive table th {
     color: rgba(248,250,252,.9) !important;
+}
+
+
+/* Resumen de incidencias: equipo local y visitante separados visualmente. */
+.match-side-events-container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0;
+    align-items: stretch;
+}
+.match-side-events-container > .team-events-side {
+    min-width: 0;
+    width: 100%;
+    padding-right: 14px;
+    align-items: stretch;
+}
+.match-side-events-container > .team-events-side.away-side {
+    padding-right: 0;
+    padding-left: 14px;
+    border-left: 1px solid rgba(148, 163, 184, .45);
+    align-items: flex-end;
+    text-align: right;
+}
+.match-side-events-container > .team-events-side.away-side > .compact-event-badge {
+    width: 100%;
+    max-width: 100%;
+    align-self: stretch;
+    justify-content: flex-end;
+    text-align: right;
+}
+.match-side-events-container .compact-event-badge {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+@media (max-width: 600px) {
+    .match-side-events-container { padding: 10px; }
+    .match-side-events-container > .team-events-side { padding-right: 8px; }
+    .match-side-events-container > .team-events-side.away-side { padding-left: 8px; }
 }
 
 </style>
