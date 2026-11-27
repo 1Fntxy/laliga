@@ -6067,6 +6067,45 @@ html[data-theme="dark"] body .liga-news-empty{background:#202a39;color:#d5dce6;}
   #page-loader .loader-text{font-size:20px !important;letter-spacing:2.5px !important;}
 }
 </style>
+
+<style id="liga-amistosos-dark-controls-fix">
+/* Amistosos: los tres filtros y el estado vacio deben respetar el modo oscuro.
+   Se mantiene el banner rojo, los colores de competición y toda la lógica original. */
+html[data-theme="dark"] body #tab-amistosos .amis-hero .amis-filter,
+html body[data-theme="dark"] #tab-amistosos .amis-hero .amis-filter {
+  background:#243248 !important;
+  background-image:none !important;
+  color:#f4f7fd !important;
+  border:2px solid #40536d !important;
+  box-shadow:0 3px 9px rgba(0,0,0,.15) !important;
+}
+html[data-theme="dark"] body #tab-amistosos .amis-hero .amis-filter.active,
+html body[data-theme="dark"] #tab-amistosos .amis-hero .amis-filter.active {
+  background:#31425c !important;
+  color:#ffffff !important;
+  border-color:#ff5461 !important;
+  box-shadow:0 0 0 1px rgba(255,84,97,.18),0 5px 15px rgba(0,0,0,.2) !important;
+}
+html[data-theme="dark"] body #tab-amistosos .amis-hero .amis-filter:hover,
+html body[data-theme="dark"] #tab-amistosos .amis-hero .amis-filter:hover {
+  background:#354862 !important;
+  color:#fff !important;
+  border-color:#ff6671 !important;
+  box-shadow:0 6px 16px rgba(0,0,0,.24) !important;
+}
+html[data-theme="dark"] body #tab-amistosos .amis-empty,
+html body[data-theme="dark"] #tab-amistosos .amis-empty {
+  background:#1b293c !important;
+  color:#d6e1ef !important;
+  border:1px dashed #465972 !important;
+  box-shadow:none !important;
+}
+html[data-theme="dark"] body #tab-amistosos .amis-empty::before,
+html body[data-theme="dark"] #tab-amistosos .amis-empty::before {
+  opacity:.72;
+}
+</style>
+
 </head>
 <body>
 
@@ -17560,5 +17599,501 @@ html body:has(#tab-premios.active) .liga-sponsors-footer .liga-sponsors-disclaim
 }
 </style>
 
+<style id="liga-revamp-modo-oscuro-integral-2026">
+/* MODO OSCURO INTEGRAL — solo presentación; no se altera Firebase ni navegación.
+   El selector de tema escribe data-theme en <html>, NO en <body>. */
+html[data-theme="dark"] {
+  color-scheme:dark;
+  --bg-body:#0b1019;
+  --bg-card:#17202d;
+  --bg-subcard:#121a26;
+  --text-main:#f2f5fa;
+  --text-muted:#aebbd0;
+  --border-color:#344154;
+  --tab-bg:#151e2b;
+  --table-hover:#243247;
+  background:#0b1019!important;
+}
+html[data-theme="dark"] body {
+  --bg-body:#0b1019;
+  --bg-card:#17202d;
+  --bg-subcard:#121a26;
+  --text-main:#f2f5fa;
+  --text-muted:#aebbd0;
+  --border-color:#344154;
+  --tab-bg:#151e2b;
+  --table-hover:#243247;
+  background:#0b1019!important;
+  color:#f2f5fa;
+}
+/* Franja de clubes, zona informativa, cabecera y subnavegación.
+   No reemplazar las paletas especiales de Champions, Europa ni Premios. */
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-clubs-band,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-clubs-title,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-clubs-band .clubs-ticker-bar,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-site-meta {
+  background:#111923!important;color:#f0f4fa!important;border-color:#303c4c!important;
+}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-clubs-title,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-site-meta-left b {color:#f2f6fb!important}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-clubs-title span,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-site-meta-left span,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-site-meta-right span {color:#aebbd0!important}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-clubs-band .club-ticker-item,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-clubs-band .club-ticker-fallback {
+  background:#222d3d!important;color:#eaf0f8!important;border-color:#47556c!important;
+}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .top-bar {
+  background:#101722!important;color:#f1f5fb!important;border-bottom-color:#ff4b44!important;
+  box-shadow:0 3px 12px rgba(0,0,0,.32)!important;
+}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .top-bar .header-navigation button.btn-div,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .top-bar .header-navigation button[id^="btn-top-"],
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .top-bar .header-navigation-right button.btn-div {
+  background:transparent!important;color:#ecf2f9!important;
+}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .top-bar .header-navigation button.active,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .top-bar .header-navigation-right button.active {
+  background:#162232!important;color:#ff6572!important;border-bottom-color:#ff4b44!important;
+}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .top-bar .header-navigation button:hover,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .top-bar .header-navigation-right button:hover {
+  background:#253247!important;color:#ff7a86!important;
+}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .top-bar .brand-container .league-emblem {
+  background:#182231!important;border-color:#354253!important;
+}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .top-bar .header-controls-right button,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .top-bar .header-controls-right a.btn-social,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-site-meta .header-controls-right button,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-site-meta .header-controls-right a {
+  background:#222d3e!important;color:#e8f0fc!important;border-color:#3a4b60!important;
+}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-site-meta .header-controls-right button:hover,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-site-meta .header-controls-right a:hover {background:#303f54!important;color:#fff!important}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-section-navigation,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-section-navigation #sub-tabs-container,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-section-navigation #torneos-tabs-container {
+  background:#121b27!important;border-color:#344154!important;
+}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-section-navigation #sub-tabs-container > .tab-btn,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-section-navigation #torneos-tabs-container > .tab-btn {
+  background:transparent!important;color:#e8eff8!important;
+}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-section-navigation #sub-tabs-container > .tab-btn.active,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-section-navigation #sub-tabs-container > .tab-btn:hover {
+  background:#202b3c!important;color:#ff6877!important;
+}
+/* Fondos integrales sin huecos claros entre contenido y pie. */
+html[data-theme="dark"] body .container,
+html[data-theme="dark"] body #tab-inicio,
+html[data-theme="dark"] body #tab-mercado,
+html[data-theme="dark"] body #tab-noticias,
+html[data-theme="dark"] body #tab-clasificacion,
+html[data-theme="dark"] body #tab-calendario,
+html[data-theme="dark"] body #tab-amistosos {background-color:transparent!important;color:#f0f4fb!important}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .card:not(.supercup-card):not(.europaleague-card),
+html[data-theme="dark"] body .team-card,
+html[data-theme="dark"] body .modal-content,
+html[data-theme="dark"] body .ucl-modal-content {
+  background:#17202d!important;color:#edf3fc!important;border-color:#374356!important;
+}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .card:not(.supercup-card):not(.europaleague-card) h3 {color:#f2f6fb!important}
+/* Inicio: tarjetas, listas, navegación manual y áreas secundarias. */
+html[data-theme="dark"] body #tab-inicio .revamp-snapshot,
+html[data-theme="dark"] body #tab-inicio .revamp-newsroom,
+html[data-theme="dark"] body #tab-inicio .revamp-quick-links > button,
+html[data-theme="dark"] body #tab-inicio .revamp-quick-links button,
+html[data-theme="dark"] body #tab-inicio .revamp-standing-slide,
+html[data-theme="dark"] body #tab-inicio .revamp-standing-item {
+  background:#17202d!important;color:#f1f5fb!important;border-color:#354254!important;
+}
+html[data-theme="dark"] body #tab-inicio .revamp-quick-links button:hover,
+html[data-theme="dark"] body #tab-inicio .revamp-newsroom > button:hover {background:#273448!important}
+html[data-theme="dark"] body #tab-inicio .revamp-newsroom > button,
+html[data-theme="dark"] body #tab-inicio .revamp-standing-team strong,
+html[data-theme="dark"] body #tab-inicio .revamp-block-heading,
+html[data-theme="dark"] body #tab-inicio .revamp-quick-links strong {color:#f3f6fc!important;border-color:#3a4657!important}
+html[data-theme="dark"] body #tab-inicio .revamp-standing-item > b,
+html[data-theme="dark"] body #tab-inicio .revamp-standing-slide-empty,
+html[data-theme="dark"] body #tab-inicio .revamp-newsroom > button small,
+html[data-theme="dark"] body #tab-inicio .revamp-quick-links small {color:#afbdd0!important}
+html[data-theme="dark"] body #tab-inicio .revamp-snapshot-arrow-group .revamp-snapshot-arrow {
+  color:#f2f5fb!important;background:#253247!important;border-color:#48586e!important;
+}
+html[data-theme="dark"] body #tab-inicio .revamp-snapshot-arrow-group .revamp-snapshot-arrow:hover {background:#ef2442!important;color:#fff!important}
+/* Clasificación: superficie oscura de extremo a extremo, conservando colores de zonas y bolitas. */
+html[data-theme="dark"] body #tab-clasificacion > .card,
+html[data-theme="dark"] body #tab-clasificacion .card:has(#standings-body) {
+  background:#15202d!important;border-color:#364254!important;color:#ecf1fa!important;
+}
+html[data-theme="dark"] body #tab-clasificacion .table-responsive table,
+html[data-theme="dark"] body #tab-clasificacion #standings-body tr,
+html[data-theme="dark"] body #tab-clasificacion #standings-body tr:nth-child(odd),
+html[data-theme="dark"] body #tab-clasificacion #standings-body tr:nth-child(even),
+html[data-theme="dark"] body #tab-clasificacion #standings-body tr > td {
+  background:#172130!important;color:#f2f5fb!important;border-color:#354356!important;
+}
+html[data-theme="dark"] body #tab-clasificacion #standings-body tr:nth-child(even) > td {background:#1d293a!important}
+html[data-theme="dark"] body #tab-clasificacion #standings-body tr:hover > td {background:#304158!important}
+html[data-theme="dark"] body #tab-clasificacion #standings-body tr .team-cell > span,
+html[data-theme="dark"] body #tab-clasificacion #standings-body .standings-points,
+html[data-theme="dark"] body #tab-clasificacion #standings-body td .text-muted {color:#f0f5fc!important}
+html[data-theme="dark"] body #tab-clasificacion .table-responsive thead th {
+  background:#273448!important;color:#e5eefa!important;border-color:#455268!important;
+}
+html[data-theme="dark"] body #tab-clasificacion .table-responsive thead th:nth-child(3) {color:#ff7483!important}
+html[data-theme="dark"] body #tab-clasificacion #standings-body tr > td:nth-child(3) {background:#263347!important}
+html[data-theme="dark"] body #tab-clasificacion .classification-hero-block .qualification-legend {
+  background:#202c3d!important;border-color:#40516a!important;
+}
+html[data-theme="dark"] body #tab-clasificacion .classification-hero-block .qualification-legend .qualification-legend-item {
+  color:#f3f6fa!important;-webkit-text-fill-color:#f3f6fa!important;
+}
+/* Estadísticas: los antiguos fondos blancos tenían !important incluso en oscuro. */
+html[data-theme="dark"] body #tab-estadisticas {
+  --stat-ink:#f3f7fc;
+  --stat-muted:#aebdd1;
+  --stat-outline:#3b485d;
+  --stat-soft:#253247;
+  --stat-paper:#17202d;
+  background:#111925!important;color:#f2f6fc!important;
+}
+html[data-theme="dark"] body #tab-estadisticas .stat-subcontent,
+html[data-theme="dark"] body #tab-estadisticas #stat-subtab-goles.stat-subcontent,
+html[data-theme="dark"] body #tab-estadisticas #stat-subtab-asistencias.stat-subcontent,
+html[data-theme="dark"] body #tab-estadisticas #stat-subtab-paradas.stat-subcontent {
+  background:#17202d!important;color:#f2f6fc!important;border-color:#3b485c!important;
+}
+html[data-theme="dark"] body #tab-estadisticas .stat-subcontent > h3,
+html[data-theme="dark"] body #tab-estadisticas .stat-subcontent h3,
+html[data-theme="dark"] body #tab-estadisticas .stat-podium-player,
+html[data-theme="dark"] body #tab-estadisticas .stat-podium-value,
+html[data-theme="dark"] body #tab-estadisticas .stat-podium-rank,
+html[data-theme="dark"] body #tab-estadisticas .stat-performance strong {
+  color:#f4f7fc!important;-webkit-text-fill-color:#f4f7fc!important;
+}
+html[data-theme="dark"] body #tab-estadisticas .stat-podium .stat-podium-card,
+html[data-theme="dark"] body #tab-estadisticas .stat-podium .stat-podium-card.gold,
+html[data-theme="dark"] body #tab-estadisticas .stat-podium .stat-podium-card.silver,
+html[data-theme="dark"] body #tab-estadisticas .stat-podium .stat-podium-card.bronze {
+  background:#253247!important;background-image:none!important;border-color:#48566a!important;
+}
+html[data-theme="dark"] body #tab-estadisticas .stat-podium .stat-podium-card.gold {border-top-color:#ff4b65!important}
+html[data-theme="dark"] body #tab-estadisticas .stats-pills,
+html[data-theme="dark"] body #tab-estadisticas .stat-top-table,
+html[data-theme="dark"] body #tab-estadisticas .stat-top-table tbody tr,
+html[data-theme="dark"] body #tab-estadisticas .stat-top-table tbody td {background:#182332!important;color:#ecf2fb!important;border-color:#39485b!important}
+html[data-theme="dark"] body #tab-estadisticas .stat-top-table thead th {background:#283549!important;color:#f0f5fc!important}
+html[data-theme="dark"] body #tab-estadisticas .stat-top-table tbody tr:hover td {background:#304258!important}
+html[data-theme="dark"] body #tab-estadisticas .stat-podium-team,
+html[data-theme="dark"] body #tab-estadisticas .stat-podium-team span,
+html[data-theme="dark"] body #tab-estadisticas .stat-podium-value small,
+html[data-theme="dark"] body #tab-estadisticas .stat-team-cell {color:#aebdd1!important}
+/* Jornadas y amistosos: tarjetas claras + sus controles. Los encabezados rojos se conservan. */
+html[data-theme="dark"] body #tab-calendario > .card,
+html[data-theme="dark"] body #tab-calendario .match-card,
+html[data-theme="dark"] body #tab-calendario .match-card:hover,
+html[data-theme="dark"] body #tab-amistosos > .card,
+html[data-theme="dark"] body #tab-amistosos .match-card {
+  background:#17202d!important;color:#f0f4fb!important;border-color:#3b495c!important;
+}
+html[data-theme="dark"] body #tab-calendario .matchday-nav,
+html[data-theme="dark"] body #tab-amistosos .amis-tabs,
+html[data-theme="dark"] body #tab-amistosos .amis-content,
+html[data-theme="dark"] body #tab-amistosos .friendly-match-card {
+  background:#1c2838!important;color:#f0f4fb!important;border-color:#3b4a5e!important;
+}
+html[data-theme="dark"] body #tab-calendario .fixture-team-meta,
+html[data-theme="dark"] body #tab-calendario .match-card .compact-event-badge,
+html[data-theme="dark"] body #tab-calendario .match-card .match-details-toggle-btn,
+html[data-theme="dark"] body #tab-amistosos .compact-event-badge {
+  background:#243348!important;color:#f2f6fc!important;border-color:#42536a!important;
+}
+html[data-theme="dark"] body #tab-calendario .match-team,
+html[data-theme="dark"] body #tab-calendario .match-team span,
+html[data-theme="dark"] body #tab-amistosos .match-team,
+html[data-theme="dark"] body #tab-amistosos .match-team span {color:#f0f4fb!important}
+/* Mercado y noticias (incluido formulario editor). */
+html[data-theme="dark"] body #tab-mercado {
+  --mk-surface:#172131;--mk-ink:#f5f7fc;--mk-muted:#aebbd0;
+  --mk-soft:#253247;--mk-border:#415066;--mk-rail:#192536;--mk-filter:#243247;
+}
+html[data-theme="dark"] body #tab-mercado .liga-market-item,
+html[data-theme="dark"] body #tab-mercado .liga-market-card,
+html[data-theme="dark"] body #tab-mercado .liga-market-filter,
+html[data-theme="dark"] body #tab-mercado .liga-market-metric {
+  background:#1c293a!important;color:#f1f5fb!important;border-color:#425069!important;
+}
+html[data-theme="dark"] body #tab-noticias .liga-news-shell,
+html[data-theme="dark"] body #tab-noticias .liga-news-article,
+html[data-theme="dark"] body .liga-news-editor {
+  background:#182333!important;color:#f0f5fc!important;border-color:#39495d!important;
+}
+html[data-theme="dark"] body #tab-noticias .liga-news-header h2,
+html[data-theme="dark"] body #tab-noticias .liga-news-article h3,
+html[data-theme="dark"] body .liga-news-editor h3,
+html[data-theme="dark"] body .liga-news-field {color:#f2f6fb!important}
+html[data-theme="dark"] body #tab-noticias .liga-news-intro,
+html[data-theme="dark"] body #tab-noticias .liga-news-description,
+html[data-theme="dark"] body #tab-noticias .liga-news-count,
+html[data-theme="dark"] body #tab-noticias .liga-news-meta {color:#b8c7d8!important}
+html[data-theme="dark"] body .liga-news-field input,
+html[data-theme="dark"] body .liga-news-field select,
+html[data-theme="dark"] body .liga-news-field textarea,
+html[data-theme="dark"] body .liga-news-secondary,
+html[data-theme="dark"] body .liga-news-icon-btn,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) input:not([type="checkbox"]):not([type="radio"]),
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) select,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) textarea {
+  background:#223145!important;color:#f2f5fb!important;border-color:#47586f!important;
+}
+html[data-theme="dark"] body input::placeholder,
+html[data-theme="dark"] body textarea::placeholder {color:#a6b5c8!important}
+html[data-theme="dark"] body .liga-news-empty {background:#1d293a!important;color:#b8c6da!important;border-color:#53617a!important}
+/* Pie completo. En torneos y premios conservar azul/naranja/negro-dorado propios. */
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-sponsors-footer {
+  background:#111923!important;color:#f2f5fb!important;border-top-color:#ff4b44!important;border-bottom-color:#364356!important;
+}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-sponsors-footer .liga-sponsors-kicker,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-sponsors-footer .liga-sponsors-item span {color:#e5ecf6!important}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-sponsors-footer .liga-sponsors-disclaimer,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-sponsors-footer .liga-sponsors-kicker span {color:#a6b8cf!important}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-sponsors-footer .liga-sponsors-grid-secondary,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-sponsors-footer .liga-sponsors-disclaimer {border-color:#344359!important}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-sponsors-footer .liga-sponsors-logo img {filter:brightness(0) invert(1)!important}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-sponsors-footer .liga-sponsors-item:hover {background:#263348!important}
+/* El botón de claro/oscuro y las barras temáticas mantienen su funcionamiento original. */
+@media (max-width:800px) {
+ html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .top-bar .header-controls-left.mobile-only .btn-div {
+  background:#222d3e!important;color:#eaf0f8!important;border-color:#47576d!important;
+ }
+}
+/* Controles vectoriales: sus estilos originales tienen alta especificidad. */
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-site-meta .header-controls-right > button:not(#backup-toggle):not(#btn-reset-top):is(#liga-sound-toggle,#btn-theme-toggle,#btn-admin-toggle,#btn-staff-toggle),
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-site-meta .header-controls-right > :is(#link-discord,#link-tiktok) {
+  background:#263447!important;border-color:#42536b!important;color:#e8f1fc!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 3px 9px rgba(0,0,0,.18)!important;
+}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-site-meta .header-controls-right > button:not(#backup-toggle):not(#btn-reset-top):is(#liga-sound-toggle,#btn-theme-toggle,#btn-admin-toggle,#btn-staff-toggle):hover,
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-site-meta .header-controls-right > :is(#link-discord,#link-tiktok):hover {
+  background:#34455d!important;border-color:#647891!important;
+}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-site-meta .header-controls-right > button:not(#backup-toggle):not(#btn-reset-top)#btn-theme-toggle {color:#ffc46e!important}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-site-meta .header-controls-right > button:not(#backup-toggle):not(#btn-reset-top)#liga-sound-toggle[aria-pressed="true"] {color:#ff7182!important}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-site-meta .header-controls-right > button:not(#backup-toggle):not(#btn-reset-top)#btn-admin-toggle {color:#ff8492!important}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) .liga-site-meta .header-controls-right > button:not(#backup-toggle):not(#btn-reset-top):is(#btn-admin-toggle,#btn-staff-toggle)[aria-label$="activo"] {color:#68dfb6!important}
+/* Restaurar colores interactivos de las zonas de descenso y ascenso en tema oscuro. */
+html[data-theme="dark"] body:has(#btn-div-1.active) #tab-clasificacion #standings-body tr.movement-relegation:is(:hover,:active,:focus-within) > td,
+html[data-theme="dark"] body:has(#btn-div-1.active) #tab-clasificacion #standings-body tr.movement-relegation:is(:hover,:active,:focus-within) > td:nth-child(3) {
+  background:#693145!important;color:#fff0f4!important;
+}
+html[data-theme="dark"] body:has(#btn-div-1.active) #tab-clasificacion #standings-body tr.movement-relegation:is(:hover,:active,:focus-within) .team-cell > span {color:#fff0f4!important}
+html[data-theme="dark"] body #tab-clasificacion #standings-body tr.movement-promotion:is(:hover,:active,:focus-within) > td {
+  background:#1f5544!important;color:#eafff4!important;
+}
+html[data-theme="dark"] body #tab-clasificacion #standings-body tr.movement-promotion:is(:hover,:active,:focus-within) .team-cell > span {color:#eafff4!important}
+/* Acceso de administrador: cabecera roja, formulario y controles legibles en oscuro. */
+html[data-theme="dark"] body #admin-pin-modal .pin-modal-content {
+  background:#192434!important;color:#f1f6fc!important;border-color:#45546a!important;
+}
+html[data-theme="dark"] body #admin-pin-modal .pin-label {color:#ecf2fb!important}
+html[data-theme="dark"] body #admin-pin-modal .pin-input-wrap input,
+html[data-theme="dark"] body #admin-pin-modal .pin-input-wrap input[style] {
+  background:#233247!important;color:#f5f8ff!important;-webkit-text-fill-color:#f5f8ff!important;
+  border-color:#4e6077!important;
+}
+html[data-theme="dark"] body #admin-pin-modal .pin-input-wrap input::placeholder {color:#b3c0d3!important;-webkit-text-fill-color:#b3c0d3!important}
+html[data-theme="dark"] body #admin-pin-modal .pin-input-wrap input:focus {background:#2a3a50!important;border-color:#ff6b72!important}
+html[data-theme="dark"] body #admin-pin-modal .pin-lock,
+html[data-theme="dark"] body #admin-pin-modal .pin-eye {color:#b8c8da!important}
+
+
+/* Solo presentación: estado FINALIZADO con verde sólido y más visible. */
+html body #tab-calendario .match-status.finished,
+html[data-theme="dark"] body #tab-calendario .match-status.finished {
+  color: #ffffff !important;
+  background: #07844f !important;
+  border: 1px solid #10b981 !important;
+  border-radius: 30px !important;
+  box-shadow: 0 2px 10px rgba(4, 164, 102, 0.25) !important;
+  text-shadow: none !important;
+  font-weight: 900 !important;
+}
+
+/* CORRECCION FINAL: selector de Jornadas en modo oscuro (solo presentación). */
+html[data-theme="dark"] body #tab-calendario .liga-jornadas-hero > .matchday-nav,
+html body[data-theme="dark"] #tab-calendario .liga-jornadas-hero > .matchday-nav {
+  background:transparent!important;
+  background-image:none!important;
+  border-color:rgba(255,255,255,.35)!important;
+}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) #tab-calendario .liga-jornadas-hero #matchday-select.matchday-select-styled.matchday-premium-select,
+html body[data-theme="dark"] #tab-calendario .liga-jornadas-hero #matchday-select.matchday-select-styled.matchday-premium-select {
+  background:#21324a!important;
+  background-image:none!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  border:1px solid #8295ae!important;
+  text-shadow:none!important;
+  opacity:1!important;
+  box-shadow:0 2px 8px rgba(8,15,28,.20)!important;
+}
+html[data-theme="dark"] body:not(:has(#tab-torneos.active)):not(:has(#tab-premios.active)) #tab-calendario #matchday-select.matchday-premium-select option,
+html body[data-theme="dark"] #tab-calendario #matchday-select.matchday-premium-select option {
+  background:#21324a!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+html[data-theme="dark"] body #tab-calendario .matchday-dropdown-icon,
+html[data-theme="dark"] body #tab-calendario .matchday-dropdown-chevron,
+html body[data-theme="dark"] #tab-calendario .matchday-dropdown-icon,
+html body[data-theme="dark"] #tab-calendario .matchday-dropdown-chevron {
+  color:#ff8292!important;
+  -webkit-text-fill-color:#ff8292!important;
+}
+</style>
+
+
+<style id="liga-dark-stats-tabs-red-gap-fix">
+/* Corrección puntual: franjas entre Goles, Asistencias y Atajadas.
+   En modo oscuro, la regla global de stats-pills aplicaba azul oscuro. */
+html[data-theme="dark"] body #tab-estadisticas .liga-stats-hero-rojo > .stats-pills,
+html body[data-theme="dark"] #tab-estadisticas .liga-stats-hero-rojo > .stats-pills {
+  background: #ff4b44 !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+</style>
+
+
+<style id="liga-dark-stats-buttons-2026">
+/* Solo modo oscuro: tarjetas de Goles / Asistencias / Atajadas. Mantener
+   el rojo continuo del encabezado entre los botones y el tema claro intacto. */
+html[data-theme="dark"] body #tab-estadisticas .liga-stats-hero-rojo .stats-pills > .pill-btn,
+html body[data-theme="dark"] #tab-estadisticas .liga-stats-hero-rojo .stats-pills > .pill-btn {
+  background: #202d3f !important;
+  background-image: none !important;
+  color: #f1f5fb !important;
+  -webkit-text-fill-color: #f1f5fb !important;
+  border-color: #40516a !important;
+  box-shadow: 0 3px 10px rgba(4,10,20,.24) !important;
+}
+html[data-theme="dark"] body #tab-estadisticas .liga-stats-hero-rojo .stats-pills > .pill-btn.active,
+html body[data-theme="dark"] #tab-estadisticas .liga-stats-hero-rojo .stats-pills > .pill-btn.active {
+  background: #29374c !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border-color: #ff6074 !important;
+  box-shadow: 0 4px 13px rgba(30,12,20,.28) !important;
+}
+html[data-theme="dark"] body #tab-estadisticas .liga-stats-hero-rojo .stats-pills > .pill-btn:hover,
+html body[data-theme="dark"] #tab-estadisticas .liga-stats-hero-rojo .stats-pills > .pill-btn:hover {
+  background: #32435b !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border-color: #ff8490 !important;
+  box-shadow: 0 9px 23px rgba(9,13,24,.32) !important;
+}
+html[data-theme="dark"] body #tab-estadisticas .liga-stats-hero-rojo .stats-pills > .pill-btn.active:hover,
+html body[data-theme="dark"] #tab-estadisticas .liga-stats-hero-rojo .stats-pills > .pill-btn.active:hover {
+  background: #354057 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border-color: #ff7183 !important;
+}
+html[data-theme="dark"] body #tab-estadisticas .liga-stats-hero-rojo .stats-pills > .pill-btn:focus-visible,
+html body[data-theme="dark"] #tab-estadisticas .liga-stats-hero-rojo .stats-pills > .pill-btn:focus-visible {
+  outline-color: #ffd1d8 !important;
+}
+</style>
+
+
+<style id="liga-jornadas-botones-tema-oscuro-fix-real">
+/* El atributo data-theme se coloca en <html>, no en <body>.
+   Afecta solamente a los botones de anterior y siguiente en modo oscuro. */
+html[data-theme="dark"] body #tab-calendario .liga-jornadas-hero .matchday-nav > button.action-btn[onclick^="changeMatchday"] {
+    background: #25364e !important;
+    background-image: none !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    border: 1px solid #4a607e !important;
+    box-shadow: 0 3px 12px rgba(3,10,24,.24) !important;
+    transition: background-color .2s ease, border-color .2s ease, transform .2s ease !important;
+}
+html[data-theme="dark"] body #tab-calendario .liga-jornadas-hero .matchday-nav > button.action-btn[onclick^="changeMatchday"]:hover,
+html[data-theme="dark"] body #tab-calendario .liga-jornadas-hero .matchday-nav > button.action-btn[onclick^="changeMatchday"]:focus-visible {
+    background: #314762 !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    border-color: #8297b4 !important;
+    transform: translateY(-1px) !important;
+}
+</style>
+
+<style id="liga-jornadas-marcadores-modo-oscuro-final">
+/* Corrige las superficies claras de los partidos en modo oscuro.
+   No altera el modo claro ni el estado verde FINALIZADO. */
+html[data-theme="dark"] body #tab-calendario .matches-grid,
+html[data-theme="dark"] body #tab-calendario .matches-grid .match-card,
+html[data-theme="dark"] body #tab-calendario .matches-grid .match-card:hover {
+  background: #17202d !important;
+  background-image: none !important;
+  color: #f3f6fc !important;
+  border-color: #3a485b !important;
+}
+html[data-theme="dark"] body #tab-calendario .matches-grid .match-card .match-main-row,
+html[data-theme="dark"] body #tab-calendario .matches-grid .match-card .match-center,
+html[data-theme="dark"] body #tab-calendario .matches-grid .match-card .score-inputs {
+  background: transparent !important;
+  background-image: none !important;
+}
+/* Marcadores y separador siempre legibles */
+html[data-theme="dark"] body #tab-calendario .matches-grid .match-card .match-center input.score-input {
+  background: #101827 !important;
+  background-image: none !important;
+  border: 1px solid #485972 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  opacity: 1 !important;
+}
+html[data-theme="dark"] body #tab-calendario .matches-grid .match-card .match-score-divider {
+  color: #f4f6fc !important;
+  -webkit-text-fill-color: #f4f6fc !important;
+}
+/* Ver resumen y estado pendiente sin fondos blancos */
+html[data-theme="dark"] body #tab-calendario .matches-grid .match-card .match-center .match-details-toggle-btn,
+html[data-theme="dark"] body #tab-calendario .matches-grid .match-card .match-center .match-details-toggle-btn:hover {
+  background: #26364b !important;
+  color: #f3f7ff !important;
+  -webkit-text-fill-color: #f3f7ff !important;
+  border: 1px solid #495d78 !important;
+}
+html[data-theme="dark"] body #tab-calendario .matches-grid .match-card .match-status:not(.finished) {
+  background: #26364b !important;
+  color: #e8f0fc !important;
+  border-color: #536985 !important;
+}
+html[data-theme="dark"] body #tab-calendario .matches-grid .match-card .match-team,
+html[data-theme="dark"] body #tab-calendario .matches-grid .match-card .match-team span {
+  color: #f4f6fc !important;
+  -webkit-text-fill-color: #f4f6fc !important;
+}
+</style>
+
+
+<style id="jornadas-marcadores-claro-solo-2026">
+/* Solo MODO CLARO: marcador blanco y números oscuros. No aplica al modo oscuro. */
+html:not([data-theme="dark"]) body #tab-calendario .matches-grid .match-card .match-center input.score-input {
+    background: #ffffff !important;
+    background-image: none !important;
+    color: #111827 !important;
+    -webkit-text-fill-color: #111827 !important;
+    border: 1px solid #d9dfe9 !important;
+    opacity: 1 !important;
+    color-scheme: light !important;
+}
+</style>
 </body>
 </html>
