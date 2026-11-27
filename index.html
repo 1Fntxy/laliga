@@ -11326,6 +11326,27 @@ escudos/imagen2.png"></textarea>
         }
     };
 
+    // El guardado directo de un partido cancela el debounce del autoguardado.
+    // Reflejar aquí su confirmación real de Firebase en el indicador flotante.
+    // No cambia cómo ni dónde se guardan los datos.
+    function setIncidencesSaveIndicator(ok) {
+        const indicator = document.getElementById('floating-save-btn');
+        const label = indicator?.querySelector('.save-premium-native-label') || indicator?.querySelector('span');
+        if (!indicator || !label) return;
+        clearTimeout(saveIndicatorResetTimer);
+        const message = ok ? 'Guardado ✅' : '❌ Error';
+        label.textContent = message;
+        // Se conserva la compatibilidad con el indicador premium que observa el texto.
+        indicator.dataset.saveStatus = ok ? 'saved' : 'error';
+        saveIndicatorResetTimer = setTimeout(() => {
+            // No reemplazar estados posteriores (otro guardado, error, etc.).
+            if (label.textContent !== message) return;
+            label.textContent = '💾 AutoGuardado';
+            indicator.dataset.saveStatus = 'idle';
+            saveIndicatorResetTimer = null;
+        }, 2500);
+    }
+
     // Guardar solo el resultado/incidencias de este partido. No reescribir la
     // división completa: el bot puede haber trasladado equipos en Firebase.
     window.saveAndCloseMatchEvents = async function(event, matchId) {
@@ -11365,8 +11386,10 @@ escudos/imagen2.png"></textarea>
             // Dejar la reconstrucción de tablas al listener de Firebase,
             // que combinará los resultados sin sobrescribir las divisiones.
             queueLeagueSnapshotRender();
+            setIncidencesSaveIndicator(true);
         } catch (error) {
             console.error('Error guardando incidencias del partido:', {division, matchId}, error);
+            setIncidencesSaveIndicator(false);
             alert('❌ No se pudieron guardar las incidencias. ' + (error?.message || 'Revisa la consola de Firebase.') + '\nEl apartado sigue abierto.');
         } finally {
             btn.disabled = false;
