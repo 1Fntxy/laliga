@@ -6225,8 +6225,8 @@ html body[data-theme="dark"] #tab-amistosos .amis-empty::before {
         <button class="tab-btn" onclick="switchTab('calendario', event)"><svg class="tab-vector-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18m-13 4h3m3 0h3"/></svg> Jornadas</button>
         <button class="tab-btn" onclick="switchTab('estadisticas', event)"><svg class="tab-vector-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 17 6-6 4 3 8-9"/><path d="M15 5h6v6"/><path d="M3 21h18"/></svg> Estadísticas</button>
         <button class="tab-btn" onclick="switchTab('amistosos', event)"><svg class="tab-vector-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 12 3.8-3.8a2 2 0 0 1 2.8 0l2.2 2.2a2 2 0 0 0 2.8 0l.9-.9a2 2 0 0 1 2.8 0L22 13"/><path d="m2 12 4 4"/><path d="m22 13-4 4-2.5 2.5a2 2 0 0 1-2.8 0L9 16"/><path d="m6 16 2 2a2 2 0 0 0 2.8 0l1-1"/></svg> Amistosos</button>
-        <button id="tab-btn-gestion" class="tab-btn" onclick="switchTab('gestion', event)" style="display:none;">🛡️ Gestión</button>
-        <button id="history-launch" class="tab-btn" type="button" onclick="openSeasonHistory()" style="display:none;">🏆 Historial</button>
+        <button id="tab-btn-gestion" class="tab-btn" onclick="switchTab('gestion', event)" style="display:none;"><svg class="tab-vector-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg> Gestión</button>
+        <button id="history-launch" class="tab-btn" type="button" onclick="openSeasonHistory()" style="display:none;"><svg class="tab-vector-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8v7a4 4 0 0 1-8 0V3ZM8 5H4v3a4 4 0 0 0 4 4m8-7h4v3a4 4 0 0 1-4 4M12 14v5m-4 2h8m-7-2h6"/></svg> Historial</button>
     </div>
 
     <div class="main-tabs" id="torneos-tabs-container" style="display: none;">
@@ -7371,8 +7371,10 @@ escudos/imagen2.png"></textarea>
     </div>
 </div>
 
-<button id="floating-save-btn" class="floating-save-btn" onclick="manualSaveCloud()">
-    <span>💾 AutoGuardado</span>
+<button id="floating-save-btn" class="floating-save-btn" onclick="manualSaveCloud()" title="Guardar cambios ahora">
+    <svg class="save-premium-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h13l3 3v13H4V4Z"/><path d="M8 4v6h8V4"/><path d="M8 20v-7h8v7"/><path d="M10.5 16.5h3"/></svg>
+    <span class="save-premium-native-label">💾 AutoGuardado</span>
+    <span class="save-premium-display-label" aria-hidden="true"></span>
 </button>
 
 <div id="admin-pin-modal" class="modal-overlay">
@@ -12324,7 +12326,7 @@ escudos/imagen2.png"></textarea>
   if (!btn || !label) return;
   const updateLight = () => {
     const text = label.textContent || '';
-    btn.dataset.saveStatus = text.includes('Guardado ✅') ? 'saved'
+    btn.dataset.saveStatus = /\bGuardado\b/i.test(text) ? 'saved'
       : text.includes('Guardando') ? 'saving'
       : text.includes('Error') ? 'error' : 'idle';
   };
@@ -12524,51 +12526,52 @@ escudos/imagen2.png"></textarea>
   display:grid!important;
   grid-template-columns:repeat(6,minmax(0,1fr))!important;
   align-items:stretch!important;
-  gap:8px!important;
+  justify-items:stretch!important;
+  gap:10px!important;
 }
 #sub-tabs-container.admin-six-tabs > .tab-btn {
   box-sizing:border-box!important;
+  display:flex!important;
   width:100%!important;
   min-width:0!important;
   max-width:none!important;
-  min-height:46px!important;
+  min-height:48px!important;
   margin:0!important;
-  padding:10px 6px!important;
+  padding:10px 8px!important;
   font-size:13px!important;
   font-weight:700!important;
-  line-height:1.2!important;
-  display:flex;
+  line-height:1.15!important;
   align-items:center!important;
   justify-content:center!important;
   text-align:center!important;
-  gap:7px!important;
+  gap:8px!important;
   flex:none!important;
   white-space:nowrap!important;
+  grid-column:auto!important;
+}
+#sub-tabs-container.admin-six-tabs > .tab-btn .tab-vector-icon {
+  flex:0 0 auto!important;
+  width:16px!important;
+  height:16px!important;
 }
 #sub-tabs-container.admin-six-tabs > #tab-btn-gestion,
 #sub-tabs-container.admin-six-tabs > #history-launch {
+  position:static!important;
+  inset:auto!important;
+  border-radius:inherit!important;
+  background:inherit!important;
+  color:inherit!important;
+  border:inherit!important;
+  box-shadow:inherit!important;
+  z-index:auto!important;
   font-size:13px!important;
   font-weight:700!important;
 }
-#sub-tabs-container.admin-six-tabs > #history-launch {
-  position:relative!important;
-  inset:auto!important;
-  border-radius:11px!important;
-  background:transparent;
-  color:var(--text-muted);
-  border:1px solid transparent;
-  box-shadow:none;
-  z-index:auto!important;
-}
-#sub-tabs-container.admin-six-tabs > #history-launch:hover {
-  color:var(--text-main);
-  border-color:rgba(255,65,85,.42);
-}
 @media(max-width:800px) {
-  #sub-tabs-container.admin-six-tabs {grid-template-columns:repeat(3,minmax(0,1fr))!important;}
-  #sub-tabs-container.admin-six-tabs > .tab-btn {font-size:12px!important;min-height:43px!important;grid-column:auto!important;}
+  #sub-tabs-container.admin-six-tabs {grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;}
+  #sub-tabs-container.admin-six-tabs > .tab-btn,
   #sub-tabs-container.admin-six-tabs > #tab-btn-gestion,
-  #sub-tabs-container.admin-six-tabs > #history-launch {font-size:12px!important;grid-column:auto!important;}
+  #sub-tabs-container.admin-six-tabs > #history-launch {font-size:12px!important;min-height:43px!important;}
 }
 @media(max-width:460px) {
   #sub-tabs-container.admin-six-tabs {grid-template-columns:repeat(2,minmax(0,1fr))!important;}
@@ -18095,5 +18098,234 @@ html:not([data-theme="dark"]) body #tab-calendario .matches-grid .match-card .ma
     color-scheme: light !important;
 }
 </style>
+
+<style id="liga-admin-tabs-seis-columnas-iguales-2026">
+/* Arregla la distribución heredada flex de la barra SOLO cuando hay sesión Admin. */
+@media (min-width:801px) {
+  html body:not(.market-mode):not(:has(#tab-torneos.active)):not(:has(#tab-premios.active))
+  .liga-section-navigation #sub-tabs-container.admin-six-tabs:not([style*="display:none"]):not([style*="display: none"]) {
+    display: grid !important;
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    gap: 0 !important;
+    align-items: stretch !important;
+    justify-content: stretch !important;
+  }
+}
+html body .liga-section-navigation #sub-tabs-container.admin-six-tabs > button.tab-btn {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 12px 8px !important;
+  flex: none !important;
+  font: 900 12px 'Outfit', sans-serif !important;
+  text-align: center !important;
+  letter-spacing: .04em !important;
+  white-space: nowrap !important;
+  gap: 8px !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+/* Gestión e Historial tenían un ancho mínimo heredado distinto de las otras cuatro. */
+html body .liga-section-navigation #sub-tabs-container.admin-six-tabs > #tab-btn-gestion.tab-btn:not([style*="display:none"]):not([style*="display: none"]),
+html body .liga-section-navigation #sub-tabs-container.admin-six-tabs > #history-launch.tab-btn:not([style*="display:none"]):not([style*="display: none"]) {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  flex: none !important;
+  justify-self: stretch !important;
+}
+@media (max-width:800px) {
+  html body .liga-section-navigation #sub-tabs-container.admin-six-tabs > button.tab-btn {
+    width: auto !important;
+    min-width: 120px !important;
+    flex: 0 0 auto !important;
+    font-size: 11px !important;
+  }
+}
+</style>
+
+
+<style id="liga-autoguardado-premium-animado-2026">
+/* Revamp / AutoGuardado: presentación exclusivamente. Mantiene onclick, textos de guardado y visibilidad original. */
+#floating-save-btn.floating-save-btn {
+  position: fixed !important;
+  right: 20px !important;
+  bottom: 20px !important;
+  padding: 7px 13px 7px 8px !important;
+  min-width: 173px !important;
+  min-height: 49px !important;
+  border-radius: 15px !important;
+  border: 1px solid #d8e0eb !important;
+  border-left: 3px solid #ff4b44 !important;
+  background: linear-gradient(145deg, #ffffff 0%, #f5f7fa 100%) !important;
+  color: #172238 !important;
+  box-shadow: 0 10px 28px rgba(18,29,49,.17), 0 2px 5px rgba(18,29,49,.06), inset 0 1px rgba(255,255,255,.85) !important;
+  display: none;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 9px !important;
+  font-family: 'Outfit', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  letter-spacing: .01em !important;
+  overflow: hidden !important;
+  isolation: isolate;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform .23s cubic-bezier(.2,.8,.2,1), box-shadow .24s ease, background .24s ease, border-color .24s ease !important;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+/* No se fuerza display: JS conserva el control de acceso Admin/Staff. */
+#floating-save-btn.floating-save-btn::before {
+  content: "" !important;
+  position: absolute !important;
+  z-index: 0 !important;
+  top: -70%; left: -47%;
+  width: 35%; height: 240%;
+  background: linear-gradient(90deg,transparent,rgba(255,75,68,.13),rgba(255,255,255,.65),transparent) !important;
+  opacity: 0;
+  transform: translateX(-120%) skewX(-20deg);
+  pointer-events: none !important;
+}
+#floating-save-btn.floating-save-btn > .save-premium-icon {
+  position: relative;
+  z-index: 1;
+  box-sizing: content-box;
+  display: block;
+  flex: 0 0 19px;
+  width: 19px;
+  height: 19px;
+  padding: 8px;
+  color: #f23843;
+  background: #fff0f1;
+  border: 1px solid #ffdadd;
+  border-radius: 10px;
+  transform-origin: center;
+  transition: transform .3s cubic-bezier(.2,.85,.25,1.25), background .3s ease, color .3s ease, border-color .3s ease !important;
+}
+#floating-save-btn.floating-save-btn > .save-premium-native-label {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+#floating-save-btn.floating-save-btn > .save-premium-display-label {
+  position: relative;
+  z-index: 1;
+  color: #1e293b !important;
+  -webkit-text-fill-color: #1e293b !important;
+  font: 800 12px/1.3 'Outfit', sans-serif !important;
+  letter-spacing: .015em;
+  flex: 1 1 auto;
+}
+#floating-save-btn.floating-save-btn > .save-premium-display-label::after { content: "AutoGuardado"; }
+#floating-save-btn.floating-save-btn::after {
+  content: "" !important;
+  position: relative !important;
+  z-index: 1;
+  display: block !important;
+  flex: 0 0 8px !important;
+  width: 8px !important;
+  height: 8px !important;
+  margin: 0 0 0 1px !important;
+  border-radius: 50% !important;
+  background: #99a6b8 !important;
+  box-shadow: 0 0 0 3px rgba(153,166,184,.13) !important;
+  transition: background .2s ease, box-shadow .2s ease, transform .2s ease !important;
+}
+#floating-save-btn.floating-save-btn:hover,
+#floating-save-btn.floating-save-btn:focus-visible {
+  transform: translateY(-3px) !important;
+  border-color: #ff7977 !important;
+  box-shadow: 0 15px 32px rgba(22,33,52,.22), 0 2px 8px rgba(255,75,68,.16) !important;
+}
+#floating-save-btn.floating-save-btn:hover::before { opacity: 1; animation: savePremiumShine .8s ease-out both; }
+#floating-save-btn.floating-save-btn:hover .save-premium-icon { transform: rotate(-9deg) scale(1.06); }
+#floating-save-btn.floating-save-btn:active { transform: translateY(-1px) scale(.985) !important; }
+#floating-save-btn.floating-save-btn:focus-visible { outline: 2px solid #ff4b44 !important; outline-offset: 3px !important; }
+#floating-save-btn.floating-save-btn[data-save-status="saving"] {
+  border-left-color: #ffad43 !important;
+}
+#floating-save-btn.floating-save-btn[data-save-status="saving"] > .save-premium-display-label::after { content: "Guardando…"; }
+#floating-save-btn.floating-save-btn[data-save-status="saving"] > .save-premium-icon {
+  color: #d97706; background: #fff3dd; border-color: #f7ce8e;
+  animation: savePremiumBreath 1.05s ease-in-out infinite;
+}
+#floating-save-btn.floating-save-btn[data-save-status="saving"]::after {
+  background: #f6a23b !important;
+  box-shadow: 0 0 0 3px rgba(246,162,59,.23), 0 0 12px rgba(246,162,59,.5) !important;
+  animation: savePremiumPulse 1s ease-in-out infinite;
+}
+#floating-save-btn.floating-save-btn[data-save-status="saving"]::before {
+  opacity: 1;
+  animation: savePremiumShine 1.45s ease-in-out infinite;
+}
+#floating-save-btn.floating-save-btn[data-save-status="saved"] {
+  border-left-color: #12b981 !important;
+}
+#floating-save-btn.floating-save-btn[data-save-status="saved"] > .save-premium-display-label::after { content: "¡Guardado!"; }
+#floating-save-btn.floating-save-btn[data-save-status="saved"] > .save-premium-icon {
+  color: #059669; background: #e5fbf1; border-color: #9be9c4;
+  animation: savePremiumPop .38s ease-out both;
+}
+#floating-save-btn.floating-save-btn[data-save-status="saved"]::after {
+  background: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16,185,129,.18),0 0 11px rgba(16,185,129,.42) !important;
+}
+#floating-save-btn.floating-save-btn[data-save-status="error"] { border-left-color: #ef4444 !important; }
+#floating-save-btn.floating-save-btn[data-save-status="error"] > .save-premium-display-label::after { content: "Error al guardar"; }
+#floating-save-btn.floating-save-btn[data-save-status="error"] > .save-premium-icon { color: #dc2626; background: #feecec; border-color: #f5b5b5; }
+#floating-save-btn.floating-save-btn[data-save-status="error"]::after { background: #ef4444 !important; box-shadow:0 0 0 3px rgba(239,68,68,.18) !important; }
+/* Fondo y contraste a juego con el revamp oscuro. */
+html[data-theme="dark"] #floating-save-btn.floating-save-btn {
+  background: linear-gradient(145deg, #233349 0%, #182536 100%) !important;
+  border-color: #44566c !important;
+  border-left-color: #ff6064 !important;
+  color: #fff !important;
+  box-shadow: 0 14px 30px rgba(0,0,0,.33), inset 0 1px rgba(255,255,255,.05) !important;
+}
+html[data-theme="dark"] #floating-save-btn.floating-save-btn > .save-premium-display-label {
+  color: #f2f6ff !important;
+  -webkit-text-fill-color: #f2f6ff !important;
+}
+html[data-theme="dark"] #floating-save-btn.floating-save-btn > .save-premium-icon {
+  background: #3b2636;
+  color: #ff777c;
+  border-color: #744650;
+}
+html[data-theme="dark"] #floating-save-btn.floating-save-btn:hover {
+  border-color: #ff7379 !important;
+  box-shadow: 0 18px 34px rgba(0,0,0,.41),0 0 0 1px rgba(255,102,108,.12) !important;
+}
+html[data-theme="dark"] #floating-save-btn.floating-save-btn[data-save-status="saving"] { border-left-color: #ffad43 !important; }
+html[data-theme="dark"] #floating-save-btn.floating-save-btn[data-save-status="saving"] > .save-premium-icon { color:#ffd18a; background:#403323; border-color:#9f7635; }
+html[data-theme="dark"] #floating-save-btn.floating-save-btn[data-save-status="saved"] { border-left-color: #12b981 !important; }
+html[data-theme="dark"] #floating-save-btn.floating-save-btn[data-save-status="saved"] > .save-premium-icon { color:#66e6ae; background:#193f38; border-color:#267759; }
+html[data-theme="dark"] #floating-save-btn.floating-save-btn[data-save-status="error"] { border-left-color: #ef4444 !important; }
+html[data-theme="dark"] #floating-save-btn.floating-save-btn[data-save-status="error"] > .save-premium-icon { color:#ff8f91; background:#442833; border-color:#8c414b; }
+@keyframes savePremiumShine { from { transform:translateX(-120%) skewX(-20deg); } to {transform:translateX(610%) skewX(-20deg);} }
+@keyframes savePremiumPulse { 0%,100% {transform:scale(1);} 50% {transform:scale(1.23);} }
+@keyframes savePremiumBreath { 0%,100% {transform:scale(1); } 50% {transform:scale(1.07);} }
+@keyframes savePremiumPop { 0% {transform:scale(.8);} 65% {transform:scale(1.13);} 100% {transform:scale(1);} }
+@media (max-width:480px) {
+  #floating-save-btn.floating-save-btn {right:12px !important; bottom:12px !important;min-width:154px !important;min-height:45px !important;}
+  #floating-save-btn.floating-save-btn > .save-premium-icon {padding:6px;}
+}
+@media (prefers-reduced-motion:reduce) {
+  #floating-save-btn.floating-save-btn,
+  #floating-save-btn.floating-save-btn::before,
+  #floating-save-btn.floating-save-btn::after,
+  #floating-save-btn.floating-save-btn > .save-premium-icon {animation:none!important;transition:none!important;}
+}
+</style>
+
 </body>
 </html>
