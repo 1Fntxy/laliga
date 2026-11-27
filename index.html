@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="liga-preparando-vista">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Recarga: mantener la página detrás del cargador, muy difuminada mientras se restaura
+           la sección guardada. Evita el destello de la interfaz anterior sin ocultar el fondo. */
+        html.liga-preparando-vista body > :not(#page-loader):not(script):not(style) {
+            filter: blur(22px) brightness(.75) !important;
+            pointer-events: none !important;
+        }
         /* Evita mostrar el logo del Balón de Oro durante la carga inicial.
            Solo se muestra cuando el banner pertenece realmente a Premios. */
         #hero-banner:not(.premios-gold-hero) #premios-balon-imagen {
@@ -8231,10 +8237,12 @@ escudos/imagen2.png"></textarea>
     function finishLeagueLoading() {
         setTimeout(()=>{
             isInitialLoading=false;
+            // La vista guardada ya fue aplicada: mostrar la página correcta antes de retirar el cargador.
+            document.documentElement.classList.remove('liga-preparando-vista');
             document.getElementById('page-loader')?.classList.add('fade-out');
             // Al terminar la primera carga, volver al estilo original de cambio de sección.
             document.getElementById('page-loader')?.classList.remove('liga-initial-vignette');
-        },750);
+        },100);
     }
     function fixtureKey(m) { return [m.matchday,m.homeId,m.awayId].map(String).join('|'); }
     function cleanScore(x) {
