@@ -6185,6 +6185,7 @@ html body[data-theme="dark"] #tab-amistosos .amis-empty::before {
             <div id="league-logo-container">
                 <img src="https://assets.laliga.com/assets/logos/LL_RGB_h_color/LL_RGB_h_color.png" alt="Logo oficial LaLiga">
             </div>
+            <span class="liga-logo-home-text" aria-hidden="true">INICIO</span>
             <input type="text" id="league-logo-input" placeholder="URL del logo" style="display:none; width: 150px; font-size: 0.75rem;" onchange="updateLeagueLogoUrl(this.value)">
         </div>
         <div class="brand-title">
@@ -18347,6 +18348,62 @@ html[data-theme="dark"] #floating-save-btn.floating-save-btn[data-save-status="e
   #floating-save-btn.floating-save-btn::before,
   #floating-save-btn.floating-save-btn::after,
   #floating-save-btn.floating-save-btn > .save-premium-icon {animation:none!important;transition:none!important;}
+}
+</style>
+
+
+<style id="logo-inicio-etiqueta-laliga-2026">
+/* Etiqueta INICIO dentro del logotipo: mismo enlace y lógica, solamente presentación. */
+html body .top-bar .brand-container .league-emblem {
+    flex-direction:column !important;
+    gap:1px !important;
+    padding:6px 12px 5px !important;
+}
+html body .top-bar .brand-container .league-emblem > #league-logo-container {
+    flex:1 1 auto !important;
+    min-height:0 !important;
+    height:calc(100% - 15px) !important;
+    width:100% !important;
+}
+html body .top-bar .brand-container .league-emblem > .liga-logo-home-text {
+    display:block !important;
+    flex:0 0 auto !important;
+    width:100% !important;
+    text-align:center !important;
+    font-family:'Outfit',sans-serif !important;
+    font-size:10px !important;
+    font-weight:900 !important;
+    line-height:14px !important;
+    letter-spacing:.16em !important;
+    color:#f04449 !important;
+    -webkit-text-fill-color:#f04449 !important;
+    pointer-events:none !important;
+    user-select:none !important;
+    transition:color .2s ease,letter-spacing .2s ease !important;
+}
+html body .top-bar .brand-container .league-emblem:hover > .liga-logo-home-text {
+    letter-spacing:.21em !important;
+}
+html body:has(#hero-banner.supercopa-hero) .top-bar .league-emblem > .liga-logo-home-text {
+    color:#2874ff !important;
+    -webkit-text-fill-color:#2874ff !important;
+}
+html body:has(#hero-banner.europaleague-hero) .top-bar .league-emblem > .liga-logo-home-text {
+    color:#f05b21 !important;
+    -webkit-text-fill-color:#f05b21 !important;
+}
+html body:has(#tab-premios.active) .top-bar .league-emblem > .liga-logo-home-text {
+    color:#c9ad69 !important;
+    -webkit-text-fill-color:#c9ad69 !important;
+}
+@media(max-width:800px) {
+    html body .top-bar .brand-container .league-emblem {
+        padding:4px 9px 4px !important;
+    }
+    html body .top-bar .brand-container .league-emblem > .liga-logo-home-text {
+        font-size:9px !important;
+        line-height:12px !important;
+    }
 }
 </style>
 
