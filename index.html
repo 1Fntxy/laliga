@@ -6106,6 +6106,43 @@ html body[data-theme="dark"] #tab-amistosos .amis-empty::before {
 }
 </style>
 
+
+<!-- Animación suave de tema: usa solo una captura visual. No cambia los colores originales. -->
+<style id="liga-animacion-tema-fluida-2026">
+/* Durante la captura del nuevo tema se anulan las transiciones globales de 0.3s
+   para que no se fotografíen colores intermedios y se produzcan parpadeos. */
+html.liga-capturando-tema *,
+html.liga-capturando-tema *::before,
+html.liga-capturando-tema *::after {
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+    mix-blend-mode: normal;
+    animation: none !important;
+}
+::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) {
+    z-index: 2;
+    animation: ligaRevelarTemaFluido 1.08s cubic-bezier(.22, 1, .36, 1) both !important;
+}
+@keyframes ligaRevelarTemaFluido {
+    0% {
+        clip-path: circle(0px at var(--liga-theme-x, 95%) var(--liga-theme-y, 55px));
+    }
+    100% {
+        clip-path: circle(var(--liga-theme-radius, 150vmax) at var(--liga-theme-x, 95%) var(--liga-theme-y, 55px));
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-new(root) {
+        animation: ligaTemaFundidoSuave .32s ease-out both !important;
+    }
+    @keyframes ligaTemaFundidoSuave { from {opacity:0} to {opacity:1} }
+}
+</style>
+
 </head>
 <body>
 
@@ -7962,12 +7999,44 @@ escudos/imagen2.png"></textarea>
     let activeUCLMatchKey = null;
     let activeELMatchKey = null;
 
+    // La transición afecta solo a la presentación: no toca Firebase ni otras funciones.
+    let ligaTemaEnTransicion = false;
     window.toggleTheme = function() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme_preference', newTheme);
-        updateThemeBtnText(newTheme);
+        if (ligaTemaEnTransicion) return;
+        const root = document.documentElement;
+        const newTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        const applyTheme = () => {
+            root.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme_preference', newTheme);
+            updateThemeBtnText(newTheme);
+        };
+        if (typeof document.startViewTransition !== 'function' || document.visibilityState === 'hidden') {
+            applyTheme();
+            return;
+        }
+        const b = document.getElementById('btn-theme-toggle')?.getBoundingClientRect();
+        const x = b ? b.left + b.width / 2 : window.innerWidth - 44;
+        const y = b ? b.top + b.height / 2 : 50;
+        const radius = Math.ceil(Math.hypot(Math.max(x, innerWidth - x),
+                                  Math.max(y, innerHeight - y))) + 24;
+        root.style.setProperty('--liga-theme-x', `${x}px`);
+        root.style.setProperty('--liga-theme-y', `${y}px`);
+        root.style.setProperty('--liga-theme-radius', `${radius}px`);
+        // Evita la interpolación antigua (0.3s) durante la captura del nuevo tema.
+        root.classList.add('liga-capturando-tema');
+        ligaTemaEnTransicion = true;
+        try {
+            const transition = document.startViewTransition(applyTheme);
+            const restoreAnimations = () => {
+                root.classList.remove('liga-capturando-tema');
+                ligaTemaEnTransicion = false;
+            };
+            transition.finished.then(restoreAnimations, restoreAnimations);
+        } catch (_) {
+            applyTheme();
+            root.classList.remove('liga-capturando-tema');
+            ligaTemaEnTransicion = false;
+        }
     };
 
     function loadSavedTheme() {
