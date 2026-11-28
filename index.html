@@ -12500,7 +12500,7 @@ escudos/imagen2.png"></textarea>
             const detalles = p => {
                 if(kind==='balon') return `${premiosClub(p)}<span class="premios-jugador-estadistica">${detail(p)}</span>`;
                 if(kind==='bota' || kind==='plata') return `${premiosClub(p)}<span class="premios-jugador-estadistica">${detail(p)}</span>`;
-                if(kind==='guante') return `${premiosClub(p)}`;
+                if(kind==='guante') return `${premiosClub(p)}<span class="premios-jugador-estadistica">${detail(p)}</span>`;
                 return `${p.div}ª División · ${detail(p)}`;
             };
             const p=items[0];
